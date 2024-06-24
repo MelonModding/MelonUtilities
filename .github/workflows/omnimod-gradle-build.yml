@@ -79,6 +79,9 @@ jobs:
           git config --global user.name "$COMMITTER_NAME"
           git config --global user.email "$COMMITTER_EMAIL"
 
+      - name: Fetch tags
+        run: git fetch --tags
+
       - name: Get latest tag
         id: get_latest_tag
         run: |
@@ -94,6 +97,8 @@ jobs:
             fi
           fi
           echo "new_tag=$new_tag" >> $GITHUB_ENV
+          echo "Latest tag: $latest_tag"
+          echo "New tag: $new_tag"
 
       - name: Create Git tag
         run: |
