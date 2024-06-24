@@ -83,7 +83,17 @@ jobs:
           git config --global user.name "$COMMITTER_NAME"
           git config --global user.email "$COMMITTER_EMAIL"
 
+      - name: Check if tag exists
+        id: tag_exists
+        run: |
+          if git rev-parse "v${{ env.version }}" >/dev/null 2>&1; then
+            echo "::set-output name=exists::true"
+          else
+            echo "::set-output name=exists::false"
+          fi
+
       - name: Create Git tag
+        if: steps.tag_exists.outputs.exists == 'false'
         run: |
           git tag -a "v${{ env.version }}" -m "Release version ${{ env.version }}"
           git push origin "v${{ env.version }}"
@@ -95,3 +105,4 @@ jobs:
           files: build/libs/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
