@@ -87,7 +87,11 @@ jobs:
             new_tag="v${{ env.version }}-0"
           else
             build_number=$(echo $latest_tag | awk -F'-' '{print $2}')
-            new_tag="v${{ env.version }}-$((build_number + 1))"
+            if [ -z "$build_number" ]; then
+              new_tag="v${{ env.version }}-0"
+            else
+              new_tag="v${{ env.version }}-$((build_number + 1))"
+            fi
           fi
           echo "new_tag=$new_tag" >> $GITHUB_ENV
 
