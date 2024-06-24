@@ -87,9 +87,9 @@ jobs:
         id: tag_exists
         run: |
           if git rev-parse "v${{ env.version }}" >/dev/null 2>&1; then
-            echo "::set-output name=exists::true"
+            echo "exists=true" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=exists::false"
+            echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Create Git tag
@@ -105,4 +105,3 @@ jobs:
           files: build/libs/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
