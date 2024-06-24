@@ -79,26 +79,27 @@ jobs:
           git config --global user.name "$COMMITTER_NAME"
           git config --global user.email "$COMMITTER_EMAIL"
 
-      - name: Check if tag exists
-        id: tag_exists
+      - name: Get latest tag
+        id: get_latest_tag
         run: |
-          if git rev-parse "v${{ env.version }}" >/dev/null 2>&1; then
-            echo "tag_exists=true" >> $GITHUB_ENV
+          latest_tag=$(git tag -l "v${{ env.version }}-*" --sort=-v:refname | head -n 1)
+          if [ -z "$latest_tag" ]; then
+            new_tag="v${{ env.version }}-0"
           else
-            echo "tag_exists=false" >> $GITHUB_ENV
+            build_number=$(echo $latest_tag | awk -F'-' '{print $2}')
+            new_tag="v${{ env.version }}-$((build_number + 1))"
           fi
+          echo "new_tag=$new_tag" >> $GITHUB_ENV
 
       - name: Create Git tag
-        if: env.tag_exists == 'false'
         run: |
-          git tag -a "v${{ env.version }}" -m "Release version ${{ env.version }}"
-          git push origin "v${{ env.version }}"
+          git tag -a "${{ env.new_tag }}" -m "Release version ${{ env.version }}"
+          git push origin "${{ env.new_tag }}"
 
       - name: Create GitHub Release
-        if: env.tag_exists == 'false'
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "v${{ env.version }}"
+          tag_name: "${{ env.new_tag }}"
           files: build/libs/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
