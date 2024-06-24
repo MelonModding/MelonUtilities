@@ -1,38 +1,40 @@
 {
   "schemaVersion": 1,
-  "id": "examplemod",
+  "id": "omnimod",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This mod aims to help new BTA modders.",
+  "name": "OmniMod",
+  "description": "A server utilities mod for BTA.",
   "authors": [
-    "Turnip Labs"
+    "Bigjango",
+		"giligens",
+		"Jakraes"
   ],
   "contact": {
-    "homepage": "",
+    "homepage": "https://goldenage-smp.org",
     "sources": ""
   },
 
 	"icon": "icon.png",
-  "license": "CC0-1.0",
+  "license": "MIT",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-			"turniplabs.examplemod.ExampleMod"
+			"goldenage.omnimod.OmniMod"
     ],
 		"beforeGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+			"goldenage.omnimod.OmniMod"
 		],
 		"afterGameStart": [
-			"turniplabs.examplemod.ExampleMod"
+			"goldenage.omnimod.OmniMod"
 		],
 		"recipesReady": [
-			"turniplabs.examplemod.ExampleMod"
+			"goldenage.omnimod.OmniMod"
 		]
 	},
   "mixins": [
-      "examplemod.mixins.json"
+		"omnimod.mixins.json"
   ],
 
   "depends": {
