@@ -1,4 +1,4 @@
-name: OmniMod Gradle Build
+name: Gradle Build
 
 on:
   push:
@@ -75,6 +75,13 @@ jobs:
         run: |
           mod_version=$(grep "^mod_version=" gradle.properties | cut -d'=' -f2)
           echo "version=$mod_version" >> $GITHUB_ENV
+
+      - name: Configure Git
+        run: |
+          COMMITTER_NAME=$(git log -1 --pretty=format:'%an')
+          COMMITTER_EMAIL=$(git log -1 --pretty=format:'%ae')
+          git config --global user.name "$COMMITTER_NAME"
+          git config --global user.email "$COMMITTER_EMAIL"
 
       - name: Create Git tag
         run: |
