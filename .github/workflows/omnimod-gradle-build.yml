@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: OmniMod Gradle Build
 
 on:
   push:
@@ -70,9 +70,21 @@ jobs:
           name: build-artifacts
           path: build/libs/
 
+      - name: Extract version
+        id: get_version
+        run: |
+          mod_version=$(grep "^mod_version=" gradle.properties | cut -d'=' -f2)
+          echo "version=$mod_version" >> $GITHUB_ENV
+
+      - name: Create Git tag
+        run: |
+          git tag -a "v${{ env.version }}" -m "Release version ${{ env.version }}"
+          git push origin "v${{ env.version }}"
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: "v${{ env.version }}"
           files: build/libs/**
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
