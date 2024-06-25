@@ -1,13 +1,14 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "package": "goldenage.omnimod.mixins",
-    "compatibilityLevel": "JAVA_8",
-    "mixins": [
-    ],
-    "client": [
-    ],
-    "injectors": {
-        "defaultRequire": 1
+  "required": true,
+  "minVersion": "0.8",
+  "package": "goldenage.omnimod.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "SaverMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
   }
 }
