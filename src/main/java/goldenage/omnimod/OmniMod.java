@@ -1,5 +1,6 @@
 package goldenage.omnimod;
 
+import goldenage.omnimod.saver.SaverSingleton;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,9 @@ public class OmniMod implements ModInitializer, GameStartEntrypoint, RecipeEntry
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     @Override
     public void onInitialize() {
-        LOGGER.info("OmniMod initialized.");
+        LOGGER.info("OmniMod initializing");
+
+		SaverSingleton.getInstance().initialize();
     }
 
 	@Override
