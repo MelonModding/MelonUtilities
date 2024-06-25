@@ -11,6 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class SaverMixin {
 	@Inject(method = "saveServerWorld", at = @At("TAIL"))
 	public void saveServerWorldInjection(CallbackInfo ci) {
-		Saver.saveAll();
+		Saver.getInstance().saveAll();
 	}
 }
