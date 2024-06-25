@@ -1,12 +1,12 @@
-package goldenage.omnimod.homes;
+package goldenage.omnimod.homes.commands;
 
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 
-public class CommandSetHome extends Command {
-	public CommandSetHome(String name, String... alts) {
-		super(name, alts);
+public class CommandHome extends Command {
+	public CommandHome() {
+		super("home");
 	}
 
 	@Override
