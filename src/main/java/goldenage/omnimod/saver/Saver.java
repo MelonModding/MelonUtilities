@@ -25,6 +25,14 @@ public class Saver {
 		saveableList.add(saveable);
 	}
 
+	public Saveable get(int index) {
+		return saveableList.get(index);
+	}
+
+	public void remove(int index) {
+		saveableList.remove(index);
+	}
+
 	public void saveAll() {
 		for (Saveable saveable : saveableList) {
 			saveable.save();
