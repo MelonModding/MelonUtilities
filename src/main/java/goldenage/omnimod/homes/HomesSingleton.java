@@ -138,34 +138,26 @@ public class HomesSingleton implements Initializable, Saveable {
 
 			for (Object obj : json.keySet()) {
 				String playerName = (String) obj;
-				System.out.println("Player: " + playerName);
 
 				ArrayList<?> homes = (ArrayList<?>) json.get(playerName);
-				System.out.println("Homes: " + homes);
 
 				for (Object homeObj : homes) {
 					LinkedTreeMap<?, ?> values = (LinkedTreeMap<?, ?>) homeObj;
-					System.out.println("Values: " + values);
 
 					String homeName = (String) values.get("name");
-					System.out.println("Home name: " + homeName);
 
 					LinkedTreeMap<?, ?> positionValues = (LinkedTreeMap<?, ?>) values.get("position");
-					System.out.println("Position values: " + positionValues);
 
 					int x = (int) (double) positionValues.get("x");
 					int y = (int) (double) positionValues.get("y");
 					int z = (int) (double) positionValues.get("z");
 					int dimension = (int) (double) positionValues.get("dimension");
 
-					System.out.println("x: " + x + " y: " + y + " z: " + z + " dimension: " + dimension);
-
 					Position position = new Position(x, y, z, dimension);
 
 					addPlayerHome(playerName, homeName, position);
 				}
 			}
-
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
