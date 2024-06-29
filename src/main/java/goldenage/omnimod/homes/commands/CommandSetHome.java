@@ -6,6 +6,7 @@ import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.TextFormatting;
 
 public class CommandSetHome extends Command {
 	public CommandSetHome() {
@@ -27,11 +28,11 @@ public class CommandSetHome extends Command {
 		boolean success = HomesSingleton.getInstance().addPlayerHome(player.username, homeName, playerPosition);
 
 		if (!success) {
-			commandSender.sendMessage("Cannot set any more homes!");
+			commandSender.sendMessage(TextFormatting.RED + "Cannot set any more homes!");
 			return true;
 		}
 
-		commandSender.sendMessage("Home set successfully.");
+		commandSender.sendMessage(TextFormatting.GREEN + "Home set successfully.");
 
 		return true;
 	}
