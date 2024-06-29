@@ -6,6 +6,7 @@ import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 
 public class CommandHome extends Command {
@@ -26,7 +27,7 @@ public class CommandHome extends Command {
 		Position position = HomesSingleton.getInstance().getPlayerHome(player.username, homeName);
 
 		if (position == null) {
-			commandSender.sendMessage("Home does not exist!");
+			commandSender.sendMessage(TextFormatting.RED + "Home does not exist!");
 			return true;
 		}
 
