@@ -1,7 +1,7 @@
 package goldenage.omnimod.saver;
 
 import goldenage.omnimod.OmniMod;
-import goldenage.omnimod.homes.Homes;
+import goldenage.omnimod.homes.HomesSingleton;
 import goldenage.omnimod.interfaces.Initializable;
 import goldenage.omnimod.interfaces.Saveable;
 
@@ -70,7 +70,8 @@ public class SaverSingleton implements Initializable {
 			}
 		}
 
-
+		HomesSingleton.getInstance().initialize();
+		add(HomesSingleton.getInstance());
 
 		OmniMod.LOGGER.info("SaverSingleton initialized");
 	}
