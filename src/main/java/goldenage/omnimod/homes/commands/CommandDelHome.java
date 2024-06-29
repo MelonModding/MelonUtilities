@@ -5,6 +5,7 @@ import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 
 public class CommandDelHome extends Command {
@@ -25,11 +26,11 @@ public class CommandDelHome extends Command {
 		boolean success = HomesSingleton.getInstance().removePlayerHome(player.username, homeName);
 
 		if (!success) {
-			commandSender.sendMessage("Home does not exist!");
+			commandSender.sendMessage(TextFormatting.RED + "Home does not exist!");
 			return true;
 		}
 
-		commandSender.sendMessage("Home deleted.");
+		commandSender.sendMessage(TextFormatting.GREEN + "Home deleted.");
 
 		return true;
 	}
