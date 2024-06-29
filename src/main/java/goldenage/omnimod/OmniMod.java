@@ -16,6 +16,7 @@ public class OmniMod implements ModInitializer, GameStartEntrypoint, RecipeEntry
         LOGGER.info("OmniMod initializing");
 
 		SaverSingleton.getInstance().initialize();
+		SaverSingleton.getInstance().loadAll();
     }
 
 	@Override
