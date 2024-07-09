@@ -12,7 +12,8 @@ import BTAServerSolutions.BTAServerUtilities.config.*;
 import BTAServerSolutions.BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerSolutions.BTAServerUtilities.config.datatypes.HomeData;
 import BTAServerSolutions.BTAServerUtilities.config.datatypes.KitData;
-import BTAServerSolutions.BTAServerUtilities.saver.SaverSingleton;
+import BTAServerSolutions.BTAServerUtilities.config.datatypes.RoleData;
+import BTAServerSolutions.BTAServerUtilities.mixins.PlayerListMixin;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,6 +29,8 @@ import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
 import java.util.HashMap;
+
+import static net.minecraft.server.util.helper.PlayerList.updateList;
 
 
 public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint {
@@ -61,21 +64,40 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 		colorMap.put("white", "§0");
 	}
 
-	public static ConfigDirectory<ConfigData> configs = new ConfigDirectory<>("configs", new ConfigData());
-	public static ConfigDirectory<HomeData> homes = new ConfigDirectory<>("homes", new HomeData());
+	public static DataBank<ConfigData> configs = new DataBank<>("configs", new ConfigData());
+	public static DataBank<HomeData> homes = new DataBank<>("homes", new HomeData());
 
-	public void updateConfig() {
+	public static void updateAll() {
+		configs.loadAllData(ConfigData.class);
+		KitCommand.kits.loadAllData(KitData.class);
+		KitCommand.buildKitSyntax();
+		RoleCommand.roles.loadAllData(RoleData.class);
+		RoleCommand.buildRoleSyntax();
+		updateList();
+	}
 
+	public void updateRoles(){
+		configs.loadAllData(ConfigData.class);
+		RoleCommand.roles.loadAllData(RoleData.class);
+		RoleCommand.buildRoleSyntax();
+		updateList();
+	}
+
+	public void updateKits(){
+		configs.loadAllData(ConfigData.class);
+		KitCommand.kits.loadAllData(KitData.class);
+		KitCommand.buildKitSyntax();
 	}
 
     @Override
     public void onInitialize() {
         LOGGER.info("BTAServerUtilities initializing!");
-		updateConfig();
-		RoleCommand.buildRoleSyntax();
-		LOGGER.info("BTAServerUtilities Role Syntax Built!");
+		configs.loadAllData(ConfigData.class);
+		KitCommand.kits.loadAllData(KitData.class);
 		KitCommand.buildKitSyntax();
-		LOGGER.info("BTAServerUtilities Kit Syntax Built!");
+		RoleCommand.roles.loadAllData(RoleData.class);
+		RoleCommand.buildRoleSyntax();
+		LOGGER.info("BTAServerUtilities initialized!");
     }
 
 	@Override

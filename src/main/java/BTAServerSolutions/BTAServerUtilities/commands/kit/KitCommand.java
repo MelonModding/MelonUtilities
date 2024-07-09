@@ -1,6 +1,6 @@
 package BTAServerSolutions.BTAServerUtilities.commands.kit;
 
-import BTAServerSolutions.BTAServerUtilities.config.ConfigDirectory;
+import BTAServerSolutions.BTAServerUtilities.config.DataBank;
 import BTAServerSolutions.BTAServerUtilities.utility.CommandSyntaxBuilder;
 import BTAServerSolutions.BTAServerUtilities.config.datatypes.KitData;
 import net.minecraft.core.entity.EntityItem;
@@ -136,7 +136,7 @@ public static String hmsConversion(long millis) {
 		return list.indexOf(target);
 	}
 
-	public static ConfigDirectory<KitData> kits = new ConfigDirectory<>("kits", new KitData());
+	public static DataBank<KitData> kits = new DataBank<>("kits", new KitData());
 
 	static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
 
@@ -172,7 +172,7 @@ public static String hmsConversion(long millis) {
                 if (kits.configData.containsKey(args[1])) {
 
                     String kit = args[1];
-                    KitData kitdata = kits.getData(kit, KitData.class);
+                    KitData kitdata = kits.getOrCreateData(kit, KitData.class);
                     long cooldown = kitdata.kitCooldown * 1000L;
 
                     if (args.length > 2 && args[2].equals("true")) {
@@ -300,7 +300,7 @@ public static String hmsConversion(long millis) {
                 String kit = args[1];
 
                 if (args.length > 2 && kits.configData.containsKey(kit) && isNumeric(args[2])) {
-                    KitData kitdata = kits.getData(kit, KitData.class);
+                    KitData kitdata = kits.getOrCreateData(kit, KitData.class);
                     kitdata.kitCooldown = Long.parseLong(args[2]);
                     kits.saveAllData();
                     sender.sendMessage("§5Set Cooldown for Kit: '" + kit + "' to: " + args[2]);
@@ -315,7 +315,7 @@ public static String hmsConversion(long millis) {
 
                 if (args.length > 1 && kits.configData.containsKey(args[1])) {
 
-                    KitData kitdata = kits.getData(args[1], KitData.class);
+                    KitData kitdata = kits.getOrCreateData(args[1], KitData.class);
 
                     sender.sendMessage("§8< Kit: '" + args[1] + "' List >");
                     sender.sendMessage("§8  < Cooldown: " + hmsConversion(kitdata.kitCooldown * 1000) + " >");
@@ -370,14 +370,14 @@ public static String hmsConversion(long millis) {
                         return true;
                     }
 
-                    KitData kitdata = kits.getData(kit, KitData.class);
+                    KitData kitdata = kits.getOrCreateData(kit, KitData.class);
                     kitdata.kitCooldown = Long.parseLong(args[2]);
                     kits.saveAllData();
                     sender.sendMessage("§5Created Kit: '" + kit + "' with Cooldown: " + args[2]);
                     return true;
                 }
 
-                kits.getData(kit, KitData.class);
+                kits.getOrCreateData(kit, KitData.class);
                 kits.saveAllData();
                 sender.sendMessage("§5Created Kit: '" + kit + "' with Cooldown: 0");
                 return true;
@@ -399,7 +399,7 @@ public static String hmsConversion(long millis) {
                     return true;
                 }
 
-                KitData kitdata = kits.getData(kit, KitData.class);
+                KitData kitdata = kits.getOrCreateData(kit, KitData.class);
 
                 if (args[2].equals("item")) {
 

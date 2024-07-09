@@ -116,10 +116,10 @@ public class RoleBuilder {
 	public static String buildPlayerRoleDisplay(EntityPlayer player) {
 
 		String defaultRoleDisplay;
-		if(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole) == null){
+		if(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
@@ -152,13 +152,13 @@ public class RoleBuilder {
 		}
 
 		if(hasBeenGrantedRole){
-			if (BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode.equals("multi")) {
+			if (BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("multi")) {
 				if(defaultRoleDisplay != null) {
 					return defaultRoleDisplay + roleDisplays;
 				} else {
 					return "" + roleDisplays;
 				}
-			} else if (BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode.equals("single")) {
+			} else if (BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("single")) {
 				return highestPriorityRoleDisplay;
 			}
 		} else if(defaultRoleDisplay != null){

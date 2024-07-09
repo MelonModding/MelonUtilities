@@ -38,14 +38,14 @@ public class NetServerHandlerMixin {
 		String defaultRoleUsername;
 		String defaultRoleTextFormatting;
 
-		if(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole) == null){
+		if(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 			defaultRoleUsername = null;
 			defaultRoleTextFormatting = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole));
-			defaultRoleUsername = RoleBuilder.buildRoleUsername(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole), this.playerEntity.getDisplayName());
-			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
+			defaultRoleUsername = RoleBuilder.buildRoleUsername(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole), this.playerEntity.getDisplayName());
+			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
@@ -84,13 +84,13 @@ public class NetServerHandlerMixin {
 		}
 
 		if(hasBeenGrantedRole){
-			if (BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode.equals("multi")) {
+			if (BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("multi")) {
 				if(defaultRoleDisplay != null) {
 					message = defaultRoleDisplay + roleDisplays + roleUsername + roleTextFormatting + message;
 				} else {
 					message = roleDisplays + roleUsername + roleTextFormatting + message;
 				}
-			} else if (BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode.equals("single")) {
+			} else if (BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("single")) {
                 message = highestPriorityRoleDisplay + roleUsername + roleTextFormatting + message;
 			}
 		} else if(defaultRoleDisplay != null){

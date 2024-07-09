@@ -1,7 +1,7 @@
 package BTAServerSolutions.BTAServerUtilities.commands.role;
 
 import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
-import BTAServerSolutions.BTAServerUtilities.config.ConfigDirectory;
+import BTAServerSolutions.BTAServerUtilities.config.DataBank;
 import BTAServerSolutions.BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerSolutions.BTAServerUtilities.utility.CommandSyntaxBuilder;
 import BTAServerSolutions.BTAServerUtilities.utility.RoleBuilder;
@@ -20,10 +20,10 @@ public class RoleCommand extends Command {
 
 	public RoleCommand(){super(COMMAND);}
 
-	public static RoleData getRoleFromArg(String arg){return roles.getData(arg, RoleData.class);}
+	public static RoleData getRoleFromArg(String arg){return roles.getOrCreateData(arg, RoleData.class);}
 	static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
 
-	public static ConfigDirectory<RoleData> roles = new ConfigDirectory<>("roles", new RoleData());
+	public static DataBank<RoleData> roles = new DataBank<>("roles", new RoleData());
 
 	public static void buildRoleSyntax(){
 		syntax.clear();
@@ -84,7 +84,7 @@ public class RoleCommand extends Command {
 			return true;
 		}
 
-		roles.getData(role, RoleData.class);
+		roles.getOrCreateData(role, RoleData.class);
 		roles.loadAllData(RoleData.class);
 		getRoleFromArg(role).displayName = role;
 		roles.saveAllData();
@@ -399,13 +399,13 @@ public class RoleCommand extends Command {
 			for (String role : roles.configData.keySet()) {
 				if (args[2].equals(role)) {
 					BTAServerUtilities.configs.loadAllData(ConfigData.class);
-					BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole = args[2];
+					BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole = args[2];
 					BTAServerUtilities.configs.saveAllData();
 					sender.sendMessage("§5Set defaultRole to: " + args[2]);
 					return true;
 				} else if (args[2].equals("none")) {
 					BTAServerUtilities.configs.loadAllData(ConfigData.class);
-					BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole = null;
+					BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole = null;
 					BTAServerUtilities.configs.saveAllData();
 					sender.sendMessage("§5Set defaultRole to: none");
 					return true;
@@ -431,13 +431,13 @@ public class RoleCommand extends Command {
 
 		if(args.length == 3 && args[2].equals("single")) {
 			BTAServerUtilities.configs.loadAllData(ConfigData.class);
-			BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode = "single";
+			BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode = "single";
 			BTAServerUtilities.configs.saveAllData();
 			sender.sendMessage("§5Set displayMode to: single");
 			return true;
 		} else if (args.length == 3 && args[2].equals("multi")) {
 			BTAServerUtilities.configs.loadAllData(ConfigData.class);
-			BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode = "multi";
+			BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode = "multi";
 			BTAServerUtilities.configs.saveAllData();
 			sender.sendMessage("§5Set displayMode to: multi");
 			return true;
