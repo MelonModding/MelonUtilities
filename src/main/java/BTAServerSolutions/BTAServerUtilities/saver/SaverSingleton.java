@@ -1,9 +1,9 @@
-package goldenage.omnimod.saver;
+package BTAServerSolutions.BTAServerUtilities.saver;
 
-import goldenage.omnimod.OmniMod;
-import goldenage.omnimod.homes.HomesSingleton;
-import goldenage.omnimod.interfaces.Initializable;
-import goldenage.omnimod.interfaces.Saveable;
+import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
+import BTAServerSolutions.BTAServerUtilities.homes.HomesSingleton;
+import BTAServerSolutions.BTAServerUtilities.interfaces.Initializable;
+import BTAServerSolutions.BTAServerUtilities.interfaces.Saveable;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +14,7 @@ import java.util.List;
 
 // For some reason the name of the class can't be Saver idk why
 public class SaverSingleton implements Initializable {
-	private static final Path dataFolder = Paths.get("./omnimod_data");
+	private static final Path dataFolder = Paths.get("./BTAServerUtilities_data");
 
 	private static SaverSingleton INSTANCE;
 	private final List<Saveable> saveableList;
@@ -57,15 +57,15 @@ public class SaverSingleton implements Initializable {
 
 	@Override
 	public void initialize() {
-		OmniMod.LOGGER.info("Initializing SaverSingleton");
+		BTAServerUtilities.LOGGER.info("Initializing SaverSingleton");
 
 		if (Files.notExists(dataFolder)) {
-			OmniMod.LOGGER.info("Creating data folder");
+			BTAServerUtilities.LOGGER.info("Creating data folder");
 
 			try {
 				Files.createDirectory(dataFolder);
 			} catch (IOException e) {
-				OmniMod.LOGGER.error("Failed to create data folder");
+				BTAServerUtilities.LOGGER.error("Failed to create data folder");
 				throw new RuntimeException(e);
 			}
 		}
@@ -73,6 +73,6 @@ public class SaverSingleton implements Initializable {
 		HomesSingleton.getInstance().initialize();
 		add(HomesSingleton.getInstance());
 
-		OmniMod.LOGGER.info("SaverSingleton initialized");
+		BTAServerUtilities.LOGGER.info("SaverSingleton initialized");
 	}
 }

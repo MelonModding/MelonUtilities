@@ -1,10 +1,10 @@
-package goldenage.omnimod.homes.misc;
+package BTAServerSolutions.BTAServerUtilities.homes.misc;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import goldenage.omnimod.interfaces.JSONable;
-import goldenage.omnimod.misc.Position;
+import BTAServerSolutions.BTAServerUtilities.interfaces.JSONable;
+import BTAServerSolutions.BTAServerUtilities.misc.Position;
 
 import java.util.HashMap;
 import java.util.Map;

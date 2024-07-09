@@ -1,16 +1,16 @@
-package goldenage.omnimod.homes;
+package BTAServerSolutions.BTAServerUtilities.homes;
 
+import BTAServerSolutions.BTAServerUtilities.homes.commands.CommandHome;
+import BTAServerSolutions.BTAServerUtilities.interfaces.Initializable;
+import BTAServerSolutions.BTAServerUtilities.interfaces.Saveable;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
-import goldenage.omnimod.OmniMod;
-import goldenage.omnimod.homes.commands.CommandDelHome;
-import goldenage.omnimod.homes.commands.CommandHome;
-import goldenage.omnimod.homes.commands.CommandSetHome;
-import goldenage.omnimod.homes.misc.PlayerHomes;
-import goldenage.omnimod.interfaces.Initializable;
-import goldenage.omnimod.interfaces.Saveable;
-import goldenage.omnimod.misc.Position;
+import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
+import BTAServerSolutions.BTAServerUtilities.homes.commands.CommandDelHome;
+import BTAServerSolutions.BTAServerUtilities.homes.commands.CommandSetHome;
+import BTAServerSolutions.BTAServerUtilities.homes.misc.PlayerHomes;
+import BTAServerSolutions.BTAServerUtilities.misc.Position;
 import turniplabs.halplibe.helper.CommandHelper;
 
 import java.io.*;
@@ -19,11 +19,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class HomesSingleton implements Initializable, Saveable {
-	private static final Path filePath = Paths.get("./omnimod_data/homes.json");
+	private static final Path filePath = Paths.get("./BTAServerUtilities_data/homes.json");
 
 	private static HomesSingleton INSTANCE;
 	private final Map<String, PlayerHomes> playerHomeMap;
@@ -74,28 +73,28 @@ public class HomesSingleton implements Initializable, Saveable {
 
 	@Override
 	public void initialize() {
-		OmniMod.LOGGER.info("Initializing HomesSingleton");
+		BTAServerUtilities.LOGGER.info("Initializing HomesSingleton");
 
 		if (Files.notExists(filePath)) {
-			OmniMod.LOGGER.info("Creating homes file");
+			BTAServerUtilities.LOGGER.info("Creating homes file");
 
 			try {
 				Files.createFile(filePath);
 			} catch (IOException e) {
-				OmniMod.LOGGER.error("Failed to create homes file");
+				BTAServerUtilities.LOGGER.error("Failed to create homes file");
 				throw new RuntimeException(e);
 			}
 		}
 
-		OmniMod.LOGGER.info("Creating home commands");
+		BTAServerUtilities.LOGGER.info("Creating home commands");
 
 		CommandHelper.Server.createCommand(new CommandHome());
 		CommandHelper.Server.createCommand(new CommandSetHome());
 		CommandHelper.Server.createCommand(new CommandDelHome());
 
-		OmniMod.LOGGER.info("Home commands created");
+		BTAServerUtilities.LOGGER.info("Home commands created");
 
-		OmniMod.LOGGER.info("HomeSingleton initialized");
+		BTAServerUtilities.LOGGER.info("HomeSingleton initialized");
 	}
 
 	@Override

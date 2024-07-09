@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "omnimod",
+  "id": "btaserverutilities",
   "version": "${version}",
 
-  "name": "OmniMod",
+  "name": "BTAServerUtilities",
   "description": "A server utilities mod for BTA.",
   "authors": [
     "Bigjango",
@@ -21,20 +21,20 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-			"goldenage.omnimod.OmniMod"
+			"BTAServerSolutions.BTAServerUtilities.BTAServerUtilities"
     ],
 		"beforeGameStart": [
-			"goldenage.omnimod.OmniMod"
+			"BTAServerSolutions.BTAServerUtilities.BTAServerUtilities"
 		],
 		"afterGameStart": [
-			"goldenage.omnimod.OmniMod"
+			"BTAServerSolutions.BTAServerUtilities.BTAServerUtilities"
 		],
 		"recipesReady": [
-			"goldenage.omnimod.OmniMod"
+			"BTAServerSolutions.BTAServerUtilities.BTAServerUtilities"
 		]
 	},
   "mixins": [
-		"omnimod.mixins.json"
+		"BTAServerUtilities.mixins.json"
   ],
 
   "depends": {

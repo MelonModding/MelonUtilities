@@ -1,4 +1,4 @@
-package goldenage.omnimod.interfaces;
+package BTAServerSolutions.BTAServerUtilities.interfaces;
 
 import com.google.gson.JsonElement;
 

@@ -1,8 +1,7 @@
-package goldenage.omnimod.homes.commands;
+package BTAServerSolutions.BTAServerUtilities.homes.commands;
 
-import goldenage.omnimod.homes.HomesSingleton;
-import goldenage.omnimod.misc.Position;
-import net.minecraft.core.entity.player.EntityPlayer;
+import BTAServerSolutions.BTAServerUtilities.homes.HomesSingleton;
+import BTAServerSolutions.BTAServerUtilities.misc.Position;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;

@@ -1,16 +1,16 @@
-package goldenage.omnimod.homes.commands;
+package BTAServerSolutions.BTAServerUtilities.homes.commands;
 
-import goldenage.omnimod.homes.HomesSingleton;
+import BTAServerSolutions.BTAServerUtilities.homes.HomesSingleton;
+import BTAServerSolutions.BTAServerUtilities.misc.Position;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.server.entity.player.EntityPlayerMP;
 
-public class CommandDelHome extends Command {
-	public CommandDelHome() {
-		super("delhome");
+public class CommandSetHome extends Command {
+	public CommandSetHome() {
+		super("sethome");
 	}
 
 	@Override
@@ -23,14 +23,16 @@ public class CommandDelHome extends Command {
 
 		EntityPlayer player = commandSender.getPlayer();
 
-		boolean success = HomesSingleton.getInstance().removePlayerHome(player.username, homeName);
+		Position playerPosition = new Position((int) player.x, (int) player.y, (int) player.z, player.dimension);
+
+		boolean success = HomesSingleton.getInstance().addPlayerHome(player.username, homeName, playerPosition);
 
 		if (!success) {
-			commandSender.sendMessage(TextFormatting.RED + "Home does not exist!");
+			commandSender.sendMessage(TextFormatting.RED + "Cannot set any more homes!");
 			return true;
 		}
 
-		commandSender.sendMessage(TextFormatting.GREEN + "Home deleted.");
+		commandSender.sendMessage(TextFormatting.GREEN + "Home set successfully.");
 
 		return true;
 	}
@@ -42,6 +44,6 @@ public class CommandDelHome extends Command {
 
 	@Override
 	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-		commandSender.sendMessage("/delhome <home>");
+		commandSender.sendMessage("/sethome <home>");
 	}
 }

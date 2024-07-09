@@ -1,6 +1,6 @@
-package goldenage.omnimod.mixins;
+package BTAServerSolutions.BTAServerUtilities.mixins;
 
-import goldenage.omnimod.saver.SaverSingleton;
+import BTAServerSolutions.BTAServerUtilities.saver.SaverSingleton;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

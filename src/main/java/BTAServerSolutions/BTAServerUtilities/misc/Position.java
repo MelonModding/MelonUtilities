@@ -1,8 +1,8 @@
-package goldenage.omnimod.misc;
+package BTAServerSolutions.BTAServerUtilities.misc;
 
+import BTAServerSolutions.BTAServerUtilities.interfaces.JSONable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import goldenage.omnimod.interfaces.JSONable;
 
 public class Position implements JSONable {
 	public int x;
