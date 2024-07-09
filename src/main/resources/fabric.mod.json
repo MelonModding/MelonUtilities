@@ -21,16 +21,16 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-			"BTAServerSolutions.BTAServerUtilities.BTAServerUtilities"
+			"BTAServerUtilities.BTAServerUtilities"
     ],
 		"beforeGameStart": [
-			"BTAServerSolutions.BTAServerUtilities.BTAServerUtilities"
+			"BTAServerUtilities.BTAServerUtilities"
 		],
 		"afterGameStart": [
-			"BTAServerSolutions.BTAServerUtilities.BTAServerUtilities"
+			"BTAServerUtilities.BTAServerUtilities"
 		],
 		"recipesReady": [
-			"BTAServerSolutions.BTAServerUtilities.BTAServerUtilities"
+			"BTAServerUtilities.BTAServerUtilities"
 		]
 	},
   "mixins": [
