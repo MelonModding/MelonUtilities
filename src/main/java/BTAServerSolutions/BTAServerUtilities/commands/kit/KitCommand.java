@@ -169,7 +169,7 @@ public static String hmsConversion(long millis) {
                     return true;
                 }
 
-                if (kits.configData.containsKey(args[1])) {
+                if (kits.data.containsKey(args[1])) {
 
                     String kit = args[1];
                     KitData kitdata = kits.getOrCreateData(kit, KitData.class);
@@ -240,7 +240,7 @@ public static String hmsConversion(long millis) {
                         sender.sendMessage("§5Given Kit: '" + kit + "' to " + sender.getPlayer().username);
                         return true;
                     }
-                    if (!kits.configData.containsKey(kit)) {
+                    if (!kits.data.containsKey(kit)) {
                         sender.sendMessage("§eFailed to Give Kit: '" + kit + "' to " + sender.getPlayer().username + " (Kit Doesn't Exist)");
                         sender.sendMessage("");
                     } else {
@@ -270,7 +270,7 @@ public static String hmsConversion(long millis) {
                     }
                 }
                 String kit = args[1];
-                if (kits.configData.containsKey(kit)) {
+                if (kits.data.containsKey(kit)) {
                     cooldowns.getOrDefault(kit, new HashMap<>()).put(sender.getPlayer().username, 0L);
                     sender.sendMessage("§5Kit: '" + kit + "' Cooldown Reset!");
                     return true;
@@ -282,7 +282,7 @@ public static String hmsConversion(long millis) {
 
             if (args[0].equals("reload")) {
                 kits.loadAllData(KitData.class);
-                sender.sendMessage("§5Reloaded " + kits.configData.size() + " Kit(s)!");
+                sender.sendMessage("§5Reloaded " + kits.data.size() + " Kit(s)!");
 				buildKitSyntax();
 				sender.sendMessage("§5Built Kit Syntax!");
                 return true;
@@ -299,7 +299,7 @@ public static String hmsConversion(long millis) {
 
                 String kit = args[1];
 
-                if (args.length > 2 && kits.configData.containsKey(kit) && isNumeric(args[2])) {
+                if (args.length > 2 && kits.data.containsKey(kit) && isNumeric(args[2])) {
                     KitData kitdata = kits.getOrCreateData(kit, KitData.class);
                     kitdata.kitCooldown = Long.parseLong(args[2]);
                     kits.saveAllData();
@@ -313,7 +313,7 @@ public static String hmsConversion(long millis) {
 
             if (args[0].equals("list")) {
 
-                if (args.length > 1 && kits.configData.containsKey(args[1])) {
+                if (args.length > 1 && kits.data.containsKey(args[1])) {
 
                     KitData kitdata = kits.getOrCreateData(args[1], KitData.class);
 
@@ -333,7 +333,7 @@ public static String hmsConversion(long millis) {
 
                 }
 
-                if (kits.configData.isEmpty()) {
+                if (kits.data.isEmpty()) {
                     sender.sendMessage("§8< Kits: >");
                     sender.sendMessage("§8  -No Kits Created-");
                     return true;
@@ -341,7 +341,7 @@ public static String hmsConversion(long millis) {
 
                 sender.sendMessage("§8< Kits: >");
 
-                for (String kit : kits.configData.keySet()) {
+                for (String kit : kits.data.keySet()) {
                     sender.sendMessage("§8  > " + kit);
                 }
 
@@ -358,7 +358,7 @@ public static String hmsConversion(long millis) {
 
                 String kit = args[1];
 
-                if (kits.configData.containsKey(kit)) {
+                if (kits.data.containsKey(kit)) {
                     sender.sendMessage("§eFailed to Create Kit: '" + kit + "' (Kit Already Exists)");
                     return true;
                 }
@@ -393,7 +393,7 @@ public static String hmsConversion(long millis) {
 
                 String kit = args[1];
 
-                if (!kits.configData.containsKey(kit)) {
+                if (!kits.data.containsKey(kit)) {
                     sender.sendMessage("§eFailed to Add To Kit: '" + kit + "' (Kit Doesn't Exist)");
                     sender.sendMessage("§8*Tip: Double Check your Spelling*");
                     return true;

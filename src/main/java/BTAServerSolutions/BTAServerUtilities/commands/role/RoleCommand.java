@@ -79,7 +79,7 @@ public class RoleCommand extends Command {
 
 		String role = args[1];
 
-		if (roles.configData.containsKey(role)) {
+		if (roles.data.containsKey(role)) {
 			sender.sendMessage("§eFailed to Create Role: " + role + " (Role Already Exists)");
 			return true;
 		}
@@ -126,7 +126,7 @@ public class RoleCommand extends Command {
 
 	private boolean reload(CommandSender sender){
 		roles.loadAllData(RoleData.class);
-		sender.sendMessage("§5Reloaded " + roles.configData.size() + " Role(s)!");
+		sender.sendMessage("§5Reloaded " + roles.data.size() + " Role(s)!");
 		RoleCommand.buildRoleSyntax();
 		sender.sendMessage("§5Built Role Syntax!");
 		BTAServerUtilities.configs.loadAllData(ConfigData.class);
@@ -142,7 +142,7 @@ public class RoleCommand extends Command {
 			return true;
 		}
 
-		if(!roles.configData.containsKey(args[1])){
+		if(!roles.data.containsKey(args[1])){
 			sender.sendMessage("§eFailed to Edit Role (Invalid Role)");
 			syntax.printLayer("edit", sender);
 			return true;
@@ -278,7 +278,7 @@ public class RoleCommand extends Command {
 		}
 
 
-		if(!roles.configData.containsKey(args[1])){
+		if(!roles.data.containsKey(args[1])){
 			sender.sendMessage("§eFailed to Grant Role (Role doesn't exist!)");
 			syntax.printLayerAndSubLayers("grant", sender);
 			return true;
@@ -317,7 +317,7 @@ public class RoleCommand extends Command {
 			return true;
 		}
 
-		if(!roles.configData.containsKey(args[1])){
+		if(!roles.data.containsKey(args[1])){
 			sender.sendMessage("§eFailed to Revoke Role (Role doesn't exist!)");
 			syntax.printLayerAndSubLayers("revoke", sender);
 			return true;
@@ -348,7 +348,7 @@ public class RoleCommand extends Command {
 	}
 
 	private boolean list(CommandSender sender) {
-		if (roles.configData.isEmpty()) {
+		if (roles.data.isEmpty()) {
 			sender.sendMessage("§8< Roles: >");
 			sender.sendMessage("§8  -No Roles Created-");
 			return true;
@@ -356,11 +356,11 @@ public class RoleCommand extends Command {
 
 		sender.sendMessage("§8< Roles: >");
 
-		for (String role : roles.configData.keySet()) {
+		for (String role : roles.data.keySet()) {
 			sender.sendMessage("§8  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + role + "§8 - Priority: " + TextFormatting.WHITE + getRoleFromArg(role).priority);
-			sender.sendMessage("§8    > " + RoleBuilder.buildRoleDisplay(roles.configData.get(role))
-												+ RoleBuilder.buildRoleUsername(roles.configData.get(role), sender.getPlayer().getDisplayName())
-												+ RoleBuilder.buildRoleTextFormat(roles.configData.get(role)) + "text");
+			sender.sendMessage("§8    > " + RoleBuilder.buildRoleDisplay(roles.data.get(role))
+												+ RoleBuilder.buildRoleUsername(roles.data.get(role), sender.getPlayer().getDisplayName())
+												+ RoleBuilder.buildRoleTextFormat(roles.data.get(role)) + "text");
 		}
 
 		return true;
@@ -396,7 +396,7 @@ public class RoleCommand extends Command {
 		}
 
 		if(args.length == 3) {
-			for (String role : roles.configData.keySet()) {
+			for (String role : roles.data.keySet()) {
 				if (args[2].equals(role)) {
 					BTAServerUtilities.configs.loadAllData(ConfigData.class);
 					BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole = args[2];

@@ -27,13 +27,13 @@ public class BSUCommand extends Command {
 			sender.sendMessage("§5Reloading " + NAME + "...");
 
 			KitCommand.kits.loadAllData(KitData.class);
-			sender.sendMessage("§5Reloaded " + KitCommand.kits.configData.size() + " Kit(s)!");
+			sender.sendMessage("§5Reloaded " + KitCommand.kits.data.size() + " Kit(s)!");
 
 			KitCommand.buildKitSyntax();
 			sender.sendMessage("§5Built Kit Syntax!");
 
 			RoleCommand.roles.loadAllData(RoleData.class);
-			sender.sendMessage("§5Reloaded " + RoleCommand.roles.configData.size() + " Role(s)!");
+			sender.sendMessage("§5Reloaded " + RoleCommand.roles.data.size() + " Role(s)!");
 
 			RoleCommand.buildRoleSyntax();
 			sender.sendMessage("§5Built Role Syntax!");

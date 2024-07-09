@@ -38,14 +38,14 @@ public class NetServerHandlerMixin {
 		String defaultRoleUsername;
 		String defaultRoleTextFormatting;
 
-		if(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole) == null){
+		if(RoleCommand.roles.data.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 			defaultRoleUsername = null;
 			defaultRoleTextFormatting = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
-			defaultRoleUsername = RoleBuilder.buildRoleUsername(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole), this.playerEntity.getDisplayName());
-			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.data.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
+			defaultRoleUsername = RoleBuilder.buildRoleUsername(RoleCommand.roles.data.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole), this.playerEntity.getDisplayName());
+			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(RoleCommand.roles.data.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
@@ -58,7 +58,7 @@ public class NetServerHandlerMixin {
 		}
 
 		boolean hasBeenGrantedRole = false;
-		for(RoleData role : RoleCommand.roles.configData.values()){
+		for(RoleData role : RoleCommand.roles.data.values()){
 			if(role.playersGrantedRole.contains(this.playerEntity.username)){
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;

@@ -116,10 +116,10 @@ public class RoleBuilder {
 	public static String buildPlayerRoleDisplay(EntityPlayer player) {
 
 		String defaultRoleDisplay;
-		if(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole) == null){
+		if(RoleCommand.roles.data.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.data.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
@@ -129,7 +129,7 @@ public class RoleBuilder {
 		}
 
 		boolean hasBeenGrantedRole = false;
-		for (RoleData role : RoleCommand.roles.configData.values()) {
+		for (RoleData role : RoleCommand.roles.data.values()) {
 			if (role.playersGrantedRole.contains(player.username)) {
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
