@@ -1,4 +1,4 @@
-package BTAServerSolutions.BTAServerUtilities.interfaces;
+package BTAServerSolutions.BTAServerUtilities.mixins.interfaces;
 
 import com.google.gson.JsonElement;
 

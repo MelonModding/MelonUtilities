@@ -1,9 +1,11 @@
 package BTAServerSolutions.BTAServerUtilities.mixins;
 
+import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
+import BTAServerSolutions.BTAServerUtilities.commands.role.RoleCommand;
+import BTAServerSolutions.BTAServerUtilities.config.datatypes.ConfigData;
 import com.llamalad7.mixinextras.sugar.Local;
 import BTAServerSolutions.BTAServerUtilities.utility.RoleBuilder;
-import BTAServerSolutions.BTAServerUtilities.config.ConfigManager;
-import BTAServerSolutions.BTAServerUtilities.config.RoleData;
+import BTAServerSolutions.BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.Packet3Chat;
 import net.minecraft.server.MinecraftServer;
@@ -36,14 +38,14 @@ public class NetServerHandlerMixin {
 		String defaultRoleUsername;
 		String defaultRoleTextFormatting;
 
-		if(ConfigManager.roleHashMap.get(ConfigManager.getConfig("config").defaultRole) == null){
+		if(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 			defaultRoleUsername = null;
 			defaultRoleTextFormatting = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(ConfigManager.roleHashMap.get(ConfigManager.getConfig("config").defaultRole));
-			defaultRoleUsername = RoleBuilder.buildRoleUsername(ConfigManager.roleHashMap.get(ConfigManager.getConfig("config").defaultRole), this.playerEntity.getDisplayName());
-			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(ConfigManager.roleHashMap.get(ConfigManager.getConfig("config").defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole));
+			defaultRoleUsername = RoleBuilder.buildRoleUsername(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole), this.playerEntity.getDisplayName());
+			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
@@ -56,7 +58,7 @@ public class NetServerHandlerMixin {
 		}
 
 		boolean hasBeenGrantedRole = false;
-		for(RoleData role : ConfigManager.roleHashMap.values()){
+		for(RoleData role : RoleCommand.roles.configData.values()){
 			if(role.playersGrantedRole.contains(this.playerEntity.username)){
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
@@ -82,13 +84,13 @@ public class NetServerHandlerMixin {
 		}
 
 		if(hasBeenGrantedRole){
-			if (ConfigManager.getConfig("config").displayMode.equals("multi")) {
+			if (BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode.equals("multi")) {
 				if(defaultRoleDisplay != null) {
 					message = defaultRoleDisplay + roleDisplays + roleUsername + roleTextFormatting + message;
 				} else {
 					message = roleDisplays + roleUsername + roleTextFormatting + message;
 				}
-			} else if (ConfigManager.getConfig("config").displayMode.equals("single")) {
+			} else if (BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode.equals("single")) {
                 message = highestPriorityRoleDisplay + roleUsername + roleTextFormatting + message;
 			}
 		} else if(defaultRoleDisplay != null){

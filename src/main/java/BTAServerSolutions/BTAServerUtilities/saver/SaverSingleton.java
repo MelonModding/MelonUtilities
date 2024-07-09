@@ -1,9 +1,9 @@
 package BTAServerSolutions.BTAServerUtilities.saver;
 
 import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
-import BTAServerSolutions.BTAServerUtilities.commands.home.HomesSingleton;
-import BTAServerSolutions.BTAServerUtilities.interfaces.Initializable;
-import BTAServerSolutions.BTAServerUtilities.interfaces.Saveable;
+import BTAServerSolutions.BTAServerUtilities.commands.home.utility.HomesSingleton;
+import BTAServerSolutions.BTAServerUtilities.mixins.interfaces.Initializable;
+import BTAServerSolutions.BTAServerUtilities.mixins.interfaces.Saveable;
 
 import java.io.IOException;
 import java.nio.file.Files;

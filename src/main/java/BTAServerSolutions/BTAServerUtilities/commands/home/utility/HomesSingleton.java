@@ -1,8 +1,11 @@
-package BTAServerSolutions.BTAServerUtilities.commands.home;
+package BTAServerSolutions.BTAServerUtilities.commands.home.utility;
 
 import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
-import BTAServerSolutions.BTAServerUtilities.interfaces.Initializable;
-import BTAServerSolutions.BTAServerUtilities.interfaces.Saveable;
+import BTAServerSolutions.BTAServerUtilities.commands.home.DelHomeCommand;
+import BTAServerSolutions.BTAServerUtilities.commands.home.HomeCommand;
+import BTAServerSolutions.BTAServerUtilities.commands.home.SetHomeCommand;
+import BTAServerSolutions.BTAServerUtilities.mixins.interfaces.Initializable;
+import BTAServerSolutions.BTAServerUtilities.mixins.interfaces.Saveable;
 import BTAServerSolutions.BTAServerUtilities.utility.Position;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -84,9 +87,9 @@ public class HomesSingleton implements Initializable, Saveable {
 
 		BTAServerUtilities.LOGGER.info("Creating home commands");
 
-		CommandHelper.createCommand(new CommandHome());
-		CommandHelper.createCommand(new CommandSetHome());
-		CommandHelper.createCommand(new CommandDelHome());
+		CommandHelper.createCommand(new HomeCommand());
+		CommandHelper.createCommand(new SetHomeCommand());
+		CommandHelper.createCommand(new DelHomeCommand());
 
 		BTAServerUtilities.LOGGER.info("Home commands created");
 

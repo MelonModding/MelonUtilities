@@ -1,4 +1,4 @@
-package BTAServerSolutions.BTAServerUtilities.commands.tpa;
+package BTAServerSolutions.BTAServerUtilities.commands.tpa.utility;
 
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.Packet3Chat;

@@ -1,11 +1,10 @@
 package BTAServerSolutions.BTAServerUtilities.commands.role;
 
-import BTAServerSolutions.BTAServerUtilities.config.ConfigManager;
-import BTAServerSolutions.BTAServerUtilities.config.RoleData;
+import BTAServerSolutions.BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.CommandSender;
 
 @SuppressWarnings("SameReturnValue")
-public class EditRoleDisplay {
+public class EditRoleDisplaySubCommand {
 
 	public static boolean displayName(CommandSender sender, String[] args){
 
@@ -16,9 +15,9 @@ public class EditRoleDisplay {
 		}
 
 		sender.sendMessage("§5Set Display Name for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
-		ConfigManager.loadAllRoles();
+		RoleCommand.roles.loadAllData(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).displayName = args[4];
-		ConfigManager.saveAllRoles();
+		RoleCommand.roles.saveAllData();
 		return true;
 	}
 
@@ -30,9 +29,9 @@ public class EditRoleDisplay {
 			return true;
 		}
 
-		ConfigManager.loadAllRoles();
+		RoleCommand.roles.loadAllData(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).displayColor = args[4];
-		ConfigManager.saveAllRoles();
+		RoleCommand.roles.saveAllData();
 		sender.sendMessage("§5Set Display Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 		return true;
 	}
@@ -46,15 +45,15 @@ public class EditRoleDisplay {
 		}
 
 		if(args[4].equalsIgnoreCase("true")){
-			ConfigManager.loadAllRoles();
+			RoleCommand.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isDisplayUnderlined = true;
-			ConfigManager.saveAllRoles();
+			RoleCommand.roles.saveAllData();
 			sender.sendMessage("§5Set Display Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
-			ConfigManager.loadAllRoles();
+			RoleCommand.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isDisplayUnderlined = false;
-			ConfigManager.saveAllRoles();
+			RoleCommand.roles.saveAllData();
 			sender.sendMessage("§5Set Display Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
@@ -73,15 +72,15 @@ public class EditRoleDisplay {
 		}
 
 		if(args[4].equalsIgnoreCase("true")){
-			ConfigManager.loadAllRoles();
+			RoleCommand.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isDisplayBold = true;
-			ConfigManager.saveAllRoles();
+			RoleCommand.roles.saveAllData();
 			sender.sendMessage("§5Set Display Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
-			ConfigManager.loadAllRoles();
+			RoleCommand.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isDisplayBold = false;
-			ConfigManager.saveAllRoles();
+			RoleCommand.roles.saveAllData();
 			sender.sendMessage("§5Set Display Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
@@ -100,15 +99,15 @@ public class EditRoleDisplay {
 		}
 
 		if(args[4].equalsIgnoreCase("true")){
-			ConfigManager.loadAllRoles();
+			RoleCommand.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isDisplayItalics = true;
-			ConfigManager.saveAllRoles();
+			RoleCommand.roles.saveAllData();
 			sender.sendMessage("§5Set Display Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
-			ConfigManager.loadAllRoles();
+			RoleCommand.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isDisplayItalics = false;
-			ConfigManager.saveAllRoles();
+			RoleCommand.roles.saveAllData();
 			sender.sendMessage("§5Set Display Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
@@ -153,9 +152,9 @@ public class EditRoleDisplay {
 			return true;
 		}
 
-		ConfigManager.loadAllRoles();
+		RoleCommand.roles.loadAllData(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).displayBorderColor = args[5];
-		ConfigManager.saveAllRoles();
+		RoleCommand.roles.saveAllData();
 		sender.sendMessage("§5Set Border Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 		return true;
 	}
@@ -168,13 +167,13 @@ public class EditRoleDisplay {
 			return true;
 		}
 
-		ConfigManager.loadAllRoles();
+		RoleCommand.roles.loadAllData(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderNone = true;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderBracket = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCaret = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCurly = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCustom = false;
-		ConfigManager.saveAllRoles();
+		RoleCommand.roles.saveAllData();
 		sender.sendMessage("§5Set Border to None for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
@@ -187,13 +186,13 @@ public class EditRoleDisplay {
 			return true;
 		}
 
-		ConfigManager.loadAllRoles();
+		RoleCommand.roles.loadAllData(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderNone = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderBracket = true;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCaret = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCurly = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCustom = false;
-		ConfigManager.saveAllRoles();
+		RoleCommand.roles.saveAllData();
 		sender.sendMessage("§5Set Border to [Bracket] for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
@@ -206,13 +205,13 @@ public class EditRoleDisplay {
 			return true;
 		}
 
-		ConfigManager.loadAllRoles();
+		RoleCommand.roles.loadAllData(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderNone = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderBracket = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCaret = true;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCurly = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCustom = false;
-		ConfigManager.saveAllRoles();
+		RoleCommand.roles.saveAllData();
 		sender.sendMessage("§5Set Border to <Caret> for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
@@ -225,13 +224,13 @@ public class EditRoleDisplay {
 			return true;
 		}
 
-		ConfigManager.loadAllRoles();
+		RoleCommand.roles.loadAllData(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderNone = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderBracket = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCaret = false;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCurly = true;
 		RoleCommand.getRoleFromArg(args[1]).isDisplayBorderCustom = false;
-		ConfigManager.saveAllRoles();
+		RoleCommand.roles.saveAllData();
 		sender.sendMessage("§5Set Border to {Curly} for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
@@ -239,14 +238,14 @@ public class EditRoleDisplay {
 	private static boolean displayBorderCustom(CommandSender sender, String[] args){
 
 		if(args.length == 5){
-			ConfigManager.loadAllRoles();
+			RoleCommand.roles.loadAllData(RoleData.class);
 			RoleData role = RoleCommand.getRoleFromArg(args[1]);
 			role.isDisplayBorderNone = false;
 			role.isDisplayBorderBracket = false;
 			role.isDisplayBorderCaret = false;
 			role.isDisplayBorderCurly = false;
 			role.isDisplayBorderCustom = true;
-			ConfigManager.saveAllRoles();
+			RoleCommand.roles.saveAllData();
 			sender.sendMessage("§5Set Border to ?Custom? for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 			return true;
 		}
@@ -256,14 +255,14 @@ public class EditRoleDisplay {
 				RoleCommand.syntax.printLayerAndSubLayers("displayBorderCustomAffix", sender);
 				return true;
 			}
-			ConfigManager.loadAllRoles();
+			RoleCommand.roles.loadAllData(RoleData.class);
 			RoleData role = RoleCommand.getRoleFromArg(args[1]);
 			role.isDisplayBorderBracket = false;
 			role.isDisplayBorderCaret = false;
 			role.isDisplayBorderCurly = false;
 			role.isDisplayBorderCustom = true;
 			role.customDisplayBorderSuffix = args[6];
-			ConfigManager.saveAllRoles();
+			RoleCommand.roles.saveAllData();
 			sender.sendMessage("§5Set Custom Display Border Suffix for Role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to " + args[6]);
 			return true;
 		} else if(args[5].equals("prefix")){
@@ -272,14 +271,14 @@ public class EditRoleDisplay {
 				RoleCommand.syntax.printLayerAndSubLayers("displayBorderCustomAffix", sender);
 				return true;
 			}
-			ConfigManager.loadAllRoles();
+			RoleCommand.roles.loadAllData(RoleData.class);
 			RoleData role = RoleCommand.getRoleFromArg(args[1]);
 			role.isDisplayBorderBracket = false;
 			role.isDisplayBorderCaret = false;
 			role.isDisplayBorderCurly = false;
 			role.isDisplayBorderCustom = true;
 			role.customDisplayBorderPrefix = args[6];
-			ConfigManager.saveAllRoles();
+			RoleCommand.roles.saveAllData();
 			sender.sendMessage("§5Set Custom Display Border Prefix for Role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to " + args[6]);
 			return true;
 		}

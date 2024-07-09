@@ -8,6 +8,10 @@ import BTAServerSolutions.BTAServerUtilities.commands.tpa.TPACommand;
 import BTAServerSolutions.BTAServerUtilities.commands.tpa.TPADenyCommand;
 import BTAServerSolutions.BTAServerUtilities.commands.tpa.TPAcceptCommand;
 import BTAServerSolutions.BTAServerUtilities.commands.utility.BSUCommand;
+import BTAServerSolutions.BTAServerUtilities.config.*;
+import BTAServerSolutions.BTAServerUtilities.config.datatypes.ConfigData;
+import BTAServerSolutions.BTAServerUtilities.config.datatypes.HomeData;
+import BTAServerSolutions.BTAServerUtilities.config.datatypes.KitData;
 import BTAServerSolutions.BTAServerUtilities.saver.SaverSingleton;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -22,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.CommandHelper;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
-import turniplabs.halplibe.util.TomlConfigHandler;
 
 import java.util.HashMap;
 
@@ -34,10 +37,7 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 
 	public static final Gson GSON = (new GsonBuilder()).setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(ItemStack.class, new ItemStackJsonAdapter()).create();
 
-
 	public static GameRuleBoolean FIRE_TICKS = GameRules.register(new GameRuleBoolean("doFireTick", true));
-
-	public static TomlConfigHandler config;
 
 	public static final HashMap<String, String> colorMap = new HashMap<>();
 	static{
@@ -61,6 +61,9 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 		colorMap.put("white", "§0");
 	}
 
+	public static ConfigDirectory<ConfigData> configs = new ConfigDirectory<>("configs", new ConfigData());
+	public static ConfigDirectory<HomeData> homes = new ConfigDirectory<>("homes", new HomeData());
+
 	public void updateConfig() {
 
 	}
@@ -73,8 +76,6 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 		LOGGER.info("BTAServerUtilities Role Syntax Built!");
 		KitCommand.buildKitSyntax();
 		LOGGER.info("BTAServerUtilities Kit Syntax Built!");
-		SaverSingleton.getInstance().initialize();
-		SaverSingleton.getInstance().loadAll();
     }
 
 	@Override

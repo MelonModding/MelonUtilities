@@ -1,15 +1,16 @@
 package BTAServerSolutions.BTAServerUtilities.commands.home;
 
+import BTAServerSolutions.BTAServerUtilities.commands.home.utility.HomesSingleton;
 import BTAServerSolutions.BTAServerUtilities.utility.Position;
+import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.server.entity.player.EntityPlayerMP;
 
-public class CommandHome extends Command {
-	public CommandHome() {
-		super("home");
+public class SetHomeCommand extends Command {
+	public SetHomeCommand() {
+		super("sethome");
 	}
 
 	@Override
@@ -20,22 +21,18 @@ public class CommandHome extends Command {
 			homeName = strings[0];
 		}
 
-		EntityPlayerMP player = (EntityPlayerMP) commandSender.getPlayer();
+		EntityPlayer player = commandSender.getPlayer();
 
-		Position position = HomesSingleton.getInstance().getPlayerHome(player.username, homeName);
+		Position playerPosition = new Position((int) player.x, (int) player.y, (int) player.z, player.dimension);
 
-		if (position == null) {
-			commandSender.sendMessage(TextFormatting.RED + "Home does not exist!");
+		boolean success = HomesSingleton.getInstance().addPlayerHome(player.username, homeName, playerPosition);
+
+		if (!success) {
+			commandSender.sendMessage(TextFormatting.RED + "Cannot set any more homes!");
 			return true;
 		}
 
-		commandSender.sendMessage("Teleporting...");
-
-		if (player.dimension != position.dimension) {
-			player.mcServer.playerList.sendPlayerToOtherDimension(player, position.dimension);
-		}
-
-		player.playerNetServerHandler.teleport(position.x, position.y, position.z);
+		commandSender.sendMessage(TextFormatting.GREEN + "Home set successfully.");
 
 		return true;
 	}
@@ -47,6 +44,6 @@ public class CommandHome extends Command {
 
 	@Override
 	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-		commandSender.sendMessage("/home <home>");
+		commandSender.sendMessage("/sethome <home>");
 	}
 }

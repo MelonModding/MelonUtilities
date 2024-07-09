@@ -1,4 +1,4 @@
-package BTAServerSolutions.BTAServerUtilities.config;
+package BTAServerSolutions.BTAServerUtilities.config.datatypes;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

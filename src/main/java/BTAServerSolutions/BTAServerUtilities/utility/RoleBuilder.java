@@ -1,8 +1,9 @@
 package BTAServerSolutions.BTAServerUtilities.utility;
 
 import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
-import BTAServerSolutions.BTAServerUtilities.config.ConfigManager;
-import BTAServerSolutions.BTAServerUtilities.config.RoleData;
+import BTAServerSolutions.BTAServerUtilities.commands.role.RoleCommand;
+import BTAServerSolutions.BTAServerUtilities.config.datatypes.ConfigData;
+import BTAServerSolutions.BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.TextFormatting;
 
@@ -115,10 +116,10 @@ public class RoleBuilder {
 	public static String buildPlayerRoleDisplay(EntityPlayer player) {
 
 		String defaultRoleDisplay;
-		if(ConfigManager.roleHashMap.get(ConfigManager.getConfig("config").defaultRole) == null){
+		if(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(ConfigManager.roleHashMap.get(ConfigManager.getConfig("config").defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.configData.get(BTAServerUtilities.configs.getData("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
@@ -128,7 +129,7 @@ public class RoleBuilder {
 		}
 
 		boolean hasBeenGrantedRole = false;
-		for (RoleData role : ConfigManager.roleHashMap.values()) {
+		for (RoleData role : RoleCommand.roles.configData.values()) {
 			if (role.playersGrantedRole.contains(player.username)) {
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
@@ -151,13 +152,13 @@ public class RoleBuilder {
 		}
 
 		if(hasBeenGrantedRole){
-			if (ConfigManager.getConfig("config").displayMode.equals("multi")) {
+			if (BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode.equals("multi")) {
 				if(defaultRoleDisplay != null) {
 					return defaultRoleDisplay + roleDisplays;
 				} else {
 					return "" + roleDisplays;
 				}
-			} else if (ConfigManager.getConfig("config").displayMode.equals("single")) {
+			} else if (BTAServerUtilities.configs.getData("config", ConfigData.class).displayMode.equals("single")) {
 				return highestPriorityRoleDisplay;
 			}
 		} else if(defaultRoleDisplay != null){
