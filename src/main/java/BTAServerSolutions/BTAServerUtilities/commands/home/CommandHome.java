@@ -1,7 +1,6 @@
-package BTAServerSolutions.BTAServerUtilities.commands.homes;
+package BTAServerSolutions.BTAServerUtilities.commands.home;
 
-import BTAServerSolutions.BTAServerUtilities.homes.HomesSingleton;
-import BTAServerSolutions.BTAServerUtilities.misc.Position;
+import BTAServerSolutions.BTAServerUtilities.utility.Position;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;

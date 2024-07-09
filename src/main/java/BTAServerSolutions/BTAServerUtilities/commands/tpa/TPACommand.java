@@ -1,6 +1,5 @@
 package BTAServerSolutions.BTAServerUtilities.commands.tpa;
 
-import BTAServerSolutions.BTAServerUtilities.tpa.TpaManager;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandError;
 import net.minecraft.core.net.command.CommandHandler;

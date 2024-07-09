@@ -1,8 +1,5 @@
 package BTAServerSolutions.BTAServerUtilities;
 
-import BTAServerSolutions.BTAServerUtilities.commands.homes.CommandDelHome;
-import BTAServerSolutions.BTAServerUtilities.commands.homes.CommandHome;
-import BTAServerSolutions.BTAServerUtilities.commands.homes.CommandSetHome;
 import BTAServerSolutions.BTAServerUtilities.commands.kit.KitCommand;
 import BTAServerSolutions.BTAServerUtilities.commands.kit.KittenCommand;
 import BTAServerSolutions.BTAServerUtilities.commands.misc.WhereAmICommand;
@@ -27,8 +24,6 @@ import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 import turniplabs.halplibe.util.TomlConfigHandler;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 
 

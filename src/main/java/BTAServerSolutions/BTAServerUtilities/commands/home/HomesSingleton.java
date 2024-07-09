@@ -1,16 +1,12 @@
-package BTAServerSolutions.BTAServerUtilities.homes;
+package BTAServerSolutions.BTAServerUtilities.commands.home;
 
-import BTAServerSolutions.BTAServerUtilities.commands.homes.CommandHome;
+import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
 import BTAServerSolutions.BTAServerUtilities.interfaces.Initializable;
 import BTAServerSolutions.BTAServerUtilities.interfaces.Saveable;
+import BTAServerSolutions.BTAServerUtilities.utility.Position;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.internal.LinkedTreeMap;
-import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
-import BTAServerSolutions.BTAServerUtilities.commands.homes.CommandDelHome;
-import BTAServerSolutions.BTAServerUtilities.commands.homes.CommandSetHome;
-import BTAServerSolutions.BTAServerUtilities.homes.misc.PlayerHomes;
-import BTAServerSolutions.BTAServerUtilities.misc.Position;
 import turniplabs.halplibe.helper.CommandHelper;
 
 import java.io.*;

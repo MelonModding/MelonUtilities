@@ -1,6 +1,5 @@
-package BTAServerSolutions.BTAServerUtilities.commands.homes;
+package BTAServerSolutions.BTAServerUtilities.commands.home;
 
-import BTAServerSolutions.BTAServerUtilities.homes.HomesSingleton;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;

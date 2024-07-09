@@ -1,7 +1,7 @@
 package BTAServerSolutions.BTAServerUtilities.saver;
 
 import BTAServerSolutions.BTAServerUtilities.BTAServerUtilities;
-import BTAServerSolutions.BTAServerUtilities.homes.HomesSingleton;
+import BTAServerSolutions.BTAServerUtilities.commands.home.HomesSingleton;
 import BTAServerSolutions.BTAServerUtilities.interfaces.Initializable;
 import BTAServerSolutions.BTAServerUtilities.interfaces.Saveable;
 

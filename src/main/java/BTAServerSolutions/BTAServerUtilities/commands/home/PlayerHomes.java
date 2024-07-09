@@ -1,10 +1,10 @@
-package BTAServerSolutions.BTAServerUtilities.homes.misc;
+package BTAServerSolutions.BTAServerUtilities.commands.home;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import BTAServerSolutions.BTAServerUtilities.interfaces.JSONable;
-import BTAServerSolutions.BTAServerUtilities.misc.Position;
+import BTAServerSolutions.BTAServerUtilities.utility.Position;
 
 import java.util.HashMap;
 import java.util.Map;

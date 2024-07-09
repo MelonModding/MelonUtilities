@@ -1,4 +1,4 @@
-package BTAServerSolutions.BTAServerUtilities.misc;
+package BTAServerSolutions.BTAServerUtilities.utility;
 
 import BTAServerSolutions.BTAServerUtilities.interfaces.JSONable;
 import com.google.gson.JsonElement;
