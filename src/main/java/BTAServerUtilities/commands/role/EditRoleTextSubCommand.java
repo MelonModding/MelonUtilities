@@ -1,14 +1,15 @@
 package BTAServerUtilities.commands.role;
 
+import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.CommandSender;
 
 @SuppressWarnings("SameReturnValue")
 public class EditRoleTextSubCommand {
 	public static boolean textColor(CommandSender sender, String[] args){
-		RoleCommand.roles.loadAllData(RoleData.class);
+		Data.roles.loadAllData(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).textColor = args[4];
-		RoleCommand.roles.saveAllData();
+		Data.roles.saveAllData();
 		sender.sendMessage("§5Set Text Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 		return true;
 	}
@@ -22,15 +23,15 @@ public class EditRoleTextSubCommand {
 		}
 
 		if(args[4].equalsIgnoreCase("true")){
-			RoleCommand.roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isTextUnderlined = true;
-			RoleCommand.roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§5Set Text Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
-			RoleCommand.roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isTextUnderlined = false;
-			RoleCommand.roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§5Set Text Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
@@ -49,15 +50,15 @@ public class EditRoleTextSubCommand {
 		}
 
 		if(args[4].equalsIgnoreCase("true")){
-			RoleCommand.roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isTextBold = true;
-			RoleCommand.roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§5Set Text Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
-			RoleCommand.roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isTextBold = false;
-			RoleCommand.roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§5Set Text Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
@@ -76,15 +77,15 @@ public class EditRoleTextSubCommand {
 		}
 
 		if(args[4].equalsIgnoreCase("true")){
-			RoleCommand.roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isTextItalics = true;
-			RoleCommand.roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§5Set Text Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
-			RoleCommand.roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isTextItalics = false;
-			RoleCommand.roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§5Set Text Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}

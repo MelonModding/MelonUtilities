@@ -2,6 +2,7 @@ package BTAServerUtilities.utility;
 
 import BTAServerUtilities.BTAServerUtilities;
 import BTAServerUtilities.commands.role.RoleCommand;
+import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.entity.player.EntityPlayer;
@@ -116,10 +117,10 @@ public class RoleBuilder {
 	public static String buildPlayerRoleDisplay(EntityPlayer player) {
 
 		String defaultRoleDisplay;
-		if(RoleCommand.roles.data.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole) == null){
+		if(Data.roles.data.get(Data.configs.getOrCreateData("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(RoleCommand.roles.data.get(BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(Data.roles.data.get(Data.configs.getOrCreateData("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
@@ -129,7 +130,7 @@ public class RoleBuilder {
 		}
 
 		boolean hasBeenGrantedRole = false;
-		for (RoleData role : RoleCommand.roles.data.values()) {
+		for (RoleData role : Data.roles.data.values()) {
 			if (role.playersGrantedRole.contains(player.username)) {
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
@@ -152,13 +153,13 @@ public class RoleBuilder {
 		}
 
 		if(hasBeenGrantedRole){
-			if (BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("multi")) {
+			if (Data.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("multi")) {
 				if(defaultRoleDisplay != null) {
 					return defaultRoleDisplay + roleDisplays;
 				} else {
 					return "" + roleDisplays;
 				}
-			} else if (BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("single")) {
+			} else if (Data.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("single")) {
 				return highestPriorityRoleDisplay;
 			}
 		} else if(defaultRoleDisplay != null){

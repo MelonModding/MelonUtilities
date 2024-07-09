@@ -1,6 +1,7 @@
 package BTAServerUtilities.commands.role;
 
 import BTAServerUtilities.BTAServerUtilities;
+import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.DataBank;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
@@ -11,8 +12,6 @@ import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
 
-//TODO finish /role set default, /role set displayMode, and /role edit priority
-
 @SuppressWarnings("SameReturnValue")
 public class RoleCommand extends Command {
 
@@ -20,10 +19,8 @@ public class RoleCommand extends Command {
 
 	public RoleCommand(){super(COMMAND);}
 
-	public static RoleData getRoleFromArg(String arg){return roles.getOrCreateData(arg, RoleData.class);}
+	public static RoleData getRoleFromArg(String arg){return Data.roles.getOrCreateData(arg, RoleData.class);}
 	static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
-
-	public static DataBank<RoleData> roles = new DataBank<>("roles", new RoleData());
 
 	public static void buildRoleSyntax(){
 		syntax.clear();
@@ -79,15 +76,15 @@ public class RoleCommand extends Command {
 
 		String role = args[1];
 
-		if (roles.data.containsKey(role)) {
+		if (Data.roles.data.containsKey(role)) {
 			sender.sendMessage("§eFailed to Create Role: " + role + " (Role Already Exists)");
 			return true;
 		}
 
-		roles.getOrCreateData(role, RoleData.class);
-		roles.loadAllData(RoleData.class);
+		Data.roles.getOrCreateData(role, RoleData.class);
+		Data.roles.loadAllData(RoleData.class);
 		getRoleFromArg(role).displayName = role;
-		roles.saveAllData();
+		Data.roles.saveAllData();
 
 		if (args.length == 3){
 			getRoleFromArg(role).priority = Integer.parseInt(args[2]);
@@ -106,7 +103,7 @@ public class RoleCommand extends Command {
 
 		String role = args[1];
 
-		switch (roles.removeConfig(role)) {
+		switch (Data.roles.removeConfig(role)) {
 			case 0:
 				sender.sendMessage("§1Deleted Role: " + role);
 				return true;
@@ -125,11 +122,11 @@ public class RoleCommand extends Command {
     }
 
 	private boolean reload(CommandSender sender){
-		roles.loadAllData(RoleData.class);
-		sender.sendMessage("§5Reloaded " + roles.data.size() + " Role(s)!");
+		Data.roles.loadAllData(RoleData.class);
+		sender.sendMessage("§5Reloaded " + Data.roles.data.size() + " Role(s)!");
 		RoleCommand.buildRoleSyntax();
 		sender.sendMessage("§5Built Role Syntax!");
-		BTAServerUtilities.configs.loadAllData(ConfigData.class);
+		Data.configs.loadAllData(ConfigData.class);
 		sender.sendMessage("§5Reloaded Config!");
 		return true;
 	}
@@ -142,7 +139,7 @@ public class RoleCommand extends Command {
 			return true;
 		}
 
-		if(!roles.data.containsKey(args[1])){
+		if(!Data.roles.data.containsKey(args[1])){
 			sender.sendMessage("§eFailed to Edit Role (Invalid Role)");
 			syntax.printLayer("edit", sender);
 			return true;
@@ -179,9 +176,9 @@ public class RoleCommand extends Command {
 		}
 
 		if(args.length == 4){
-			roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			getRoleFromArg(args[1]).priority = Integer.parseInt(args[3]);
-			roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§5Set Priority for Role " + args[1] + " to: §0" + args[3]);
 			return true;
 		}
@@ -278,7 +275,7 @@ public class RoleCommand extends Command {
 		}
 
 
-		if(!roles.data.containsKey(args[1])){
+		if(!Data.roles.data.containsKey(args[1])){
 			sender.sendMessage("§eFailed to Grant Role (Role doesn't exist!)");
 			syntax.printLayerAndSubLayers("grant", sender);
 			return true;
@@ -287,15 +284,15 @@ public class RoleCommand extends Command {
 		RoleData roleData = getRoleFromArg(args[1]);
 
 		if(args.length == 2 && !roleData.playersGrantedRole.contains(sender.getPlayer().username)){
-			roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.add(sender.getPlayer().username);
-			roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§5Granted Role: " + args[1] + " to player: §0" + sender.getPlayer().username);
 			return true;
 		} else if (args.length == 3 && !roleData.playersGrantedRole.contains(args[2])){
-			roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.add(args[2]);
-			roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§5Granted Role: " + args[1] + " to player: §0" + args[2]);
 			return true;
 		} else if (roleData.playersGrantedRole.contains(sender.getPlayer().username) || roleData.playersGrantedRole.contains(args[2])) {
@@ -317,7 +314,7 @@ public class RoleCommand extends Command {
 			return true;
 		}
 
-		if(!roles.data.containsKey(args[1])){
+		if(!Data.roles.data.containsKey(args[1])){
 			sender.sendMessage("§eFailed to Revoke Role (Role doesn't exist!)");
 			syntax.printLayerAndSubLayers("revoke", sender);
 			return true;
@@ -326,15 +323,15 @@ public class RoleCommand extends Command {
 		RoleData roleData = getRoleFromArg(args[1]);
 
 		if (args.length == 3 && roleData.playersGrantedRole.contains(args[2])) {
-			roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.remove(args[2]);
-			roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§1Revoked Role: " + args[1] + " from player: §0" + args[2]);
 			return true;
 		} else if (args.length == 2 && roleData.playersGrantedRole.contains(sender.getPlayer().username)){
-			roles.loadAllData(RoleData.class);
+			Data.roles.loadAllData(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.remove(sender.getPlayer().username);
-			roles.saveAllData();
+			Data.roles.saveAllData();
 			sender.sendMessage("§1Revoked Role: " + args[1] + " from player: §0" + sender.getPlayer().username);
 			return true;
 		} else if (!roleData.playersGrantedRole.contains(sender.getPlayer().username) || !roleData.playersGrantedRole.contains(args[2])) {
@@ -348,7 +345,7 @@ public class RoleCommand extends Command {
 	}
 
 	private boolean list(CommandSender sender) {
-		if (roles.data.isEmpty()) {
+		if (Data.roles.data.isEmpty()) {
 			sender.sendMessage("§8< Roles: >");
 			sender.sendMessage("§8  -No Roles Created-");
 			return true;
@@ -356,11 +353,11 @@ public class RoleCommand extends Command {
 
 		sender.sendMessage("§8< Roles: >");
 
-		for (String role : roles.data.keySet()) {
+		for (String role : Data.roles.data.keySet()) {
 			sender.sendMessage("§8  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + role + "§8 - Priority: " + TextFormatting.WHITE + getRoleFromArg(role).priority);
-			sender.sendMessage("§8    > " + RoleBuilder.buildRoleDisplay(roles.data.get(role))
-												+ RoleBuilder.buildRoleUsername(roles.data.get(role), sender.getPlayer().getDisplayName())
-												+ RoleBuilder.buildRoleTextFormat(roles.data.get(role)) + "text");
+			sender.sendMessage("§8    > " + RoleBuilder.buildRoleDisplay(Data.roles.data.get(role))
+												+ RoleBuilder.buildRoleUsername(Data.roles.data.get(role), sender.getPlayer().getDisplayName())
+												+ RoleBuilder.buildRoleTextFormat(Data.roles.data.get(role)) + "text");
 		}
 
 		return true;
@@ -396,17 +393,17 @@ public class RoleCommand extends Command {
 		}
 
 		if(args.length == 3) {
-			for (String role : roles.data.keySet()) {
+			for (String role : Data.roles.data.keySet()) {
 				if (args[2].equals(role)) {
-					BTAServerUtilities.configs.loadAllData(ConfigData.class);
-					BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole = args[2];
-					BTAServerUtilities.configs.saveAllData();
+					Data.configs.loadAllData(ConfigData.class);
+					Data.configs.getOrCreateData("config", ConfigData.class).defaultRole = args[2];
+					Data.configs.saveAllData();
 					sender.sendMessage("§5Set defaultRole to: " + args[2]);
 					return true;
 				} else if (args[2].equals("none")) {
-					BTAServerUtilities.configs.loadAllData(ConfigData.class);
-					BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).defaultRole = null;
-					BTAServerUtilities.configs.saveAllData();
+					Data.configs.loadAllData(ConfigData.class);
+					Data.configs.getOrCreateData("config", ConfigData.class).defaultRole = null;
+					Data.configs.saveAllData();
 					sender.sendMessage("§5Set defaultRole to: none");
 					return true;
 				}
@@ -430,15 +427,15 @@ public class RoleCommand extends Command {
 		}
 
 		if(args.length == 3 && args[2].equals("single")) {
-			BTAServerUtilities.configs.loadAllData(ConfigData.class);
-			BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode = "single";
-			BTAServerUtilities.configs.saveAllData();
+			Data.configs.loadAllData(ConfigData.class);
+			Data.configs.getOrCreateData("config", ConfigData.class).displayMode = "single";
+			Data.configs.saveAllData();
 			sender.sendMessage("§5Set displayMode to: single");
 			return true;
 		} else if (args.length == 3 && args[2].equals("multi")) {
-			BTAServerUtilities.configs.loadAllData(ConfigData.class);
-			BTAServerUtilities.configs.getOrCreateData("config", ConfigData.class).displayMode = "multi";
-			BTAServerUtilities.configs.saveAllData();
+			Data.configs.loadAllData(ConfigData.class);
+			Data.configs.getOrCreateData("config", ConfigData.class).displayMode = "multi";
+			Data.configs.saveAllData();
 			sender.sendMessage("§5Set displayMode to: multi");
 			return true;
 		}

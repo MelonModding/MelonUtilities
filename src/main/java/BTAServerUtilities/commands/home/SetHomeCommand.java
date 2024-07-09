@@ -1,6 +1,6 @@
 package BTAServerUtilities.commands.home;
 
-import BTAServerUtilities.commands.home.utility.HomesSingleton;
+import BTAServerUtilities.utility.CommandSyntaxBuilder;
 import BTAServerUtilities.utility.Position;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
@@ -9,30 +9,22 @@ import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
 
 public class SetHomeCommand extends Command {
+
 	public SetHomeCommand() {
 		super("sethome");
 	}
 
+	CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+
+	public void buildRoleSyntax(){
+		syntax.clear();
+		syntax.append("title",                                                  "§8< Command Syntax >");
+		syntax.append("sethome",                                                 "§8  > /sethome [<home name>]");
+	}
+
 	@Override
-	public boolean execute(CommandHandler commandHandler, CommandSender commandSender, String[] strings) {
-		String homeName = "default";
+	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
 
-		if (strings.length > 0) {
-			homeName = strings[0];
-		}
-
-		EntityPlayer player = commandSender.getPlayer();
-
-		Position playerPosition = new Position((int) player.x, (int) player.y, (int) player.z, player.dimension);
-
-		boolean success = HomesSingleton.getInstance().addPlayerHome(player.username, homeName, playerPosition);
-
-		if (!success) {
-			commandSender.sendMessage(TextFormatting.RED + "Cannot set any more homes!");
-			return true;
-		}
-
-		commandSender.sendMessage(TextFormatting.GREEN + "Home set successfully.");
 
 		return true;
 	}
@@ -43,7 +35,7 @@ public class SetHomeCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-		commandSender.sendMessage("/sethome <home>");
+	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
+		syntax.printAllLines(sender);
 	}
 }

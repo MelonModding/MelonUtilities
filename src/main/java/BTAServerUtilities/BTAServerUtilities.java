@@ -10,8 +10,8 @@ import BTAServerUtilities.commands.tpa.TPAcceptCommand;
 import BTAServerUtilities.commands.utility.BSUCommand;
 import BTAServerUtilities.config.*;
 import BTAServerUtilities.config.datatypes.ConfigData;
-import BTAServerUtilities.config.datatypes.HomeData;
 import BTAServerUtilities.config.datatypes.KitData;
+import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.config.datatypes.RoleData;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -63,38 +63,35 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 		colorMap.put("white", "§0");
 	}
 
-	public static DataBank<ConfigData> configs = new DataBank<>("configs", new ConfigData());
-	public static DataBank<HomeData> homes = new DataBank<>("homes", new HomeData());
-
 	public static void updateAll() {
-		configs.loadAllData(ConfigData.class);
-		KitCommand.kits.loadAllData(KitData.class);
+		Data.configs.loadAllData(ConfigData.class);
+		Data.kits.loadAllData(KitData.class);
 		KitCommand.buildKitSyntax();
-		RoleCommand.roles.loadAllData(RoleData.class);
+		Data.roles.loadAllData(RoleData.class);
 		RoleCommand.buildRoleSyntax();
 		updateList();
 	}
 
 	public void updateRoles(){
-		configs.loadAllData(ConfigData.class);
-		RoleCommand.roles.loadAllData(RoleData.class);
+		Data.configs.loadAllData(ConfigData.class);
+		Data.roles.loadAllData(RoleData.class);
 		RoleCommand.buildRoleSyntax();
 		updateList();
 	}
 
 	public void updateKits(){
-		configs.loadAllData(ConfigData.class);
-		KitCommand.kits.loadAllData(KitData.class);
+		Data.configs.loadAllData(ConfigData.class);
+		Data.kits.loadAllData(KitData.class);
 		KitCommand.buildKitSyntax();
 	}
 
     @Override
     public void onInitialize() {
         LOGGER.info("BTAServerUtilities initializing!");
-		configs.loadAllData(ConfigData.class);
-		KitCommand.kits.loadAllData(KitData.class);
+		Data.configs.loadAllData(ConfigData.class);
+		Data.kits.loadAllData(KitData.class);
 		KitCommand.buildKitSyntax();
-		RoleCommand.roles.loadAllData(RoleData.class);
+		Data.roles.loadAllData(RoleData.class);
 		RoleCommand.buildRoleSyntax();
 		LOGGER.info("BTAServerUtilities initialized!");
     }

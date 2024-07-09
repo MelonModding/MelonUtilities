@@ -4,7 +4,9 @@ import BTAServerUtilities.mixins.interfaces.JSONable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class Position implements JSONable {
+import java.io.Serializable;
+
+public class Position implements Serializable {
 	public int x;
 	public int y;
 	public int z;
@@ -15,17 +17,5 @@ public class Position implements JSONable {
 		this.y = y;
 		this.z = z;
 		this.dimension = dimension;
-	}
-
-	@Override
-	public JsonElement toJson() {
-		JsonObject jsonObject = new JsonObject();
-
-		jsonObject.addProperty("x", x);
-		jsonObject.addProperty("y", y);
-		jsonObject.addProperty("z", z);
-		jsonObject.addProperty("dimension", dimension);
-
-		return jsonObject;
 	}
 }

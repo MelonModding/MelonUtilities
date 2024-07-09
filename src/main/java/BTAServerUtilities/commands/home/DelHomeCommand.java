@@ -1,6 +1,6 @@
 package BTAServerUtilities.commands.home;
 
-import BTAServerUtilities.commands.home.utility.HomesSingleton;
+import BTAServerUtilities.utility.CommandSyntaxBuilder;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
@@ -8,28 +8,22 @@ import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
 
 public class DelHomeCommand extends Command {
+
 	public DelHomeCommand() {
 		super("delhome");
 	}
 
+	CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+
+	public void buildRoleSyntax(){
+		syntax.clear();
+		syntax.append("title",                            "§8< Command Syntax >");
+		syntax.append("delhome",                          "§8  > /delhome [<home name>]");
+	}
+
 	@Override
-	public boolean execute(CommandHandler commandHandler, CommandSender commandSender, String[] strings) {
-		String homeName = "default";
+	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
 
-		if (strings.length > 0) {
-			homeName = strings[0];
-		}
-
-		EntityPlayer player = commandSender.getPlayer();
-
-		boolean success = HomesSingleton.getInstance().removePlayerHome(player.username, homeName);
-
-		if (!success) {
-			commandSender.sendMessage(TextFormatting.RED + "Home does not exist!");
-			return true;
-		}
-
-		commandSender.sendMessage(TextFormatting.GREEN + "Home deleted.");
 
 		return true;
 	}
@@ -40,7 +34,7 @@ public class DelHomeCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-		commandSender.sendMessage("/delhome <home>");
+	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
+		syntax.printAllLines(sender);
 	}
 }
