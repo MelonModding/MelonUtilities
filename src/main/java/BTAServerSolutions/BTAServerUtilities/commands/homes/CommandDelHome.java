@@ -1,16 +1,15 @@
-package BTAServerSolutions.BTAServerUtilities.homes.commands;
+package BTAServerSolutions.BTAServerUtilities.commands.homes;
 
 import BTAServerSolutions.BTAServerUtilities.homes.HomesSingleton;
-import BTAServerSolutions.BTAServerUtilities.misc.Position;
+import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.server.entity.player.EntityPlayerMP;
 
-public class CommandHome extends Command {
-	public CommandHome() {
-		super("home");
+public class CommandDelHome extends Command {
+	public CommandDelHome() {
+		super("delhome");
 	}
 
 	@Override
@@ -21,22 +20,16 @@ public class CommandHome extends Command {
 			homeName = strings[0];
 		}
 
-		EntityPlayerMP player = (EntityPlayerMP) commandSender.getPlayer();
+		EntityPlayer player = commandSender.getPlayer();
 
-		Position position = HomesSingleton.getInstance().getPlayerHome(player.username, homeName);
+		boolean success = HomesSingleton.getInstance().removePlayerHome(player.username, homeName);
 
-		if (position == null) {
+		if (!success) {
 			commandSender.sendMessage(TextFormatting.RED + "Home does not exist!");
 			return true;
 		}
 
-		commandSender.sendMessage("Teleporting...");
-
-		if (player.dimension != position.dimension) {
-			player.mcServer.playerList.sendPlayerToOtherDimension(player, position.dimension);
-		}
-
-		player.playerNetServerHandler.teleport(position.x, position.y, position.z);
+		commandSender.sendMessage(TextFormatting.GREEN + "Home deleted.");
 
 		return true;
 	}
@@ -48,6 +41,6 @@ public class CommandHome extends Command {
 
 	@Override
 	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-		commandSender.sendMessage("/home <home>");
+		commandSender.sendMessage("/delhome <home>");
 	}
 }

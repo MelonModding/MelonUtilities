@@ -1,4 +1,4 @@
-package BTAServerSolutions.BTAServerUtilities.homes.commands;
+package BTAServerSolutions.BTAServerUtilities.commands.homes;
 
 import BTAServerSolutions.BTAServerUtilities.homes.HomesSingleton;
 import BTAServerSolutions.BTAServerUtilities.misc.Position;

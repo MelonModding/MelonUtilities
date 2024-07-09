@@ -4,7 +4,14 @@
   "package": "BTAServerSolutions.BTAServerUtilities.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "SaverMixin"
+    "MinecraftServerMixin",
+    "NetServerHandlerMixin",
+    "PlayerListMixin",
+    "SaverMixin",
+    "VanillaFix_WorldMixin",
+    "gamerules.EntityLightningBoltMixin",
+    "gamerules.FireTickMixin",
+    "gamerules.NetLoginHandlerMixin"
   ],
   "client": [
   ],

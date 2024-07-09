@@ -1,0 +1,26 @@
+package BTAServerSolutions.BTAServerUtilities.mixin;
+
+import BTAServerSolutions.BTAServerUtilities.utility.RoleBuilder;
+import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.net.packet.Packet20NamedEntitySpawn;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+
+//EntityPlayer Label Showing Roles. Currently limited by string cap
+//Getting renamed to AddPlayerPacket
+
+@Mixin(value = Packet20NamedEntitySpawn.class, remap = false)
+public class Packet20NamedEntitySpawnMixin {
+
+	@Shadow
+	public String nickname;
+
+	@Inject(at = @At("TAIL"), method = "<init>(Lnet/minecraft/core/entity/player/EntityPlayer;)V")
+	public void inject(EntityPlayer entityplayer, CallbackInfo ci) {
+		nickname = RoleBuilder.buildPlayerRoleDisplay(entityplayer) + entityplayer.getDisplayName();
+	}
+}

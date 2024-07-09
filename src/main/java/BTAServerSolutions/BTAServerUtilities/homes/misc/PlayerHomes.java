@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class PlayerHomes implements JSONable {
 	private final int MAX_HOMES;
-	private Map<String, Position> positions;
+	private final Map<String, Position> positions;
 
 	public PlayerHomes(int max_homes) {
 		MAX_HOMES = max_homes;
