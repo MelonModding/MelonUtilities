@@ -34,7 +34,6 @@ public class DataBank<Data> {
 	public DataBank(String dirName, Data dataType){
 		this.filePath = this.filePath + dirName;
 		this.dataType = dataType;
-
 		new File("./config/"  + BTAServerUtilities.MOD_ID + "/" + dirName).mkdirs();
 	}
 
