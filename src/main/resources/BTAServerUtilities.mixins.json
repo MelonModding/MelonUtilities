@@ -7,7 +7,6 @@
     "MinecraftServerMixin",
     "NetServerHandlerMixin",
     "PlayerListMixin",
-    "SaverMixin",
     "VanillaFix_WorldMixin",
     "gamerules.EntityLightningBoltMixin",
     "gamerules.FireTickMixin",

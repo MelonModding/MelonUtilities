@@ -19,8 +19,8 @@ public class DataBank<Data> {
 	//Creates a Directory of json files specifically for a dataType
 	//Allows you to manage that directory with load, save, remove, and get methods
 
-	//files is a HashMap that stores the Files (File Object) in your DataBank (you shouldn't need to use this too much.)
-	//data is a HashMap that stores the Data (ex: KitData, RoleData) in your DataBank (9/10 use this to grab data from a file)
+	//[fileHashMap] is a HashMap that stores the Files (File Object) in your DataBank (you shouldn't need to use this too much.)
+	//[dataHashMap] is a HashMap that stores the Data (ex: KitData, RoleData) in your DataBank (9/10 use this to grab data from a file)
 	// ^ Both are given the same id that you set when creating, and can be accessed using that id ^
 
 	//Using the getOrCreateData method on an unused/empty id will create a file with that id
@@ -28,8 +28,8 @@ public class DataBank<Data> {
 
 	String filePath = FabricLoader.getInstance().getConfigDir() + "/" + BTAServerUtilities.MOD_ID + "/";
 	Data dataType;
-	public final HashMap<String, File> files = new HashMap<>();
-	public final HashMap<String, Data> data = new HashMap<>();
+	public final HashMap<String, File> fileHashMap = new HashMap<>();
+	public final HashMap<String, Data> dataHashMap = new HashMap<>();
 
 	public DataBank(String dirName, Data dataType){
 		this.filePath = this.filePath + dirName;
@@ -48,23 +48,23 @@ public class DataBank<Data> {
 	}
 
 	private void prepareFile(String id) {
-		if (files.get(id) != null) {
+		if (fileHashMap.get(id) != null) {
 			return;
 		}
-		files.put(id, new File(Paths.get(filePath).toFile(), id + ".json"));
+		fileHashMap.put(id, new File(Paths.get(filePath).toFile(), id + ".json"));
 	}
 
-	private void loadData(String id, Class<Data> clazz) {
+	private void load(String id, Class<Data> dataClass) {
 		prepareFile(id);
 
 		try {
-			if (!files.get(id).exists()) {
-				saveData(id);
+			if (!fileHashMap.get(id).exists()) {
+				save(id);
 			}
-			if (files.get(id).exists()) {
-				BufferedReader br = new BufferedReader(new FileReader(files.get(id)));
-				data.put(id, BTAServerUtilities.GSON.fromJson(br, clazz));
-				saveData(id);
+			if (fileHashMap.get(id).exists()) {
+				BufferedReader br = new BufferedReader(new FileReader(fileHashMap.get(id)));
+				dataHashMap.put(id, BTAServerUtilities.GSON.fromJson(br, dataClass));
+				save(id);
 			}
 		} catch (FileNotFoundException e) {
 			System.err.println("Couldn't load [" + id + "]'s data file; reverting to defaults");
@@ -72,25 +72,25 @@ public class DataBank<Data> {
 		}
 	}
 
-	public void loadAllData(Class<Data> dataClass){
+	public void loadAll(Class<Data> dataClass){
 		try {
 			Set<String> files = listFilesUsingFilesList(filePath);
-			data.clear();
+			dataHashMap.clear();
 			for (String file : files){
-				loadData(file.replace(".json", ""), dataClass);
+				load(file.replace(".json", ""), dataClass);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void saveData(String id) {
+	private void save(String id) {
 		RecipeBuilder.isExporting = true;
 		prepareFile(id);
 
-		String jsonString = BTAServerUtilities.GSON.toJson(data.get(id));
+		String jsonString = BTAServerUtilities.GSON.toJson(dataHashMap.get(id));
 
-		try (FileWriter fileWriter = new FileWriter(files.get(id))) {
+		try (FileWriter fileWriter = new FileWriter(fileHashMap.get(id))) {
 			fileWriter.write(jsonString);
 
 		} catch (IOException e) {
@@ -100,36 +100,36 @@ public class DataBank<Data> {
 		RecipeBuilder.isExporting = false;
 	}
 
-	public void saveAllData(){
-		for (String id: data.keySet()) {
-			saveData(id);
+	public void saveAll(){
+		for (String id: dataHashMap.keySet()) {
+			save(id);
 			BTAServerUtilities.updateAll();
 		}
 	}
 
-	public Data getOrCreateData(String id, Class<Data> dataClass) {
-		if (data.get(id) == null){
+	public Data getOrCreate(String id, Class<Data> dataClass) {
+		if (dataHashMap.get(id) == null){
 			{
-				data.put(id, dataType);
-				loadData(id, dataClass);
+				dataHashMap.put(id, dataType);
+				load(id, dataClass);
 
-				return data.get(id);
+				return dataHashMap.get(id);
 			}
 		}
-		return data.get(id);
+		return dataHashMap.get(id);
 	}
 
-	public int removeConfig(String id){
+	public int remove(String id){
 		int error = 2;
-		if (!files.containsKey(id)) {
+		if (!fileHashMap.containsKey(id)) {
 			error = 1;
 			return error;
 		}
-		if(files.get(id).delete()){
+		if(fileHashMap.get(id).delete()){
 			error = 0;
 		}
-		files.remove(id);
-		data.remove(id);
+		fileHashMap.remove(id);
+		dataHashMap.remove(id);
 		return error;
 	}
 }

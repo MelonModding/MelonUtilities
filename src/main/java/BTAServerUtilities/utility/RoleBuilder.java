@@ -1,7 +1,6 @@
 package BTAServerUtilities.utility;
 
 import BTAServerUtilities.BTAServerUtilities;
-import BTAServerUtilities.commands.role.RoleCommand;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.config.datatypes.RoleData;
@@ -117,10 +116,10 @@ public class RoleBuilder {
 	public static String buildPlayerRoleDisplay(EntityPlayer player) {
 
 		String defaultRoleDisplay;
-		if(Data.roles.data.get(Data.configs.getOrCreateData("config", ConfigData.class).defaultRole) == null){
+		if(Data.roles.dataHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(Data.roles.data.get(Data.configs.getOrCreateData("config", ConfigData.class).defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
@@ -130,7 +129,7 @@ public class RoleBuilder {
 		}
 
 		boolean hasBeenGrantedRole = false;
-		for (RoleData role : Data.roles.data.values()) {
+		for (RoleData role : Data.roles.dataHashMap.values()) {
 			if (role.playersGrantedRole.contains(player.username)) {
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
@@ -153,13 +152,13 @@ public class RoleBuilder {
 		}
 
 		if(hasBeenGrantedRole){
-			if (Data.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("multi")) {
+			if (Data.configs.getOrCreate("config", ConfigData.class).displayMode.equals("multi")) {
 				if(defaultRoleDisplay != null) {
 					return defaultRoleDisplay + roleDisplays;
 				} else {
 					return "" + roleDisplays;
 				}
-			} else if (Data.configs.getOrCreateData("config", ConfigData.class).displayMode.equals("single")) {
+			} else if (Data.configs.getOrCreate("config", ConfigData.class).displayMode.equals("single")) {
 				return highestPriorityRoleDisplay;
 			}
 		} else if(defaultRoleDisplay != null){

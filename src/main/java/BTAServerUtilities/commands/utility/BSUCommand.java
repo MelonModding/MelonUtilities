@@ -1,8 +1,8 @@
 package BTAServerUtilities.commands.utility;
 
-import BTAServerUtilities.BTAServerUtilities;
 import BTAServerUtilities.commands.kit.KitCommand;
 import BTAServerUtilities.commands.role.RoleCommand;
+import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.config.datatypes.KitData;
 import BTAServerUtilities.config.datatypes.RoleData;
@@ -26,18 +26,18 @@ public class BSUCommand extends Command {
 		if (args[0].equals("reload")) {
 			sender.sendMessage("§5Reloading " + NAME + "...");
 
-			KitCommand.kits.loadAllData(KitData.class);
-			sender.sendMessage("§5Reloaded " + KitCommand.kits.data.size() + " Kit(s)!");
+			Data.kits.loadAll(KitData.class);
+			sender.sendMessage("§5Reloaded " + Data.kits.dataHashMap.size() + " Kit(s)!");
 
 			KitCommand.buildKitSyntax();
 			sender.sendMessage("§5Built Kit Syntax!");
 
-			RoleCommand.roles.loadAllData(RoleData.class);
-			sender.sendMessage("§5Reloaded " + RoleCommand.roles.data.size() + " Role(s)!");
+			Data.roles.loadAll(RoleData.class);
+			sender.sendMessage("§5Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
 
 			RoleCommand.buildRoleSyntax();
 			sender.sendMessage("§5Built Role Syntax!");
-			BTAServerUtilities.configs.loadAllData(ConfigData.class);
+			Data.configs.loadAll(ConfigData.class);
 			sender.sendMessage("§5Reloaded Config!");
 			return true;
 		}

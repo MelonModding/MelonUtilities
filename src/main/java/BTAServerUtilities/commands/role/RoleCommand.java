@@ -1,8 +1,6 @@
 package BTAServerUtilities.commands.role;
 
-import BTAServerUtilities.BTAServerUtilities;
 import BTAServerUtilities.config.Data;
-import BTAServerUtilities.config.DataBank;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
 import BTAServerUtilities.utility.RoleBuilder;
@@ -19,7 +17,7 @@ public class RoleCommand extends Command {
 
 	public RoleCommand(){super(COMMAND);}
 
-	public static RoleData getRoleFromArg(String arg){return Data.roles.getOrCreateData(arg, RoleData.class);}
+	public static RoleData getRoleFromArg(String arg){return Data.roles.getOrCreate(arg, RoleData.class);}
 	static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
 
 	public static void buildRoleSyntax(){
@@ -76,15 +74,15 @@ public class RoleCommand extends Command {
 
 		String role = args[1];
 
-		if (Data.roles.data.containsKey(role)) {
+		if (Data.roles.dataHashMap.containsKey(role)) {
 			sender.sendMessage("§eFailed to Create Role: " + role + " (Role Already Exists)");
 			return true;
 		}
 
-		Data.roles.getOrCreateData(role, RoleData.class);
-		Data.roles.loadAllData(RoleData.class);
+		Data.roles.getOrCreate(role, RoleData.class);
+		Data.roles.loadAll(RoleData.class);
 		getRoleFromArg(role).displayName = role;
-		Data.roles.saveAllData();
+		Data.roles.saveAll();
 
 		if (args.length == 3){
 			getRoleFromArg(role).priority = Integer.parseInt(args[2]);
@@ -103,7 +101,7 @@ public class RoleCommand extends Command {
 
 		String role = args[1];
 
-		switch (Data.roles.removeConfig(role)) {
+		switch (Data.roles.remove(role)) {
 			case 0:
 				sender.sendMessage("§1Deleted Role: " + role);
 				return true;
@@ -122,11 +120,11 @@ public class RoleCommand extends Command {
     }
 
 	private boolean reload(CommandSender sender){
-		Data.roles.loadAllData(RoleData.class);
-		sender.sendMessage("§5Reloaded " + Data.roles.data.size() + " Role(s)!");
+		Data.roles.loadAll(RoleData.class);
+		sender.sendMessage("§5Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
 		RoleCommand.buildRoleSyntax();
 		sender.sendMessage("§5Built Role Syntax!");
-		Data.configs.loadAllData(ConfigData.class);
+		Data.configs.loadAll(ConfigData.class);
 		sender.sendMessage("§5Reloaded Config!");
 		return true;
 	}
@@ -139,7 +137,7 @@ public class RoleCommand extends Command {
 			return true;
 		}
 
-		if(!Data.roles.data.containsKey(args[1])){
+		if(!Data.roles.dataHashMap.containsKey(args[1])){
 			sender.sendMessage("§eFailed to Edit Role (Invalid Role)");
 			syntax.printLayer("edit", sender);
 			return true;
@@ -176,9 +174,9 @@ public class RoleCommand extends Command {
 		}
 
 		if(args.length == 4){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).priority = Integer.parseInt(args[3]);
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Priority for Role " + args[1] + " to: §0" + args[3]);
 			return true;
 		}
@@ -275,7 +273,7 @@ public class RoleCommand extends Command {
 		}
 
 
-		if(!Data.roles.data.containsKey(args[1])){
+		if(!Data.roles.dataHashMap.containsKey(args[1])){
 			sender.sendMessage("§eFailed to Grant Role (Role doesn't exist!)");
 			syntax.printLayerAndSubLayers("grant", sender);
 			return true;
@@ -284,15 +282,15 @@ public class RoleCommand extends Command {
 		RoleData roleData = getRoleFromArg(args[1]);
 
 		if(args.length == 2 && !roleData.playersGrantedRole.contains(sender.getPlayer().username)){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.add(sender.getPlayer().username);
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Granted Role: " + args[1] + " to player: §0" + sender.getPlayer().username);
 			return true;
 		} else if (args.length == 3 && !roleData.playersGrantedRole.contains(args[2])){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.add(args[2]);
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Granted Role: " + args[1] + " to player: §0" + args[2]);
 			return true;
 		} else if (roleData.playersGrantedRole.contains(sender.getPlayer().username) || roleData.playersGrantedRole.contains(args[2])) {
@@ -314,7 +312,7 @@ public class RoleCommand extends Command {
 			return true;
 		}
 
-		if(!Data.roles.data.containsKey(args[1])){
+		if(!Data.roles.dataHashMap.containsKey(args[1])){
 			sender.sendMessage("§eFailed to Revoke Role (Role doesn't exist!)");
 			syntax.printLayerAndSubLayers("revoke", sender);
 			return true;
@@ -323,15 +321,15 @@ public class RoleCommand extends Command {
 		RoleData roleData = getRoleFromArg(args[1]);
 
 		if (args.length == 3 && roleData.playersGrantedRole.contains(args[2])) {
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.remove(args[2]);
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§1Revoked Role: " + args[1] + " from player: §0" + args[2]);
 			return true;
 		} else if (args.length == 2 && roleData.playersGrantedRole.contains(sender.getPlayer().username)){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.remove(sender.getPlayer().username);
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§1Revoked Role: " + args[1] + " from player: §0" + sender.getPlayer().username);
 			return true;
 		} else if (!roleData.playersGrantedRole.contains(sender.getPlayer().username) || !roleData.playersGrantedRole.contains(args[2])) {
@@ -345,7 +343,7 @@ public class RoleCommand extends Command {
 	}
 
 	private boolean list(CommandSender sender) {
-		if (Data.roles.data.isEmpty()) {
+		if (Data.roles.dataHashMap.isEmpty()) {
 			sender.sendMessage("§8< Roles: >");
 			sender.sendMessage("§8  -No Roles Created-");
 			return true;
@@ -353,11 +351,11 @@ public class RoleCommand extends Command {
 
 		sender.sendMessage("§8< Roles: >");
 
-		for (String role : Data.roles.data.keySet()) {
+		for (String role : Data.roles.dataHashMap.keySet()) {
 			sender.sendMessage("§8  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + role + "§8 - Priority: " + TextFormatting.WHITE + getRoleFromArg(role).priority);
-			sender.sendMessage("§8    > " + RoleBuilder.buildRoleDisplay(Data.roles.data.get(role))
-												+ RoleBuilder.buildRoleUsername(Data.roles.data.get(role), sender.getPlayer().getDisplayName())
-												+ RoleBuilder.buildRoleTextFormat(Data.roles.data.get(role)) + "text");
+			sender.sendMessage("§8    > " + RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(role))
+												+ RoleBuilder.buildRoleUsername(Data.roles.dataHashMap.get(role), sender.getPlayer().getDisplayName())
+												+ RoleBuilder.buildRoleTextFormat(Data.roles.dataHashMap.get(role)) + "text");
 		}
 
 		return true;
@@ -393,17 +391,17 @@ public class RoleCommand extends Command {
 		}
 
 		if(args.length == 3) {
-			for (String role : Data.roles.data.keySet()) {
+			for (String role : Data.roles.dataHashMap.keySet()) {
 				if (args[2].equals(role)) {
-					Data.configs.loadAllData(ConfigData.class);
-					Data.configs.getOrCreateData("config", ConfigData.class).defaultRole = args[2];
-					Data.configs.saveAllData();
+					Data.configs.loadAll(ConfigData.class);
+					Data.configs.getOrCreate("config", ConfigData.class).defaultRole = args[2];
+					Data.configs.saveAll();
 					sender.sendMessage("§5Set defaultRole to: " + args[2]);
 					return true;
 				} else if (args[2].equals("none")) {
-					Data.configs.loadAllData(ConfigData.class);
-					Data.configs.getOrCreateData("config", ConfigData.class).defaultRole = null;
-					Data.configs.saveAllData();
+					Data.configs.loadAll(ConfigData.class);
+					Data.configs.getOrCreate("config", ConfigData.class).defaultRole = null;
+					Data.configs.saveAll();
 					sender.sendMessage("§5Set defaultRole to: none");
 					return true;
 				}
@@ -427,15 +425,15 @@ public class RoleCommand extends Command {
 		}
 
 		if(args.length == 3 && args[2].equals("single")) {
-			Data.configs.loadAllData(ConfigData.class);
-			Data.configs.getOrCreateData("config", ConfigData.class).displayMode = "single";
-			Data.configs.saveAllData();
+			Data.configs.loadAll(ConfigData.class);
+			Data.configs.getOrCreate("config", ConfigData.class).displayMode = "single";
+			Data.configs.saveAll();
 			sender.sendMessage("§5Set displayMode to: single");
 			return true;
 		} else if (args.length == 3 && args[2].equals("multi")) {
-			Data.configs.loadAllData(ConfigData.class);
-			Data.configs.getOrCreateData("config", ConfigData.class).displayMode = "multi";
-			Data.configs.saveAllData();
+			Data.configs.loadAll(ConfigData.class);
+			Data.configs.getOrCreate("config", ConfigData.class).displayMode = "multi";
+			Data.configs.saveAll();
 			sender.sendMessage("§5Set displayMode to: multi");
 			return true;
 		}

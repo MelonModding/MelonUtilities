@@ -8,9 +8,9 @@ import net.minecraft.core.net.command.CommandSender;
 public class EditRoleUsernameSubCommand {
 
 	public static boolean usernameColor(CommandSender sender, String[] args){
-		Data.roles.loadAllData(RoleData.class);
+		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).usernameColor = args[4];
-		Data.roles.saveAllData();
+		Data.roles.saveAll();
 		sender.sendMessage("§5Set Username Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 		return true;
 	}
@@ -24,15 +24,15 @@ public class EditRoleUsernameSubCommand {
 		}
 
 		if(args[4].equalsIgnoreCase("true")){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameUnderlined = true;
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Username Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameUnderlined = false;
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Username Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
@@ -51,15 +51,15 @@ public class EditRoleUsernameSubCommand {
 		}
 
 		if(args[4].equalsIgnoreCase("true")){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameBold = true;
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Username Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameBold = false;
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Username Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
@@ -78,15 +78,15 @@ public class EditRoleUsernameSubCommand {
 		}
 
 		if(args[4].equalsIgnoreCase("true")){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameItalics = true;
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Username Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameItalics = false;
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Username Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
@@ -131,9 +131,9 @@ public class EditRoleUsernameSubCommand {
 			return true;
 		}
 
-		Data.roles.loadAllData(RoleData.class);
+		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).usernameBorderColor = args[5];
-		Data.roles.saveAllData();
+		Data.roles.saveAll();
 		sender.sendMessage("§5Set Username Border Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 		return true;
 	}
@@ -146,13 +146,13 @@ public class EditRoleUsernameSubCommand {
 			return true;
 		}
 
-		Data.roles.loadAllData(RoleData.class);
+		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderNone = true;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderBracket = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCaret = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCurly = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCustom = false;
-		Data.roles.saveAllData();
+		Data.roles.saveAll();
 		sender.sendMessage("§5Set Username Border to None for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
@@ -165,13 +165,13 @@ public class EditRoleUsernameSubCommand {
 			return true;
 		}
 
-		Data.roles.loadAllData(RoleData.class);
+		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderNone = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderBracket = true;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCaret = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCurly = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCustom = false;
-		Data.roles.saveAllData();
+		Data.roles.saveAll();
 		sender.sendMessage("§5Set Username Border to [Bracket] for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
@@ -184,13 +184,13 @@ public class EditRoleUsernameSubCommand {
 			return true;
 		}
 
-		Data.roles.loadAllData(RoleData.class);
+		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderNone = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderBracket = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCaret = true;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCurly = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCustom = false;
-		Data.roles.saveAllData();
+		Data.roles.saveAll();
 		sender.sendMessage("§5Set Username Border to <Caret> for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
@@ -203,27 +203,27 @@ public class EditRoleUsernameSubCommand {
 			return true;
 		}
 
-		Data.roles.loadAllData(RoleData.class);
+		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderNone = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderBracket = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCaret = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCurly = true;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCustom = false;
-		Data.roles.saveAllData();
+		Data.roles.saveAll();
 		sender.sendMessage("§5Set Username Border to {Curly} for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
 
 	private static boolean usernameBorderCustom(CommandSender sender, String[] args){
 		if(args.length == 5){
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			RoleData role = RoleCommand.getRoleFromArg(args[1]);
 			role.isUsernameBorderNone = false;
 			role.isUsernameBorderBracket = false;
 			role.isUsernameBorderCaret = false;
 			role.isUsernameBorderCurly = false;
 			role.isUsernameBorderCustom = true;
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Username Border to ?Custom? for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 			return true;
 		}
@@ -233,14 +233,14 @@ public class EditRoleUsernameSubCommand {
 				RoleCommand.syntax.printLayerAndSubLayers("usernameBorderCustomAffix", sender);
 				return true;
 			}
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			RoleData role = RoleCommand.getRoleFromArg(args[1]);
 			role.isUsernameBorderBracket = false;
 			role.isUsernameBorderCaret = false;
 			role.isUsernameBorderCurly = false;
 			role.isUsernameBorderCustom = true;
 			role.customUsernameBorderSuffix = args[6];
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Custom Username Border Suffix for Role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to " + args[6]);
 			return true;
 		} else if(args[5].equals("prefix")){
@@ -249,14 +249,14 @@ public class EditRoleUsernameSubCommand {
 				RoleCommand.syntax.printLayerAndSubLayers("usernameBorderCustomAffix", sender);
 				return true;
 			}
-			Data.roles.loadAllData(RoleData.class);
+			Data.roles.loadAll(RoleData.class);
 			RoleData role = RoleCommand.getRoleFromArg(args[1]);
 			role.isUsernameBorderBracket = false;
 			role.isUsernameBorderCaret = false;
 			role.isUsernameBorderCurly = false;
 			role.isUsernameBorderCustom = true;
 			role.customUsernameBorderPrefix = args[6];
-			Data.roles.saveAllData();
+			Data.roles.saveAll();
 			sender.sendMessage("§5Set Custom Username Border Prefix for Role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to " + args[6]);
 			return true;
 		}
