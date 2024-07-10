@@ -38,22 +38,34 @@ public class SetHomeCommand extends Command {
 		double y = Math.round(sender.getPlayer().y * scale) / scale;
 		double z = Math.round(sender.getPlayer().z * scale) / scale;
 
-		if (args.length == 0 && HomeCommand.getHome("home", sender) == null) {
+		Home home = HomeCommand.getHome("home", sender);
+
+		if (args.length == 0 && home == null) {
 
 			addHome("home", x, y, z, dimID, sender);
-
 			sender.sendMessage("§5Set Home: <home> to:");
-			sender.sendMessage("§5[Dimension: " + sender.getPlayer().world.dimension.languageKey + "]");
+			sender.sendMessage("§5[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
 			sender.sendMessage("§5[x: " + x + " y: " + y + " z: " + z + "]");
 			return true;
 
-		} else if (HomeCommand.getHome("home", sender) != null) {
-			sender.sendMessage("§eFailed to Set Home (home <home> already exists))");
+		} else if (args.length == 0) {
+			sender.sendMessage("§eFailed to Set Home (Home already exists!))");
+			syntax.printLayerAndSubLayers("sethome", sender);
+			return true;
+		} else if (args.length == 1) {
+			home = HomeCommand.getHome(args[0], sender);
+			if(home == null){
+				addHome(args[0], x, y, z, dimID, sender);
+				sender.sendMessage("§5Set Home: <" + args[0] + "> to:");
+				sender.sendMessage("§5[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
+				sender.sendMessage("§5[x: " + x + " y: " + y + " z: " + z + "]");
+				return true;
+			}
+			sender.sendMessage("§eFailed to Set Home (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("sethome", sender);
 			return true;
 		}
-
-		return true;
+        return true;
 	}
 
 	@Override
