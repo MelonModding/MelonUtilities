@@ -58,7 +58,7 @@ public class TpaManager {
 		EntityPlayerMP target = tpr.target;
 		EntityPlayerMP moved = tpr.player;
 		if (target.dimension != moved.dimension) {
-			MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension(moved, target.dimension);
+			MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension(moved, target.dimension, false);
 		}
 		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 100f);
 		moved.playerNetServerHandler.teleportAndRotate(target.x, target.y, target.z, target.yRot, target.xRot);

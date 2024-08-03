@@ -14,6 +14,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static net.minecraft.server.util.helper.PlayerList.updateList;
+
 public class DataBank<Data> {
 
 	//Creates a Directory of json files specifically for a dataType
@@ -103,7 +105,7 @@ public class DataBank<Data> {
 	public void saveAll(){
 		for (String id: dataHashMap.keySet()) {
 			save(id);
-			BTAServerUtilities.updateAll();
+			updateList();
 		}
 	}
 
