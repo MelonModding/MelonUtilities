@@ -1,10 +1,15 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "BTAServerSolutions.BTAServerUtilities.mixins",
+  "package": "BTAServerUtilities.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "SaverMixin"
+    "MinecraftServerMixin",
+    "NetServerHandlerMixin",
+    "PlayerListMixin",
+    "gamerules.EntityLightningBoltMixin",
+    "gamerules.FireTickMixin",
+    "gamerules.NetLoginHandlerMixin"
   ],
   "client": [
   ],
