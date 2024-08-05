@@ -4,15 +4,15 @@ import BTAServerUtilities.BTAServerUtilities;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
-import BTAServerUtilities.utility.Home;
+import BTAServerUtilities.config.custom.classes.Home;
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.ServerCommandHandler;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.EntityPlayerMP;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -59,7 +59,7 @@ public class HomeCommand extends Command {
 		if (args.length == 0 && home != null) {
 			sender.sendMessage("§5Teleporting to Home: <home>");
 			if (sender.getPlayer().dimension != home.dimID) {
-				BTAServerUtilities.sendPlayerToOtherDimension((EntityPlayerMP) sender.getPlayer(), home.dimID, (ServerCommandHandler) handler);
+				MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension((EntityPlayerMP) sender.getPlayer(), home.dimID, false);
 			}
 			teleport(home.x, home.y, home.z, sender.getPlayer());
 			return true;
@@ -72,7 +72,7 @@ public class HomeCommand extends Command {
 			if (home != null) {
 				sender.sendMessage("§5Teleporting to Home: <" + args[0] + ">");
 				if (sender.getPlayer().dimension != home.dimID) {
-					BTAServerUtilities.sendPlayerToOtherDimension((EntityPlayerMP) sender.getPlayer(), home.dimID, (ServerCommandHandler) handler);
+					MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension((EntityPlayerMP) sender.getPlayer(), home.dimID, false);
 				}
 				teleport(home.x, home.y, home.z, sender.getPlayer());
 				return true;

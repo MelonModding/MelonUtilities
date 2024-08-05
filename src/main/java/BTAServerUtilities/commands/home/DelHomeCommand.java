@@ -1,13 +1,10 @@
 package BTAServerUtilities.commands.home;
 
-import BTAServerUtilities.BTAServerUtilities;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
-import BTAServerUtilities.utility.Home;
-import net.minecraft.core.entity.player.EntityPlayer;
+import BTAServerUtilities.config.custom.classes.Home;
 import net.minecraft.core.net.command.*;
-import net.minecraft.server.entity.player.EntityPlayerMP;
 
 import java.util.Objects;
 

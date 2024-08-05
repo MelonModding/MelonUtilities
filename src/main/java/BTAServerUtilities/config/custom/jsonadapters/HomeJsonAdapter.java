@@ -1,5 +1,6 @@
-package BTAServerUtilities.utility;
+package BTAServerUtilities.config.custom.jsonadapters;
 
+import BTAServerUtilities.config.custom.classes.Home;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;

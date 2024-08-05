@@ -1,8 +1,4 @@
-package BTAServerUtilities.utility;
-
-import com.google.gson.*;
-
-import java.lang.reflect.Type;
+package BTAServerUtilities.config.custom.classes;
 
 public class Home {
 	public String name;

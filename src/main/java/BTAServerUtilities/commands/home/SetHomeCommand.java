@@ -3,11 +3,10 @@ package BTAServerUtilities.commands.home;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
-import BTAServerUtilities.utility.Home;
+import BTAServerUtilities.config.custom.classes.Home;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
-import net.minecraft.core.world.Dimension;
 
 public class SetHomeCommand extends Command {
 

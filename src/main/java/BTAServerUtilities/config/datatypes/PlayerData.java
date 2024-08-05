@@ -1,6 +1,6 @@
 package BTAServerUtilities.config.datatypes;
 
-import BTAServerUtilities.utility.Home;
+import BTAServerUtilities.config.custom.classes.Home;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

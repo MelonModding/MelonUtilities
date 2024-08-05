@@ -12,31 +12,22 @@ import BTAServerUtilities.commands.tpa.TPADenyCommand;
 import BTAServerUtilities.commands.tpa.TPAcceptCommand;
 import BTAServerUtilities.commands.utility.BSUCommand;
 import BTAServerUtilities.config.*;
+import BTAServerUtilities.config.custom.classes.Crew;
+import BTAServerUtilities.config.custom.jsonadapters.CrewJsonAdapter;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.config.datatypes.KitData;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.config.datatypes.RoleData;
-import BTAServerUtilities.utility.Home;
-import BTAServerUtilities.utility.HomeJsonAdapter;
+import BTAServerUtilities.config.custom.classes.Home;
+import BTAServerUtilities.config.custom.jsonadapters.HomeJsonAdapter;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.data.gamerule.GameRuleBoolean;
 import net.minecraft.core.data.gamerule.GameRules;
-import net.minecraft.core.data.registry.Registries;
 import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.net.command.ServerCommandHandler;
-import net.minecraft.core.net.packet.Packet41EntityPlayerGamemode;
-import net.minecraft.core.net.packet.Packet74GameRule;
-import net.minecraft.core.net.packet.Packet9Respawn;
-import net.minecraft.core.world.Dimension;
-import net.minecraft.core.world.PortalHandler;
-import net.minecraft.server.entity.player.EntityPlayerMP;
-import net.minecraft.server.net.PlayerList;
-import net.minecraft.server.net.handler.NetServerHandler;
-import net.minecraft.server.world.WorldServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.CommandHelper;
@@ -53,36 +44,7 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
     public static final String MOD_ID = "btaserverutilities";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static void sendPlayerToOtherDimension(EntityPlayerMP entityplayermp, int targetDim, ServerCommandHandler serverHandler) {
-		WorldServer worldserver = serverHandler.minecraftServer.getDimensionWorld(entityplayermp.dimension);
-		Dimension lastDim = Dimension.getDimensionList().get(entityplayermp.dimension);
-		Dimension newDim = Dimension.getDimensionList().get(targetDim);
-		entityplayermp.dimension = targetDim;
-		WorldServer worldserver1 = serverHandler.minecraftServer.getDimensionWorld(entityplayermp.dimension);
-		entityplayermp.playerNetServerHandler.sendPacket(new Packet9Respawn((byte)entityplayermp.dimension, (byte) Registries.WORLD_TYPES.getNumericIdOfItem(worldserver1.worldType)));
-		worldserver.removePlayer(entityplayermp);
-		entityplayermp.removed = false;
-		double d = entityplayermp.x;
-		double d1 = entityplayermp.z;
-		entityplayermp.moveTo(d *= Dimension.getCoordScale(lastDim, newDim), entityplayermp.y, d1 *= Dimension.getCoordScale(lastDim, newDim), entityplayermp.yRot, entityplayermp.xRot);
-		if (entityplayermp.isAlive()) {
-			worldserver.updateEntityWithOptionalForce(entityplayermp, false);
-		}
-		if (entityplayermp.isAlive()) {
-			worldserver1.entityJoinedWorld(entityplayermp);
-			entityplayermp.moveTo(d, entityplayermp.y, d1, entityplayermp.yRot, entityplayermp.xRot);
-			worldserver1.updateEntityWithOptionalForce(entityplayermp, false);
-		}
-		serverHandler.minecraftServer.playerList.func_28172_a(entityplayermp);
-		entityplayermp.playerNetServerHandler.teleportAndRotate(entityplayermp.x, entityplayermp.y, entityplayermp.z, entityplayermp.yRot, entityplayermp.xRot);
-		serverHandler.minecraftServer.playerList.sendPacketToAllPlayers(new Packet41EntityPlayerGamemode(entityplayermp.id, entityplayermp.gamemode.getId()));
-		entityplayermp.setWorld(worldserver1);
-		serverHandler.minecraftServer.playerList.func_28170_a(entityplayermp, worldserver1);
-		serverHandler.minecraftServer.playerList.func_30008_g(entityplayermp);
-		entityplayermp.playerNetServerHandler.sendPacket(new Packet74GameRule(serverHandler.minecraftServer.getDimensionWorld(0).getLevelData().getGameRules()));
-	}
-
-	public static final Gson GSON = (new GsonBuilder()).setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(ItemStack.class, new ItemStackJsonAdapter()).registerTypeAdapter(Home.class, new HomeJsonAdapter()).create();
+	public static final Gson GSON = (new GsonBuilder()).setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(ItemStack.class, new ItemStackJsonAdapter()).registerTypeAdapter(Home.class, new HomeJsonAdapter()).registerTypeAdapter(Crew.class, new CrewJsonAdapter()).create();
 
 	public static GameRuleBoolean FIRE_TICKS = GameRules.register(new GameRuleBoolean("doFireTick", true));
 

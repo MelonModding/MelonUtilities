@@ -36,7 +36,7 @@ public class BSUCommand extends Command {
 
 			sender.sendMessage(TextFormatting.ORANGE + "Building Kit Syntax...");
 			KitCommand.buildKitSyntax();
-			sender.sendMessage(TextFormatting.LIME + "Built Kit Syntax!");
+			sender.sendMessage(TextFormatting.LIME + "Kit Syntax Built!");
 
 			sender.sendMessage(TextFormatting.ORANGE + "Reloading Role Data...");
 			Data.roles.loadAll(RoleData.class);
@@ -44,7 +44,7 @@ public class BSUCommand extends Command {
 
 			sender.sendMessage(TextFormatting.ORANGE + "Building Role Syntax...");
 			RoleCommand.buildRoleSyntax();
-			sender.sendMessage(TextFormatting.LIME + "Built Role Syntax!");
+			sender.sendMessage(TextFormatting.LIME + "Role Syntax Built!");
 
 			sender.sendMessage(TextFormatting.ORANGE + "Reloading General Configs...");
 			Data.configs.loadAll(ConfigData.class);
@@ -52,7 +52,7 @@ public class BSUCommand extends Command {
 
 			sender.sendMessage(TextFormatting.ORANGE + "Updating Player List...");
 			updateList();
-			sender.sendMessage(TextFormatting.LIME + "Updated Player List!");
+			sender.sendMessage(TextFormatting.LIME + "Updated List!");
 
 			return true;
 		}
