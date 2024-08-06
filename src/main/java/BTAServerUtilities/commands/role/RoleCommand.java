@@ -1,5 +1,8 @@
 package BTAServerUtilities.commands.role;
 
+import BTAServerUtilities.commands.role.subcommands.EditRoleDisplaySubcommand;
+import BTAServerUtilities.commands.role.subcommands.EditRoleTextSubcommand;
+import BTAServerUtilities.commands.role.subcommands.EditRoleUsernameSubcommand;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
@@ -15,17 +18,17 @@ public class RoleCommand extends Command {
 
 	private final static String COMMAND = "role";
 
-	public RoleCommand(){super(COMMAND);}
+	public RoleCommand(){super(COMMAND, "r");}
 
 	public static RoleData getRoleFromArg(String arg){return Data.roles.getOrCreate(arg, RoleData.class);}
-	static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+	public static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
 
 	public static void buildRoleSyntax(){
 		syntax.clear();
 		syntax.append("title",                                                  "§8< Command Syntax >");
-		syntax.append("create",                                                 "§8  > /role create <role id> [<priority>]");
-		syntax.append("delete",                                                 "§8  > /role delete <role id>");
-		syntax.append("edit",                                                   "§8  > /role edit <role id> <mode>");
+		syntax.append("create", "title",                                  "§8  > /role create <role id> [<priority>]");
+		syntax.append("delete", "title",                                  "§8  > /role delete <role id>");
+		syntax.append("edit", "title",                                    "§8  > /role edit <role id> <mode>");
 		syntax.append("priority", "edit",                                 "§8    > priority <priority value>");
 /*		syntax.append("perms", "edit",                                    "§8    > perms <permission>");*/
 		syntax.append("display", "edit",                                  "§8    > display <style>");
@@ -54,13 +57,13 @@ public class RoleCommand extends Command {
 		syntax.append("textUnderline", "text",                            "§8      > underline true/false");
 		syntax.append("textBold", "text",                                 "§8      > bold true/false");
 		syntax.append("textItalics", "text",                              "§8      > italics true/false");
-		syntax.append("grant",                                                  "§8  > /role grant <role id> [<username>]");
-		syntax.append("revoke",                                                 "§8  > /role revoke <role id> [<username>]");
-		syntax.append("set",                                                    "§8  > /role set <mode>");
+		syntax.append("grant", "title",                                   "§8  > /role grant <role id> [<username>]");
+		syntax.append("revoke", "title",                                  "§8  > /role revoke <role id> [<username>]");
+		syntax.append("set", "title",                                     "§8  > /role set <mode>");
 		syntax.append("setDefaultRole", "set",                            "§8    > defaultRole <role id>/none");
 		syntax.append("setDisplayMode", "set",                            "§8    > displayMode single/multi");
-		syntax.append("list",                                                   "§8  > /role list");
-		syntax.append("reload",                                                 "§8  > /role reload");
+		syntax.append("list", "title",                                    "§8  > /role list");
+		syntax.append("reload", "title",                                  "§8  > /role reload");
 	}
 
 
@@ -196,17 +199,17 @@ public class RoleCommand extends Command {
 
 		switch(args[3]){
 			case "name":
-				return EditRoleDisplaySubCommand.displayName(sender, args);
+				return EditRoleDisplaySubcommand.displayName(sender, args);
 			case "color":
-				return EditRoleDisplaySubCommand.displayColor(sender, args);
+				return EditRoleDisplaySubcommand.displayColor(sender, args);
 			case "underline":
-				return EditRoleDisplaySubCommand.displayUnderline(sender, args);
+				return EditRoleDisplaySubcommand.displayUnderline(sender, args);
 			case "bold":
-				return EditRoleDisplaySubCommand.displayBold(sender, args);
+				return EditRoleDisplaySubcommand.displayBold(sender, args);
 			case "italics":
-				return EditRoleDisplaySubCommand.displayItalics(sender, args);
+				return EditRoleDisplaySubcommand.displayItalics(sender, args);
 			case "border":
-				return EditRoleDisplaySubCommand.displayBorder(sender, args);
+				return EditRoleDisplaySubcommand.displayBorder(sender, args);
 		}
 
 		sender.sendMessage("§eFailed to Edit Role Display (Default Error) (Invalid Syntax?)");
@@ -232,7 +235,7 @@ public class RoleCommand extends Command {
 			case "italics":
 				return EditRoleUsername.usernameItalics(sender, args);*/
 			case "border":
-				return EditRoleUsernameSubCommand.usernameBorder(sender, args);
+				return EditRoleUsernameSubcommand.usernameBorder(sender, args);
 		}
 
 		sender.sendMessage("§eFailed to Edit Role Username (Default Error) (Invalid Syntax?)");
@@ -250,13 +253,13 @@ public class RoleCommand extends Command {
 
 		switch(args[3]){
 			case "color":
-				return EditRoleTextSubCommand.textColor(sender, args);
+				return EditRoleTextSubcommand.textColor(sender, args);
 			case "underline":
-				return EditRoleTextSubCommand.textUnderline(sender, args);
+				return EditRoleTextSubcommand.textUnderline(sender, args);
 			case "bold":
-				return EditRoleTextSubCommand.textBold(sender, args);
+				return EditRoleTextSubcommand.textBold(sender, args);
 			case "italics":
-				return EditRoleTextSubCommand.textItalics(sender, args);
+				return EditRoleTextSubcommand.textItalics(sender, args);
 		}
 
 		sender.sendMessage("§eFailed to Edit Role Text (Default Error) (Invalid Syntax?)");

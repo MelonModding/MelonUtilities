@@ -8,6 +8,7 @@ import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.TextFormatting;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class RoleBuilder {
 

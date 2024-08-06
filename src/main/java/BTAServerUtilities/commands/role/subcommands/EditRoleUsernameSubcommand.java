@@ -1,11 +1,12 @@
-package BTAServerUtilities.commands.role;
+package BTAServerUtilities.commands.role.subcommands;
 
+import BTAServerUtilities.commands.role.RoleCommand;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.CommandSender;
 
 @SuppressWarnings("SameReturnValue")
-public class EditRoleUsernameSubCommand {
+public class EditRoleUsernameSubcommand {
 
 	public static boolean usernameColor(CommandSender sender, String[] args){
 		Data.roles.loadAll(RoleData.class);

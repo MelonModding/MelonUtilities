@@ -1,6 +1,6 @@
 package BTAServerUtilities.commands.tpa;
 
-import BTAServerUtilities.commands.tpa.utility.TpaManager;
+import BTAServerUtilities.utility.TpaManager;
 import net.minecraft.core.net.command.*;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 

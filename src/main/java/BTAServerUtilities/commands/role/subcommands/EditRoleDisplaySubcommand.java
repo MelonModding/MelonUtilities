@@ -1,11 +1,12 @@
-package BTAServerUtilities.commands.role;
+package BTAServerUtilities.commands.role.subcommands;
 
+import BTAServerUtilities.commands.role.RoleCommand;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.CommandSender;
 
 @SuppressWarnings("SameReturnValue")
-public class EditRoleDisplaySubCommand {
+public class EditRoleDisplaySubcommand {
 
 	public static boolean displayName(CommandSender sender, String[] args){
 

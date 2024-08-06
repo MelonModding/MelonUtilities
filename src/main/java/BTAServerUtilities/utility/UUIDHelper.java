@@ -112,16 +112,18 @@ public class UUIDHelper {
 	}
 }
 
-/* Example:
-ServerPlayer player = server.playerList.getPlayerEntity(nameToBan);
-        if(player != null) {
-	server.playerList.banPlayer(player.uuid);
-sendNoticeToOps(senderName, "Banning " + nameToBan);
-            player.playerNetServerHandler.kickPlayer("Banned by admin");
-        } else {
-			UUIDHelper.runConversionAction(nameToBan, (uuid) -> {
-	server.playerList.banPlayer(uuid);
-sendNoticeToOps(senderName, "Banning " + nameToBan);
-            }, (username) -> handler.sendCommandFeedback(sender,"Could not retrieve UUID of player '" + username + "'"));
+/*
+static {
+	ServerPlayer player = server.playerList.getPlayerEntity(nameToBan);
+	if (player != null) {
+		server.playerList.banPlayer(player.uuid);
+		sendNoticeToOps(senderName, "Banning " + nameToBan);
+		player.playerNetServerHandler.kickPlayer("Banned by admin");
+	} else {
+		UUIDHelper.runConversionAction(nameToBan, (uuid) ->
+			{server.playerList.banPlayer(uuid);
+			sendNoticeToOps(senderName, "Banning " + nameToBan);},
+			(username) -> handler.sendCommandFeedback(sender, "Could not retrieve UUID of player '" + username + "'"));
 	}
-	*/
+}
+*/
