@@ -15,9 +15,9 @@ public class DelHomeCommand extends Command {
 	}
 
 	public void deleteHome(String name, CommandSender sender){
-		for(int i = 0; i < Data.playerData.getOrCreate(sender.getPlayer().username, PlayerData.class).homes.size(); i++) {
-			if(Objects.equals(Data.playerData.getOrCreate(sender.getPlayer().username, PlayerData.class).homes.get(i).name, name)){
-				Data.playerData.getOrCreate(sender.getPlayer().username, PlayerData.class).homes.remove(i);
+		for(int i = 0; i < Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.size(); i++) {
+			if(Objects.equals(Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.get(i).name, name)){
+				Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.remove(i);
 				Data.playerData.saveAll();
 				return;
 			}

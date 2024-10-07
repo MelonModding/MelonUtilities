@@ -21,8 +21,8 @@ public class RoleCommand extends Command {
 	public RoleCommand(){super(COMMAND, "r");}
 
 	public static RoleData getRoleFromArg(String arg){return Data.roles.getOrCreate(arg, RoleData.class);}
-	public static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
 
+	public static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
 	public static void buildRoleSyntax(){
 		syntax.clear();
 		syntax.append("title",                                                  "§8< Command Syntax >");

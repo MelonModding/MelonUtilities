@@ -23,9 +23,9 @@ public class HomeCommand extends Command {
 	}
 
 	public static Home getHome(String name, CommandSender sender){
-		for(int i = 0; i < Data.playerData.getOrCreate(sender.getPlayer().username, PlayerData.class).homes.size(); i++){
-			if(Objects.equals(Data.playerData.getOrCreate(sender.getPlayer().username, PlayerData.class).homes.get(i).name, name)){
-				return Data.playerData.getOrCreate(sender.getPlayer().username, PlayerData.class).homes.get(i);
+		for(int i = 0; i < Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.size(); i++){
+			if(Objects.equals(Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.get(i).name, name)){
+				return Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.get(i);
 			}
 		}
 		return null;

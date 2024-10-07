@@ -1,5 +1,6 @@
 package BTAServerUtilities;
 
+import BTAServerUtilities.commands.helper.HelperCommand;
 import BTAServerUtilities.commands.home.DelHomeCommand;
 import BTAServerUtilities.commands.home.HomeCommand;
 import BTAServerUtilities.commands.home.SetHomeCommand;
@@ -71,12 +72,19 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 	}
 
 	public static void updateAll() {
-		Data.configs.loadAll(ConfigData.class);
+		// Kit
 		Data.kits.loadAll(KitData.class);
 		KitCommand.buildKitSyntax();
+		// Role
 		Data.roles.loadAll(RoleData.class);
 		RoleCommand.buildRoleSyntax();
+		// PlayerData
+		Data.playerData.loadAll(PlayerData.class);
+		HelperCommand.buildHelperSyntax();
+		// List
 		updateList();
+		// Misc/Utility
+		Data.configs.loadAll(ConfigData.class);
 	}
 
 	public void updateRoles(){
@@ -101,6 +109,7 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 		Data.roles.loadAll(RoleData.class);
 		RoleCommand.buildRoleSyntax();
 		Data.playerData.loadAll(PlayerData.class);
+		HelperCommand.buildHelperSyntax();
 		SetHomeCommand.buildSyntax();
 		DelHomeCommand.buildSyntax();
 		HomeCommand.buildSyntax();
@@ -131,6 +140,7 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 		CommandHelper.createCommand(new TPAcceptCommand());
 		CommandHelper.createCommand(new TPADenyCommand());
 		// Misc/utility
+		CommandHelper.createCommand(new HelperCommand());
 		CommandHelper.createCommand(new BSUCommand());
 
 	}

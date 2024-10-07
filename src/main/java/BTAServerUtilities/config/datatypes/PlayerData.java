@@ -11,4 +11,6 @@ public class PlayerData {
 	@SerializedName(value = "Homes:")
 	@Expose public ArrayList<Home> homes = new ArrayList<>();
 
+	@SerializedName(value = "Helper:")
+	@Expose public boolean isHelper = false;
 }

@@ -17,7 +17,7 @@ public class SetHomeCommand extends Command {
 	double scale = Math.pow(10, 1);
 
 	public void addHome(String name, double x, double y, double z, int dimID, CommandSender sender){
-		Data.playerData.getOrCreate(sender.getPlayer().username, PlayerData.class).homes.add(new Home(name, x, y, z, dimID));
+		Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.add(new Home(name, x, y, z, dimID));
 		Data.playerData.saveAll();
 	}
 

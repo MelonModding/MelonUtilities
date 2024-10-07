@@ -1,15 +1,18 @@
 package BTAServerUtilities.commands.utility;
 
+import BTAServerUtilities.commands.helper.HelperCommand;
 import BTAServerUtilities.commands.kit.KitCommand;
 import BTAServerUtilities.commands.role.RoleCommand;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.config.datatypes.KitData;
+import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.util.helper.Time;
 
 import static net.minecraft.server.util.helper.PlayerList.updateList;
 
@@ -27,8 +30,15 @@ public class BSUCommand extends Command {
 		}
 
 		if (args[0].equals("reload")) {
-
 			sender.sendMessage(TextFormatting.GREEN + "Reloading " + NAME + "...");
+
+			sender.sendMessage(TextFormatting.ORANGE + "Reloading Player Data...");
+			Data.playerData.loadAll(PlayerData.class);
+			sender.sendMessage(TextFormatting.LIME + "Reloaded " + Data.playerData.dataHashMap.size() + " Player(s)!");
+
+			sender.sendMessage(TextFormatting.ORANGE + "Building Helper Syntax...");
+			HelperCommand.buildHelperSyntax();
+			sender.sendMessage(TextFormatting.LIME + "Helper Syntax Built!");
 
 			sender.sendMessage(TextFormatting.ORANGE + "Reloading Kit Data...");
 			Data.kits.loadAll(KitData.class);

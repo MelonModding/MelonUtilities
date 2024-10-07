@@ -2,22 +2,27 @@ package BTAServerUtilities.mixins;
 
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.ConfigData;
+import BTAServerUtilities.config.datatypes.PlayerData;
 import com.llamalad7.mixinextras.sugar.Local;
 import BTAServerUtilities.utility.RoleBuilder;
 import BTAServerUtilities.config.datatypes.RoleData;
-import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.net.command.*;
 import net.minecraft.core.net.packet.Packet3Chat;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.EntityPlayerMP;
+import net.minecraft.server.net.PlayerList;
 import net.minecraft.server.net.handler.NetServerHandler;
 import org.apache.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 @Mixin(value = NetServerHandler.class, remap = false)
 public class NetServerHandlerMixin {
@@ -29,6 +34,9 @@ public class NetServerHandlerMixin {
 
 	@Shadow
 	private MinecraftServer mcServer;
+
+	@Shadow
+	private boolean hasMoved;
 
 	@Inject(at = @At(shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleChat", cancellable = true)
 	public void handleChat(Packet3Chat packet, CallbackInfo ci, @Local String message) {
@@ -102,5 +110,66 @@ public class NetServerHandlerMixin {
 		this.mcServer.playerList.sendEncryptedChatToAllPlayers(message);
 		ci.cancel();
 
+	}
+
+	@Unique
+	String commandString = "";
+
+	@Redirect(
+		method = "Lnet/minecraft/server/net/handler/NetServerHandler;handleSlashCommand(Ljava/lang/String;)V",
+		at = @At(value = "INVOKE", target = "Ljava/lang/String;substring(I)Ljava/lang/String;"),
+		remap = false
+	)
+	private String grabCommandString(String s, int beginIndex){
+		commandString = s;
+		return s.substring(beginIndex, s.length());
+	}
+
+	@Redirect(
+		method = "Lnet/minecraft/server/net/handler/NetServerHandler;handleSlashCommand(Ljava/lang/String;)V",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/core/net/command/PlayerCommandSender;isAdmin()Z"),
+		remap = false
+	)
+	private boolean redirectIsAdmin(PlayerCommandSender sender){
+
+		if(Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).isHelper) {
+
+			String[] args = commandString.substring(1).split(" ");
+
+			if (args.length != 0) {
+				if (args[0].equals("gamemode") || args[0].equals("gm")) {
+					if(args[1].equals("spectator") || args[1].equals("4") || args[1].equals("survival") || args[1].equals("0")){
+						return true;
+					}
+				}
+				else if (args[0].equals("teleport") || args[0].equals("tp")) {
+					return true;
+				}
+			}
+		}
+		if(sender.isAdmin()){return true;} else{return false;}
+	}
+
+	@Redirect(
+		method = "Lnet/minecraft/server/net/handler/NetServerHandler;handleSlashCommand(Ljava/lang/String;)V",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/server/net/PlayerList;isOp(Ljava/lang/String;)Z"),
+		remap = false
+	)
+	private boolean redirectIsOp(PlayerList playerList, String s){
+
+		if(Data.playerData.getOrCreate(this.playerEntity.username.toLowerCase(), PlayerData.class).isHelper) {
+
+			String[] args = commandString.substring(1).split(" ");
+
+			if (args.length != 0) {
+				if (args[0].equals("kick")) {
+					return true;
+				}
+				else if (args[0].equals("ban")) {
+					return true;
+				}
+			}
+		}
+		if(this.playerEntity.isOperator()){return true;} else{return false;}
 	}
 }
