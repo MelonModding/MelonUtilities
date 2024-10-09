@@ -25,6 +25,9 @@ public class TileEntityBlastFurnaceMixin implements TileEntityContainerInterface
 	private boolean isLocked;
 
 	@Unique
+	private boolean isCommunityContainer;
+
+	@Unique
 	private UUID lockOwner;
 
 	@Unique
@@ -65,8 +68,18 @@ public class TileEntityBlastFurnaceMixin implements TileEntityContainerInterface
 	}
 
 	@Override
+	public boolean getIsCommunityContainer() {
+		return isCommunityContainer;
+	}
+
+	@Override
 	public void setIsLocked(boolean flag) {
 		isLocked = flag;
+	}
+
+	@Override
+	public void setIsCommunityContainer(boolean flag) {
+		isCommunityContainer = flag;
 	}
 
 	@Override

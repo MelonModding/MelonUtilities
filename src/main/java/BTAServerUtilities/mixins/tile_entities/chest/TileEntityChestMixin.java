@@ -27,6 +27,9 @@ public class TileEntityChestMixin implements TileEntityContainerInterface {
 	private boolean isLocked;
 
 	@Unique
+	private boolean isCommunityContainer;
+
+	@Unique
 	private UUID lockOwner;
 
 	@Unique
@@ -67,7 +70,8 @@ public class TileEntityChestMixin implements TileEntityContainerInterface {
 			if(lockOwner != null) {
 				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))
 					&& !trustedPlayers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !Data.playerData.getOrCreate(lockOwner.toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))) {
+					&& !Data.playerData.getOrCreate(lockOwner.toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
+					&& !isCommunityContainer) {
 					cir.setReturnValue(false);
 					return;
 				}
@@ -81,8 +85,18 @@ public class TileEntityChestMixin implements TileEntityContainerInterface {
 	}
 
 	@Override
+	public boolean getIsCommunityContainer() {
+		return isCommunityContainer;
+	}
+
+	@Override
 	public void setIsLocked(boolean flag) {
 		isLocked = flag;
+	}
+
+	@Override
+	public void setIsCommunityContainer(boolean flag) {
+		isCommunityContainer = flag;
 	}
 
 	@Override

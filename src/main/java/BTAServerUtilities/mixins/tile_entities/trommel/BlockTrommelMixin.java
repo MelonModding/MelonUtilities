@@ -24,7 +24,8 @@ public class BlockTrommelMixin {
 			if(iContainer.getLockOwner() != null) {
 				if (!iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(player.username))
 					&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(player.username))
-					&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))){
+					&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
+					&& !iContainer.getIsCommunityContainer()){
 					player.sendMessage("§eTrommel is Locked!");
 					cir.setReturnValue(false);
 					return;

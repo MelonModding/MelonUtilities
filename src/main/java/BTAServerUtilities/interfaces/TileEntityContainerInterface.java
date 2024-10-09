@@ -7,7 +7,11 @@ public interface TileEntityContainerInterface {
 
 	boolean getIsLocked();
 
+	boolean getIsCommunityContainer();
+
 	void setIsLocked(boolean flag);
+
+	void setIsCommunityContainer(boolean flag);
 
 	UUID getLockOwner();
 
