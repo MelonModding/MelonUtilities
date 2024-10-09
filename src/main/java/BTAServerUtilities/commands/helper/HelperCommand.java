@@ -30,7 +30,7 @@ public class HelperCommand extends Command {
 		String username = args[1];
 		EntityPlayerMP player = (EntityPlayerMP) handler.getPlayer(username);
 
-		if (player != null && !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper) {
+		if (player != null && !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper) {
 			handler.sendMessageToPlayer(player, TextFormatting.LIME + "You are now a Helper!");
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Setting " + TextFormatting.GRAY + username + TextFormatting.LIME + " to Helper.");
 
@@ -39,7 +39,7 @@ public class HelperCommand extends Command {
 			Data.playerData.saveAll();
 
 			return true;
-		} else if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper){
+		} else if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper){
 			handler.sendCommandFeedback(sender, TextFormatting.GRAY + username + TextFormatting.RED + " is already a helper!");
 			return true;
 		} else if(player == null){
@@ -58,7 +58,7 @@ public class HelperCommand extends Command {
 		String username = args[1];
 		EntityPlayerMP player = (EntityPlayerMP) handler.getPlayer(username);
 
-		if (player != null && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper) {
+		if (player != null && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper) {
 			handler.sendMessageToPlayer(player, TextFormatting.RED + "You are no longer a Helper!");
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Removing " + TextFormatting.GRAY + username + TextFormatting.LIME + " from Helper List.");
 
@@ -67,7 +67,7 @@ public class HelperCommand extends Command {
 			Data.playerData.saveAll();
 
 			return true;
-		} else if(!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper){
+		} else if(!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper){
 			handler.sendCommandFeedback(sender, TextFormatting.GRAY + username + TextFormatting.RED + " isn't a helper!");
 			return true;
 		} else if(player == null){
