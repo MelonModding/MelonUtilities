@@ -8,8 +8,7 @@ import BTAServerUtilities.utility.BSUtility;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
 import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.HitResult;
-import net.minecraft.core.block.entity.TileEntity;
-import net.minecraft.core.block.entity.TileEntityChest;
+import net.minecraft.core.block.entity.*;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
@@ -194,6 +193,36 @@ public class LockCommand extends Command {
 							return true;
 						}
 						sender.sendMessage("§5Locked Chest!");
+						iContainer.setIsLocked(true);
+						iContainer.setLockOwner(sender.getPlayer().username);
+						return true;
+					} else if(container instanceof TileEntityFurnace){
+						sender.sendMessage("§5Locked Furnace!");
+						iContainer.setIsLocked(true);
+						iContainer.setLockOwner(sender.getPlayer().username);
+						return true;
+					} else if(container instanceof TileEntityBlastFurnace){
+						sender.sendMessage("§5Locked Blast Furnace!");
+						iContainer.setIsLocked(true);
+						iContainer.setLockOwner(sender.getPlayer().username);
+						return true;
+					} else if(container instanceof TileEntityDispenser){
+						sender.sendMessage("§5Locked Dispenser!");
+						iContainer.setIsLocked(true);
+						iContainer.setLockOwner(sender.getPlayer().username);
+						return true;
+					} else if(container instanceof TileEntityMeshGold){
+						sender.sendMessage("§5Locked Golden Mesh!");
+						iContainer.setIsLocked(true);
+						iContainer.setLockOwner(sender.getPlayer().username);
+						return true;
+					} else if(container instanceof TileEntityTrommel){
+						sender.sendMessage("§5Locked Trommel!");
+						iContainer.setIsLocked(true);
+						iContainer.setLockOwner(sender.getPlayer().username);
+						return true;
+					} else if(container instanceof TileEntityBasket){
+						sender.sendMessage("§5Locked Basket!");
 						iContainer.setIsLocked(true);
 						iContainer.setLockOwner(sender.getPlayer().username);
 						return true;
