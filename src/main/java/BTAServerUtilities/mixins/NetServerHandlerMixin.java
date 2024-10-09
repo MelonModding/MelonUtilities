@@ -166,7 +166,7 @@ public abstract class NetServerHandlerMixin {
 	)
 	private boolean redirectIsOp(PlayerList playerList, String s){
 
-		if(Data.playerData.getOrCreate(this.playerEntity.username.toLowerCase(), PlayerData.class).isHelper) {
+		if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).isHelper) {
 
 			String[] args = commandString.substring(1).split(" ");
 
