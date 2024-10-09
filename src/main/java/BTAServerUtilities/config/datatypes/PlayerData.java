@@ -16,6 +16,12 @@ public class PlayerData {
 	@SerializedName(value = "Helper:")
 	@Expose public boolean isHelper = false;
 
+	@SerializedName(value = "Lock on Block Placed:")
+	@Expose public boolean lockOnBlockPlaced = false;
+
+	@SerializedName(value = "Lock on Block Punched:")
+	@Expose public boolean lockOnBlockPunched = false;
+
 	@SerializedName(value = "Players Trusted to all Containers:")
 	@Expose public List<UUID> playersTrustedToAllContainers = new ArrayList<>();
 }

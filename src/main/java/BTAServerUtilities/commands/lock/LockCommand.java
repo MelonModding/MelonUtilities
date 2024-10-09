@@ -42,7 +42,31 @@ public class LockCommand extends Command {
 
 	}
 
+	private boolean onBlockPlaced(CommandHandler handler, CommandSender sender, String[] args){
+		if(args[1].equals("true")) {
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced = true;
+			sender.sendMessage(TextFormatting.LIME + "Lock on Block Placed is now On!");
+		}
+		if(args[1].equals("false")) {
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced = true;
+			sender.sendMessage(TextFormatting.LIME + "Lock on Block Placed is now Off!");
+		}
+		sender.sendMessage("§eFailed to set Lock Mode! (Invalid Syntax)");
+		return false;
+	}
 
+	private boolean onBlockPunched(CommandHandler handler, CommandSender sender, String[] args){
+		if(args[1].equals("true")) {
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched = true;
+			sender.sendMessage(TextFormatting.LIME + "Lock on Block Punched is now On!");
+		}
+		if(args[1].equals("false")) {
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched = true;
+			sender.sendMessage(TextFormatting.LIME + "Lock on Block Punched is now Off!");
+		}
+		sender.sendMessage("§eFailed to set Lock Mode! (Invalid Syntax)");
+		return false;
+	}
 
 	private boolean trust(CommandHandler handler, CommandSender sender, String[] args){
 		if(UUIDHelper.getUUIDFromName(args[1]) != null) {
@@ -361,10 +385,10 @@ public class LockCommand extends Command {
 		}
 
 		switch(args[0]){
-			//case "onBlockPlaced":
-			//	return onBlockPlaced(handler, sender, args);
-			//case "onBlockPunched":
-			//	return onBlockPunched(handler, sender, args);
+			case "onBlockPlaced":
+				return onBlockPlaced(handler, sender, args);
+			case "onBlockPunched":
+				return onBlockPunched(handler, sender, args);
 			case "trust":
 				return trust(handler, sender, args);
 			case "trustall":
