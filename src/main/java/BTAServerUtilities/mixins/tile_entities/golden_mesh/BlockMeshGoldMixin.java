@@ -6,6 +6,7 @@ import BTAServerUtilities.interfaces.TileEntityContainerInterface;
 import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.block.BlockMeshGold;
 import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.Packet53BlockChange;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
@@ -28,7 +29,7 @@ public class BlockMeshGoldMixin {
 					&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(player.username))
 					&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
 					&& !iContainer.getIsCommunityContainer()){
-					player.sendMessage("§eGolden Mesh is Locked!");
+					player.sendMessage(TextFormatting.RED + "Golden Mesh is Locked!");
 					cir.setReturnValue(false);
 					return;
 				}

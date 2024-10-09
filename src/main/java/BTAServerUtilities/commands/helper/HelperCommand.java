@@ -20,10 +20,10 @@ public class HelperCommand extends Command {
 
 	public static void buildHelperSyntax(){
 		syntax.clear();
-		syntax.append("title",                                                  "§8< Command Syntax >");
-		syntax.append("helper", "title",                                  "§8  > /helper <mode>");
-		syntax.append("helperAdd", "helper",                              "§8    > add <username>");
-		syntax.append("helperRemove", "helper",                           "§8    > remove <username>");
+		syntax.append("title",                                                  TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("helper", "title",                                  TextFormatting.LIGHT_GRAY + "  > /helper <mode>");
+		syntax.append("helperAdd", "helper",                              TextFormatting.LIGHT_GRAY + "    > add <username>");
+		syntax.append("helperRemove", "helper",                           TextFormatting.LIGHT_GRAY + "    > remove <username>");
 	}
 
 	private boolean add(CommandHandler handler, CommandSender sender, String[] args){
@@ -96,7 +96,7 @@ public class HelperCommand extends Command {
 				return remove(handler, sender, args);
 		}
 
-		sender.sendMessage("§eHelper Command Failed (Invalid Syntax)");
+		sender.sendMessage(TextFormatting.RED + "Helper Command Failed (Invalid Syntax)");
 		syntax.printAllLines(sender);
 		return true;
 	}

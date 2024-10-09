@@ -10,6 +10,7 @@ import net.minecraft.core.block.BlockChest;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.EntityLiving;
 import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,7 +32,7 @@ public class BlockChestMixin {
 					&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(player.username))
 					&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
 					&& !iContainer.getIsCommunityContainer()){
-					player.sendMessage("§eChest is Locked!");
+					player.sendMessage(TextFormatting.RED + "Chest is Locked!");
 					cir.setReturnValue(false);
 					return;
 				}

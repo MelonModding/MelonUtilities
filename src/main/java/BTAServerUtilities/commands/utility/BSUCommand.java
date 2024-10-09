@@ -67,7 +67,7 @@ public class BSUCommand extends Command {
 			return true;
 		}
 
-		sender.sendMessage("§e " + NAME + " Error: (Invalid Syntax)");
+		sender.sendMessage(TextFormatting.RED + " " + NAME + " Error: (Invalid Syntax)");
         return false;
     }
 

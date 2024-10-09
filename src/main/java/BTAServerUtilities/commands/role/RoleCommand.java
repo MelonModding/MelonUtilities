@@ -25,52 +25,52 @@ public class RoleCommand extends Command {
 	public static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
 	public static void buildRoleSyntax(){
 		syntax.clear();
-		syntax.append("title",                                                  "§8< Command Syntax >");
-		syntax.append("create", "title",                                  "§8  > /role create <role id> [<priority>]");
-		syntax.append("delete", "title",                                  "§8  > /role delete <role id>");
-		syntax.append("edit", "title",                                    "§8  > /role edit <role id> <mode>");
-		syntax.append("priority", "edit",                                 "§8    > priority <priority value>");
-/*		syntax.append("perms", "edit",                                    "§8    > perms <permission>");*/
-		syntax.append("display", "edit",                                  "§8    > display <style>");
-		syntax.append("displayName", "display",                           "§8      > name <display name>");
-		syntax.append("displayColor", "display",                          "§8      > color <color/hex>");
-		syntax.append("displayUnderline", "display",                      "§8      > underline true/false");
-		syntax.append("displayBold", "display",                           "§8      > bold true/false");
-		syntax.append("displayItalics", "display",                        "§8      > italics true/false");
-		syntax.append("displayBorder", "display",                         "§8      > border <style>");
-		syntax.append("displayBorderColor", "displayBorder",              "§8        > color <color/hex>");
-		syntax.append("displayBorderType", "displayBorder",               "§8        > none/bracket/caret/curly");
-		syntax.append("displayBorderCustom", "displayBorder",             "§8        > custom [<affix>]");
-		syntax.append("displayBorderCustomAffix", "displayBorderCustom",  "§8          > prefix/suffix <custom affix>");
-		syntax.append("username", "edit",                                 "§8    > username <style>");
-		/*syntax.append("usernameColor", "username",                        "§8      > color <color/hex>");
-		syntax.append("usernameUnderline", "username",                    "§8      > underline true/false");
-		syntax.append("usernameBold", "username",                         "§8      > bold true/false");
-		syntax.append("usernameItalics", "username",                      "§8      > italics true/false");*/
-		syntax.append("usernameBorder", "username",                       "§8      > border <style>");
-		syntax.append("usernameBorderColor", "usernameBorder",            "§8        > color <color/hex>");
-		syntax.append("usernameBorderType", "usernameBorder",             "§8        > none/bracket/caret/curly");
-		syntax.append("usernameBorderCustom", "usernameBorder",           "§8        > custom [<affix>]");
-		syntax.append("usernameBorderCustomAffix", "usernameBorderCustom","§8          > prefix/suffix <custom affix>");
-		syntax.append("text", "edit",                                     "§8    > text <style>");
-		syntax.append("textColor", "text",                                "§8      > color <color/hex> (*bug: hex won't wrap!)");
-		syntax.append("textUnderline", "text",                            "§8      > underline true/false");
-		syntax.append("textBold", "text",                                 "§8      > bold true/false");
-		syntax.append("textItalics", "text",                              "§8      > italics true/false");
-		syntax.append("grant", "title",                                   "§8  > /role grant <role id> [<username>]");
-		syntax.append("revoke", "title",                                  "§8  > /role revoke <role id> [<username>]");
-		syntax.append("set", "title",                                     "§8  > /role set <mode>");
-		syntax.append("setDefaultRole", "set",                            "§8    > defaultRole <role id>/none");
-		syntax.append("setDisplayMode", "set",                            "§8    > displayMode single/multi");
-		syntax.append("list", "title",                                    "§8  > /role list");
-		syntax.append("reload", "title",                                  "§8  > /role reload");
+		syntax.append("title",                                                  TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("create", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role create <role id> [<priority>]");
+		syntax.append("delete", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role delete <role id>");
+		syntax.append("edit", "title",                                    TextFormatting.LIGHT_GRAY + "  > /role edit <role id> <mode>");
+		syntax.append("priority", "edit",                                 TextFormatting.LIGHT_GRAY + "    > priority <priority value>");
+/*		syntax.append("perms", "edit",                                    TextFormatting.LIGHT_GRAY + "    > perms <permission>");*/
+		syntax.append("display", "edit",                                  TextFormatting.LIGHT_GRAY + "    > display <style>");
+		syntax.append("displayName", "display",                           TextFormatting.LIGHT_GRAY + "      > name <display name>");
+		syntax.append("displayColor", "display",                          TextFormatting.LIGHT_GRAY + "      > color <color/hex>");
+		syntax.append("displayUnderline", "display",                      TextFormatting.LIGHT_GRAY + "      > underline true/false");
+		syntax.append("displayBold", "display",                           TextFormatting.LIGHT_GRAY + "      > bold true/false");
+		syntax.append("displayItalics", "display",                        TextFormatting.LIGHT_GRAY + "      > italics true/false");
+		syntax.append("displayBorder", "display",                         TextFormatting.LIGHT_GRAY + "      > border <style>");
+		syntax.append("displayBorderColor", "displayBorder",              TextFormatting.LIGHT_GRAY + "        > color <color/hex>");
+		syntax.append("displayBorderType", "displayBorder",               TextFormatting.LIGHT_GRAY + "        > none/bracket/caret/curly");
+		syntax.append("displayBorderCustom", "displayBorder",             TextFormatting.LIGHT_GRAY + "        > custom [<affix>]");
+		syntax.append("displayBorderCustomAffix", "displayBorderCustom",  TextFormatting.LIGHT_GRAY + "          > prefix/suffix <custom affix>");
+		syntax.append("username", "edit",                                 TextFormatting.LIGHT_GRAY + "    > username <style>");
+		/*syntax.append("usernameColor", "username",                        TextFormatting.LIGHT_GRAY + "      > color <color/hex>");
+		syntax.append("usernameUnderline", "username",                    TextFormatting.LIGHT_GRAY + "      > underline true/false");
+		syntax.append("usernameBold", "username",                         TextFormatting.LIGHT_GRAY + "      > bold true/false");
+		syntax.append("usernameItalics", "username",                      TextFormatting.LIGHT_GRAY + "      > italics true/false");*/
+		syntax.append("usernameBorder", "username",                       TextFormatting.LIGHT_GRAY + "      > border <style>");
+		syntax.append("usernameBorderColor", "usernameBorder",            TextFormatting.LIGHT_GRAY + "        > color <color/hex>");
+		syntax.append("usernameBorderType", "usernameBorder",             TextFormatting.LIGHT_GRAY + "        > none/bracket/caret/curly");
+		syntax.append("usernameBorderCustom", "usernameBorder",           TextFormatting.LIGHT_GRAY + "        > custom [<affix>]");
+		syntax.append("usernameBorderCustomAffix", "usernameBorderCustom",TextFormatting.LIGHT_GRAY + "          > prefix/suffix <custom affix>");
+		syntax.append("text", "edit",                                     TextFormatting.LIGHT_GRAY + "    > text <style>");
+		syntax.append("textColor", "text",                                TextFormatting.LIGHT_GRAY + "      > color <color/hex> (*bug: hex won't wrap!)");
+		syntax.append("textUnderline", "text",                            TextFormatting.LIGHT_GRAY + "      > underline true/false");
+		syntax.append("textBold", "text",                                 TextFormatting.LIGHT_GRAY + "      > bold true/false");
+		syntax.append("textItalics", "text",                              TextFormatting.LIGHT_GRAY + "      > italics true/false");
+		syntax.append("grant", "title",                                   TextFormatting.LIGHT_GRAY + "  > /role grant <role id> [<username>]");
+		syntax.append("revoke", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role revoke <role id> [<username>]");
+		syntax.append("set", "title",                                     TextFormatting.LIGHT_GRAY + "  > /role set <mode>");
+		syntax.append("setDefaultRole", "set",                            TextFormatting.LIGHT_GRAY + "    > defaultRole <role id>/none");
+		syntax.append("setDisplayMode", "set",                            TextFormatting.LIGHT_GRAY + "    > displayMode single/multi");
+		syntax.append("list", "title",                                    TextFormatting.LIGHT_GRAY + "  > /role list");
+		syntax.append("reload", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role reload");
 	}
 
 
 	private boolean create(CommandSender sender, String[] args){
 
 		if (args.length == 1) {
-			sender.sendMessage("§eFailed to Create Role (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Create Role (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("create", sender);
 			return true;
 		}
@@ -78,7 +78,7 @@ public class RoleCommand extends Command {
 		String role = args[1];
 
 		if (Data.roles.dataHashMap.containsKey(role)) {
-			sender.sendMessage("§eFailed to Create Role: " + role + " (Role Already Exists)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Create Role: " + role + " (Role Already Exists)");
 			return true;
 		}
 
@@ -91,13 +91,13 @@ public class RoleCommand extends Command {
 			getRoleFromArg(role).priority = Integer.parseInt(args[2]);
 		}
 
-		sender.sendMessage("§5Created Role: " + getRoleFromArg(role).displayName + " with Priority: " + getRoleFromArg(role).priority);
+		sender.sendMessage(TextFormatting.LIME + "Created Role: " + getRoleFromArg(role).displayName + " with Priority: " + getRoleFromArg(role).priority);
 		return true;
 	}
 
 	private boolean delete(CommandSender sender, String[] args){
 		if (args.length == 1) {
-			sender.sendMessage("§eFailed to Delete Role (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Delete Role (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("delete", sender);
 			return true;
 		}
@@ -109,45 +109,45 @@ public class RoleCommand extends Command {
 				sender.sendMessage("§1Deleted Role: " + role);
 				return true;
 			case 1:
-				sender.sendMessage("§eFailed to Delete Role: " + role + " (Role Doesn't Exist)");
+				sender.sendMessage(TextFormatting.RED + "Failed to Delete Role: " + role + " (Role Doesn't Exist)");
 				syntax.printLayerAndSubLayers("delete", sender);
 				return true;
 			case 2:
-				sender.sendMessage("§eFailed to Delete Role: " + role + " (IO Error)");
+				sender.sendMessage(TextFormatting.RED + "Failed to Delete Role: " + role + " (IO Error)");
 				return true;
 		}
 
-		sender.sendMessage("§eFailed to Delete Role (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Delete Role (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("delete", sender);
 		return true;
     }
 
 	private boolean reload(CommandSender sender){
 		Data.roles.loadAll(RoleData.class);
-		sender.sendMessage("§5Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
+		sender.sendMessage(TextFormatting.LIME + "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
 		RoleCommand.buildRoleSyntax();
-		sender.sendMessage("§5Built Role Syntax!");
+		sender.sendMessage(TextFormatting.LIME + "Built Role Syntax!");
 		Data.configs.loadAll(ConfigData.class);
-		sender.sendMessage("§5Reloaded Config!");
+		sender.sendMessage(TextFormatting.LIME + "Reloaded Config!");
 		return true;
 	}
 
 	private boolean edit(CommandSender sender, String[] args){
 
 		if(args.length == 1){
-			sender.sendMessage("§eFailed to Edit Role (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Edit Role (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("edit", sender);
 			return true;
 		}
 
 		if(!Data.roles.dataHashMap.containsKey(args[1])){
-			sender.sendMessage("§eFailed to Edit Role (Invalid Role)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Edit Role (Invalid Role)");
 			syntax.printLayer("edit", sender);
 			return true;
 		}
 
 		if(args.length == 2){
-			sender.sendMessage("§eFailed to Edit Role (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Edit Role (Invalid Syntax)");
 			syntax.printLayer("edit", sender);
 			return true;
 		}
@@ -163,7 +163,7 @@ public class RoleCommand extends Command {
 				return text(sender, args);
 		}
 
-		sender.sendMessage("§eFailed to Edit Role (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Edit Role (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("edit", sender);
 		return true;
     }
@@ -171,7 +171,7 @@ public class RoleCommand extends Command {
 	private boolean priority(CommandSender sender, String[] args){
 
 		if(args.length == 3){
-			sender.sendMessage("§eFailed to Edit Role Priority (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Edit Role Priority (Invalid Syntax)");
 			syntax.printLayer("priority", sender);
 			return true;
 		}
@@ -180,11 +180,11 @@ public class RoleCommand extends Command {
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).priority = Integer.parseInt(args[3]);
 			Data.roles.saveAll();
-			sender.sendMessage("§5Set Priority for Role " + args[1] + " to: §0" + args[3]);
+			sender.sendMessage(TextFormatting.LIME + "Set Priority for Role " + args[1] + " to: §0" + args[3]);
 			return true;
 		}
 
-		sender.sendMessage("§eFailed to Edit Role Priority (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Edit Role Priority (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("priority", sender);
 		return true;
 	}
@@ -192,7 +192,7 @@ public class RoleCommand extends Command {
 	private boolean display(CommandSender sender, String[] args){
 
 		if(args.length == 3){
-			sender.sendMessage("§eFailed to Edit Role Display (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Edit Role Display (Invalid Syntax)");
 			syntax.printLayer("display", sender);
 			return true;
 		}
@@ -212,7 +212,7 @@ public class RoleCommand extends Command {
 				return EditRoleDisplaySubcommand.displayBorder(sender, args);
 		}
 
-		sender.sendMessage("§eFailed to Edit Role Display (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Edit Role Display (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("display", sender);
 		return true;
 	}
@@ -220,7 +220,7 @@ public class RoleCommand extends Command {
 	private boolean username(CommandSender sender, String[] args){
 
 		if(args.length == 3){
-			sender.sendMessage("§eFailed to Edit Role Username (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Edit Role Username (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("username", sender);
 			return true;
 		}
@@ -238,7 +238,7 @@ public class RoleCommand extends Command {
 				return EditRoleUsernameSubcommand.usernameBorder(sender, args);
 		}
 
-		sender.sendMessage("§eFailed to Edit Role Username (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Edit Role Username (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("username", sender);
 		return true;
 	}
@@ -246,7 +246,7 @@ public class RoleCommand extends Command {
 	private boolean text(CommandSender sender, String[] args){
 
 		if(args.length == 3){
-			sender.sendMessage("§eFailed to Edit Role Text (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Edit Role Text (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("text", sender);
 			return true;
 		}
@@ -262,7 +262,7 @@ public class RoleCommand extends Command {
 				return EditRoleTextSubcommand.textItalics(sender, args);
 		}
 
-		sender.sendMessage("§eFailed to Edit Role Text (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Edit Role Text (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("text", sender);
 		return true;
 	}
@@ -270,14 +270,14 @@ public class RoleCommand extends Command {
 	private boolean grant(CommandSender sender, String[] args){
 
 		if(args.length == 1){
-			sender.sendMessage("§eFailed to Grant Role (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Grant Role (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("grant", sender);
 			return true;
 		}
 
 
 		if(!Data.roles.dataHashMap.containsKey(args[1])){
-			sender.sendMessage("§eFailed to Grant Role (Role doesn't exist!)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Grant Role (Role doesn't exist!)");
 			syntax.printLayerAndSubLayers("grant", sender);
 			return true;
 		}
@@ -288,21 +288,21 @@ public class RoleCommand extends Command {
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.add(sender.getPlayer().username);
 			Data.roles.saveAll();
-			sender.sendMessage("§5Granted Role: " + args[1] + " to player: §0" + sender.getPlayer().username);
+			sender.sendMessage(TextFormatting.LIME + "Granted Role: " + args[1] + " to player: §0" + sender.getPlayer().username);
 			return true;
 		} else if (args.length == 3 && !roleData.playersGrantedRole.contains(args[2])){
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.add(args[2]);
 			Data.roles.saveAll();
-			sender.sendMessage("§5Granted Role: " + args[1] + " to player: §0" + args[2]);
+			sender.sendMessage(TextFormatting.LIME + "Granted Role: " + args[1] + " to player: §0" + args[2]);
 			return true;
 		} else if (roleData.playersGrantedRole.contains(sender.getPlayer().username) || roleData.playersGrantedRole.contains(args[2])) {
-			sender.sendMessage("§eFailed to Grant Role (Player already has Role!)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Grant Role (Player already has Role!)");
 			return true;
 		}
 
 
-		sender.sendMessage("§eFailed to Grant Role (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Grant Role (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("grant", sender);
 		return true;
 	}
@@ -310,13 +310,13 @@ public class RoleCommand extends Command {
 	private boolean revoke(CommandSender sender, String[] args){
 
 		if(args.length == 1){
-			sender.sendMessage("§eFailed to Revoke Role (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Revoke Role (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("revoke", sender);
 			return true;
 		}
 
 		if(!Data.roles.dataHashMap.containsKey(args[1])){
-			sender.sendMessage("§eFailed to Revoke Role (Role doesn't exist!)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Revoke Role (Role doesn't exist!)");
 			syntax.printLayerAndSubLayers("revoke", sender);
 			return true;
 		}
@@ -336,27 +336,27 @@ public class RoleCommand extends Command {
 			sender.sendMessage("§1Revoked Role: " + args[1] + " from player: §0" + sender.getPlayer().username);
 			return true;
 		} else if (!roleData.playersGrantedRole.contains(sender.getPlayer().username) || !roleData.playersGrantedRole.contains(args[2])) {
-			sender.sendMessage("§eFailed to Revoke Role (Player does not have Role!)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Revoke Role (Player does not have Role!)");
 			return true;
 		}
 
-		sender.sendMessage("§eFailed to Revoke Role (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Revoke Role (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("revoke", sender);
 		return true;
 	}
 
 	private boolean list(CommandSender sender) {
 		if (Data.roles.dataHashMap.isEmpty()) {
-			sender.sendMessage("§8< Roles: >");
-			sender.sendMessage("§8  -No Roles Created-");
+			sender.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
+			sender.sendMessage(TextFormatting.LIGHT_GRAY + "  -No Roles Created-");
 			return true;
 		}
 
-		sender.sendMessage("§8< Roles: >");
+		sender.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
 
 		for (String role : Data.roles.dataHashMap.keySet()) {
-			sender.sendMessage("§8  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + role + "§8 - Priority: " + TextFormatting.WHITE + getRoleFromArg(role).priority);
-			sender.sendMessage("§8    > " + RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(role))
+			sender.sendMessage(TextFormatting.LIGHT_GRAY + "  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + role + TextFormatting.LIGHT_GRAY + " - Priority: " + TextFormatting.WHITE + getRoleFromArg(role).priority);
+			sender.sendMessage(TextFormatting.LIGHT_GRAY + "    > " + RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(role))
 												+ RoleBuilder.buildRoleUsername(Data.roles.dataHashMap.get(role), sender.getPlayer().getDisplayName())
 												+ RoleBuilder.buildRoleTextFormat(Data.roles.dataHashMap.get(role)) + "text");
 		}
@@ -366,7 +366,7 @@ public class RoleCommand extends Command {
 
 	private boolean set(CommandSender sender, String[] args) {
 		if (args.length == 1) {
-			sender.sendMessage("§eFailed to Set Role Value (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Set Role Value (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("set", sender);
 			return true;
 		}
@@ -380,7 +380,7 @@ public class RoleCommand extends Command {
 			}
 		}
 
-		sender.sendMessage("§eFailed to Set Role Value (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Set Role Value (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("set", sender);
 		return true;
 	}
@@ -388,7 +388,7 @@ public class RoleCommand extends Command {
 	private boolean setDefaultRole(CommandSender sender, String[] args){
 
 		if(args.length == 2){
-			sender.sendMessage("§eFailed to Set Default Role (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Set Default Role (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("setDefaultRole", sender);
 			return true;
 		}
@@ -399,22 +399,22 @@ public class RoleCommand extends Command {
 					Data.configs.loadAll(ConfigData.class);
 					Data.configs.getOrCreate("config", ConfigData.class).defaultRole = args[2];
 					Data.configs.saveAll();
-					sender.sendMessage("§5Set defaultRole to: " + args[2]);
+					sender.sendMessage(TextFormatting.LIME + "Set defaultRole to: " + args[2]);
 					return true;
 				} else if (args[2].equals("none")) {
 					Data.configs.loadAll(ConfigData.class);
 					Data.configs.getOrCreate("config", ConfigData.class).defaultRole = null;
 					Data.configs.saveAll();
-					sender.sendMessage("§5Set defaultRole to: none");
+					sender.sendMessage(TextFormatting.LIME + "Set defaultRole to: none");
 					return true;
 				}
 			}
-			sender.sendMessage("§eFailed to Set Default Role (Invalid Role)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Set Default Role (Invalid Role)");
 			syntax.printLayerAndSubLayers("setDefaultRole", sender);
 			return true;
 		}
 
-		sender.sendMessage("§eFailed to Set Default Role (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Set Default Role (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("setDefaultRole", sender);
 		return true;
 	}
@@ -422,7 +422,7 @@ public class RoleCommand extends Command {
 	private boolean setDisplayMode(CommandSender sender, String[] args){
 
 		if(args.length == 2){
-			sender.sendMessage("§eFailed to Set Display Mode (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Set Display Mode (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("setDisplayMode", sender);
 			return true;
 		}
@@ -431,17 +431,17 @@ public class RoleCommand extends Command {
 			Data.configs.loadAll(ConfigData.class);
 			Data.configs.getOrCreate("config", ConfigData.class).displayMode = "single";
 			Data.configs.saveAll();
-			sender.sendMessage("§5Set displayMode to: single");
+			sender.sendMessage(TextFormatting.LIME + "Set displayMode to: single");
 			return true;
 		} else if (args.length == 3 && args[2].equals("multi")) {
 			Data.configs.loadAll(ConfigData.class);
 			Data.configs.getOrCreate("config", ConfigData.class).displayMode = "multi";
 			Data.configs.saveAll();
-			sender.sendMessage("§5Set displayMode to: multi");
+			sender.sendMessage(TextFormatting.LIME + "Set displayMode to: multi");
 			return true;
 		}
 
-		sender.sendMessage("§eFailed to Set Display Mode (Default Error) (Invalid Syntax?)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Set Display Mode (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("setDisplayMode", sender);
 		return true;
 	}
@@ -473,7 +473,7 @@ public class RoleCommand extends Command {
 		}
 
 
-		sender.sendMessage("§eRole Command Failed (Invalid Syntax)");
+		sender.sendMessage(TextFormatting.RED + "Role Command Failed (Invalid Syntax)");
 		syntax.printAllLines(sender);
 		return true;
 	}

@@ -8,6 +8,7 @@ import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.TextFormatting;
 
 public class SetHomeCommand extends Command {
 
@@ -26,8 +27,8 @@ public class SetHomeCommand extends Command {
 
 	public static void buildSyntax(){
 		syntax.clear();
-		syntax.append("title",                                                  "§8< Command Syntax >");
-		syntax.append("sethome",                                                 "§8  > /sethome [<home name>]");
+		syntax.append("title",                                                  TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("sethome",                                                 TextFormatting.LIGHT_GRAY + "  > /sethome [<home name>]");
 	}
 
 	@Override
@@ -43,25 +44,25 @@ public class SetHomeCommand extends Command {
 		if (args.length == 0 && home == null) {
 
 			addHome("home", x, y, z, dimID, sender);
-			sender.sendMessage("§5Set Home: <home> to:");
-			sender.sendMessage("§5[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
-			sender.sendMessage("§5[x: " + x + " y: " + y + " z: " + z + "]");
+			sender.sendMessage(TextFormatting.LIME + "Set Home: <home> to:");
+			sender.sendMessage(TextFormatting.LIME + "[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
+			sender.sendMessage(TextFormatting.LIME + "[x: " + x + " y: " + y + " z: " + z + "]");
 			return true;
 
 		} else if (args.length == 0) {
-			sender.sendMessage("§eFailed to Set Home (Home already exists!))");
+			sender.sendMessage(TextFormatting.RED + "Failed to Set Home (Home already exists!))");
 			syntax.printLayerAndSubLayers("sethome", sender);
 			return true;
 		} else if (args.length == 1) {
 			home = HomeCommand.getHome(args[0], sender);
 			if(home == null){
 				addHome(args[0], x, y, z, dimID, sender);
-				sender.sendMessage("§5Set Home: <" + args[0] + "> to:");
-				sender.sendMessage("§5[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
-				sender.sendMessage("§5[x: " + x + " y: " + y + " z: " + z + "]");
+				sender.sendMessage(TextFormatting.LIME + "Set Home: <" + args[0] + "> to:");
+				sender.sendMessage(TextFormatting.LIME + "[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
+				sender.sendMessage(TextFormatting.LIME + "[x: " + x + " y: " + y + " z: " + z + "]");
 				return true;
 			}
-			sender.sendMessage("§eFailed to Set Home (Invalid Syntax)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Set Home (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("sethome", sender);
 			return true;
 		}

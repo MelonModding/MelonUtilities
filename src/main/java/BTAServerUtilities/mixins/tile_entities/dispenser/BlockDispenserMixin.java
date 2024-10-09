@@ -6,6 +6,7 @@ import BTAServerUtilities.interfaces.TileEntityContainerInterface;
 import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.block.BlockDispenser;
 import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,7 +27,7 @@ public class BlockDispenserMixin {
 					&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(player.username))
 					&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
 					&& !iContainer.getIsCommunityContainer()){
-					player.sendMessage("§eDispenser is Locked!");
+					player.sendMessage(TextFormatting.RED + "Dispenser is Locked!");
 					cir.setReturnValue(false);
 					return;
 				}

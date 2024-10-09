@@ -7,6 +7,7 @@ import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.block.BlockBasket;
 import net.minecraft.core.block.BlockChest;
 import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,7 +28,7 @@ public class BlockBasketMixin {
 					&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(player.username))
 					&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
 					&& !iContainer.getIsCommunityContainer()){
-					player.sendMessage("§eBasket is Locked!");
+					player.sendMessage(TextFormatting.RED + "Basket is Locked!");
 					cir.setReturnValue(false);
 					return;
 				}

@@ -4,10 +4,12 @@ import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.interfaces.TileEntityContainerInterface;
+import BTAServerUtilities.utility.BSUtility;
 import BTAServerUtilities.utility.UUIDHelper;
 import com.llamalad7.mixinextras.sugar.Local;
 import BTAServerUtilities.utility.RoleBuilder;
 import BTAServerUtilities.config.datatypes.RoleData;
+import net.minecraft.core.block.entity.*;
 import net.minecraft.core.net.command.*;
 import net.minecraft.core.net.packet.Packet;
 import net.minecraft.core.net.packet.Packet14BlockDig;
@@ -188,7 +190,8 @@ public abstract class NetServerHandlerMixin {
 		cancellable = true)
 	private void handleBlockDigInject(Packet14BlockDig packet, CallbackInfo ci){
 		WorldServer world = this.mcServer.getDimensionWorld(this.playerEntity.dimension);
-		if(world.getBlockTileEntity(packet.xPosition, packet.yPosition, packet.zPosition) instanceof TileEntityContainerInterface) {
+		TileEntity container = world.getBlockTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+		if(container instanceof TileEntityContainerInterface) {
 			TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 			if (iContainer.getLockOwner() != null
 				&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username))
@@ -196,6 +199,55 @@ public abstract class NetServerHandlerMixin {
 				&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))) {
 				ci.cancel();
 				sendPacket(new Packet53BlockChange(packet.xPosition, packet.yPosition, packet.zPosition, world));
+			}
+			if(packet.status == 1 && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched && !iContainer.getIsLocked()){
+				if (container instanceof TileEntityChest) {
+					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) BSUtility.getOtherChest(world, (TileEntityChest) container);
+					if (iOtherContainer != null) {
+						iContainer.setIsLocked(true);
+						iOtherContainer.setIsLocked(true);
+						iContainer.setLockOwner(this.playerEntity.username);
+						iOtherContainer.setLockOwner(this.playerEntity.username);
+						this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Double Chest!");
+						ci.cancel();
+					} else {
+						this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Chest!");
+					}
+				} else if (container instanceof TileEntityBlastFurnace) {
+					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Blast Furnace!");
+				} else if (container instanceof TileEntityFurnace) {
+					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Furnace!");
+				} else if (container instanceof TileEntityDispenser) {
+					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Dispenser!");
+				} else if (container instanceof TileEntityMeshGold) {
+					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Golden Mesh!");
+				} else if (container instanceof TileEntityTrommel) {
+					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Trommel!");
+				} else if (container instanceof TileEntityBasket) {
+					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Basket!");
+				}
+
+				iContainer.setIsLocked(true);
+				iContainer.setLockOwner(this.playerEntity.username);
+				ci.cancel();
+			}
+
+			else if (packet.status == 1
+			&& Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched
+			&& iContainer.getIsLocked()
+			&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username)))
+			{
+				this.playerEntity.sendMessage(TextFormatting.RED + "Failed to Lock Container! (Not Owned By You)");
+				ci.cancel();
+			}
+
+			else if (packet.status == 1
+			&& Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched
+			&& iContainer.getIsLocked()
+			&& iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username)))
+			{
+				this.playerEntity.sendMessage(TextFormatting.RED + "Failed to Lock Container! (Already Locked)");
+				ci.cancel();
 			}
 		}
 	}

@@ -8,10 +8,7 @@ import BTAServerUtilities.config.custom.classes.Home;
 import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.core.entity.player.EntityPlayer;
-import net.minecraft.core.net.command.Command;
-import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
-import net.minecraft.core.net.command.ServerCommandHandler;
+import net.minecraft.core.net.command.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 
@@ -50,40 +47,40 @@ public class HomeCommand extends Command {
 
 	public static void buildSyntax(){
 		syntax.clear();
-		syntax.append("title",                                                "§8< Command Syntax >");
-		syntax.append("home",                                                 "§8  > /home [<home name>]");
+		syntax.append("title",                                                TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("home",                                                 TextFormatting.LIGHT_GRAY + "  > /home [<home name>]");
 	}
 
 	@Override
 	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
 		Home home = getHome("home", sender);
 		if (args.length == 0 && home != null) {
-			sender.sendMessage("§5Teleporting to Home: <home>");
+			sender.sendMessage(TextFormatting.LIME + "Teleporting to Home: <home>");
 			if (sender.getPlayer().dimension != home.dimID) {
 				MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension((EntityPlayerMP) sender.getPlayer(), home.dimID, false);
 			}
 			teleport(home.x, home.y, home.z, sender.getPlayer());
 			return true;
 		} else if (args.length == 0){
-			sender.sendMessage("§eFailed to Teleport Home (Home does not exist!)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Teleport Home (Home does not exist!)");
 			syntax.printLayerAndSubLayers("home", sender);
 			return true;
 		} else if (args.length == 1) {
 			home = getHome(args[0], sender);
 			if (home != null) {
-				sender.sendMessage("§5Teleporting to Home: <" + args[0] + ">");
+				sender.sendMessage(TextFormatting.LIME + "Teleporting to Home: <" + args[0] + ">");
 				if (sender.getPlayer().dimension != home.dimID) {
 					MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension((EntityPlayerMP) sender.getPlayer(), home.dimID, false);
 				}
 				teleport(home.x, home.y, home.z, sender.getPlayer());
 				return true;
 			}
-			sender.sendMessage("§eFailed to Teleport Home (Home does not exist!)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Teleport Home (Home does not exist!)");
 			syntax.printLayerAndSubLayers("home", sender);
 			return true;
 		}
 
-		sender.sendMessage("§eFailed to Teleport Home (Invalid Syntax)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Teleport Home (Invalid Syntax)");
 		syntax.printLayerAndSubLayers("home", sender);
 		return true;
 	}

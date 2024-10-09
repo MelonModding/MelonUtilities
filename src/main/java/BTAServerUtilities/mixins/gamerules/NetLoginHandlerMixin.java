@@ -25,7 +25,7 @@ public class NetLoginHandlerMixin {
 		at = {@At("HEAD")}
 	)
 	public void doLogin(Packet1Login packet1login, CallbackInfo ci) {
-		//this.netManager.addToSendQueue(new Packet3Chat("§eMelonCommands: /kit does not save Flag data"));
-		//this.netManager.addToSendQueue(new Packet3Chat("§e            (item names were given custom support)"));
+		//this.netManager.addToSendQueue(new Packet3Chat(TextFormatting.RED + "MelonCommands: /kit does not save Flag data"));
+		//this.netManager.addToSendQueue(new Packet3Chat(TextFormatting.RED + "            (item names were given custom support)"));
 	}
 }

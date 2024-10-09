@@ -29,8 +29,8 @@ public class DelHomeCommand extends Command {
 
 	public static void buildSyntax(){
 		syntax.clear();
-		syntax.append("title",                            "§8< Command Syntax >");
-		syntax.append("delhome",                          "§8  > /delhome [<home name>]");
+		syntax.append("title",                            TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("delhome",                          TextFormatting.LIGHT_GRAY + "  > /delhome [<home name>]");
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class DelHomeCommand extends Command {
 			sender.sendMessage("§1Deleted Home: <home>");
 			return true;
 		} else if (args.length == 0){
-			sender.sendMessage("§eFailed to Delete Home (Home does not exist!)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Delete Home (Home does not exist!)");
 			syntax.printLayerAndSubLayers("home", sender);
 			return true;
 		} else if (args.length == 1) {
@@ -52,12 +52,12 @@ public class DelHomeCommand extends Command {
 				sender.sendMessage("§1Deleted Home: <" + args[0] + ">");
 				return true;
 			}
-			sender.sendMessage("§eFailed to Delete Home (Home does not exist!)");
+			sender.sendMessage(TextFormatting.RED + "Failed to Delete Home (Home does not exist!)");
 			syntax.printLayerAndSubLayers("home", sender);
 			return true;
 		}
 
-		sender.sendMessage("§eFailed to Delete Home (Invalid Syntax)");
+		sender.sendMessage(TextFormatting.RED + "Failed to Delete Home (Invalid Syntax)");
 		syntax.printLayerAndSubLayers("delhome", sender);
         return true;
     }
