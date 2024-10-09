@@ -4,6 +4,7 @@ import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
 import BTAServerUtilities.config.custom.classes.Home;
+import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
@@ -17,7 +18,7 @@ public class SetHomeCommand extends Command {
 	double scale = Math.pow(10, 1);
 
 	public void addHome(String name, double x, double y, double z, int dimID, CommandSender sender){
-		Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.add(new Home(name, x, y, z, dimID));
+		Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.add(new Home(name, x, y, z, dimID));
 		Data.playerData.saveAll();
 	}
 

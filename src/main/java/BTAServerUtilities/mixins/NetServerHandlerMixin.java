@@ -3,15 +3,21 @@ package BTAServerUtilities.mixins;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.config.datatypes.PlayerData;
+import BTAServerUtilities.interfaces.TileEntityContainerInterface;
+import BTAServerUtilities.utility.UUIDHelper;
 import com.llamalad7.mixinextras.sugar.Local;
 import BTAServerUtilities.utility.RoleBuilder;
 import BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.*;
+import net.minecraft.core.net.packet.Packet;
+import net.minecraft.core.net.packet.Packet14BlockDig;
 import net.minecraft.core.net.packet.Packet3Chat;
+import net.minecraft.core.net.packet.Packet53BlockChange;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 import net.minecraft.server.net.PlayerList;
 import net.minecraft.server.net.handler.NetServerHandler;
+import net.minecraft.server.world.WorldServer;
 import org.apache.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 @Mixin(value = NetServerHandler.class, remap = false)
-public class NetServerHandlerMixin {
+public abstract class NetServerHandlerMixin {
 	@Shadow
 	private EntityPlayerMP playerEntity;
 
@@ -37,6 +43,9 @@ public class NetServerHandlerMixin {
 
 	@Shadow
 	private boolean hasMoved;
+
+	@Shadow
+	public abstract void sendPacket(Packet packet);
 
 	@Inject(at = @At(shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleChat", cancellable = true)
 	public void handleChat(Packet3Chat packet, CallbackInfo ci, @Local String message) {
@@ -132,7 +141,7 @@ public class NetServerHandlerMixin {
 	)
 	private boolean redirectIsAdmin(PlayerCommandSender sender){
 
-		if(Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).isHelper) {
+		if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper) {
 
 			String[] args = commandString.substring(1).split(" ");
 
@@ -171,5 +180,23 @@ public class NetServerHandlerMixin {
 			}
 		}
 		if(this.playerEntity.isOperator()){return true;} else{return false;}
+	}
+
+	@Inject(
+		at = @At("HEAD"),
+		method = "handleBlockDig",
+		cancellable = true)
+	private void handleBlockDigInject(Packet14BlockDig packet, CallbackInfo ci){
+		WorldServer world = this.mcServer.getDimensionWorld(this.playerEntity.dimension);
+		if(world.getBlockTileEntity(packet.xPosition, packet.yPosition, packet.zPosition) instanceof TileEntityContainerInterface) {
+			TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+			if (iContainer.getLockOwner() != null
+				&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username))
+				&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))
+				&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))) {
+				ci.cancel();
+				sendPacket(new Packet53BlockChange(packet.xPosition, packet.yPosition, packet.zPosition, world));
+			}
+		}
 	}
 }

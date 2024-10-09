@@ -5,6 +5,7 @@ import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
 import BTAServerUtilities.config.custom.classes.Home;
+import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.command.Command;
@@ -23,9 +24,9 @@ public class HomeCommand extends Command {
 	}
 
 	public static Home getHome(String name, CommandSender sender){
-		for(int i = 0; i < Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.size(); i++){
-			if(Objects.equals(Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.get(i).name, name)){
-				return Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.get(i);
+		for(int i = 0; i < Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.size(); i++){
+			if(Objects.equals(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.get(i).name, name)){
+				return Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.get(i);
 			}
 		}
 		return null;

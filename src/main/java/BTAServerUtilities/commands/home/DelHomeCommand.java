@@ -4,6 +4,7 @@ import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
 import BTAServerUtilities.config.custom.classes.Home;
+import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.command.*;
 
 import java.util.Objects;
@@ -15,9 +16,9 @@ public class DelHomeCommand extends Command {
 	}
 
 	public void deleteHome(String name, CommandSender sender){
-		for(int i = 0; i < Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.size(); i++) {
-			if(Objects.equals(Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.get(i).name, name)){
-				Data.playerData.getOrCreate(sender.getPlayer().username.toLowerCase(), PlayerData.class).homes.remove(i);
+		for(int i = 0; i < Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.size(); i++) {
+			if(Objects.equals(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.get(i).name, name)){
+				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.remove(i);
 				Data.playerData.saveAll();
 				return;
 			}

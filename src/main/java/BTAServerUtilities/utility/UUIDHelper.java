@@ -58,6 +58,9 @@ public class UUIDHelper {
 		}).start();
 	}
 	public static @Nullable UUID getUUIDFromName(String username){
+		if(nameToUUIDMap.containsKey(username)){
+			return nameToUUIDMap.get(username);
+		}
 		String string;
 		try{
 			string = StringUtils.getWebsiteContentAsString(urlUUID + username);
@@ -87,7 +90,9 @@ public class UUIDHelper {
 			String s5 = uuid.substring(20, 32);
 			uuid = s1 + "-" + s2 + "-" + s3 + "-" + s4 + "-" + s5;
 		}
-		return UUID.fromString(uuid);
+		UUID returnVal = UUID.fromString(uuid);
+		nameToUUIDMap.put(username, returnVal);
+		return returnVal;
 	}
 
 	public static @Nullable UUID readFromTag(@NotNull CompoundTag tag, @NotNull String keyBase) {

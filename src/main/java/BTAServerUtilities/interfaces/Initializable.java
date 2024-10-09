@@ -1,4 +1,4 @@
-package BTAServerUtilities.mixins.interfaces;
+package BTAServerUtilities.interfaces;
 
 public interface Initializable {
 	void initialize();

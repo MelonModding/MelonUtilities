@@ -4,12 +4,16 @@
   "package": "BTAServerUtilities.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "ExplosionMixin",
     "MinecraftServerMixin",
+    "NetLoginHandlerMixin",
     "NetServerHandlerMixin",
     "PlayerListMixin",
     "gamerules.EntityLightningBoltMixin",
     "gamerules.FireTickMixin",
-    "gamerules.NetLoginHandlerMixin"
+    "gamerules.NetLoginHandlerMixin",
+    "tile_entities.chest.BlockChestMixin",
+    "tile_entities.chest.TileEntityChestMixin"
   ],
   "client": [
   ],

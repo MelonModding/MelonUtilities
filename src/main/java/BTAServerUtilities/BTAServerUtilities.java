@@ -6,6 +6,7 @@ import BTAServerUtilities.commands.home.HomeCommand;
 import BTAServerUtilities.commands.home.SetHomeCommand;
 import BTAServerUtilities.commands.kit.KitCommand;
 import BTAServerUtilities.commands.kit.KittenCommand;
+import BTAServerUtilities.commands.lock.LockCommand;
 import BTAServerUtilities.commands.misc.WhereAmICommand;
 import BTAServerUtilities.commands.role.RoleCommand;
 import BTAServerUtilities.commands.tpa.TPACommand;
@@ -29,6 +30,7 @@ import net.minecraft.core.data.gamerule.GameRuleBoolean;
 import net.minecraft.core.data.gamerule.GameRules;
 import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.net.command.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.helper.CommandHelper;
@@ -72,19 +74,25 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 	}
 
 	public static void updateAll() {
+		// Crew
+		// Helper
+		HelperCommand.buildHelperSyntax();
+		// Home
 		// Kit
 		Data.kits.loadAll(KitData.class);
 		KitCommand.buildKitSyntax();
+		// Lock
+		// Misc
 		// Role
 		Data.roles.loadAll(RoleData.class);
 		RoleCommand.buildRoleSyntax();
-		// PlayerData
-		Data.playerData.loadAll(PlayerData.class);
-		HelperCommand.buildHelperSyntax();
-		// List
-		updateList();
-		// Misc/Utility
+		// Tpa
+		// Utility
+		// Warp
+		// Anything Else
 		Data.configs.loadAll(ConfigData.class);
+		Data.playerData.loadAll(PlayerData.class);
+		updateList();
 	}
 
 	public void updateRoles(){
@@ -102,17 +110,30 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 
     @Override
     public void onInitialize() {
-        LOGGER.info("BTAServerUtilities initializing!");
-		Data.configs.loadAll(ConfigData.class);
-		Data.kits.loadAll(KitData.class);
-		KitCommand.buildKitSyntax();
-		Data.roles.loadAll(RoleData.class);
-		RoleCommand.buildRoleSyntax();
-		Data.playerData.loadAll(PlayerData.class);
+		LOGGER.info("BTAServerUtilities initializing!");
+		// Crew
+		// Helper
 		HelperCommand.buildHelperSyntax();
+		// Home
 		SetHomeCommand.buildSyntax();
 		DelHomeCommand.buildSyntax();
 		HomeCommand.buildSyntax();
+		// Kit
+		Data.kits.loadAll(KitData.class);
+		KitCommand.buildKitSyntax();
+		// Lock
+		LockCommand.buildLockSyntax();
+		// Misc
+		// Role
+		Data.roles.loadAll(RoleData.class);
+		RoleCommand.buildRoleSyntax();
+		// Tpa
+		// Utility
+		// Warp
+		// Anything Else
+		Data.configs.loadAll(ConfigData.class);
+		Data.playerData.loadAll(PlayerData.class);
+
 		LOGGER.info("BTAServerUtilities initialized!");
     }
 
@@ -124,24 +145,29 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 	@Override
 	public void afterGameStart() {
 
-		// Kit
-		CommandHelper.createCommand(new KitCommand());
-		CommandHelper.createCommand(new KittenCommand());
-		// Role
-		CommandHelper.createCommand(new RoleCommand());
+		// Crew
+		// Helper
 		// Home
 		CommandHelper.createCommand(new SetHomeCommand());
 		CommandHelper.createCommand(new HomeCommand());
 		CommandHelper.createCommand(new DelHomeCommand());
-		// Whereami
+		// Kit
+		CommandHelper.createCommand(new KitCommand());
+		CommandHelper.createCommand(new KittenCommand());
+		// Lock
+		CommandHelper.createCommand(new LockCommand());
+		// Misc
 		CommandHelper.createCommand(new WhereAmICommand());
+		// Role
+		CommandHelper.createCommand(new RoleCommand());
 		// Tpa
 		CommandHelper.createCommand(new TPACommand());
 		CommandHelper.createCommand(new TPAcceptCommand());
 		CommandHelper.createCommand(new TPADenyCommand());
-		// Misc/utility
+		// Utility
 		CommandHelper.createCommand(new HelperCommand());
 		CommandHelper.createCommand(new BSUCommand());
+		// Warp
 
 	}
 

@@ -3,6 +3,7 @@ package BTAServerUtilities.commands.helper;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.utility.CommandSyntaxBuilder;
+import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
@@ -29,23 +30,23 @@ public class HelperCommand extends Command {
 		String username = args[1];
 		EntityPlayerMP player = (EntityPlayerMP) handler.getPlayer(username);
 
-		if (player != null && !Data.playerData.getOrCreate(username.toLowerCase(), PlayerData.class).isHelper) {
+		if (player != null && !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper) {
 			handler.sendMessageToPlayer(player, TextFormatting.LIME + "You are now a Helper!");
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Setting " + TextFormatting.GRAY + username + TextFormatting.LIME + " to Helper.");
 
 			Data.playerData.loadAll(PlayerData.class);
-			Data.playerData.getOrCreate(username.toLowerCase(), PlayerData.class).isHelper = true;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper = true;
 			Data.playerData.saveAll();
 
 			return true;
-		} else if(Data.playerData.getOrCreate(username.toLowerCase(), PlayerData.class).isHelper){
+		} else if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper){
 			handler.sendCommandFeedback(sender, TextFormatting.GRAY + username + TextFormatting.RED + " is already a helper!");
 			return true;
 		} else if(player == null){
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Setting " + TextFormatting.GRAY + username + TextFormatting.LIME + " to Helper.");
 
 			Data.playerData.loadAll(PlayerData.class);
-			Data.playerData.getOrCreate(username.toLowerCase(), PlayerData.class).isHelper = true;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper = true;
 			Data.playerData.saveAll();
 
 			return true;
@@ -57,23 +58,23 @@ public class HelperCommand extends Command {
 		String username = args[1];
 		EntityPlayerMP player = (EntityPlayerMP) handler.getPlayer(username);
 
-		if (player != null && Data.playerData.getOrCreate(username.toLowerCase(), PlayerData.class).isHelper) {
+		if (player != null && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper) {
 			handler.sendMessageToPlayer(player, TextFormatting.RED + "You are no longer a Helper!");
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Removing " + TextFormatting.GRAY + username + TextFormatting.LIME + " from Helper List.");
 
 			Data.playerData.loadAll(PlayerData.class);
-			Data.playerData.getOrCreate(username.toLowerCase(), PlayerData.class).isHelper = false;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper = false;
 			Data.playerData.saveAll();
 
 			return true;
-		} else if(!Data.playerData.getOrCreate(username.toLowerCase(), PlayerData.class).isHelper){
+		} else if(!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper){
 			handler.sendCommandFeedback(sender, TextFormatting.GRAY + username + TextFormatting.RED + " isn't a helper!");
 			return true;
 		} else if(player == null){
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Removing " + TextFormatting.GRAY + username + TextFormatting.LIME + " from Helper List.");
 
 			Data.playerData.loadAll(PlayerData.class);
-			Data.playerData.getOrCreate(username.toLowerCase(), PlayerData.class).isHelper = false;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper = false;
 			Data.playerData.saveAll();
 
 			return true;
