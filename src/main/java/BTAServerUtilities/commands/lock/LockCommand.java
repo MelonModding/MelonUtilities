@@ -49,7 +49,7 @@ public class LockCommand extends Command {
 			return true;
 		}
 		if(args[1].equals("false")) {
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced = true;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced = false;
 			sender.sendMessage(TextFormatting.LIME + "Lock on Block Placed is now Off!");
 			return true;
 		}
@@ -64,7 +64,7 @@ public class LockCommand extends Command {
 			return true;
 		}
 		if(args[1].equals("false")) {
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched = true;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched = false;
 			sender.sendMessage(TextFormatting.LIME + "Lock on Block Punched is now Off!");
 			return true;
 		}
