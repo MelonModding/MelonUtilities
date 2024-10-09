@@ -35,7 +35,7 @@ public class HelperCommand extends Command {
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Setting " + TextFormatting.GRAY + username + TextFormatting.LIME + " to Helper.");
 
 			Data.playerData.loadAll(PlayerData.class);
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper = true;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper = true;
 			Data.playerData.saveAll();
 
 			return true;
@@ -46,7 +46,7 @@ public class HelperCommand extends Command {
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Setting " + TextFormatting.GRAY + username + TextFormatting.LIME + " to Helper.");
 
 			Data.playerData.loadAll(PlayerData.class);
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper = true;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper = true;
 			Data.playerData.saveAll();
 
 			return true;
@@ -63,7 +63,7 @@ public class HelperCommand extends Command {
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Removing " + TextFormatting.GRAY + username + TextFormatting.LIME + " from Helper List.");
 
 			Data.playerData.loadAll(PlayerData.class);
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper = false;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper = false;
 			Data.playerData.saveAll();
 
 			return true;
@@ -74,7 +74,7 @@ public class HelperCommand extends Command {
 			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Removing " + TextFormatting.GRAY + username + TextFormatting.LIME + " from Helper List.");
 
 			Data.playerData.loadAll(PlayerData.class);
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper = false;
+			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper = false;
 			Data.playerData.saveAll();
 
 			return true;
