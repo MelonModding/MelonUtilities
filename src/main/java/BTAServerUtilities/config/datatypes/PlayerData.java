@@ -9,18 +9,20 @@ import java.util.List;
 import java.util.UUID;
 
 public class PlayerData {
-
 	@SerializedName(value = "Homes:")
 	@Expose public ArrayList<Home> homes = new ArrayList<>();
 
 	@SerializedName(value = "Helper:")
 	@Expose public boolean isHelper = false;
 
-	@SerializedName(value = "Lock on Block Placed:")
+	@SerializedName(value = "Lock-On-Block-Placed:")
 	@Expose public boolean lockOnBlockPlaced = false;
 
-	@SerializedName(value = "Lock on Block Punched:")
+	@SerializedName(value = "Lock-On-Block-Punched:")
 	@Expose public boolean lockOnBlockPunched = false;
+
+	@SerializedName(value = "Lock-Bypass:")
+	@Expose public boolean lockBypass = false;
 
 	@SerializedName(value = "Players Trusted to all Containers:")
 	@Expose public List<UUID> playersTrustedToAllContainers = new ArrayList<>();

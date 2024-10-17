@@ -5,6 +5,8 @@ import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.net.command.commands.PlaySoundCommand;
+import turniplabs.halplibe.helper.SoundHelper;
 
 @SuppressWarnings("SameReturnValue")
 public class EditRoleDisplaySubcommand {
@@ -16,6 +18,7 @@ public class EditRoleDisplaySubcommand {
 			RoleCommand.syntax.printLayerAndSubLayers("displayName", sender);
 			return true;
 		}
+
 
 		sender.sendMessage(TextFormatting.LIME + "Set Display Name for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 		Data.roles.loadAll(RoleData.class);

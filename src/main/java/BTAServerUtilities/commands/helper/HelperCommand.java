@@ -2,7 +2,7 @@ package BTAServerUtilities.commands.helper;
 
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
-import BTAServerUtilities.utility.CommandSyntaxBuilder;
+import BTAServerUtilities.utility.SyntaxBuilder;
 import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
@@ -16,7 +16,7 @@ public class HelperCommand extends Command {
 
 	public HelperCommand() {super(COMMAND, "h");}
 
-	public static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+	public static SyntaxBuilder syntax = new SyntaxBuilder();
 
 	public static void buildHelperSyntax(){
 		syntax.clear();

@@ -5,7 +5,8 @@ import BTAServerUtilities.commands.role.subcommands.EditRoleTextSubcommand;
 import BTAServerUtilities.commands.role.subcommands.EditRoleUsernameSubcommand;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.ConfigData;
-import BTAServerUtilities.utility.CommandSyntaxBuilder;
+import BTAServerUtilities.utility.ResponseHelper;
+import BTAServerUtilities.utility.SyntaxBuilder;
 import BTAServerUtilities.utility.RoleBuilder;
 import BTAServerUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.Command;
@@ -22,7 +23,7 @@ public class RoleCommand extends Command {
 
 	public static RoleData getRoleFromArg(String arg){return Data.roles.getOrCreate(arg, RoleData.class);}
 
-	public static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+	public static SyntaxBuilder syntax = new SyntaxBuilder();
 	public static void buildRoleSyntax(){
 		syntax.clear();
 		syntax.append("title",                                                  TextFormatting.LIGHT_GRAY + "< Command Syntax >");
@@ -106,7 +107,7 @@ public class RoleCommand extends Command {
 
 		switch (Data.roles.remove(role)) {
 			case 0:
-				sender.sendMessage("§1Deleted Role: " + role);
+				sender.sendMessage(TextFormatting.ORANGE + "Deleted Role: " + role);
 				return true;
 			case 1:
 				sender.sendMessage(TextFormatting.RED + "Failed to Delete Role: " + role + " (Role Doesn't Exist)");
@@ -180,7 +181,7 @@ public class RoleCommand extends Command {
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).priority = Integer.parseInt(args[3]);
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Priority for Role " + args[1] + " to: §0" + args[3]);
+			sender.sendMessage(TextFormatting.LIME + "Set Priority for Role " + args[1] + " to: " + TextFormatting.LIGHT_GRAY + args[3]);
 			return true;
 		}
 
@@ -288,13 +289,13 @@ public class RoleCommand extends Command {
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.add(sender.getPlayer().username);
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Granted Role: " + args[1] + " to player: §0" + sender.getPlayer().username);
+			sender.sendMessage(TextFormatting.LIME + "Granted Role: " + args[1] + " to player: " + TextFormatting.LIGHT_GRAY + sender.getPlayer().username);
 			return true;
 		} else if (args.length == 3 && !roleData.playersGrantedRole.contains(args[2])){
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.add(args[2]);
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Granted Role: " + args[1] + " to player: §0" + args[2]);
+			sender.sendMessage(TextFormatting.LIME + "Granted Role: " + args[1] + " to player: " + TextFormatting.LIGHT_GRAY + args[2]);
 			return true;
 		} else if (roleData.playersGrantedRole.contains(sender.getPlayer().username) || roleData.playersGrantedRole.contains(args[2])) {
 			sender.sendMessage(TextFormatting.RED + "Failed to Grant Role (Player already has Role!)");
@@ -327,13 +328,13 @@ public class RoleCommand extends Command {
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.remove(args[2]);
 			Data.roles.saveAll();
-			sender.sendMessage("§1Revoked Role: " + args[1] + " from player: §0" + args[2]);
+			sender.sendMessage(TextFormatting.ORANGE + "Revoked Role: " + args[1] + " from player: " + TextFormatting.LIGHT_GRAY + args[2]);
 			return true;
 		} else if (args.length == 2 && roleData.playersGrantedRole.contains(sender.getPlayer().username)){
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.remove(sender.getPlayer().username);
 			Data.roles.saveAll();
-			sender.sendMessage("§1Revoked Role: " + args[1] + " from player: §0" + sender.getPlayer().username);
+			sender.sendMessage(TextFormatting.ORANGE + "Revoked Role: " + args[1] + " from player: " + TextFormatting.LIGHT_GRAY + sender.getPlayer().username);
 			return true;
 		} else if (!roleData.playersGrantedRole.contains(sender.getPlayer().username) || !roleData.playersGrantedRole.contains(args[2])) {
 			sender.sendMessage(TextFormatting.RED + "Failed to Revoke Role (Player does not have Role!)");

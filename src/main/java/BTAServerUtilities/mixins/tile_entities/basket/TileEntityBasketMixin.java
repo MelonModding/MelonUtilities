@@ -34,10 +34,11 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 	@Unique
 	private final List<UUID> trustedPlayers = new ArrayList<>();
 
-	@Inject(at = @At("TAIL"), method = "writeToNBT")
+@Inject(at = @At("TAIL"), method = "writeToNBT")
 	public void writeToNBTInject(CompoundTag nbttagcompound, CallbackInfo ci){
 		nbttagcompound.putBoolean("isLocked", isLocked);
 		UUIDHelper.writeToTag(nbttagcompound, lockOwner, "lockOwner");
+		nbttagcompound.putBoolean("isCommunityContainer", isCommunityContainer);
 
 		ListTag trustedPlayers = new ListTag();
 		for(UUID uuid : this.trustedPlayers){
@@ -52,6 +53,7 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 	public void readFromNBTInject(CompoundTag nbttagcompound, CallbackInfo ci){
 		isLocked = nbttagcompound.getBooleanOrDefault("isLocked", false);
 		lockOwner = UUIDHelper.readFromTag(nbttagcompound, "lockOwner");
+		isCommunityContainer = nbttagcompound.getBooleanOrDefault("isCommunityContainer", false);
 
 		ListTag tempListTag = nbttagcompound.getList("trustedPlayers");
 
@@ -70,7 +72,8 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))
 					&& !trustedPlayers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
 					&& !Data.playerData.getOrCreate(lockOwner.toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !isCommunityContainer) {
+					&& !isCommunityContainer
+					&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(entityplayer.username).toString(), PlayerData.class).lockBypass){
 					ci.cancel();
 					return;
 				}

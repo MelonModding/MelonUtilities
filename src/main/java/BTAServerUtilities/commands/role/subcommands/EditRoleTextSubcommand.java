@@ -13,6 +13,7 @@ public class EditRoleTextSubcommand {
 		RoleCommand.getRoleFromArg(args[1]).textColor = args[4];
 		Data.roles.saveAll();
 		sender.sendMessage(TextFormatting.LIME + "Set Text Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
+		sender.getWorld().playSoundAtEntity(null, sender.getPlayer(), "note.pling", 1f, 2f);
 		return true;
 	}
 

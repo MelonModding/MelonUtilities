@@ -27,6 +27,7 @@ public class DataBank<Data> {
 
 	//Using the getOrCreateData method on an unused/empty id will create a file with that id, hence there being no createData method
 
+
 	String filePath = FabricLoader.getInstance().getConfigDir() + "/" + BTAServerUtilities.MOD_ID + "/";
 	Data dataType;
 	public final HashMap<String, File> fileHashMap = new HashMap<>();

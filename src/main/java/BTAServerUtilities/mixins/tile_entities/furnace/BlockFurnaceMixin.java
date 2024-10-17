@@ -26,7 +26,8 @@ public class BlockFurnaceMixin {
 				if (!iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(player.username))
 					&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(player.username))
 					&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
-					&& !iContainer.getIsCommunityContainer()){
+					&& !iContainer.getIsCommunityContainer()
+					&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(player.username).toString(), PlayerData.class).lockBypass){
 					player.sendMessage(TextFormatting.RED + "Furnace is Locked!");
 					cir.setReturnValue(false);
 					return;

@@ -4,12 +4,11 @@ import net.minecraft.core.net.command.CommandSender;
 
 import java.util.ArrayList;
 
-public class CommandSyntaxBuilder {
+public class SyntaxBuilder {
 
-	ArrayList<CommandSyntaxLine> syntaxLines = new ArrayList<>();
+	ArrayList<SyntaxLine> syntaxLines = new ArrayList<>();
 
-
-	public void append(CommandSyntaxLine syntaxLine){
+	public void append(SyntaxLine syntaxLine){
 		if(syntaxLine.owner.equals("none")){
 			syntaxLines.add(syntaxLine);
 		} else {
@@ -37,7 +36,35 @@ public class CommandSyntaxBuilder {
 	}
 
 	public void append(String name, String message){
-		CommandSyntaxLine syntaxLine = new CommandSyntaxLine(name, message);
+		SyntaxLine syntaxLine = new SyntaxLine(name, message);
+		if(syntaxLine.owner.equals("none")){
+			syntaxLines.add(syntaxLine);
+		} else {
+			for (int i = 0; i < syntaxLines.size(); i++) {
+				if (syntaxLines.get(i).name.equals(syntaxLine.owner)) {
+					if (syntaxLines.size() - 1 == i) {
+						syntaxLines.add(syntaxLine);
+					} else {
+						for (int j = i + 1; j < syntaxLines.size(); j++) {
+							if (syntaxLines.get(j).name.equals(syntaxLines.get(i).owner)) {
+								if (j == syntaxLines.size() - 1) {
+									syntaxLines.add(syntaxLine);
+									break;
+								}
+								continue;
+							}
+							syntaxLines.add(syntaxLine);
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	public void append(String name, boolean op, String message){
+		SyntaxLine syntaxLine = new SyntaxLine(name, message, op);
 		if(syntaxLine.owner.equals("none")){
 			syntaxLines.add(syntaxLine);
 		} else {
@@ -65,7 +92,7 @@ public class CommandSyntaxBuilder {
 	}
 
 	public void append(String name, String owner, String message){
-		CommandSyntaxLine syntaxLine = new CommandSyntaxLine(name, owner, message);
+		SyntaxLine syntaxLine = new SyntaxLine(name, owner, message);
 		if(syntaxLine.owner.equals("none")){
 			syntaxLines.add(syntaxLine);
 		} else {
@@ -92,7 +119,35 @@ public class CommandSyntaxBuilder {
 		}
 	}
 
-	public void prepend(CommandSyntaxLine syntaxLine){
+	public void append(String name, String owner, boolean op, String message){
+		SyntaxLine syntaxLine = new SyntaxLine(name, owner, message, op);
+		if(syntaxLine.owner.equals("none")){
+			syntaxLines.add(syntaxLine);
+		} else {
+			for (int i = 0; i < syntaxLines.size(); i++) {
+				if (syntaxLines.get(i).name.equals(syntaxLine.owner)) {
+					if (syntaxLines.size() - 1 == i) {
+						syntaxLines.add(syntaxLine);
+					} else {
+						for (int j = i + 1; j < syntaxLines.size(); j++) {
+							if (syntaxLines.get(j).name.equals(syntaxLines.get(i).owner)) {
+								if (j == syntaxLines.size() - 1) {
+									syntaxLines.add(syntaxLine);
+									break;
+								}
+								continue;
+							}
+							syntaxLines.add(syntaxLine);
+							break;
+						}
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	public void prepend(SyntaxLine syntaxLine){
 		if(syntaxLines.isEmpty()){
 			syntaxLines.add(syntaxLine);
 		} else if (syntaxLine.owner.equals("none")){
@@ -112,7 +167,7 @@ public class CommandSyntaxBuilder {
 	}
 
 	public void prepend(String name, String message){
-		CommandSyntaxLine syntaxLine = new CommandSyntaxLine(name, message);
+		SyntaxLine syntaxLine = new SyntaxLine(name, message);
 		if(syntaxLines.isEmpty()){
 			syntaxLines.add(syntaxLine);
 		} else if (syntaxLine.owner.equals("none")){
@@ -132,7 +187,7 @@ public class CommandSyntaxBuilder {
 	}
 
 	public void prepend(String name, String owner, String message){
-		CommandSyntaxLine syntaxLine = new CommandSyntaxLine(name, owner, message);
+		SyntaxLine syntaxLine = new SyntaxLine(name, owner, message);
 		if(syntaxLines.isEmpty()){
 			syntaxLines.add(syntaxLine);
 		} else if (syntaxLine.owner.equals("none")){
@@ -152,8 +207,12 @@ public class CommandSyntaxBuilder {
 	}
 
 	public void printAllLines(CommandSender sender){
-		for(CommandSyntaxLine syntaxLine : syntaxLines){
-			sender.sendMessage(syntaxLine.message);
+		for(SyntaxLine syntaxLine : syntaxLines){
+			if(sender.isAdmin() && syntaxLine.op) {
+				sender.sendMessage(syntaxLine.message);
+			} else if(!syntaxLine.op){
+				sender.sendMessage(syntaxLine.message);
+			}
 		}
 	}
 
@@ -165,8 +224,13 @@ public class CommandSyntaxBuilder {
 				sender.sendMessage(syntaxLines.get(i).message);
 				for(int j = i+1; j < syntaxLines.size(); j++){
 					if(syntaxLines.get(j).owner.equals(name)){
-						sender.sendMessage(syntaxLines.get(j).message);
-						thisLayerOwner = syntaxLines.get(j).name;
+						if(sender.isAdmin() && syntaxLines.get(j).op) {
+							sender.sendMessage(syntaxLines.get(j).message);
+							thisLayerOwner = syntaxLines.get(j).name;
+						} else if(!syntaxLines.get(j).op){
+							sender.sendMessage(syntaxLines.get(j).message);
+							thisLayerOwner = syntaxLines.get(j).name;
+						}
 					}
 				}
 			}
@@ -201,8 +265,8 @@ public class CommandSyntaxBuilder {
 
 	ArrayList<String> layerOwnerMessages = new ArrayList<>();
 	String insideLayersOwner;
-	CommandSyntaxLine insideLayer;
-	private void printLayerOwners(CommandSyntaxLine syntaxLine, CommandSender sender){
+	SyntaxLine insideLayer;
+	private void printLayerOwners(SyntaxLine syntaxLine, CommandSender sender){
 		insideLayer = syntaxLine;
 		for(int i = syntaxLines.size() - 1; i >= 0; i--){
 			if(insideLayer.owner.equals("none")) {

@@ -1,13 +1,13 @@
 package BTAServerUtilities.commands.crew;
 
-import BTAServerUtilities.utility.CommandSyntaxBuilder;
+import BTAServerUtilities.utility.SyntaxBuilder;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
 
 public class CrewCommand extends Command {
-	public static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+	public static SyntaxBuilder syntax = new SyntaxBuilder();
 
 	private final static String COMMAND = "crew";
 

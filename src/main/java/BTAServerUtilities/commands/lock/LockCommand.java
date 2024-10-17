@@ -2,10 +2,9 @@ package BTAServerUtilities.commands.lock;
 
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
-import BTAServerUtilities.config.datatypes.RoleData;
 import BTAServerUtilities.interfaces.TileEntityContainerInterface;
 import BTAServerUtilities.utility.BSUtility;
-import BTAServerUtilities.utility.CommandSyntaxBuilder;
+import BTAServerUtilities.utility.SyntaxBuilder;
 import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.HitResult;
 import net.minecraft.core.block.entity.*;
@@ -13,9 +12,6 @@ import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.core.util.helper.MathHelper;
-import net.minecraft.core.util.phys.Vec3d;
-import net.minecraft.server.entity.player.EntityPlayerMP;
 
 public class LockCommand extends Command {
 
@@ -25,33 +21,41 @@ public class LockCommand extends Command {
 		super(COMMAND, "l");
 	}
 
-	public static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+	public static SyntaxBuilder syntax = new SyntaxBuilder();
 
 	public static void buildLockSyntax(){
 		syntax.clear();
 		syntax.append("title",                                                   TextFormatting.LIGHT_GRAY + "< Command Syntax >");
 		syntax.append("lock", "title",                                     TextFormatting.LIGHT_GRAY + "  > /lock [<mode>]");
-		syntax.append("lockTrust", "lock",                                 TextFormatting.LIGHT_GRAY + "    > onBlockPlaced true/false");
-		syntax.append("lockTrust", "lock",                                 TextFormatting.LIGHT_GRAY + "    > onBlockPunched true/false");
+		syntax.append("lockOnBlockPlaced", "lock",                         TextFormatting.LIGHT_GRAY + "    > onBlockPlaced true/false");
+		syntax.append("lockOnBlockPunched", "lock",                        TextFormatting.LIGHT_GRAY + "    > onBlockPunched true/false");
 		syntax.append("lockTrust", "lock",                                 TextFormatting.LIGHT_GRAY + "    > trust <player>");
-		syntax.append("lockTrust", "lock",                                 TextFormatting.LIGHT_GRAY + "    > trustall <player>");
-		syntax.append("lockTrust", "lock",                                 TextFormatting.LIGHT_GRAY + "    > trustcommunity");
+		syntax.append("lockTrustAll", "lock",                              TextFormatting.LIGHT_GRAY + "    > trustall <player>");
+		syntax.append("lockTrustCommunity", "lock",                        TextFormatting.LIGHT_GRAY + "    > trustcommunity");
 		syntax.append("lockUntrust", "lock",                               TextFormatting.LIGHT_GRAY + "    > untrust <player>");
-		syntax.append("lockUntrust", "lock",                               TextFormatting.LIGHT_GRAY + "    > untrustall <player>");
-		syntax.append("lockTrust", "lock",                                 TextFormatting.LIGHT_GRAY + "    > untrustcommunity");
-
+		syntax.append("lockUntrustAll", "lock",                            TextFormatting.LIGHT_GRAY + "    > untrustall <player>");
+		syntax.append("lockUntrustCommunity", "lock",                      TextFormatting.LIGHT_GRAY + "    > untrustcommunity");
+		syntax.append("lockBypass", "lock", true,                      TextFormatting.LIGHT_GRAY + "    > bypass true/false");
 	}
 
 	private boolean onBlockPlaced(CommandHandler handler, CommandSender sender, String[] args){
 		if(args[1].equals("true")) {
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced = true;
-			sender.sendMessage(TextFormatting.LIME + "Lock on Block Placed is now On!");
-			return true;
+			if(!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced){
+				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced = true;
+				sender.sendMessage(TextFormatting.LIME + "Lock-On-Block-Placed is now On!");
+				return true;
+			}
+			sender.sendMessage(TextFormatting.RED + "Failed to turn Lock-On-Block-Placed On! (Already On)");
+			return false;
 		}
 		if(args[1].equals("false")) {
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced = false;
-			sender.sendMessage(TextFormatting.LIME + "Lock on Block Placed is now Off!");
-			return true;
+			if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced) {
+				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPlaced = false;
+				sender.sendMessage(TextFormatting.LIME + "Lock on Block Placed is now Off!");
+				return true;
+			}
+			sender.sendMessage(TextFormatting.RED + "Failed to turn Lock-On-Block-Placed Off! (Already Off)");
+			return false;
 		}
 		sender.sendMessage(TextFormatting.RED + "Failed to set Lock Mode! (Invalid Syntax)");
 		return false;
@@ -59,13 +63,21 @@ public class LockCommand extends Command {
 
 	private boolean onBlockPunched(CommandHandler handler, CommandSender sender, String[] args){
 		if(args[1].equals("true")) {
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched = true;
-			sender.sendMessage(TextFormatting.LIME + "Lock on Block Punched is now On!");
+			if(!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched){
+				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched = true;
+				sender.sendMessage(TextFormatting.LIME + "Lock-On-Block-Punched is now On!");
+				return true;
+			}
+			sender.sendMessage(TextFormatting.RED + "Failed to turn Lock-On-Block-Punched On! (Already On)");
 			return true;
 		}
 		if(args[1].equals("false")) {
-			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched = false;
-			sender.sendMessage(TextFormatting.LIME + "Lock on Block Punched is now Off!");
+			if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched) {
+				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockOnBlockPunched = false;
+				sender.sendMessage(TextFormatting.LIME + "Lock-On-Block-Punched is now Off!");
+				return true;
+			}
+			sender.sendMessage(TextFormatting.RED + "Failed to turn Lock-On-Block-Punched Off! (Already Off)");
 			return true;
 		}
 		sender.sendMessage(TextFormatting.RED + "Failed to set Lock Mode! (Invalid Syntax)");
@@ -345,6 +357,33 @@ public class LockCommand extends Command {
 	}
 
 
+	private boolean bypass(CommandHandler handler, CommandSender sender, String[] args) {
+		if(sender.isAdmin()) {
+			if (args[1].equals("true")) {
+				if (!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockBypass) {
+					Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockBypass = true;
+					sender.sendMessage(TextFormatting.LIME + "Lock-Bypass is now On!");
+					return true;
+				}
+				sender.sendMessage(TextFormatting.RED + "Failed to turn Lock-Bypass On! (Already On)");
+				return true;
+			}
+			if (args[1].equals("false")) {
+				if (Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockBypass) {
+					Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).lockBypass = false;
+					sender.sendMessage(TextFormatting.LIME + "Lock-Bypass is now Off!");
+					return true;
+				}
+				sender.sendMessage(TextFormatting.RED + "Failed to turn Lock-Bypass Off! (Already Off)");
+				return true;
+			}
+			sender.sendMessage(TextFormatting.RED + "Failed to set Lock-Bypass! (Invalid Syntax)");
+			return false;
+		}
+		sender.sendMessage(TextFormatting.RED + "You don't have permission to use this command!");
+		return true;
+	}
+
 	@Override
 	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
 
@@ -418,6 +457,8 @@ public class LockCommand extends Command {
 				return untrustAll(handler, sender, args);
 			case "untrustcommunity":
 				return untrustCommunity(handler, sender, args);
+			case "bypass":
+				return bypass(handler, sender, args);
 			case "help":
 				return false;
 		}

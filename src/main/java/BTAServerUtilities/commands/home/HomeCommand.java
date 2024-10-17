@@ -1,9 +1,8 @@
 package BTAServerUtilities.commands.home;
 
-import BTAServerUtilities.BTAServerUtilities;
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
-import BTAServerUtilities.utility.CommandSyntaxBuilder;
+import BTAServerUtilities.utility.SyntaxBuilder;
 import BTAServerUtilities.config.custom.classes.Home;
 import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.client.entity.player.EntityPlayerSP;
@@ -43,7 +42,7 @@ public class HomeCommand extends Command {
 		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
 	}
 
-	static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+	static SyntaxBuilder syntax = new SyntaxBuilder();
 
 	public static void buildSyntax(){
 		syntax.clear();

@@ -2,7 +2,7 @@ package BTAServerUtilities.commands.home;
 
 import BTAServerUtilities.config.Data;
 import BTAServerUtilities.config.datatypes.PlayerData;
-import BTAServerUtilities.utility.CommandSyntaxBuilder;
+import BTAServerUtilities.utility.SyntaxBuilder;
 import BTAServerUtilities.config.custom.classes.Home;
 import BTAServerUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.command.*;
@@ -25,7 +25,7 @@ public class DelHomeCommand extends Command {
 		}
 	}
 
-	static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+	static SyntaxBuilder syntax = new SyntaxBuilder();
 
 	public static void buildSyntax(){
 		syntax.clear();
@@ -39,7 +39,7 @@ public class DelHomeCommand extends Command {
 
 		if (args.length == 0 && home != null) {
 			deleteHome("home", sender);
-			sender.sendMessage("§1Deleted Home: <home>");
+			sender.sendMessage(TextFormatting.ORANGE + "Deleted Home: <home>");
 			return true;
 		} else if (args.length == 0){
 			sender.sendMessage(TextFormatting.RED + "Failed to Delete Home (Home does not exist!)");
@@ -49,7 +49,7 @@ public class DelHomeCommand extends Command {
 			home = HomeCommand.getHome(args[0], sender);
 			if (home != null) {
 				deleteHome(args[0], sender);
-				sender.sendMessage("§1Deleted Home: <" + args[0] + ">");
+				sender.sendMessage(TextFormatting.ORANGE + "Deleted Home: <" + args[0] + ">");
 				return true;
 			}
 			sender.sendMessage(TextFormatting.RED + "Failed to Delete Home (Home does not exist!)");

@@ -1,7 +1,7 @@
 package BTAServerUtilities.commands.kit;
 
 import BTAServerUtilities.config.Data;
-import BTAServerUtilities.utility.CommandSyntaxBuilder;
+import BTAServerUtilities.utility.SyntaxBuilder;
 import BTAServerUtilities.config.datatypes.KitData;
 import net.minecraft.core.entity.EntityItem;
 import net.minecraft.core.item.ItemStack;
@@ -137,7 +137,7 @@ public static String hmsConversion(long millis) {
 		return list.indexOf(target);
 	}
 
-	static CommandSyntaxBuilder syntax = new CommandSyntaxBuilder();
+	static SyntaxBuilder syntax = new SyntaxBuilder();
 
 	public static void buildKitSyntax(){
 		syntax.clear();
@@ -243,8 +243,8 @@ public static String hmsConversion(long millis) {
                         sender.sendMessage(TextFormatting.RED + "Failed to Give Kit: '" + kit + "' to " + sender.getPlayer().username + " (Kit Doesn't Exist)");
                         sender.sendMessage("");
                     } else {
-                        sender.sendMessage("§1You've already used this kit... time left until next kit: ");
-                        sender.sendMessage("§1" + hmsConversion(cooldown - (System.currentTimeMillis() - cooldowns.getOrDefault(kit, new HashMap<>()).getOrDefault(sender.getPlayer().username, 0L))));
+                        sender.sendMessage(TextFormatting.ORANGE + "You've already used this kit... time left until next kit: ");
+                        sender.sendMessage(TextFormatting.ORANGE + hmsConversion(cooldown - (System.currentTimeMillis() - cooldowns.getOrDefault(kit, new HashMap<>()).getOrDefault(sender.getPlayer().username, 0L))));
                         return true;
                     }
                 }
@@ -534,7 +534,7 @@ public static String hmsConversion(long millis) {
 
                 switch (Data.kits.remove(kit)) {
                     case 0:
-                        sender.sendMessage("§1Deleted Kit: '" + kit + "'");
+                        sender.sendMessage(TextFormatting.ORANGE + "Deleted Kit: '" + kit + "'");
                         return true;
                     case 1:
                         sender.sendMessage(TextFormatting.RED + "Failed to Delete Kit: '" + kit + "' (Kit Doesn't Exist)");
