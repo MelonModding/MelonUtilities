@@ -9,6 +9,7 @@ import MelonUtilities.commands.kit.KittenCommand;
 import MelonUtilities.commands.lock.LockCommand;
 import MelonUtilities.commands.misc.WhereAmICommand;
 import MelonUtilities.commands.role.RoleCommand;
+import MelonUtilities.commands.rollback.RollbackCommand;
 import MelonUtilities.commands.tpa.TPACommand;
 import MelonUtilities.commands.tpa.TPADenyCommand;
 import MelonUtilities.commands.tpa.TPAcceptCommand;
@@ -127,11 +128,11 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		// Role
 		Data.roles.loadAll(RoleData.class);
 		RoleCommand.buildRoleSyntax();
+		// Rollback
+		RollbackManager.OnInit();
 		// Tpa
 		// Utility
 		// Warp
-		// Rollback
-		RollbackManager.OnInit();
 		// Anything Else
 		Data.configs.loadAll(ConfigData.class);
 		Data.playerData.loadAll(PlayerData.class);
@@ -162,6 +163,8 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		CommandHelper.createCommand(new WhereAmICommand());
 		// Role
 		CommandHelper.createCommand(new RoleCommand());
+		// Rollback
+		CommandHelper.createCommand(new RollbackCommand());
 		// Tpa
 		CommandHelper.createCommand(new TPACommand());
 		CommandHelper.createCommand(new TPAcceptCommand());
