@@ -18,7 +18,6 @@ import net.minecraft.core.world.chunk.reader.ChunkReaderVersion2;
 import net.minecraft.core.world.save.LevelData;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -126,23 +125,23 @@ public class RollbackManager {
 		}
 	}
 
-	public static void OnInit(){
+	public static void onInit(){
 		new File("./rollbackdata").mkdirs();
 		new File("./rollbackdata/fullbackups").mkdirs();
 		new File("./rollbackdata/modifiedchunksnapshots").mkdirs();
 	}
 
-	public static void CreateFullBackup(){
+	public static void createFullBackup(){
 		new Thread(() -> {
 			//do the thing, put made thing into thing properly :)
 		}).start();
 	}
 
-	public static void QueueModifiedChunk(Chunk chunk){
+	public static void queueModifiedChunk(Chunk chunk){
 		ModifiedChunkQueue.add(chunk);
 	}
 
-	public static void TakeModifiedChunkSnapshot(){
+	public static void takeModifiedChunkSnapshot(){
 		new Thread(() -> {
 			Iterator<Chunk> chunkIterator = ModifiedChunkQueue.iterator();
 			while(chunkIterator.hasNext()){
@@ -159,11 +158,11 @@ public class RollbackManager {
 	}
 
 
-	public static void PruneFullBackups(){
+	public static void pruneFullBackups(){
 
 	}
 
-	public static void Tick(){
+	public static void tick(){
 		long currentTime = System.currentTimeMillis();
 
 	}
