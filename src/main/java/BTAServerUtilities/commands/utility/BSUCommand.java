@@ -68,10 +68,6 @@ public class BSUCommand extends Command {
 			return true;
 		}
 
-		if (args[0].equals("snap")) {
-			RollbackManager.TakeModifiedChunkSnapshot();
-		}
-
 		sender.sendMessage(TextFormatting.RED + " " + NAME + " Error: (Invalid Syntax)");
         return false;
     }

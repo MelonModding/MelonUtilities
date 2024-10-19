@@ -2,20 +2,26 @@ package BTAServerUtilities.rollback;
 
 import BTAServerUtilities.BTAServerUtilities;
 import com.mojang.nbt.CompoundTag;
+import com.mojang.nbt.ListTag;
 import com.mojang.nbt.NbtIo;
+import com.mojang.nbt.Tag;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.entity.Entity;
+import net.minecraft.core.entity.EntityDispatcher;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.chunk.Chunk;
 import net.minecraft.core.world.chunk.ChunkLoaderLegacy;
+import net.minecraft.core.world.chunk.reader.ChunkReader;
+import net.minecraft.core.world.chunk.reader.ChunkReaderLegacy;
+import net.minecraft.core.world.chunk.reader.ChunkReaderVersion1;
+import net.minecraft.core.world.chunk.reader.ChunkReaderVersion2;
 import net.minecraft.core.world.save.LevelData;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 
 public class RollbackManager {
@@ -62,6 +68,68 @@ public class RollbackManager {
 		}
 	}
 
+	public static ChunkReader getChunkReaderByVersion(World world, CompoundTag tag, int version) {
+		switch (version) {
+			case 1: {
+				return new ChunkReaderVersion1(world, tag);
+			}
+			case 2: {
+				return new ChunkReaderVersion2(world, tag);
+			}
+		}
+		return new ChunkReaderLegacy(world, tag);
+	}
+
+	public static Chunk loadChunkIntoWorldFromCompound(World world, CompoundTag tag) {
+		ListTag tileEntityListTag;
+		ListTag entityListTag;
+		int version = tag.getIntegerOrDefault("Version", -1);
+		ChunkReader reader = getChunkReaderByVersion(world, tag, version);
+		int x = reader.getX();
+		int z = reader.getZ();
+		Chunk chunk = new Chunk(world, x, z);
+		chunk.heightMap = reader.getHeightMap();
+		chunk.averageBlockHeight = reader.getAverageBlockHeight();
+		chunk.isTerrainPopulated = reader.getIsTerrainPopulated();
+		chunk.temperature = reader.getTemperatureMap();
+		chunk.humidity = reader.getHumidityMap();
+		Map<Integer, String> biomeRegistry = reader.getBiomeRegistry();
+		for (int i = 0; i < 16; ++i) {
+			ChunkLoaderLegacy.loadChunkSectionFromCompound(chunk.getSection(i), reader, biomeRegistry);
+		}
+		if (chunk.heightMap == null) {
+			chunk.heightMap = new short[256];
+			chunk.recalcHeightmap();
+		}
+		if (chunk.temperature == null || chunk.temperature.length == 0) {
+			chunk.temperature = new double[256];
+			Arrays.fill(chunk.temperature, Double.NEGATIVE_INFINITY);
+		}
+		if (chunk.humidity == null || chunk.humidity.length == 0) {
+			chunk.humidity = new double[256];
+			Arrays.fill(chunk.humidity, Double.NEGATIVE_INFINITY);
+		}
+		if ((entityListTag = tag.getList("Entities")) != null) {
+			for (Tag<?> entityTagBase : entityListTag) {
+				if (!(entityTagBase instanceof CompoundTag)) continue;
+				CompoundTag entityTag = (CompoundTag)entityTagBase;
+				Entity entity = EntityDispatcher.createEntityFromNBT(entityTag, world);
+				chunk.hasEntities = true;
+				if (entity == null) continue;
+				chunk.addEntity(entity);
+			}
+		}
+		if ((tileEntityListTag = tag.getList("TileEntities")) != null) {
+			for (Tag<?> tileEntityTagBase : tileEntityListTag) {
+				CompoundTag tileEntityTag;
+				TileEntity tileEntity;
+				if (!(tileEntityTagBase instanceof CompoundTag) || (tileEntity = TileEntity.createAndLoadEntity(tileEntityTag = (CompoundTag)tileEntityTagBase)) == null) continue;
+				chunk.addTileEntity(tileEntity);
+			}
+		}
+		return chunk;
+	}
+
 	public static void OnInit(){
 		new File("./rollbackdata").mkdirs();
 		new File("./rollbackdata/fullbackups").mkdirs();
@@ -93,6 +161,7 @@ public class RollbackManager {
 			}
 		}).start();
 	}
+
 
 	public static void PruneFullBackups(){
 
