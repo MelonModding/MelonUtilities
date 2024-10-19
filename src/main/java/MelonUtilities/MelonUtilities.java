@@ -23,6 +23,8 @@ import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.config.custom.jsonadapters.HomeJsonAdapter;
+import MelonUtilities.listeners.DebugInfoListener;
+import MelonUtilities.listeners.GuiTestListener;
 import MelonUtilities.rollback.RollbackManager;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -34,6 +36,7 @@ import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.useless.serverlibe.ServerLibe;
 import turniplabs.halplibe.helper.CommandHelper;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
@@ -94,6 +97,7 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		Data.configs.loadAll(ConfigData.class);
 		Data.playerData.loadAll(PlayerData.class);
 		updateList();
+
 	}
 
 	public void updateRoles(){
@@ -133,6 +137,13 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		// Tpa
 		// Utility
 		// Warp
+		// ServerLibe
+
+		// In order for methods inside your listeners to be recognized by ServerLibe you must
+		// register them into ServerLibe like such
+		ServerLibe.registerListener(new GuiTestListener());
+		ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
+
 		// Anything Else
 		Data.configs.loadAll(ConfigData.class);
 		Data.playerData.loadAll(PlayerData.class);

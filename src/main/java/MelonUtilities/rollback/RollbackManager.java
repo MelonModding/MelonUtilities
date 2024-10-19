@@ -20,6 +20,8 @@ import net.minecraft.core.world.save.LevelData;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -33,15 +35,15 @@ public class RollbackManager {
 	File backupsDir = new File("./rollbackdata/fullbackups");
 	static File snapshotsDir = new File("./rollbackdata/modifiedchunksnapshots");
 	static boolean createIfNecessary = true;
+	public static SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
 
 	public static void saveChunk(World world, Chunk chunk) throws IOException {
 		world.checkSessionLock();
 
 		File chunkDir = new File(snapshotsDir + "/c[x." + chunk.xPosition + "-z." + chunk.zPosition + "]");
 		chunkDir.mkdirs();
-		SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
 		Date resultdate = new Date(System.currentTimeMillis());
-		File chunkFile = new File(chunkDir, System.currentTimeMillis() + ".[" + sdf.format(resultdate) + "].dat");
+		File chunkFile = new File(chunkDir, System.currentTimeMillis() + " [" + sdf.format(resultdate) + "].dat");
 
 		if (chunkFile.exists()) {
 			LevelData levelData = world.getLevelData();
@@ -50,12 +52,10 @@ public class RollbackManager {
 
 		try {
 			File tmpChunkFile = new File(chunkDir, "tmp_chunk.dat");
-			FileOutputStream fileStream = new FileOutputStream(tmpChunkFile);
-			CompoundTag levelTag = new CompoundTag();
 			CompoundTag chunkDataTag = new CompoundTag();
-			levelTag.put("Level", chunkDataTag);
 			ChunkLoaderLegacy.storeChunkInCompound(chunk, world, chunkDataTag);
-			NbtIo.writeCompressed(levelTag, fileStream);
+			OutputStream fileStream = Files.newOutputStream(tmpChunkFile.toPath());
+			NbtIo.writeCompressed(chunkDataTag, fileStream);
 			fileStream.close();
 			if (chunkFile.exists()) {
 				chunkFile.delete();
@@ -80,14 +80,13 @@ public class RollbackManager {
 		return new ChunkReaderLegacy(world, tag);
 	}
 
-	public static Chunk loadChunkIntoWorldFromCompound(World world, CompoundTag tag) {
+	public static void rollbackChunk(Chunk chunk, CompoundTag tag){
 		ListTag tileEntityListTag;
 		ListTag entityListTag;
 		int version = tag.getIntegerOrDefault("Version", -1);
-		ChunkReader reader = getChunkReaderByVersion(world, tag, version);
+		ChunkReader reader = getChunkReaderByVersion(chunk.world, tag, version);
 		int x = reader.getX();
 		int z = reader.getZ();
-		Chunk chunk = new Chunk(world, x, z);
 		chunk.heightMap = reader.getHeightMap();
 		chunk.averageBlockHeight = reader.getAverageBlockHeight();
 		chunk.isTerrainPopulated = reader.getIsTerrainPopulated();
@@ -113,7 +112,7 @@ public class RollbackManager {
 			for (Tag<?> entityTagBase : entityListTag) {
 				if (!(entityTagBase instanceof CompoundTag)) continue;
 				CompoundTag entityTag = (CompoundTag)entityTagBase;
-				Entity entity = EntityDispatcher.createEntityFromNBT(entityTag, world);
+				Entity entity = EntityDispatcher.createEntityFromNBT(entityTag, chunk.world);
 				chunk.hasEntities = true;
 				if (entity == null) continue;
 				chunk.addEntity(entity);
@@ -127,7 +126,6 @@ public class RollbackManager {
 				chunk.addTileEntity(tileEntity);
 			}
 		}
-		return chunk;
 	}
 
 	public static void OnInit(){
