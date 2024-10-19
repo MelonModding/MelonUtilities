@@ -1,17 +1,18 @@
 {
   "schemaVersion": 1,
-  "id": "btaserverutilities",
+  "id": "melonutilities",
   "version": "${version}",
 
-  "name": "BTAServerUtilities",
-  "description": "A server utilities mod for BTA.",
+  "name": "MelonUtilities",
+  "description": "An Extensive Utility Mod For BTA Servers.",
   "authors": [
-    "Bigjango",
-		"giligens",
-		"Jakraes"
+    "MelonMojito",
+		"UselessBullets"
+
+
   ],
   "contact": {
-    "homepage": "https://goldenage-smp.org",
+    "homepage": "",
     "sources": ""
   },
 
@@ -21,20 +22,20 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-			"BTAServerUtilities.BTAServerUtilities"
+			"MelonUtilities.MelonUtilities"
     ],
 		"beforeGameStart": [
-			"BTAServerUtilities.BTAServerUtilities"
+			"MelonUtilities.MelonUtilities"
 		],
 		"afterGameStart": [
-			"BTAServerUtilities.BTAServerUtilities"
+			"MelonUtilities.MelonUtilities"
 		],
 		"recipesReady": [
-			"BTAServerUtilities.BTAServerUtilities"
+			"MelonUtilities.MelonUtilities"
 		]
 	},
   "mixins": [
-		"BTAServerUtilities.mixins.json"
+		"MelonUtilities.mixins.json"
   ],
 
   "depends": {
