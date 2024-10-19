@@ -40,7 +40,7 @@ public class RollbackManager {
 	public static void saveChunk(World world, Chunk chunk) throws IOException {
 		world.checkSessionLock();
 
-		File chunkDir = new File(snapshotsDir + "/c[x." + chunk.xPosition + "-z." + chunk.zPosition + "]");
+		File chunkDir = new File(snapshotsDir, chunk.world.dimension.id + "/c[x." + chunk.xPosition + "-z." + chunk.zPosition + "]");
 		chunkDir.mkdirs();
 		Date resultdate = new Date(System.currentTimeMillis());
 		File chunkFile = new File(chunkDir, System.currentTimeMillis() + " [" + sdf.format(resultdate) + "].dat");
@@ -85,8 +85,6 @@ public class RollbackManager {
 		ListTag entityListTag;
 		int version = tag.getIntegerOrDefault("Version", -1);
 		ChunkReader reader = getChunkReaderByVersion(chunk.world, tag, version);
-		int x = reader.getX();
-		int z = reader.getZ();
 		chunk.heightMap = reader.getHeightMap();
 		chunk.averageBlockHeight = reader.getAverageBlockHeight();
 		chunk.isTerrainPopulated = reader.getIsTerrainPopulated();

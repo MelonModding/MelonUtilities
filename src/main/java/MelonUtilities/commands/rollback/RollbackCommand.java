@@ -12,9 +12,11 @@ import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.net.packet.Packet51MapChunk;
 import net.minecraft.core.player.gamemode.Gamemode;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.chunk.Chunk;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 import org.useless.serverlibe.api.gui.GuiHelper;
 import org.useless.serverlibe.api.gui.ServerGuiBase;
@@ -55,7 +57,8 @@ public class RollbackCommand extends Command {
 
 	private boolean loadSnapshot(CommandHandler handler, CommandSender sender, String[] args){
 
-		File chunkDir = new File("./rollbackdata/modifiedchunksnapshots/c[x." + sender.getPlayer().chunkCoordX + "-z." + sender.getPlayer().chunkCoordZ + "]");
+		File chunkDir = new File("./rollbackdata/modifiedchunksnapshots/" + sender.getWorld().dimension.id + "/c[x." + sender.getPlayer().chunkCoordX + "-z." + sender.getPlayer().chunkCoordZ + "]");
+		chunkDir.mkdirs();
 		if (chunkDir.isDirectory()) {
 
 			File[] snapshots = chunkDir.listFiles();
@@ -82,7 +85,11 @@ public class RollbackCommand extends Command {
 					snapshotIcon.setCustomColor((byte) TextFormatting.LIGHT_BLUE.id);
 						try {
 							CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(snapshot.getValue().toPath()));
-							return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> RollbackManager.rollbackChunk(sender.getWorld().getChunkFromChunkCoords(sender.getPlayer().chunkCoordX, sender.getPlayer().chunkCoordZ), tag));
+							return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
+								RollbackManager.rollbackChunk(sender.getWorld().getChunkFromChunkCoords(sender.getPlayer().chunkCoordX, sender.getPlayer().chunkCoordZ), tag);
+
+								MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(sender.getPlayer().chunkCoordX * 16, 0, sender.getPlayer().chunkCoordZ * 16, 16, 256, 16, sender.getWorld()), sender.getWorld().dimension.id);
+							});
 						} catch (IOException e) {
 							throw new RuntimeException(e);
 						}
