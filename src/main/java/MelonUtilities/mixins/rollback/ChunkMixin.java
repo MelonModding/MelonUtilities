@@ -22,7 +22,7 @@ public class ChunkMixin {
 	@Unique
 	private void ModifiedQueueCheck(Chunk chunk){
 		if(this.isModified && this.isLoaded && !RollbackManager.skipModifiedQueuing){
-			RollbackManager.QueueModifiedChunk(chunk);
+			RollbackManager.queueModifiedChunk(chunk);
 		}
 	}
 

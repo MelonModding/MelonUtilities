@@ -133,7 +133,7 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		Data.roles.loadAll(RoleData.class);
 		RoleCommand.buildRoleSyntax();
 		// Rollback
-		RollbackManager.OnInit();
+		RollbackManager.onInit();
 		// Tpa
 		// Utility
 		// Warp
