@@ -18,6 +18,7 @@ import net.minecraft.core.world.chunk.reader.ChunkReaderVersion2;
 import net.minecraft.core.world.save.LevelData;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -33,12 +34,13 @@ public class RollbackManager {
 
 	File backupsDir = new File("./rollbackdata/fullbackups");
 	static File snapshotsDir = new File("./rollbackdata/modifiedchunksnapshots");
+	static boolean createIfNecessary = true;
 	public static SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
 
 	public static void saveChunk(World world, Chunk chunk) throws IOException {
 		world.checkSessionLock();
 
-		File chunkDir = new File(snapshotsDir,  chunk.world.dimension.id + "/c[x." + chunk.xPosition + "-z." + chunk.zPosition + "]");
+		File chunkDir = new File(snapshotsDir, chunk.world.dimension.id + "/c[x." + chunk.xPosition + "-z." + chunk.zPosition + "]");
 		chunkDir.mkdirs();
 		Date resultdate = new Date(System.currentTimeMillis());
 		File chunkFile = new File(chunkDir, System.currentTimeMillis() + " [" + sdf.format(resultdate) + "].dat");
@@ -83,8 +85,6 @@ public class RollbackManager {
 		ListTag entityListTag;
 		int version = tag.getIntegerOrDefault("Version", -1);
 		ChunkReader reader = getChunkReaderByVersion(chunk.world, tag, version);
-		int x = reader.getX();
-		int z = reader.getZ();
 		chunk.heightMap = reader.getHeightMap();
 		chunk.averageBlockHeight = reader.getAverageBlockHeight();
 		chunk.isTerrainPopulated = reader.getIsTerrainPopulated();
@@ -126,7 +126,7 @@ public class RollbackManager {
 		}
 	}
 
-	public static void onInit(){
+	public static void OnInit(){
 		new File("./rollbackdata").mkdirs();
 		new File("./rollbackdata/fullbackups").mkdirs();
 		new File("./rollbackdata/modifiedchunksnapshots").mkdirs();
@@ -138,11 +138,11 @@ public class RollbackManager {
 		}).start();
 	}
 
-	public static void queueModifiedChunk(Chunk chunk){
+	public static void QueueModifiedChunk(Chunk chunk){
 		ModifiedChunkQueue.add(chunk);
 	}
 
-	public static void takeModifiedChunkSnapshot(){
+	public static void TakeModifiedChunkSnapshot(){
 		new Thread(() -> {
 			Iterator<Chunk> chunkIterator = ModifiedChunkQueue.iterator();
 			while(chunkIterator.hasNext()){
@@ -159,11 +159,11 @@ public class RollbackManager {
 	}
 
 
-	public static void pruneFullBackups(){
+	public static void PruneFullBackups(){
 
 	}
 
-	public static void tick(){
+	public static void Tick(){
 		long currentTime = System.currentTimeMillis();
 
 	}
