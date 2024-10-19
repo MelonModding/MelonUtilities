@@ -22,6 +22,7 @@ import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.config.datatypes.RoleData;
 import BTAServerUtilities.config.custom.classes.Home;
 import BTAServerUtilities.config.custom.jsonadapters.HomeJsonAdapter;
+import BTAServerUtilities.rollback.RollbackManager;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -131,6 +132,8 @@ public class BTAServerUtilities implements ModInitializer, GameStartEntrypoint, 
 		// Tpa
 		// Utility
 		// Warp
+		// Rollback
+		RollbackManager.OnInit();
 		// Anything Else
 		Data.configs.loadAll(ConfigData.class);
 		Data.playerData.loadAll(PlayerData.class);

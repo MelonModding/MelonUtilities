@@ -8,6 +8,7 @@ import BTAServerUtilities.config.datatypes.ConfigData;
 import BTAServerUtilities.config.datatypes.KitData;
 import BTAServerUtilities.config.datatypes.PlayerData;
 import BTAServerUtilities.config.datatypes.RoleData;
+import BTAServerUtilities.rollback.RollbackManager;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
@@ -65,6 +66,10 @@ public class BSUCommand extends Command {
 			sender.sendMessage(TextFormatting.LIME + "Updated List!");
 
 			return true;
+		}
+
+		if (args[0].equals("snap")) {
+			RollbackManager.TakeModifiedChunkSnapshot();
 		}
 
 		sender.sendMessage(TextFormatting.RED + " " + NAME + " Error: (Invalid Syntax)");

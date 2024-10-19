@@ -12,6 +12,8 @@
     "gamerules.EntityLightningBoltMixin",
     "gamerules.FireTickMixin",
     "gamerules.NetLoginHandlerMixin",
+    "rollback.ChunkMixin",
+    "rollback.ChunkProviderServerMixin",
     "tile_entities.basket.BlockBasketMixin",
     "tile_entities.basket.TileEntityBasketMixin",
     "tile_entities.blast_furnace.BlockBlastFurnaceMixin",
