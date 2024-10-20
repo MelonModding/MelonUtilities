@@ -25,6 +25,6 @@ public class ConfigData {
 		public double lastBackupPrune = 0;
 
 		@SerializedName(value = "Time Between Pruning Snapshots (in hours): ")
-		@Expose public int timeBetweenSnapshotPruning = 1;
+		@Expose public int timeBetweenSnapshotPruning = 12;
 		public double lastSnapshotPrune = 0;
 }
