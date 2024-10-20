@@ -1,4 +1,4 @@
-package MelonUtilities.mixins;
+package MelonUtilities.mixins.other;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;

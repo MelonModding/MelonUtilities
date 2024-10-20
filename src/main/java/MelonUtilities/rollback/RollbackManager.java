@@ -1,6 +1,8 @@
 package MelonUtilities.rollback;
 
 import MelonUtilities.MelonUtilities;
+import MelonUtilities.config.Data;
+import MelonUtilities.config.datatypes.ConfigData;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.NbtIo;
@@ -34,7 +36,6 @@ public class RollbackManager {
 	File backupsDir = new File("./rollbackdata/fullbackups");
 	static File snapshotsDir = new File("./rollbackdata/modifiedchunksnapshots");
 	static boolean createIfNecessary = true;
-	public static SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
 
 	public static void saveChunk(World world, Chunk chunk) throws IOException {
 		world.checkSessionLock();
@@ -42,6 +43,7 @@ public class RollbackManager {
 		File chunkDir = new File(snapshotsDir, chunk.world.dimension.id + "/c[x." + chunk.xPosition + "-z." + chunk.zPosition + "]");
 		chunkDir.mkdirs();
 		Date resultdate = new Date(System.currentTimeMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
 		File chunkFile = new File(chunkDir, System.currentTimeMillis() + " [" + sdf.format(resultdate) + "].dat");
 
 		if (chunkFile.exists()) {
@@ -165,9 +167,13 @@ public class RollbackManager {
 
 	}
 
+	static float timeBetweenSnapshots = 0;
 	public static void tick(){
-		long currentTime = System.currentTimeMillis();
-
+		timeBetweenSnapshots += 0.05f;
+		if(timeBetweenSnapshots >= Data.configs.getOrCreate("config", ConfigData.class).timeBetweenSnapshots){
+			takeModifiedChunkSnapshot();
+			timeBetweenSnapshots = 0;
+		}
 	}
 
 }

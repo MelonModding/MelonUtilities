@@ -1,6 +1,7 @@
 package MelonUtilities.commands.rollback;
 
 import MelonUtilities.rollback.RollbackManager;
+import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.SyntaxBuilder;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.NbtIo;
@@ -22,10 +23,8 @@ import org.useless.serverlibe.api.gui.slot.ServerSlotButton;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-
-import static MelonUtilities.rollback.RollbackManager.sdf;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class RollbackCommand extends Command {
 
@@ -63,21 +62,24 @@ public class RollbackCommand extends Command {
 					return true;
 				}
 
-				HashMap<Long, File> snapshotHashmap = new HashMap<>();
+				HashMap<Long, File> snapshotsHashmap = new HashMap<>();
 				for (File snapshot : snapshots) {
 					if (snapshot.isFile()) {
-						snapshotHashmap.putIfAbsent(Long.parseLong(snapshot.getName().split(" ")[0]), snapshot);
+						snapshotsHashmap.putIfAbsent(Long.parseLong(snapshot.getName().split(" ")[0]), snapshot);
 					}
 				}
+
+				snapshotsHashmap = MUtil.sortByKey(snapshotsHashmap);
 
 				ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
 				rollbackGui.setSize((int)Math.ceil(snapshots.length / 9.0F));
 				int i = 0;
-				for(Map.Entry<Long, File> snapshot : snapshotHashmap.entrySet()){
+				for(Map.Entry<Long, File> snapshot : snapshotsHashmap.entrySet()){
 					int finalI = i;
 					rollbackGui
 						.setContainerSlot(i, (inventory -> {
 							ItemStack snapshotIcon = Item.label.getDefaultStack();
+							SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
 							snapshotIcon.setCustomName("[" + sdf.format(snapshot.getKey()) + "]");
 							snapshotIcon.setCustomColor((byte) TextFormatting.LIGHT_BLUE.id);
 							try {

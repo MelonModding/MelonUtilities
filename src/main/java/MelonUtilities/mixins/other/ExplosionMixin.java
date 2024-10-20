@@ -1,4 +1,4 @@
-package MelonUtilities.mixins;
+package MelonUtilities.mixins.other;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
 import net.minecraft.core.world.Explosion;
 import net.minecraft.core.world.World;

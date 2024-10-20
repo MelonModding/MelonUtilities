@@ -1,4 +1,4 @@
-package MelonUtilities.mixins;
+package MelonUtilities.mixins.other;
 
 import MelonUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.packet.Packet1Login;
