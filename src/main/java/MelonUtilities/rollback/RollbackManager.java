@@ -3,6 +3,7 @@ package MelonUtilities.rollback;
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
+import com.b100.utils.FileUtils;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.NbtIo;
@@ -38,7 +39,10 @@ public class RollbackManager {
 
 	public static File backupsDir = new File("./rollbackdata/backups");
 	public static File snapshotsDir = new File("./rollbackdata/snapshots");
-	public static File dimensionsDir = new File("./world/dimensions");
+
+	public static File getDimensionsDir() {
+		return new File(MinecraftServer.getInstance().getMinecraftDir(), MinecraftServer.getInstance().propertyManager.getStringProperty("level-name", "world") + "/dimensions");
+	}
 
 	public static File getRegionFileFromCoords(File worldDir, int x, int z) {
 		File regionDir = new File(worldDir, "region");
@@ -160,7 +164,7 @@ public class RollbackManager {
 		new Thread(() -> {
 			SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
 			File thisBackupDir = new File(backupsDir, System.currentTimeMillis() + " [" + sdf.format(new Date(System.currentTimeMillis())) + "]");
-			File[] dimFiles = dimensionsDir.listFiles();
+			File[] dimFiles = getDimensionsDir().listFiles();
 			if(dimFiles != null){
 				int totalFiles = 0;
 				int completedFiles = 0;
@@ -168,7 +172,7 @@ public class RollbackManager {
 				startTime = lastMessage = System.currentTimeMillis();
 
 				for(File dim : dimFiles){
-					File regionDir = new File(dimensionsDir,dim.getName() + "/region");
+					File regionDir = new File(getDimensionsDir(),dim.getName() + "/region");
 					if(regionDir.exists()){
 						File[] regionFiles = regionDir.listFiles();
 						if(regionFiles != null) {
@@ -181,7 +185,7 @@ public class RollbackManager {
 				for(File dim : dimFiles){
 					File thisBackupRegionDir = new File(thisBackupDir,dim.getName() + "/region");
 					thisBackupRegionDir.mkdirs();
-					File regionDir = new File(dimensionsDir,dim.getName() + "/region");
+					File regionDir = new File(getDimensionsDir(),dim.getName() + "/region");
 					if(regionDir.exists()){
 						File[] regionFiles = regionDir.listFiles();
 						if(regionFiles != null) {
@@ -349,46 +353,19 @@ public class RollbackManager {
 	public static void pruneBackups(){
 		File[] backups = backupsDir.listFiles();
 		if(backups != null){
-			long newestBackup = Long.MIN_VALUE;
-			long oldestBackup = Long.MAX_VALUE;
-			for (File backup : backups){
-				long backupTime = Long.parseLong(backup.getName().split(" ")[0]);
-				if(backupTime > newestBackup){
-					newestBackup = backupTime;
-				} else if (backupTime < oldestBackup) {
-					oldestBackup = backupTime;
-				}
-			}
-			long middleMostBackupTime = (newestBackup + oldestBackup)/2;
-			HashMap<Long, File> backupDifferences = new HashMap<>();
-			for (File backup : backups) {
-				backupDifferences.putIfAbsent(Math.abs(middleMostBackupTime - Long.parseLong(backup.getName().split(" ")[0])), backup);
-			}
-			long lowestDifference = Long.MAX_VALUE;
-			for(Long difference : backupDifferences.keySet()){
-				if(difference < lowestDifference){
-					lowestDifference = difference;
-				}
-			}
+			List<File> backupList = Arrays.asList(backups);
+			backupList.sort((o1, o2) -> {
+				long l1 = Long.parseLong(o1.getName().split(" ")[0]);
+				long l2 = Long.parseLong(o2.getName().split(" ")[0]);
+				return Long.compare(l1, l2);
+			});
 
-			File middleMostBackup = backupDifferences.get(lowestDifference);
-
-			List<File> toStay = new ArrayList<>();
-			List<File> toPrune = new ArrayList<>();
-
-			for(File backup : backups){
-				if(Long.parseLong(backup.getName().split(" ")[0]) > Long.parseLong(middleMostBackup.getName().split(" ")[0])){
-					toStay.add(backup);
-				} else {
-					toPrune.add(backup);
-				}
-			}
+			List<File> toPrune = backupList.subList(backupList.size()/2, backupList.size());
 			try {
 				prune(toPrune);
 			} catch (IOException e) {
 				MelonUtilities.LOGGER.error("Failed to Prune Backup files in {}!", toPrune);
 			}
-			toStay.addAll(toPrune);
 		}
 	}
 
