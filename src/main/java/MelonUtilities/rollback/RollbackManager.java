@@ -10,6 +10,7 @@ import com.mojang.nbt.Tag;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityDispatcher;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.chunk.Chunk;
 import net.minecraft.core.world.chunk.ChunkLoaderLegacy;
@@ -20,6 +21,7 @@ import net.minecraft.core.world.chunk.reader.ChunkReaderVersion2;
 import net.minecraft.core.world.save.LevelData;
 import net.minecraft.core.world.save.mcregion.RegionFile;
 import net.minecraft.core.world.save.mcregion.RegionFileCache;
+import net.minecraft.server.MinecraftServer;
 
 import java.io.*;
 import java.lang.ref.Reference;
@@ -161,6 +163,22 @@ public class RollbackManager {
 			File thisBackupDir = new File(backupsDir, System.currentTimeMillis() + " [" + sdf.format(new Date(System.currentTimeMillis())) + "]");
 			File[] dimFiles = dimensionsDir.listFiles();
 			if(dimFiles != null){
+				int totalFiles = 0;
+				int completedFiles = 0;
+				long startTime, lastMessage;
+				startTime = lastMessage = System.currentTimeMillis();
+
+				for(File dim : dimFiles){
+					File regionDir = new File(dimensionsDir,dim.getName() + "/region");
+					if(regionDir.exists()){
+						File[] regionFiles = regionDir.listFiles();
+						if(regionFiles != null) {
+							totalFiles += regionFiles.length;
+						}
+					}
+				}
+
+				MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sStarting Backup of all %s files!", TextFormatting.GRAY, totalFiles));
 				for(File dim : dimFiles){
 					File thisBackupRegionDir = new File(thisBackupDir,dim.getName() + "/region");
 					thisBackupRegionDir.mkdirs();
@@ -175,10 +193,17 @@ public class RollbackManager {
 									MelonUtilities.LOGGER.error("Exception while trying to copy file {} to {}!", regionFile, thisBackupRegionDir, e);
 									continue;
 								}
+								completedFiles++;
+
+								if (System.currentTimeMillis() - lastMessage > 500) {
+									lastMessage = System.currentTimeMillis();
+									MinecraftServer.getInstance().playerList.sendChatMessageToAllOps( String.format("%s%.2f%% complete", TextFormatting.GRAY, ((float)completedFiles/totalFiles) * 100f));
+								}
 							}
 						}
 					}
 				}
+				MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sFinished Backup of all %s files in %.3f seconds", TextFormatting.GRAY, totalFiles, (System.currentTimeMillis() - startTime)/1000f));
 			}
 		}).start();
 	}
@@ -193,14 +218,24 @@ public class RollbackManager {
 
 		new Thread(() -> {
 			synchronized (tempModifiedChunkQueue){
+				int completedFiles = 0;
+				long startTime, lastMessage;
+				startTime = lastMessage = System.currentTimeMillis();
+				MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sStarting Snapshot of all %s modified chunks!", TextFormatting.GRAY, tempModifiedChunkQueue.size()));
 				for (Chunk chunk : tempModifiedChunkQueue){
 					try {
 						saveChunk(chunk.world, chunk);
 					} catch (IOException e) {
 						MelonUtilities.LOGGER.error("Chunk [x:{}, z:{}] Failed to Save During Snapshot!", chunk.xPosition, chunk.zPosition);
-						continue;
+					}
+
+					completedFiles++;
+					if (System.currentTimeMillis() - lastMessage > 500) {
+						lastMessage = System.currentTimeMillis();
+						MinecraftServer.getInstance().playerList.sendChatMessageToAllOps( String.format("%s%.2f%% complete", TextFormatting.GRAY, ((float)completedFiles/tempModifiedChunkQueue.size()) * 100f));
 					}
 				}
+				MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sFinished Snapshot of all %s modified chunks in %.3f seconds", TextFormatting.GRAY, tempModifiedChunkQueue.size(), (System.currentTimeMillis() - startTime)/1000f));
 			}
 		}).start();
 	}

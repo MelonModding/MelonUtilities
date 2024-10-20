@@ -95,7 +95,7 @@ public class RollbackCommand extends Command {
 
 
 				ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
-				rollbackGui.setSize((int)Math.ceil(snapshots.length / 9.0F));
+				rollbackGui.setSize((int)Math.ceil((snapshots.length + 1) / 9.0F));
 				int i = 0;
 				for(Map.Entry<Long, File> snapshot : snapshotsHashmap.entrySet()){
 					int finalI = i;
