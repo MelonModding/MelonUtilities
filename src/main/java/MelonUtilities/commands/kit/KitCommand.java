@@ -401,121 +401,123 @@ public class KitCommand extends Command {
 
                 KitData kitdata = Data.kits.getOrCreate(kit, KitData.class);
 
-				switch (args[2]) {
-					case "item":
+                if (args[2].equals("item")) {
 
-						if (sender.getPlayer().getHeldItem() == null) {
-							FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Held Item is Null)");
-							FeedbackHandler.syntax(sender, "*Tip: Hold an item in your hand*");
-							return true;
-						}
+                    if (sender.getPlayer().getHeldItem() == null) {
+                        FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Held Item is Null)");
+                        FeedbackHandler.syntax(sender, "*Tip: Hold an item in your hand*");
+                        return true;
+                    }
 
-						kitdata.additem(new ItemStack(sender.getPlayer().getHeldItem()), listIndexOf(sender.getPlayer().inventory.mainInventory, sender.getPlayer().getHeldItem()));
-						FeedbackHandler.success(sender, "Added [" + sender.getPlayer().getHeldItem() + "] to Kit: '" + kit + "'");
-						Data.kits.saveAll();
-						return true;
-					case "row":
-						int row = sender.getPlayer().inventory.hotbarOffset;
-						for (int i = 0; i < 9; i++) {
+                    kitdata.additem(new ItemStack(sender.getPlayer().getHeldItem()), listIndexOf(sender.getPlayer().inventory.mainInventory, sender.getPlayer().getHeldItem()));
+                    FeedbackHandler.success(sender, "Added [" + sender.getPlayer().getHeldItem() + "] to Kit: '" + kit + "'");
+                    Data.kits.saveAll();
+                    return true;
+                }
+                if (args[2].equals("row")) {
+                    int row = sender.getPlayer().inventory.hotbarOffset;
+                    for (int i = 0; i < 9; i++) {
 
-							if (sender.getPlayer().inventory.getStackInSlot(i + row) == null) {
-								continue;
+                        if (sender.getPlayer().inventory.getStackInSlot(i + row) == null) {
+                            continue;
+                        }
+
+                        kitdata.additem(new ItemStack(sender.getPlayer().inventory.getStackInSlot(i + row)), listIndexOf(sender.getPlayer().inventory.mainInventory, sender.getPlayer().inventory.getStackInSlot(i + row)));
+
+                    }
+
+                    Data.kits.saveAll();
+                    FeedbackHandler.success(sender, "Added Row to Kit: '" + kit + "'");
+
+                    return true;
+                }
+                if (args[2].equals("armor")) {
+					switch (args[3]) {
+						case "head":
+							if (sender.getPlayer().inventory.getStackInSlot(39) == null) {
+								FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
+								FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
+								return true;
 							}
-
-							kitdata.additem(new ItemStack(sender.getPlayer().inventory.getStackInSlot(i + row)), listIndexOf(sender.getPlayer().inventory.mainInventory, sender.getPlayer().inventory.getStackInSlot(i + row)));
-
-						}
-
-						Data.kits.saveAll();
-						FeedbackHandler.success(sender, "Added Row to Kit: '" + kit + "'");
-
-						return true;
-					case "armor":
-						switch (args[3]) {
-							case "head":
-								if (sender.getPlayer().inventory.getStackInSlot(39) == null) {
-									FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
-									FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
-									return true;
-								}
-								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(39), 39);
-								FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(39) + " to Kit: '" + kit + "'");
-								return true;
-							case "chest":
-								if (sender.getPlayer().inventory.getStackInSlot(38) == null) {
-									FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
-									FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
-									return true;
-								}
-								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(38), 38);
-								FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(38) + " to Kit: '" + kit + "'");
-								return true;
-							case "legs":
-								if (sender.getPlayer().inventory.getStackInSlot(37) == null) {
-									FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
-									FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
-									return true;
-								}
-								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(37), 37);
-								FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(37) + " to Kit: '" + kit + "'");
-								return true;
-							case "boots":
-								if (sender.getPlayer().inventory.getStackInSlot(36) == null) {
-									FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
-									FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
-									return true;
-								}
-								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(36), 36);
-								FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(36) + " to Kit: '" + kit + "'");
-								return true;
-							case "all":
-								if (sender.getPlayer().inventory.getStackInSlot(39) != null) {
-									kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(39), 39);
-								}
-								if (sender.getPlayer().inventory.getStackInSlot(38) != null) {
-									kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(38), 38);
-								}
-								if (sender.getPlayer().inventory.getStackInSlot(37) != null) {
-									kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(37), 37);
-								}
-								if (sender.getPlayer().inventory.getStackInSlot(36) != null) {
-									kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(36), 36);
-								}
-								FeedbackHandler.success(sender, "Added All Armor to Kit: '" + kit + "'");
-								return true;
-						}
-						return true;
-					case "all":
-						for (int i = 0; i < 4; i++) {
-							int row = i * 9;
-							for (int j = 0; j < 9; j++) {
-
-								if (sender.getPlayer().inventory.getStackInSlot(j + row) == null) {
-									continue;
-								}
-
-								kitdata.additem(new ItemStack(sender.getPlayer().inventory.getStackInSlot(j + row)), listIndexOf(sender.getPlayer().inventory.mainInventory, sender.getPlayer().inventory.getStackInSlot(j + row)));
-
-							}
-						}
-						if (sender.getPlayer().inventory.getStackInSlot(39) != null) {
 							kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(39), 39);
-						}
-						if (sender.getPlayer().inventory.getStackInSlot(38) != null) {
+							FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(39) + " to Kit: '" + kit + "'");
+							return true;
+						case "chest":
+							if (sender.getPlayer().inventory.getStackInSlot(38) == null) {
+								FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
+								FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
+								return true;
+							}
 							kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(38), 38);
-						}
-						if (sender.getPlayer().inventory.getStackInSlot(37) != null) {
+							FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(38) + " to Kit: '" + kit + "'");
+							return true;
+						case "legs":
+							if (sender.getPlayer().inventory.getStackInSlot(37) == null) {
+								FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
+								FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
+								return true;
+							}
 							kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(37), 37);
-						}
-						if (sender.getPlayer().inventory.getStackInSlot(36) != null) {
+							FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(37) + " to Kit: '" + kit + "'");
+							return true;
+						case "boots":
+							if (sender.getPlayer().inventory.getStackInSlot(36) == null) {
+								FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
+								FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
+								return true;
+							}
 							kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(36), 36);
-						}
+							FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(36) + " to Kit: '" + kit + "'");
+							return true;
+						case "all":
+							if (sender.getPlayer().inventory.getStackInSlot(39) != null) {
+								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(39), 39);
+							}
+							if (sender.getPlayer().inventory.getStackInSlot(38) != null) {
+								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(38), 38);
+							}
+							if (sender.getPlayer().inventory.getStackInSlot(37) != null) {
+								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(37), 37);
+							}
+							if (sender.getPlayer().inventory.getStackInSlot(36) != null) {
+								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(36), 36);
+							}
+							FeedbackHandler.success(sender, "Added All Armor to Kit: '" + kit + "'");
+							return true;
+					}
+					return true;
+                }
+                if (args[2].equals("all")) {
+                    for (int i = 0; i < 4; i++) {
+                        int row = i * 9;
+                        for (int j = 0; j < 9; j++) {
 
-						FeedbackHandler.success(sender, "Added All Items and Armor to Kit: " + kit);
-						Data.kits.saveAll();
-						return true;
-				}
-				return true;
+                            if (sender.getPlayer().inventory.getStackInSlot(j + row) == null) {
+                                continue;
+                            }
+
+                            kitdata.additem(new ItemStack(sender.getPlayer().inventory.getStackInSlot(j + row)), listIndexOf(sender.getPlayer().inventory.mainInventory, sender.getPlayer().inventory.getStackInSlot(j + row)));
+
+                        }
+                    }
+                    if (sender.getPlayer().inventory.getStackInSlot(39) != null) {
+                        kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(39), 39);
+                    }
+                    if (sender.getPlayer().inventory.getStackInSlot(38) != null) {
+                        kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(38), 38);
+                    }
+                    if (sender.getPlayer().inventory.getStackInSlot(37) != null) {
+                        kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(37), 37);
+                    }
+                    if (sender.getPlayer().inventory.getStackInSlot(36) != null) {
+                        kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(36), 36);
+                    }
+
+                    FeedbackHandler.success(sender, "Added All Items and Armor to Kit: " + kit);
+                    Data.kits.saveAll();
+                    return true;
+                }
+                return true;
             }
 
             if (args[0].equals("delete")) {
