@@ -141,8 +141,8 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 
 		// In order for methods inside your listeners to be recognized by ServerLibe you must
 		// register them into ServerLibe like such
-		ServerLibe.registerListener(new GuiTestListener());
-		ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
+		//ServerLibe.registerListener(new GuiTestListener()); // Example Listener
+		//ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
 
 		// Anything Else
 		Data.configs.loadAll(ConfigData.class);

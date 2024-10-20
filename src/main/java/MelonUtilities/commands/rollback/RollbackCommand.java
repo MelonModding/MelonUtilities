@@ -65,6 +65,7 @@ public class RollbackCommand extends Command {
 			}
 
 			ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
+			rollbackGui.setSize((int)Math.ceil(snapshots.length / 9.0F));
 			int i = 0;
 			for(Map.Entry<Long, File> snapshot : snapshotHashmap.entrySet()){
 				int finalI = i;
@@ -77,8 +78,9 @@ public class RollbackCommand extends Command {
 							CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(snapshot.getValue().toPath()));
 							return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
 								RollbackManager.rollbackChunk(sender.getWorld().getChunkFromChunkCoords(sender.getPlayer().chunkCoordX, sender.getPlayer().chunkCoordZ), tag);
-
 								MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(sender.getPlayer().chunkCoordX * 16, 0, sender.getPlayer().chunkCoordZ * 16, 16, 256, 16, sender.getWorld()), sender.getWorld().dimension.id);
+								((EntityPlayerMP) sender.getPlayer()).usePersonalCraftingInventory();
+
 							});
 						} catch (IOException e) {
 							throw new RuntimeException(e);
