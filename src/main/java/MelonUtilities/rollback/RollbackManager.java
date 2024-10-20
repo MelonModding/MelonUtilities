@@ -244,7 +244,6 @@ public class RollbackManager {
 	}
 
 	public static void prune(List<File> fileList) throws IOException {
-		MelonUtilities.LOGGER.info(fileList.toString());
 		 if((fileList.size() - 1) % 2 == 0){
 			 for(int i = 1; i < (fileList.size() - 1); i += 2){
 				 File file = fileList.get(i);
