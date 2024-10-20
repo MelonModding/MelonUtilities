@@ -244,49 +244,40 @@ public class RollbackManager {
 	}
 
 	public static void prune(List<File> fileList) throws IOException {
-		 if(fileList.size() % 2 == 0){
-			 for(int i = 1; i<fileList.size(); i += 2){
+		MelonUtilities.LOGGER.info(fileList.toString());
+		 if((fileList.size() - 1) % 2 == 0){
+			 for(int i = 1; i < (fileList.size() - 1); i += 2){
 				 File file = fileList.get(i);
 				 if(!file.getName().contains("archived")){
-					 if(file.isDirectory()){
-						 Path dir = Paths.get(file.getPath()); //path to the directory
-						 Files
-							 .walk(dir) // Traverse the file tree in depth-first order
-							 .sorted(Comparator.reverseOrder())
-							 .forEach(path -> {
-								 try {
-									 Files.delete(path);  //delete each file or directory
-								 } catch (IOException e) {
-									 MelonUtilities.LOGGER.error("Could not delete file at Path: [{}]!", dir, e);
-								 }
-							 });
-					 } else {
-						 file.delete();
-					 }
+					 deleteDirectory(file);
 				 }
 			 }
-		 } else if (fileList.size() > 1){
-			 for(int i = 0; i<fileList.size(); i += 2){
+		 } else {
+			 for(int i = 0; i < (fileList.size() - 1); i += 2){
 				 File file = fileList.get(i);
 				 if(!file.getName().contains("archived")){
-					 if(file.isDirectory()){
-						 Path dir = Paths.get(file.getPath()); //path to the directory
-						 Files
-							 .walk(dir) // Traverse the file tree in depth-first order
-							 .sorted(Comparator.reverseOrder())
-							 .forEach(path -> {
-								 try {
-									 Files.delete(path);  //delete each file or directory
-								 } catch (IOException e) {
-									 MelonUtilities.LOGGER.error("Could not delete file at Path: [{}]!", dir, e);
-								 }
-							 });
-					 } else {
-						 file.delete();
-					 }
+					 deleteDirectory(file);
 				 }
 			 }
 		 }
+	}
+
+	public static void deleteDirectory(File file) throws IOException {
+		if(file.isDirectory()){
+			Path dir = Paths.get(file.getPath()); //path to the directory
+			Files
+				.walk(dir) // Traverse the file tree in depth-first order
+				.sorted(Comparator.reverseOrder())
+				.forEach(path -> {
+					try {
+						Files.delete(path);  //delete each file or directory
+					} catch (IOException e) {
+						MelonUtilities.LOGGER.error("Could not delete file at Path: [{}]!", dir, e);
+					}
+				});
+		} else {
+			file.delete();
+		}
 	}
 
 	public static void pruneSnapshots(){
@@ -308,7 +299,7 @@ public class RollbackManager {
 										return Long.compare(l2, l1);
 									});
 
-									List<File> toPrune = snapshotList.subList(snapshotList.size()/2, snapshotList.size());
+									List<File> toPrune = snapshotList.subList(snapshotList.size()/2, snapshotList.size() - 1);
 									try {
 										prune(toPrune);
 									} catch (IOException e) {
