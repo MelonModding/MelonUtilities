@@ -45,7 +45,10 @@ public class RollbackCommand extends Command {
 		syntax.append("title",                                               TextFormatting.LIGHT_GRAY + "< Command Syntax > ([] = optional, <> = variable, / = or)");
 		syntax.append("rollback", "title",                             TextFormatting.LIGHT_GRAY + "  > /rollback [<x,z> <x,z>] / [<mode>]");
 		syntax.append("takeSnapshot", "rollback",                      TextFormatting.LIGHT_GRAY + "    > takeSnapshot");
-		syntax.append("takeSnapshot", "rollback",                      TextFormatting.LIGHT_GRAY + "    > help");
+		syntax.append("takeBackup", "rollback",                        TextFormatting.LIGHT_GRAY + "    > takeBackup");
+		syntax.append("pruneSnapshots", "rollback",                    TextFormatting.LIGHT_GRAY + "    > pruneSnapshots");
+		syntax.append("pruneBackups", "rollback",                      TextFormatting.LIGHT_GRAY + "    > pruneBackups");
+		syntax.append("help", "rollback",                              TextFormatting.LIGHT_GRAY + "    > help");
 
 	}
 
@@ -58,6 +61,18 @@ public class RollbackCommand extends Command {
 	private boolean takeBackup(CommandHandler handler, CommandSender sender, String[] args){
 		RollbackManager.takeBackup();
 		FeedbackHandler.success(sender, "Backing Up World!");
+		return true;
+	}
+
+	private boolean pruneSnapshots(CommandHandler handler, CommandSender sender, String[] args){
+		RollbackManager.pruneSnapshots();
+		FeedbackHandler.destructive(sender, "Pruning Snapshots");
+		return true;
+	}
+
+	private boolean pruneBackups(CommandHandler handler, CommandSender sender, String[] args){
+		RollbackManager.pruneBackups();
+		FeedbackHandler.destructive(sender, "Pruning Backups");
 		return true;
 	}
 
@@ -166,7 +181,7 @@ public class RollbackCommand extends Command {
 					i++;
 				}
 
-				GuiHelper.openCustomServerGui((EntityPlayerMP) sender.getPlayer(), rollbackGui.build((EntityPlayer) sender.getPlayer(), "Captures (Snapshots and Backups):"));
+				GuiHelper.openCustomServerGui((EntityPlayerMP) sender.getPlayer(), rollbackGui.build((EntityPlayer) sender.getPlayer(), "Captures | Snapshots & Backups"));
 
 				FeedbackHandler.success(sender, "Opened Rollback GUI!");
 				return true;
@@ -195,6 +210,12 @@ public class RollbackCommand extends Command {
 			case "takebackup":
 			case "tb":
 				return takeBackup(handler, sender, args);
+			case "prunesnapshots":
+			case "ps":
+				return pruneSnapshots(handler, sender, args);
+			case "prunebackups":
+			case "pb":
+				return pruneBackups(handler, sender, args);
 			case "help":
 				return false;
 		}

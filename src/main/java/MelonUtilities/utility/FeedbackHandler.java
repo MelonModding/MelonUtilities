@@ -22,7 +22,7 @@ public class FeedbackHandler {
 	}
 
 	public static void destructive(@NotNull CommandSender sender, @NotNull String msg) {
-		info(sender, msg, TextFormatting.YELLOW, "note.snare");
+		info(sender, msg, TextFormatting.ORANGE, "note.snare");
 	}
 
 	public static void syntax(@NotNull CommandSender sender, @NotNull String msg) {

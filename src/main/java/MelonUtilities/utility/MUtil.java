@@ -15,6 +15,8 @@ import java.util.*;
 
 public class MUtil {
 
+	public static float timeOnInit = 0;
+
 	public static HitResult rayCastFromPlayer(CommandSender sender) {
 		float f = 1.0f;
 		float f1 = sender.getPlayer().xRotO + (sender.getPlayer().xRot - sender.getPlayer().xRotO) * f;

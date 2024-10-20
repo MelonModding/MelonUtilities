@@ -23,9 +23,8 @@ import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.config.custom.jsonadapters.HomeJsonAdapter;
-import MelonUtilities.listeners.DebugInfoListener;
-import MelonUtilities.listeners.GuiTestListener;
 import MelonUtilities.rollback.RollbackManager;
+import MelonUtilities.utility.MUtil;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,7 +35,6 @@ import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.useless.serverlibe.ServerLibe;
 import turniplabs.halplibe.helper.CommandHelper;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
@@ -148,9 +146,22 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		// Anything Else
 		Data.configs.loadAll(ConfigData.class);
 		Data.playerData.loadAll(PlayerData.class);
+		MUtil.timeOnInit = System.currentTimeMillis();
+
+		Data.configs.getOrCreate("config", ConfigData.class).lastSnapshot = correctTimeIfZero(Data.configs.getOrCreate("config", ConfigData.class).lastSnapshot);
+		Data.configs.getOrCreate("config", ConfigData.class).lastBackup = correctTimeIfZero(Data.configs.getOrCreate("config", ConfigData.class).lastBackup);
+		Data.configs.getOrCreate("config", ConfigData.class).lastSnapshotPrune = correctTimeIfZero(Data.configs.getOrCreate("config", ConfigData.class).lastSnapshotPrune);
+		Data.configs.getOrCreate("config", ConfigData.class).lastBackupPrune = correctTimeIfZero(Data.configs.getOrCreate("config", ConfigData.class).lastBackupPrune);
 
 		LOGGER.info("MelonUtilities initialized!");
     }
+
+	private float correctTimeIfZero(float f){
+		if(f == 0f){
+			return System.currentTimeMillis() / 1000f;
+		}
+		return f;
+	}
 
 	@Override
 	public void beforeGameStart() {

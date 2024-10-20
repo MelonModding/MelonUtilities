@@ -19,14 +19,13 @@ import net.minecraft.core.world.chunk.reader.ChunkReaderLegacy;
 import net.minecraft.core.world.chunk.reader.ChunkReaderVersion1;
 import net.minecraft.core.world.chunk.reader.ChunkReaderVersion2;
 import net.minecraft.core.world.save.LevelData;
-import net.minecraft.core.world.save.mcregion.RegionFile;
 import net.minecraft.core.world.save.mcregion.RegionFileCache;
 import net.minecraft.server.MinecraftServer;
 
 import java.io.*;
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -240,31 +239,183 @@ public class RollbackManager {
 		}).start();
 	}
 
-
-
-
-
-	public static void prune(List<File> fileList){
+	public static void prune(List<File> fileList) throws IOException {
 		 if(fileList.size() % 2 == 0){
 			 for(int i = 1; i<fileList.size(); i += 2){
-				fileList.remove(fileList.get(i));
+				 File file = fileList.get(i);
+				 if(!file.getName().contains("archived")){
+					 if(file.isDirectory()){
+						 Path dir = Paths.get(file.getPath()); //path to the directory
+						 Files
+							 .walk(dir) // Traverse the file tree in depth-first order
+							 .sorted(Comparator.reverseOrder())
+							 .forEach(path -> {
+								 try {
+									 Files.delete(path);  //delete each file or directory
+								 } catch (IOException e) {
+									 MelonUtilities.LOGGER.error("Could not delete file at Path: [{}]!", dir, e);
+								 }
+							 });
+					 } else {
+						 file.delete();
+					 }
+				 }
 			 }
 		 } else{
 			 for(int i = 0; i<fileList.size(); i += 2){
-				 fileList.remove(fileList.get(i));
+				 File file = fileList.get(i);
+				 if(!file.getName().contains("archived")){
+					 if(file.isDirectory()){
+						 Path dir = Paths.get(file.getPath()); //path to the directory
+						 Files
+							 .walk(dir) // Traverse the file tree in depth-first order
+							 .sorted(Comparator.reverseOrder())
+							 .forEach(path -> {
+								 try {
+									 Files.delete(path);  //delete each file or directory
+								 } catch (IOException e) {
+									 MelonUtilities.LOGGER.error("Could not delete file at Path: [{}]!", dir, e);
+								 }
+							 });
+					 } else {
+						 file.delete();
+					 }
+				 }
 			 }
 		 }
 	}
 
-	static float timeBetweenSnapshots = 0;
-	static float timeBetweenBackups = 0;
-	static float timeBetweenCapturePruning = 0;
+	public static void pruneSnapshots(){
+		File[] dimensions = snapshotsDir.listFiles();
+		if(dimensions != null) {
+			for (File dimension : dimensions) {
+				if (dimension.isDirectory()) {
+					File chunksDir = new File(snapshotsDir, dimension.getName());
+					File[] chunks = chunksDir.listFiles();
+					if (chunks != null) {
+						for (File chunk : chunks) {
+							if (chunk.isDirectory()) {
+								File[] snapshots = chunk.listFiles();
+								if (snapshots != null) {
+									long newestSnapshot = Long.MIN_VALUE;
+									long oldestSnapshot = Long.MAX_VALUE;
+									for (File snapshot : snapshots) {
+										long snapshotTime = Long.parseLong(snapshot.getName().split(" ")[0]);
+										if (snapshotTime > newestSnapshot) {
+											newestSnapshot = snapshotTime;
+										} else if (snapshotTime < oldestSnapshot) {
+											oldestSnapshot = snapshotTime;
+										}
+									}
+									long middleMostSnapshotTime = (newestSnapshot + oldestSnapshot) / 2;
+									HashMap<Long, File> snapshotDifferences = new HashMap<>();
+									for (File snapshot : snapshots) {
+										snapshotDifferences.putIfAbsent(Math.abs(middleMostSnapshotTime - Long.parseLong(snapshot.getName().split(" ")[0])), snapshot);
+									}
+									long lowestDifference = Long.MAX_VALUE;
+									for (Long difference : snapshotDifferences.keySet()) {
+										if (difference < lowestDifference) {
+											lowestDifference = difference;
+										}
+									}
+
+									File middleMostSnapshot = snapshotDifferences.get(lowestDifference);
+
+									List<File> toStay = new ArrayList<>();
+									List<File> toPrune = new ArrayList<>();
+
+									for (File snapshot : snapshots) {
+										if (Long.parseLong(snapshot.getName().split(" ")[0]) > Long.parseLong(middleMostSnapshot.getName().split(" ")[0])) {
+											toStay.add(snapshot);
+										} else {
+											toPrune.add(snapshot);
+										}
+									}
+									try {
+										prune(toPrune);
+									} catch (IOException e) {
+										MelonUtilities.LOGGER.error("Failed to Prune Snapshot files in {}!", toPrune);
+									}
+									toStay.addAll(toPrune);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static void pruneBackups(){
+		File[] backups = backupsDir.listFiles();
+		if(backups != null){
+			long newestBackup = Long.MIN_VALUE;
+			long oldestBackup = Long.MAX_VALUE;
+			for (File backup : backups){
+				long backupTime = Long.parseLong(backup.getName().split(" ")[0]);
+				if(backupTime > newestBackup){
+					newestBackup = backupTime;
+				} else if (backupTime < oldestBackup) {
+					oldestBackup = backupTime;
+				}
+			}
+			long middleMostBackupTime = (newestBackup + oldestBackup)/2;
+			HashMap<Long, File> backupDifferences = new HashMap<>();
+			for (File backup : backups) {
+				backupDifferences.putIfAbsent(Math.abs(middleMostBackupTime - Long.parseLong(backup.getName().split(" ")[0])), backup);
+			}
+			long lowestDifference = Long.MAX_VALUE;
+			for(Long difference : backupDifferences.keySet()){
+				if(difference < lowestDifference){
+					lowestDifference = difference;
+				}
+			}
+
+			File middleMostBackup = backupDifferences.get(lowestDifference);
+
+			List<File> toStay = new ArrayList<>();
+			List<File> toPrune = new ArrayList<>();
+
+			for(File backup : backups){
+				if(Long.parseLong(backup.getName().split(" ")[0]) > Long.parseLong(middleMostBackup.getName().split(" ")[0])){
+					toStay.add(backup);
+				} else {
+					toPrune.add(backup);
+				}
+			}
+			try {
+				prune(toPrune);
+			} catch (IOException e) {
+				MelonUtilities.LOGGER.error("Failed to Prune Backup files in {}!", toPrune);
+			}
+			toStay.addAll(toPrune);
+		}
+	}
+
+	//TODO Hard Backup Size Limit in Config
+
+	static ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);
 
 	public static void tick(){
-		timeBetweenSnapshots += 0.05f;
-		if(timeBetweenSnapshots >= Data.configs.getOrCreate("config", ConfigData.class).timeBetweenSnapshots){
+		if(System.currentTimeMillis() <= config.lastSnapshot + config.timeBetweenSnapshots){
 			takeSnapshot();
-			timeBetweenSnapshots = 0;
+			config.lastSnapshot = System.currentTimeMillis() / 1000f;
 		}
+
+		if(System.currentTimeMillis() <= config.lastBackup + config.timeBetweenBackups * 120){
+			takeBackup();
+			config.lastBackup = System.currentTimeMillis() / 1000f;
+		}
+
+		if(System.currentTimeMillis() <= config.lastBackupPrune + config.timeBetweenBackupPruning * 120){
+			pruneBackups();
+			config.lastBackupPrune = System.currentTimeMillis() / 1000f;
+		}
+
+		if(System.currentTimeMillis() <= config.lastSnapshotPrune + config.timeBetweenSnapshotPruning * 120){
+			pruneSnapshots();
+			config.lastSnapshotPrune = System.currentTimeMillis() / 1000f;
+		}
+
 	}
 }
