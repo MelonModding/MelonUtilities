@@ -18,8 +18,12 @@ import net.minecraft.core.world.chunk.reader.ChunkReaderLegacy;
 import net.minecraft.core.world.chunk.reader.ChunkReaderVersion1;
 import net.minecraft.core.world.chunk.reader.ChunkReaderVersion2;
 import net.minecraft.core.world.save.LevelData;
+import net.minecraft.core.world.save.mcregion.RegionFile;
+import net.minecraft.core.world.save.mcregion.RegionFileCache;
 
 import java.io.*;
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -31,9 +35,25 @@ public class RollbackManager {
 
 	public static boolean skipModifiedQueuing = false;
 
-	static File backupsDir = new File("./rollbackdata/backups");
-	static File snapshotsDir = new File("./rollbackdata/snapshots");
-	static File dimDir = new File("./world/dimensions");
+	public static File backupsDir = new File("./rollbackdata/backups");
+	public static File snapshotsDir = new File("./rollbackdata/snapshots");
+	public static File dimensionsDir = new File("./world/dimensions");
+
+	public static File getRegionFileFromCoords(File worldDir, int x, int z) {
+		File regionDir = new File(worldDir, "region");
+		File regionFile = new File(regionDir, "r." + (x >> 5) + "." + (z >> 5) + ".mcr");
+		return regionFile;
+	}
+
+	public static void rollbackChunkFromBackup(Chunk chunk, File backupDir) throws IOException {
+		DataInputStream regionStream = RegionFileCache.getChunkInputStream(new File(backupDir, String.valueOf(chunk.world.dimension.id)), chunk.xPosition, chunk.zPosition);
+
+		if (regionStream == null) {return;}
+
+		CompoundTag tag = NbtIo.read(regionStream);
+		rollbackChunk(chunk, tag.getCompound("Level"));
+	}
+
 
 	public static void saveChunk(World world, Chunk chunk) throws IOException {
 		world.checkSessionLock();
@@ -138,20 +158,21 @@ public class RollbackManager {
 	public static void takeBackup(){
 		new Thread(() -> {
 			SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
-			File thisBackupDir = new File(backupsDir, System.currentTimeMillis() + " [" + sdf.format(new Date(System.currentTimeMillis())) + "].dat");
-			File[] dimFiles = dimDir.listFiles();
+			File thisBackupDir = new File(backupsDir, System.currentTimeMillis() + " [" + sdf.format(new Date(System.currentTimeMillis())) + "]");
+			File[] dimFiles = dimensionsDir.listFiles();
 			if(dimFiles != null){
 				for(File dim : dimFiles){
 					File thisBackupRegionDir = new File(thisBackupDir,dim.getName() + "/region");
 					thisBackupRegionDir.mkdirs();
-					File regionDir = new File(dimDir,dim.getName() + "/region");
+					File regionDir = new File(dimensionsDir,dim.getName() + "/region");
 					if(regionDir.exists()){
 						File[] regionFiles = regionDir.listFiles();
 						if(regionFiles != null) {
 							for (File regionFile : regionFiles) {
 								try {
-									Files.copy(regionFile.toPath(), thisBackupRegionDir.toPath());
+									Files.copy(regionFile.toPath(), new File(thisBackupRegionDir, regionFile.getName()).toPath());
 								} catch (IOException e) {
+									MelonUtilities.LOGGER.error("Exception while trying to copy file {} to {}!", regionFile, thisBackupRegionDir, e);
 									continue;
 								}
 							}
@@ -184,12 +205,26 @@ public class RollbackManager {
 		}).start();
 	}
 
-	public static void pruneBackups(){
 
+
+
+
+	public static void prune(List<File> fileList){
+		 if(fileList.size() % 2 == 0){
+			 for(int i = 1; i<fileList.size(); i += 2){
+				fileList.remove(fileList.get(i));
+			 }
+		 } else{
+			 for(int i = 0; i<fileList.size(); i += 2){
+				 fileList.remove(fileList.get(i));
+			 }
+		 }
 	}
 
 	static float timeBetweenSnapshots = 0;
 	static float timeBetweenBackups = 0;
+	static float timeBetweenCapturePruning = 0;
+
 	public static void tick(){
 		timeBetweenSnapshots += 0.05f;
 		if(timeBetweenSnapshots >= Data.configs.getOrCreate("config", ConfigData.class).timeBetweenSnapshots){
@@ -197,5 +232,4 @@ public class RollbackManager {
 			timeBetweenSnapshots = 0;
 		}
 	}
-
 }

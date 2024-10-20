@@ -1,5 +1,6 @@
 package MelonUtilities.commands.rollback;
 
+import MelonUtilities.MelonUtilities;
 import MelonUtilities.rollback.RollbackManager;
 import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.MUtil;
@@ -15,6 +16,8 @@ import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.Packet51MapChunk;
+import net.minecraft.core.world.chunk.Chunk;
+import net.minecraft.core.world.save.mcregion.RegionFileCache;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 import org.useless.serverlibe.api.gui.GuiHelper;
@@ -26,6 +29,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static MelonUtilities.rollback.RollbackManager.*;
 
 public class RollbackCommand extends Command {
 
@@ -77,18 +82,31 @@ public class RollbackCommand extends Command {
 					}
 				}
 
+
+
+				File[] backups = backupsDir.listFiles();
+				if(backups != null){
+					for (File backup : backups){
+						snapshotsHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(sender.getWorld().dimension.id)), sender.getPlayer().chunkCoordX, sender.getPlayer().chunkCoordZ));
+					}
+				}
+
 				snapshotsHashmap = MUtil.sortByKey(snapshotsHashmap);
+
 
 				ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
 				rollbackGui.setSize((int)Math.ceil(snapshots.length / 9.0F));
 				int i = 0;
 				for(Map.Entry<Long, File> snapshot : snapshotsHashmap.entrySet()){
 					int finalI = i;
+
+					if(snapshot.getValue().getName().contains(".dat")){
 					rollbackGui
-						.setContainerSlot(i, (inventory -> {
-							ItemStack snapshotIcon = Item.label.getDefaultStack();
+						.setContainerSlot(i, (inventory ->
+						{
+							ItemStack snapshotIcon = Item.paper.getDefaultStack();
 							SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
-							snapshotIcon.setCustomName("[" + sdf.format(snapshot.getKey()) + "]");
+							snapshotIcon.setCustomName("Snapshot: [" + sdf.format(snapshot.getKey()) + "]");
 							snapshotIcon.setCustomColor((byte) TextFormatting.LIGHT_BLUE.id);
 							try {
 								CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(snapshot.getValue().toPath()));
@@ -113,10 +131,42 @@ public class RollbackCommand extends Command {
 								throw new RuntimeException(e);
 							}
 						}));
+					} else if(snapshot.getValue().getName().contains(".mcr")){
+						rollbackGui.setContainerSlot(i, (inventory ->
+						{
+							ItemStack snapshotIcon = Item.book.getDefaultStack();
+							SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
+							snapshotIcon.setCustomName("Backup: [" + sdf.format(snapshot.getKey()) + "]");
+							snapshotIcon.setCustomColor((byte) TextFormatting.CYAN.id);
+							return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
+
+								for(Entity entity : sender.getWorld().loadedEntityList){
+									if(entity.chunkCoordX == sender.getPlayer().chunkCoordX && entity.chunkCoordZ == sender.getPlayer().chunkCoordZ){
+										if(!(entity instanceof EntityPlayer)){
+											entity.remove();
+										}
+									}
+								}
+
+								File backupDir = snapshot.getValue().getParentFile().getParentFile().getParentFile();
+								Chunk chunk = sender.getWorld().getChunkFromChunkCoords(sender.getPlayer().chunkCoordX, sender.getPlayer().chunkCoordZ);
+
+								try {
+									RollbackManager.rollbackChunkFromBackup(chunk, backupDir);
+								} catch (IOException e) {
+									MelonUtilities.LOGGER.error("Exception while trying to rollback chunk {} from backup {}!", chunk, backupDir);
+								}
+								MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(chunk.xPosition * 16, 0, chunk.zPosition * 16, 16, 256, 16, sender.getWorld()), sender.getWorld().dimension.id);
+								((EntityPlayerMP) sender.getPlayer()).usePersonalCraftingInventory();
+							});
+						}));
+					}
+
+
 					i++;
 				}
 
-				GuiHelper.openCustomServerGui((EntityPlayerMP) sender.getPlayer(), rollbackGui.build((EntityPlayer) sender.getPlayer(), "Snapshots:"));
+				GuiHelper.openCustomServerGui((EntityPlayerMP) sender.getPlayer(), rollbackGui.build((EntityPlayer) sender.getPlayer(), "Captures (Snapshots and Backups):"));
 
 				FeedbackHandler.success(sender, "Opened Rollback GUI!");
 				return true;

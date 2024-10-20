@@ -16,4 +16,7 @@ public class ConfigData {
 
 		@SerializedName(value = "Time Between Backups (in hours): ")
 		@Expose public int timeBetweenBackups = 12;
+
+		@SerializedName(value = "Time Between Pruning Captures (in hours): ")
+		@Expose public int timeBetweenCapturePruning = 12;
 }
