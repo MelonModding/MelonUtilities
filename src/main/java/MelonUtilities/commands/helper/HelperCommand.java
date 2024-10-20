@@ -20,7 +20,7 @@ public class HelperCommand extends Command {
 
 	public static void buildHelperSyntax(){
 		syntax.clear();
-		syntax.append("title",                                                  TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("title",                                                   TextFormatting.LIGHT_GRAY + "< Command Syntax > ([] = optional, <> = variable, / = or)");
 		syntax.append("helper", "title",                                  TextFormatting.LIGHT_GRAY + "  > /helper <mode>");
 		syntax.append("helperAdd", "helper",                              TextFormatting.LIGHT_GRAY + "    > add <username>");
 		syntax.append("helperRemove", "helper",                           TextFormatting.LIGHT_GRAY + "    > remove <username>");

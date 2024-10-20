@@ -113,6 +113,7 @@ public class RollbackManager {
 				chunk.hasEntities = true;
 				if (entity == null) continue;
 				chunk.addEntity(entity);
+				chunk.world.entityJoinedWorld(entity);
 			}
 		}
 		if ((tileEntityListTag = tag.getList("TileEntities")) != null) {

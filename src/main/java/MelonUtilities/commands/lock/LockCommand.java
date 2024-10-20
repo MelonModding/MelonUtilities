@@ -25,7 +25,7 @@ public class LockCommand extends Command {
 
 	public static void buildLockSyntax(){
 		syntax.clear();
-		syntax.append("title",                                                   TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("title",                                                    TextFormatting.LIGHT_GRAY + "< Command Syntax > ([] = optional, <> = variable, / = or)");
 		syntax.append("lock", "title",                                     TextFormatting.LIGHT_GRAY + "  > /lock [<mode>]");
 		syntax.append("lockOnBlockPlaced", "lock",                         TextFormatting.LIGHT_GRAY + "    > onBlockPlaced true/false");
 		syntax.append("lockOnBlockPunched", "lock",                        TextFormatting.LIGHT_GRAY + "    > onBlockPunched true/false");

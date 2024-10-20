@@ -3,6 +3,7 @@ package MelonUtilities.commands.utility;
 import MelonUtilities.commands.helper.HelperCommand;
 import MelonUtilities.commands.kit.KitCommand;
 import MelonUtilities.commands.role.RoleCommand;
+import MelonUtilities.commands.rollback.RollbackCommand;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.KitData;
@@ -54,6 +55,10 @@ public class MUCommand extends Command {
 			sender.sendMessage(TextFormatting.ORANGE + "Building Role Syntax...");
 			RoleCommand.buildRoleSyntax();
 			sender.sendMessage(TextFormatting.LIME + "Role Syntax Built!");
+
+			sender.sendMessage(TextFormatting.ORANGE + "Building Rollback Syntax...");
+			RollbackCommand.buildSyntax();
+			sender.sendMessage(TextFormatting.LIME + "Rollback Syntax Built!");
 
 			sender.sendMessage(TextFormatting.ORANGE + "Reloading General Configs...");
 			Data.configs.loadAll(ConfigData.class);
