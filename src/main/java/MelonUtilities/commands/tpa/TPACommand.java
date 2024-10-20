@@ -1,5 +1,6 @@
 package MelonUtilities.commands.tpa;
 
+import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.TpaManager;
 import net.minecraft.core.net.command.*;
 import net.minecraft.server.entity.player.EntityPlayerMP;
@@ -17,7 +18,7 @@ public class TPACommand extends Command {
 		EntityPlayerMP player = (EntityPlayerMP) sender.getPlayer();
 		EntityPlayerMP receiver = (EntityPlayerMP) handler.getPlayer(args[0]);
 		if (receiver == null) {
-			sender.sendMessage(TextFormatting.RED + "Could not find this " + args[0] + " you seek");
+			FeedbackHandler.error(sender, "Could not find this " + args[0] + " you seek");
 		    return false;
 	    }
 	    boolean here = args.length == 2 && args[1].equals("here");
@@ -31,8 +32,8 @@ public class TPACommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-		commandSender.sendMessage(TextFormatting.LIGHT_GRAY + "< Command Syntax >");
-		commandSender.sendMessage(TextFormatting.LIGHT_GRAY + "  > /tpa <destination player> [here]");
+	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender sender) {
+		FeedbackHandler.syntax(sender, "< Command Syntax >");
+		FeedbackHandler.syntax(sender, "  > /tpa <destination player> [here]");
 	}
 }

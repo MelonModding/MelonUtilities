@@ -1,5 +1,6 @@
 package MelonUtilities.commands.utility;
 
+import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.SyntaxBuilder;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
@@ -25,7 +26,7 @@ public class TestCommand extends Command {
 			return false;
 		}
 
-		sender.sendMessage(TextFormatting.RED + " " + NAME + " Error: (Invalid Syntax)");
+		FeedbackHandler.error(sender,  " " + NAME + " Error: (Invalid Syntax)");
 		return false;
 	}
 

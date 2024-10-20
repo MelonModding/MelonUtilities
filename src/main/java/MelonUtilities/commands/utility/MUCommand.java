@@ -8,6 +8,7 @@ import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.KitData;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.datatypes.RoleData;
+import MelonUtilities.utility.FeedbackHandler;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
@@ -29,44 +30,44 @@ public class MUCommand extends Command {
 		}
 
 		if (args[0].equals("reload")) {
-			sender.sendMessage(TextFormatting.GREEN + "Reloading " + NAME + "...");
+			FeedbackHandler.success(sender, "Reloading " + NAME + "...");
 
-			sender.sendMessage(TextFormatting.ORANGE + "Reloading Player Data...");
+			FeedbackHandler.destructive(sender, "Reloading Player Data...");
 			Data.playerData.loadAll(PlayerData.class);
-			sender.sendMessage(TextFormatting.LIME + "Reloaded " + Data.playerData.dataHashMap.size() + " Player(s)!");
+			FeedbackHandler.success(sender, "Reloaded " + Data.playerData.dataHashMap.size() + " Player(s)!");
 
-			sender.sendMessage(TextFormatting.ORANGE + "Building Helper Syntax...");
+			FeedbackHandler.destructive(sender, "Building Helper Syntax...");
 			HelperCommand.buildHelperSyntax();
-			sender.sendMessage(TextFormatting.LIME + "Helper Syntax Built!");
+			FeedbackHandler.success(sender, "Helper Syntax Built!");
 
-			sender.sendMessage(TextFormatting.ORANGE + "Reloading Kit Data...");
+			FeedbackHandler.destructive(sender, "Reloading Kit Data...");
 			Data.kits.loadAll(KitData.class);
-			sender.sendMessage(TextFormatting.LIME + "Reloaded " + Data.kits.dataHashMap.size() + " Kit(s)!");
+			FeedbackHandler.success(sender, "Reloaded " + Data.kits.dataHashMap.size() + " Kit(s)!");
 
-			sender.sendMessage(TextFormatting.ORANGE + "Building Kit Syntax...");
+			FeedbackHandler.destructive(sender, "Building Kit Syntax...");
 			KitCommand.buildKitSyntax();
-			sender.sendMessage(TextFormatting.LIME + "Kit Syntax Built!");
+			FeedbackHandler.success(sender, "Kit Syntax Built!");
 
-			sender.sendMessage(TextFormatting.ORANGE + "Reloading Role Data...");
+			FeedbackHandler.destructive(sender, "Reloading Role Data...");
 			Data.roles.loadAll(RoleData.class);
-			sender.sendMessage(TextFormatting.LIME + "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
+			FeedbackHandler.success(sender, "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
 
-			sender.sendMessage(TextFormatting.ORANGE + "Building Role Syntax...");
+			FeedbackHandler.destructive(sender, "Building Role Syntax...");
 			RoleCommand.buildRoleSyntax();
-			sender.sendMessage(TextFormatting.LIME + "Role Syntax Built!");
+			FeedbackHandler.success(sender, "Role Syntax Built!");
 
-			sender.sendMessage(TextFormatting.ORANGE + "Reloading General Configs...");
+			FeedbackHandler.destructive(sender, "Reloading General Configs...");
 			Data.configs.loadAll(ConfigData.class);
-			sender.sendMessage(TextFormatting.LIME + "Reloaded Configs!");
+			FeedbackHandler.success(sender, "Reloaded Configs!");
 
-			sender.sendMessage(TextFormatting.ORANGE + "Updating Player List...");
+			FeedbackHandler.destructive(sender, "Updating Player List...");
 			updateList();
-			sender.sendMessage(TextFormatting.LIME + "Updated List!");
+			FeedbackHandler.success(sender, "Updated List!");
 
 			return true;
 		}
 
-		sender.sendMessage(TextFormatting.RED + " " + NAME + " Error: (Invalid Syntax)");
+		FeedbackHandler.error(sender, " " + NAME + " Error: (Invalid Syntax)");
         return false;
     }
 

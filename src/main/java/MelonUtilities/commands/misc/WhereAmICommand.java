@@ -1,5 +1,6 @@
 package MelonUtilities.commands.misc;
 
+import MelonUtilities.utility.FeedbackHandler;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSender;
@@ -15,9 +16,9 @@ public class WhereAmICommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler commandHandler, CommandSender commandSender, String[] strings) {
+	public boolean execute(CommandHandler commandHandler, CommandSender sender, String[] strings) {
 		// Get the player and cast it to EntityPlayerMP
-		EntityPlayerMP player = (EntityPlayerMP) commandSender.getPlayer();
+		EntityPlayerMP player = (EntityPlayerMP) sender.getPlayer();
 
 		// Get the players coords
 		// cast to int to shorten them
@@ -26,7 +27,7 @@ public class WhereAmICommand extends Command {
 		int pz = (int) player.z;
 
 		// Send the info to the chat
-		commandSender.sendMessage("You are at " + px + " " + py + " " + pz);
+		FeedbackHandler.success(sender, "You are at " + px + " " + py + " " + pz);
 
 		return false;
 	}

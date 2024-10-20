@@ -8,58 +8,60 @@ public class SyntaxBuilder {
 
 	ArrayList<SyntaxLine> syntaxLines = new ArrayList<>();
 
-	public void append(SyntaxLine syntaxLine){
+	public void append(SyntaxLine syntaxLine) {
 		if(syntaxLine.owner.equals("none")){
 			syntaxLines.add(syntaxLine);
-		} else {
-			for (int i = 0; i < syntaxLines.size(); i++) {
-				if (syntaxLines.get(i).name.equals(syntaxLine.owner)) {
-					if (syntaxLines.size() - 1 == i) {
-						syntaxLines.add(syntaxLine);
-					} else {
-						for (int j = i + 1; j < syntaxLines.size(); j++) {
-							if (syntaxLines.get(j).name.equals(syntaxLines.get(i).owner)) {
-								if (j == syntaxLines.size() - 1) {
-									syntaxLines.add(syntaxLine);
-									break;
-								}
-								continue;
-							}
-							syntaxLines.add(syntaxLine);
-							break;
-						}
-					}
+			return;
+		}
+
+		for (int i = 0; i < syntaxLines.size(); i++) {
+			if (!syntaxLines.get(i).name.equals(syntaxLine.owner)) continue;
+
+			if (syntaxLines.size() - 1 == i) {
+				syntaxLines.add(syntaxLine);
+				break;
+			}
+
+			for (int j = i + 1; j < syntaxLines.size(); j++) {
+				if (syntaxLines.get(j).name.equals(syntaxLines.get(i).owner)) {
+					if (j != syntaxLines.size() - 1) continue;
+
+					syntaxLines.add(syntaxLine);
 					break;
 				}
+				syntaxLines.add(syntaxLine);
+				break;
 			}
+			break;
 		}
 	}
 
-	public void append(String name, String message){
+	public void append(String name, String message) {
 		SyntaxLine syntaxLine = new SyntaxLine(name, message);
 		if(syntaxLine.owner.equals("none")){
 			syntaxLines.add(syntaxLine);
-		} else {
-			for (int i = 0; i < syntaxLines.size(); i++) {
-				if (syntaxLines.get(i).name.equals(syntaxLine.owner)) {
-					if (syntaxLines.size() - 1 == i) {
-						syntaxLines.add(syntaxLine);
-					} else {
-						for (int j = i + 1; j < syntaxLines.size(); j++) {
-							if (syntaxLines.get(j).name.equals(syntaxLines.get(i).owner)) {
-								if (j == syntaxLines.size() - 1) {
-									syntaxLines.add(syntaxLine);
-									break;
-								}
-								continue;
-							}
+			return;
+		}
+
+		for (int i = 0; i < syntaxLines.size(); i++) {
+			if (!syntaxLines.get(i).name.equals(syntaxLine.owner)) continue;
+
+			if (syntaxLines.size() - 1 == i) {
+				syntaxLines.add(syntaxLine);
+			} else {
+				for (int j = i + 1; j < syntaxLines.size(); j++) {
+					if (syntaxLines.get(j).name.equals(syntaxLines.get(i).owner)) {
+						if (j == syntaxLines.size() - 1) {
 							syntaxLines.add(syntaxLine);
 							break;
 						}
+						continue;
 					}
+					syntaxLines.add(syntaxLine);
 					break;
 				}
 			}
+			break;
 		}
 	}
 
@@ -67,27 +69,30 @@ public class SyntaxBuilder {
 		SyntaxLine syntaxLine = new SyntaxLine(name, message, op);
 		if(syntaxLine.owner.equals("none")){
 			syntaxLines.add(syntaxLine);
-		} else {
-			for (int i = 0; i < syntaxLines.size(); i++) {
-				if (syntaxLines.get(i).name.equals(syntaxLine.owner)) {
-					if (syntaxLines.size() - 1 == i) {
-						syntaxLines.add(syntaxLine);
-					} else {
-						for (int j = i + 1; j < syntaxLines.size(); j++) {
-							if (syntaxLines.get(j).name.equals(syntaxLines.get(i).owner)) {
-								if (j == syntaxLines.size() - 1) {
-									syntaxLines.add(syntaxLine);
-									break;
-								}
-								continue;
-							}
-							syntaxLines.add(syntaxLine);
-							break;
-						}
-					}
-					break;
-				}
+			return;
+		}
+
+		for (int i = 0; i < syntaxLines.size(); i++) {
+			if (!syntaxLines.get(i).name.equals(syntaxLine.owner)) continue;
+
+			if (syntaxLines.size() - 1 == i) {
+				syntaxLines.add(syntaxLine);
+				break;
 			}
+
+			for (int j = i + 1; j < syntaxLines.size(); j++) {
+				if (syntaxLines.get(j).name.equals(syntaxLines.get(i).owner)) {
+					if (j == syntaxLines.size() - 1) {
+						syntaxLines.add(syntaxLine);
+						break;
+					}
+					continue;
+				}
+				syntaxLines.add(syntaxLine);
+				break;
+			}
+			break;
+
 		}
 	}
 

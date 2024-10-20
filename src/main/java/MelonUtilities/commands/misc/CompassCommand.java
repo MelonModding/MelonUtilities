@@ -1,5 +1,6 @@
 package MelonUtilities.commands.misc;
 
+import MelonUtilities.utility.FeedbackHandler;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.net.command.Command;
@@ -33,6 +34,6 @@ public class CompassCommand extends Command {
 	@Override
 	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
 		// Feedback to the player that it executed
-		handler.sendCommandFeedback(sender,"Given 1x " + NAME + " to " + sender.getPlayer().username);
+		FeedbackHandler.success(sender, "Given 1x " + NAME + " to " + sender.getPlayer().username);
 	}
 }

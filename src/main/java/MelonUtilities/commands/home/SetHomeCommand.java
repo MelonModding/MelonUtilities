@@ -2,6 +2,7 @@ package MelonUtilities.commands.home;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
+import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.SyntaxBuilder;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.utility.UUIDHelper;
@@ -44,9 +45,9 @@ public class SetHomeCommand extends Command {
 		if (args.length == 0 && home == null) {
 
 			addHome("home", x, y, z, dimID, sender);
-			sender.sendMessage(TextFormatting.LIME + "Set Home: <home> to:");
-			sender.sendMessage(TextFormatting.LIME + "[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
-			sender.sendMessage(TextFormatting.LIME + "[x: " + x + " y: " + y + " z: " + z + "]");
+			FeedbackHandler.success(sender, "Set Home: <home> to:");
+			FeedbackHandler.success(sender, "[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
+			FeedbackHandler.success(sender, "[x: " + x + " y: " + y + " z: " + z + "]");
 			return true;
 
 		} else if (args.length == 0) {
@@ -57,12 +58,12 @@ public class SetHomeCommand extends Command {
 			home = HomeCommand.getHome(args[0], sender);
 			if(home == null){
 				addHome(args[0], x, y, z, dimID, sender);
-				sender.sendMessage(TextFormatting.LIME + "Set Home: <" + args[0] + "> to:");
-				sender.sendMessage(TextFormatting.LIME + "[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
-				sender.sendMessage(TextFormatting.LIME + "[x: " + x + " y: " + y + " z: " + z + "]");
+				FeedbackHandler.success(sender, "Set Home: <" + args[0] + "> to:");
+				FeedbackHandler.success(sender, "[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
+				FeedbackHandler.success(sender, "[x: " + x + " y: " + y + " z: " + z + "]");
 				return true;
 			}
-			sender.sendMessage(TextFormatting.RED + "Failed to Set Home (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Set Home (Invalid Syntax)");
 			syntax.printLayerAndSubLayers("sethome", sender);
 			return true;
 		}

@@ -2,6 +2,7 @@ package MelonUtilities.commands.helper;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
+import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.SyntaxBuilder;
 import MelonUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.command.Command;
@@ -31,19 +32,19 @@ public class HelperCommand extends Command {
 		EntityPlayerMP player = (EntityPlayerMP) handler.getPlayer(username);
 
 		if (player != null && !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper) {
-			handler.sendMessageToPlayer(player, TextFormatting.LIME + "You are now a Helper!");
-			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Setting " + TextFormatting.GRAY + username + TextFormatting.LIME + " to Helper.");
+			FeedbackHandler.success(sender, "You are now a Helper!");
+			FeedbackHandler.success(sender, "Setting " + TextFormatting.GRAY + username + TextFormatting.LIME + " to Helper.");
 
 			Data.playerData.loadAll(PlayerData.class);
 			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper = true;
 			Data.playerData.saveAll();
 
 			return true;
-		} else if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper){
+		} else if (Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper){
 			handler.sendCommandFeedback(sender, TextFormatting.GRAY + username + TextFormatting.RED + " is already a helper!");
 			return true;
-		} else if(player == null){
-			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Setting " + TextFormatting.GRAY + username + TextFormatting.LIME + " to Helper.");
+		} else if (player == null) {
+			FeedbackHandler.success(sender, TextFormatting.LIME + "Setting " + TextFormatting.GRAY + username + TextFormatting.LIME + " to Helper.");
 
 			Data.playerData.loadAll(PlayerData.class);
 			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper = true;
@@ -59,8 +60,8 @@ public class HelperCommand extends Command {
 		EntityPlayerMP player = (EntityPlayerMP) handler.getPlayer(username);
 
 		if (player != null && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper) {
-			handler.sendMessageToPlayer(player, TextFormatting.RED + "You are no longer a Helper!");
-			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Removing " + TextFormatting.GRAY + username + TextFormatting.LIME + " from Helper List.");
+			FeedbackHandler.destructive(sender, "You are no longer a Helper!");
+			FeedbackHandler.success(sender, TextFormatting.LIME + "Removing " + TextFormatting.GRAY + username + TextFormatting.LIME + " from Helper List.");
 
 			Data.playerData.loadAll(PlayerData.class);
 			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper = false;
@@ -68,10 +69,10 @@ public class HelperCommand extends Command {
 
 			return true;
 		} else if(!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper){
-			handler.sendCommandFeedback(sender, TextFormatting.GRAY + username + TextFormatting.RED + " isn't a helper!");
+			FeedbackHandler.error(sender, TextFormatting.GRAY + username + TextFormatting.RED + " isn't a helper!");
 			return true;
-		} else if(player == null){
-			handler.sendCommandFeedback(sender, TextFormatting.LIME + "Removing " + TextFormatting.GRAY + username + TextFormatting.LIME + " from Helper List.");
+		} else if (player == null) {
+			FeedbackHandler.success(sender, TextFormatting.LIME + "Removing " + TextFormatting.GRAY + username + TextFormatting.LIME + " from Helper List.");
 
 			Data.playerData.loadAll(PlayerData.class);
 			Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(username).toString(), PlayerData.class).isHelper = false;

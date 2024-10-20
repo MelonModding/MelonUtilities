@@ -3,6 +3,7 @@ package MelonUtilities.commands.role.subcommands;
 import MelonUtilities.commands.role.RoleCommand;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.RoleData;
+import MelonUtilities.utility.FeedbackHandler;
 import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
 
@@ -13,14 +14,14 @@ public class EditRoleUsernameSubcommand {
 		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).usernameColor = args[4];
 		Data.roles.saveAll();
-		sender.sendMessage(TextFormatting.LIME + "Set Username Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
+		FeedbackHandler.success(sender, "Set Username Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 		return true;
 	}
 
 	public static boolean usernameUnderline(CommandSender sender, String[] args){
 
 		if(args.length == 4){
-			sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Underline (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Edit Username Underline (Invalid Syntax)");
 			RoleCommand.syntax.printLayerAndSubLayers("usernameUnderline", sender);
 			return true;
 		}
@@ -29,17 +30,17 @@ public class EditRoleUsernameSubcommand {
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameUnderlined = true;
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Username Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
+			FeedbackHandler.success(sender, "Set Username Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameUnderlined = false;
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Username Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
+			FeedbackHandler.success(sender, "Set Username Underline for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
 
-		sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Underline (Invalid Boolean)");
+		FeedbackHandler.error(sender, "Failed to Edit Username Underline (Invalid Boolean)");
 		sender.sendMessage(TextFormatting.LIGHT_GRAY + "(Tip: Use true/false)");
 		return true;
 	}
@@ -47,7 +48,7 @@ public class EditRoleUsernameSubcommand {
 	public static boolean usernameBold(CommandSender sender, String[] args){
 
 		if(args.length == 4){
-			sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Bold (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Edit Username Bold (Invalid Syntax)");
 			RoleCommand.syntax.printLayerAndSubLayers("usernameBold", sender);
 			return true;
 		}
@@ -56,17 +57,17 @@ public class EditRoleUsernameSubcommand {
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameBold = true;
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Username Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
+			FeedbackHandler.success(sender, "Set Username Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameBold = false;
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Username Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
+			FeedbackHandler.success(sender, "Set Username Bold for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
 
-		sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Bold (Invalid Boolean)");
+		FeedbackHandler.error(sender, "Failed to Edit Username Bold (Invalid Boolean)");
 		sender.sendMessage(TextFormatting.LIGHT_GRAY + "(Tip: Use true/false)");
 		return true;
 	}
@@ -74,7 +75,7 @@ public class EditRoleUsernameSubcommand {
 	public static boolean usernameItalics(CommandSender sender, String[] args){
 
 		if(args.length == 4){
-			sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Italics (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Edit Username Italics (Invalid Syntax)");
 			RoleCommand.syntax.printLayerAndSubLayers("usernameItalics", sender);
 			return true;
 		}
@@ -83,17 +84,17 @@ public class EditRoleUsernameSubcommand {
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameItalics = true;
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Username Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
+			FeedbackHandler.success(sender, "Set Username Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		} else if(args[4].equalsIgnoreCase("false")){
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleFromArg(args[1]).isUsernameItalics = false;
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Username Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
+			FeedbackHandler.success(sender, "Set Username Italics for role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 			return true;
 		}
 
-		sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Italics (Invalid Boolean)");
+		FeedbackHandler.error(sender, "Failed to Edit Username Italics (Invalid Boolean)");
 		sender.sendMessage(TextFormatting.LIGHT_GRAY + "(Tip: Use true/false)");
 		return true;
 	}
@@ -101,7 +102,7 @@ public class EditRoleUsernameSubcommand {
 	public static boolean usernameBorder(CommandSender sender, String[] args){
 
 		if(args.length == 4){
-			sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Border (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Edit Username Border (Invalid Syntax)");
 			RoleCommand.syntax.printLayerAndSubLayers("usernameBorder", sender);
 			return true;
 		}
@@ -120,7 +121,7 @@ public class EditRoleUsernameSubcommand {
 			case "custom":
 				return usernameBorderCustom(sender, args);
 		}
-		sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Border (Invalid Syntax)");
+		FeedbackHandler.error(sender, "Failed to Edit Username Border (Invalid Syntax)");
 		RoleCommand.syntax.printLayerAndSubLayers("usernameBorder", sender);
 		return true;
 	}
@@ -128,7 +129,7 @@ public class EditRoleUsernameSubcommand {
 	private static boolean usernameBorderColor(CommandSender sender, String[] args){
 
 		if(args.length == 5){
-			sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Border Color (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Edit Username Border Color (Invalid Syntax)");
 			RoleCommand.syntax.printLayerAndSubLayers("usernameBorderColor", sender);
 			return true;
 		}
@@ -136,14 +137,14 @@ public class EditRoleUsernameSubcommand {
 		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleFromArg(args[1]).usernameBorderColor = args[5];
 		Data.roles.saveAll();
-		sender.sendMessage(TextFormatting.LIME + "Set Username Border Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
+		FeedbackHandler.success(sender, "Set Username Border Color for role " + RoleCommand.getRoleFromArg(args[1]).displayName + " to: " + args[4]);
 		return true;
 	}
 
 	private static boolean usernameBorderNone(CommandSender sender, String[] args){
 
 		if(args.length == 6){
-			sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Border Type (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Edit Username Border Type (Invalid Syntax)");
 			RoleCommand.syntax.printLayerAndSubLayers("usernameBorderType", sender);
 			return true;
 		}
@@ -155,14 +156,14 @@ public class EditRoleUsernameSubcommand {
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCurly = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCustom = false;
 		Data.roles.saveAll();
-		sender.sendMessage(TextFormatting.LIME + "Set Username Border to None for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
+		FeedbackHandler.success(sender, "Set Username Border to None for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
 
 	private static boolean usernameBorderBracket(CommandSender sender, String[] args){
 
 		if(args.length == 6){
-			sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Border Type (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Edit Username Border Type (Invalid Syntax)");
 			RoleCommand.syntax.printLayerAndSubLayers("usernameBorderType", sender);
 			return true;
 		}
@@ -174,14 +175,14 @@ public class EditRoleUsernameSubcommand {
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCurly = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCustom = false;
 		Data.roles.saveAll();
-		sender.sendMessage(TextFormatting.LIME + "Set Username Border to [Bracket] for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
+		FeedbackHandler.success(sender, "Set Username Border to [Bracket] for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
 
 	private static boolean usernameBorderCaret(CommandSender sender, String[] args){
 
 		if(args.length == 6){
-			sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Border Type (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Edit Username Border Type (Invalid Syntax)");
 			RoleCommand.syntax.printLayerAndSubLayers("usernameBorderType", sender);
 			return true;
 		}
@@ -193,14 +194,14 @@ public class EditRoleUsernameSubcommand {
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCurly = false;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCustom = false;
 		Data.roles.saveAll();
-		sender.sendMessage(TextFormatting.LIME + "Set Username Border to <Caret> for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
+		FeedbackHandler.success(sender, "Set Username Border to <Caret> for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
 
 	private static boolean usernameBorderCurly(CommandSender sender, String[] args){
 
 		if(args.length == 6){
-			sender.sendMessage(TextFormatting.RED + "Failed to Edit Username Border Type (Invalid Syntax)");
+			FeedbackHandler.error(sender, "Failed to Edit Username Border Type (Invalid Syntax)");
 			RoleCommand.syntax.printLayerAndSubLayers("usernameBorderType", sender);
 			return true;
 		}
@@ -212,7 +213,7 @@ public class EditRoleUsernameSubcommand {
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCurly = true;
 		RoleCommand.getRoleFromArg(args[1]).isUsernameBorderCustom = false;
 		Data.roles.saveAll();
-		sender.sendMessage(TextFormatting.LIME + "Set Username Border to {Curly} for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
+		FeedbackHandler.success(sender, "Set Username Border to {Curly} for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 		return true;
 	}
 
@@ -226,12 +227,12 @@ public class EditRoleUsernameSubcommand {
 			role.isUsernameBorderCurly = false;
 			role.isUsernameBorderCustom = true;
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Username Border to ?Custom? for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
+			FeedbackHandler.success(sender, "Set Username Border to ?Custom? for role " + RoleCommand.getRoleFromArg(args[1]).displayName);
 			return true;
 		}
 		if(args[5].equals("suffix")){
 			if(args.length == 6){
-				sender.sendMessage(TextFormatting.RED + "Failed to Edit Custom Suffix (Invalid Syntax)");
+				FeedbackHandler.error(sender, "Failed to Edit Custom Suffix (Invalid Syntax)");
 				RoleCommand.syntax.printLayerAndSubLayers("usernameBorderCustomAffix", sender);
 				return true;
 			}
@@ -243,11 +244,11 @@ public class EditRoleUsernameSubcommand {
 			role.isUsernameBorderCustom = true;
 			role.customUsernameBorderSuffix = args[6];
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Custom Username Border Suffix for Role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to " + args[6]);
+			FeedbackHandler.success(sender, "Set Custom Username Border Suffix for Role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to " + args[6]);
 			return true;
 		} else if(args[5].equals("prefix")){
 			if(args.length == 6){
-				sender.sendMessage(TextFormatting.RED + "Failed to Edit Custom Prefix (Invalid Syntax)");
+				FeedbackHandler.error(sender, "Failed to Edit Custom Prefix (Invalid Syntax)");
 				RoleCommand.syntax.printLayerAndSubLayers("usernameBorderCustomAffix", sender);
 				return true;
 			}
@@ -259,11 +260,11 @@ public class EditRoleUsernameSubcommand {
 			role.isUsernameBorderCustom = true;
 			role.customUsernameBorderPrefix = args[6];
 			Data.roles.saveAll();
-			sender.sendMessage(TextFormatting.LIME + "Set Custom Username Border Prefix for Role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to " + args[6]);
+			FeedbackHandler.success(sender, "Set Custom Username Border Prefix for Role: " + RoleCommand.getRoleFromArg(args[1]).displayName + " to " + args[6]);
 			return true;
 		}
 
-		sender.sendMessage(TextFormatting.RED + "Failed to Edit Custom Username Border (Invalid Syntax)");
+		FeedbackHandler.error(sender, "Failed to Edit Custom Username Border (Invalid Syntax)");
 		RoleCommand.syntax.printLayerAndSubLayers("usernameBorderCustom", sender);
 		return true;
 	}

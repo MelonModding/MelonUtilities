@@ -1,5 +1,6 @@
 package MelonUtilities.commands.misc;
 
+import MelonUtilities.utility.FeedbackHandler;
 import net.minecraft.core.entity.EntityLightningBolt;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
@@ -27,6 +28,6 @@ public class SmiteCommand extends Command {
 
 	@Override
 	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-		commandSender.sendMessage("smite");
+		FeedbackHandler.syntax(commandSender, "smite");
 	}
 }

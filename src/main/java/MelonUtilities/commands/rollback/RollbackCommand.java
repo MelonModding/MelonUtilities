@@ -1,6 +1,7 @@
 package MelonUtilities.commands.rollback;
 
 import MelonUtilities.rollback.RollbackManager;
+import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.SyntaxBuilder;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.NbtIo;
@@ -41,7 +42,7 @@ public class RollbackCommand extends Command {
 
 	private boolean takeSnapshot(CommandHandler handler, CommandSender sender, String[] args){
 		RollbackManager.takeModifiedChunkSnapshot();
-		sender.sendMessage(TextFormatting.LIME + "Snap!");
+		FeedbackHandler.success(sender, "Snap!");
 		return true;
 	}
 
@@ -53,7 +54,7 @@ public class RollbackCommand extends Command {
 
 			File[] snapshots = chunkDir.listFiles();
 			if(snapshots == null){
-				sender.sendMessage(TextFormatting.RED + "Chunk does not have any Snapshots!");
+				FeedbackHandler.error(sender, "Chunk does not have any Snapshots!");
 				return true;
 			}
 
@@ -91,11 +92,11 @@ public class RollbackCommand extends Command {
 
 			GuiHelper.openCustomServerGui((EntityPlayerMP) sender.getPlayer(), rollbackGui.build((EntityPlayer) sender.getPlayer(), "Snapshots:"));
 
-			sender.sendMessage(TextFormatting.LIME + "Opened Rollback GUI!");
+			FeedbackHandler.success(sender, "Opened Rollback GUI!");
 			return true;
 
 		} else {
-			sender.sendMessage(TextFormatting.RED + "Chunk has never been Modified!");
+			FeedbackHandler.error(sender, "Chunk has never been Modified!");
 			return true;
 		}
 	}
@@ -116,7 +117,7 @@ public class RollbackCommand extends Command {
 				return loadSnapshot(handler, sender,args);
 		}
 
-		sender.sendMessage(TextFormatting.RED + " " + NAME + " Error: (Invalid Syntax)");
+		FeedbackHandler.error(sender, " " + NAME + " Error: (Invalid Syntax)");
 		return false;
 	}
 

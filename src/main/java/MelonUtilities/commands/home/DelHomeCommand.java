@@ -2,6 +2,7 @@ package MelonUtilities.commands.home;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
+import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.SyntaxBuilder;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.utility.UUIDHelper;
@@ -39,25 +40,25 @@ public class DelHomeCommand extends Command {
 
 		if (args.length == 0 && home != null) {
 			deleteHome("home", sender);
-			sender.sendMessage(TextFormatting.ORANGE + "Deleted Home: <home>");
+			FeedbackHandler.destructive(sender, "Deleted Home: <home>");
 			return true;
 		} else if (args.length == 0){
-			sender.sendMessage(TextFormatting.RED + "Failed to Delete Home (Home does not exist!)");
+			FeedbackHandler.error(sender, "Failed to Delete Home (Home does not exist!)");
 			syntax.printLayerAndSubLayers("home", sender);
 			return true;
 		} else if (args.length == 1) {
 			home = HomeCommand.getHome(args[0], sender);
 			if (home != null) {
 				deleteHome(args[0], sender);
-				sender.sendMessage(TextFormatting.ORANGE + "Deleted Home: <" + args[0] + ">");
+				FeedbackHandler.destructive(sender, "Deleted Home: <" + args[0] + ">");
 				return true;
 			}
-			sender.sendMessage(TextFormatting.RED + "Failed to Delete Home (Home does not exist!)");
+			FeedbackHandler.error(sender, "Failed to Delete Home (Home does not exist!)");
 			syntax.printLayerAndSubLayers("home", sender);
 			return true;
 		}
 
-		sender.sendMessage(TextFormatting.RED + "Failed to Delete Home (Invalid Syntax)");
+		FeedbackHandler.error(sender, "Failed to Delete Home (Invalid Syntax)");
 		syntax.printLayerAndSubLayers("delhome", sender);
         return true;
     }
