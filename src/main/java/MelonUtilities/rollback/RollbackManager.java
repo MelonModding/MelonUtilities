@@ -265,7 +265,7 @@ public class RollbackManager {
 					 }
 				 }
 			 }
-		 } else{
+		 } else if (fileList.size() > 1){
 			 for(int i = 0; i<fileList.size(); i += 2){
 				 File file = fileList.get(i);
 				 if(!file.getName().contains("archived")){
@@ -301,46 +301,19 @@ public class RollbackManager {
 							if (chunk.isDirectory()) {
 								File[] snapshots = chunk.listFiles();
 								if (snapshots != null) {
-									long newestSnapshot = Long.MIN_VALUE;
-									long oldestSnapshot = Long.MAX_VALUE;
-									for (File snapshot : snapshots) {
-										long snapshotTime = Long.parseLong(snapshot.getName().split(" ")[0]);
-										if (snapshotTime > newestSnapshot) {
-											newestSnapshot = snapshotTime;
-										} else if (snapshotTime < oldestSnapshot) {
-											oldestSnapshot = snapshotTime;
-										}
-									}
-									long middleMostSnapshotTime = (newestSnapshot + oldestSnapshot) / 2;
-									HashMap<Long, File> snapshotDifferences = new HashMap<>();
-									for (File snapshot : snapshots) {
-										snapshotDifferences.putIfAbsent(Math.abs(middleMostSnapshotTime - Long.parseLong(snapshot.getName().split(" ")[0])), snapshot);
-									}
-									long lowestDifference = Long.MAX_VALUE;
-									for (Long difference : snapshotDifferences.keySet()) {
-										if (difference < lowestDifference) {
-											lowestDifference = difference;
-										}
-									}
+									List<File> snapshotList = Arrays.asList(snapshots);
+									snapshotList.sort((o1, o2) -> {
+										long l1 = Long.parseLong(o1.getName().split(" ")[0]);
+										long l2 = Long.parseLong(o2.getName().split(" ")[0]);
+										return Long.compare(l2, l1);
+									});
 
-									File middleMostSnapshot = snapshotDifferences.get(lowestDifference);
-
-									List<File> toStay = new ArrayList<>();
-									List<File> toPrune = new ArrayList<>();
-
-									for (File snapshot : snapshots) {
-										if (Long.parseLong(snapshot.getName().split(" ")[0]) > Long.parseLong(middleMostSnapshot.getName().split(" ")[0])) {
-											toStay.add(snapshot);
-										} else {
-											toPrune.add(snapshot);
-										}
-									}
+									List<File> toPrune = snapshotList.subList(snapshotList.size()/2, snapshotList.size());
 									try {
 										prune(toPrune);
 									} catch (IOException e) {
 										MelonUtilities.LOGGER.error("Failed to Prune Snapshot files in {}!", toPrune);
 									}
-									toStay.addAll(toPrune);
 								}
 							}
 						}
@@ -357,7 +330,7 @@ public class RollbackManager {
 			backupList.sort((o1, o2) -> {
 				long l1 = Long.parseLong(o1.getName().split(" ")[0]);
 				long l2 = Long.parseLong(o2.getName().split(" ")[0]);
-				return Long.compare(l1, l2);
+				return Long.compare(l2, l1);
 			});
 
 			List<File> toPrune = backupList.subList(backupList.size()/2, backupList.size());
