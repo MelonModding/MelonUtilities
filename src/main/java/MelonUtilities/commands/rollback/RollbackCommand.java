@@ -45,15 +45,22 @@ public class RollbackCommand extends Command {
 	}
 
 	private boolean takeSnapshot(CommandHandler handler, CommandSender sender, String[] args){
-		RollbackManager.takeModifiedChunkSnapshot();
-		FeedbackHandler.success(sender, "Snap!");
+		RollbackManager.takeSnapshot();
+		FeedbackHandler.success(sender, "Taking a Snapshot!");
 		return true;
 	}
+
+	private boolean takeBackup(CommandHandler handler, CommandSender sender, String[] args){
+		RollbackManager.takeBackup();
+		FeedbackHandler.success(sender, "Backing Up World!");
+		return true;
+	}
+
 
 	private boolean rollback(CommandHandler handler, CommandSender sender, String[] args){
 
 		if(args.length == 0){
-			File chunkDir = new File("./rollbackdata/modifiedchunksnapshots/" + sender.getWorld().dimension.id + "/c[x." + sender.getPlayer().chunkCoordX + "-z." + sender.getPlayer().chunkCoordZ + "]");
+			File chunkDir = new File("./rollbackdata/snapshots/" + sender.getWorld().dimension.id + "/c[x." + sender.getPlayer().chunkCoordX + "-z." + sender.getPlayer().chunkCoordZ + "]");
 			chunkDir.mkdirs();
 			if (chunkDir.isDirectory()) {
 
@@ -135,6 +142,9 @@ public class RollbackCommand extends Command {
 			case "takesnapshot":
 			case "ts":
 				return takeSnapshot(handler, sender, args);
+			case "takebackup":
+			case "tb":
+				return takeBackup(handler, sender, args);
 			case "help":
 				return false;
 		}

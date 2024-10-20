@@ -19,9 +19,7 @@ import net.minecraft.core.world.chunk.reader.ChunkReaderVersion1;
 import net.minecraft.core.world.chunk.reader.ChunkReaderVersion2;
 import net.minecraft.core.world.save.LevelData;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -33,9 +31,9 @@ public class RollbackManager {
 
 	public static boolean skipModifiedQueuing = false;
 
-	File backupsDir = new File("./rollbackdata/fullbackups");
-	static File snapshotsDir = new File("./rollbackdata/modifiedchunksnapshots");
-	static boolean createIfNecessary = true;
+	static File backupsDir = new File("./rollbackdata/backups");
+	static File snapshotsDir = new File("./rollbackdata/snapshots");
+	static File dimDir = new File("./world/dimensions");
 
 	public static void saveChunk(World world, Chunk chunk) throws IOException {
 		world.checkSessionLock();
@@ -130,13 +128,37 @@ public class RollbackManager {
 
 	public static void onInit(){
 		new File("./rollbackdata").mkdirs();
-		new File("./rollbackdata/fullbackups").mkdirs();
-		new File("./rollbackdata/modifiedchunksnapshots").mkdirs();
+		new File("./rollbackdata/backups").mkdirs();
+		new File("./rollbackdata/snapshots").mkdirs();
 	}
 
-	public static void createFullBackup(){
+
+
+
+	public static void takeBackup(){
 		new Thread(() -> {
-			//do the thing, put made thing into thing properly :)
+			SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
+			File thisBackupDir = new File(backupsDir, System.currentTimeMillis() + " [" + sdf.format(new Date(System.currentTimeMillis())) + "].dat");
+			File[] dimFiles = dimDir.listFiles();
+			if(dimFiles != null){
+				for(File dim : dimFiles){
+					File thisBackupRegionDir = new File(thisBackupDir,dim.getName() + "/region");
+					thisBackupRegionDir.mkdirs();
+					File regionDir = new File(dimDir,dim.getName() + "/region");
+					if(regionDir.exists()){
+						File[] regionFiles = regionDir.listFiles();
+						if(regionFiles != null) {
+							for (File regionFile : regionFiles) {
+								try {
+									Files.copy(regionFile.toPath(), thisBackupRegionDir.toPath());
+								} catch (IOException e) {
+									continue;
+								}
+							}
+						}
+					}
+				}
+			}
 		}).start();
 	}
 
@@ -144,7 +166,7 @@ public class RollbackManager {
 		modifiedChunkQueue.add(chunk);
 	}
 
-	public static void takeModifiedChunkSnapshot(){
+	public static void takeSnapshot(){
 		List<Chunk> tempModifiedChunkQueue = new ArrayList<>(modifiedChunkQueue);
 		modifiedChunkQueue.clear();
 
@@ -162,16 +184,16 @@ public class RollbackManager {
 		}).start();
 	}
 
-
-	public static void pruneFullBackups(){
+	public static void pruneBackups(){
 
 	}
 
 	static float timeBetweenSnapshots = 0;
+	static float timeBetweenBackups = 0;
 	public static void tick(){
 		timeBetweenSnapshots += 0.05f;
 		if(timeBetweenSnapshots >= Data.configs.getOrCreate("config", ConfigData.class).timeBetweenSnapshots){
-			takeModifiedChunkSnapshot();
+			takeSnapshot();
 			timeBetweenSnapshots = 0;
 		}
 	}
