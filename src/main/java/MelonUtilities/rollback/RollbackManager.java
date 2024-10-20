@@ -1,6 +1,8 @@
 package MelonUtilities.rollback;
 
 import MelonUtilities.MelonUtilities;
+import MelonUtilities.config.Data;
+import MelonUtilities.config.datatypes.ConfigData;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.NbtIo;
@@ -27,14 +29,13 @@ import java.util.*;
 
 public class RollbackManager {
 
-	static Set<Chunk> ModifiedChunkQueue = new HashSet<>();
+	static final Set<Chunk> modifiedChunkQueue = new HashSet<>();
 
 	public static boolean skipModifiedQueuing = false;
 
 	File backupsDir = new File("./rollbackdata/fullbackups");
 	static File snapshotsDir = new File("./rollbackdata/modifiedchunksnapshots");
 	static boolean createIfNecessary = true;
-	public static SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
 
 	public static void saveChunk(World world, Chunk chunk) throws IOException {
 		world.checkSessionLock();
@@ -42,6 +43,7 @@ public class RollbackManager {
 		File chunkDir = new File(snapshotsDir, chunk.world.dimension.id + "/c[x." + chunk.xPosition + "-z." + chunk.zPosition + "]");
 		chunkDir.mkdirs();
 		Date resultdate = new Date(System.currentTimeMillis());
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
 		File chunkFile = new File(chunkDir, System.currentTimeMillis() + " [" + sdf.format(resultdate) + "].dat");
 
 		if (chunkFile.exists()) {
@@ -113,6 +115,7 @@ public class RollbackManager {
 				chunk.hasEntities = true;
 				if (entity == null) continue;
 				chunk.addEntity(entity);
+				chunk.world.entityJoinedWorld(entity);
 			}
 		}
 		if ((tileEntityListTag = tag.getList("TileEntities")) != null) {
@@ -138,21 +141,23 @@ public class RollbackManager {
 	}
 
 	public static void queueModifiedChunk(Chunk chunk){
-		ModifiedChunkQueue.add(chunk);
+		modifiedChunkQueue.add(chunk);
 	}
 
 	public static void takeModifiedChunkSnapshot(){
+		List<Chunk> tempModifiedChunkQueue = new ArrayList<>(modifiedChunkQueue);
+		modifiedChunkQueue.clear();
+
 		new Thread(() -> {
-			Iterator<Chunk> chunkIterator = ModifiedChunkQueue.iterator();
-			while(chunkIterator.hasNext()){
-				Chunk c = chunkIterator.next();
-				try {
-					saveChunk(c.world, c);
-				} catch (IOException e) {
-					MelonUtilities.LOGGER.error("Chunk [x:{}, z:{}] Failed to Save During Snapshot!", c.xPosition, c.zPosition);
-					continue;
+			synchronized (tempModifiedChunkQueue){
+				for (Chunk chunk : tempModifiedChunkQueue){
+					try {
+						saveChunk(chunk.world, chunk);
+					} catch (IOException e) {
+						MelonUtilities.LOGGER.error("Chunk [x:{}, z:{}] Failed to Save During Snapshot!", chunk.xPosition, chunk.zPosition);
+						continue;
+					}
 				}
-				chunkIterator.remove();
 			}
 		}).start();
 	}
@@ -162,9 +167,13 @@ public class RollbackManager {
 
 	}
 
+	static float timeBetweenSnapshots = 0;
 	public static void tick(){
-		long currentTime = System.currentTimeMillis();
-
+		timeBetweenSnapshots += 0.05f;
+		if(timeBetweenSnapshots >= Data.configs.getOrCreate("config", ConfigData.class).timeBetweenSnapshots){
+			takeModifiedChunkSnapshot();
+			timeBetweenSnapshots = 0;
+		}
 	}
 
 }

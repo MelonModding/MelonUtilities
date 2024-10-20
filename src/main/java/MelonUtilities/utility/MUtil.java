@@ -10,6 +10,9 @@ import net.minecraft.core.util.phys.Vec3d;
 import net.minecraft.core.world.World;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 
+import java.io.File;
+import java.util.*;
+
 public class MUtil {
 
 	public static HitResult rayCastFromPlayer(CommandSender sender) {
@@ -31,6 +34,24 @@ public class MUtil {
 		double reachDistance = sender.getPlayer().getGamemode().getBlockReachDistance();
 		Vec3d vec3d1 = vec3d.addVector((double) f7 * reachDistance, (double) f8 * reachDistance, (double) f9 * reachDistance);
 		return sender.getWorld().checkBlockCollisionBetweenPoints(vec3d, vec3d1, false);
+	}
+
+	public static HashMap<Long, File> sortByKey(HashMap<Long, File> hm) {
+
+		List<Map.Entry<Long, File> > list
+			= new LinkedList<>(
+			hm.entrySet());
+
+		list.sort(Map.Entry.comparingByKey());
+		Collections.reverse(list);
+
+		HashMap<Long, File> result
+			= new LinkedHashMap<>();
+		for (Map.Entry<Long, File> me : list) {
+			result.put(me.getKey(), me.getValue());
+		}
+
+		return result;
 	}
 
 	public static TileEntityChest getOtherChest(World world, TileEntityChest chest){

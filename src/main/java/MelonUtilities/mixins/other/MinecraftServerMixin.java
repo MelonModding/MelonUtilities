@@ -1,5 +1,6 @@
-package MelonUtilities.mixins;
+package MelonUtilities.mixins.other;
 
+import MelonUtilities.rollback.RollbackManager;
 import MelonUtilities.utility.TpaManager;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,5 +13,6 @@ public abstract class MinecraftServerMixin {
 	@Inject(at = @At("HEAD"), method = "doTick")
 	private void doTick(CallbackInfo ci) {
 		TpaManager.tick();
+		RollbackManager.tick();
 	}
 }

@@ -142,7 +142,7 @@ public class KitCommand extends Command {
 
 	public static void buildKitSyntax(){
 		syntax.clear();
-		syntax.append("title",                                TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("title",                                TextFormatting.LIGHT_GRAY + "< Command Syntax > ([] = optional, <> = variable, / = or)");
 		syntax.append("give",                                 TextFormatting.LIGHT_GRAY + "  > /kit give <kit> [<overwrite?>]");
 		syntax.append("create",                               TextFormatting.LIGHT_GRAY + "  > /kit create <kit> [<cooldown>]");
 		syntax.append("delete",                               TextFormatting.LIGHT_GRAY + "  > /kit delete <kit>");

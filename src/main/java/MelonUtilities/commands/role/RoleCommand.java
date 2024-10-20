@@ -26,7 +26,7 @@ public class RoleCommand extends Command {
 	public static SyntaxBuilder syntax = new SyntaxBuilder();
 	public static void buildRoleSyntax(){
 		syntax.clear();
-		syntax.append("title",                                                  TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("title",                                                  TextFormatting.LIGHT_GRAY + "< Command Syntax > ([] = optional, <> = variable, / = or)");
 		syntax.append("create", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role create <role id> [<priority>]");
 		syntax.append("delete", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role delete <role id>");
 		syntax.append("edit", "title",                                    TextFormatting.LIGHT_GRAY + "  > /role edit <role id> <mode>");
@@ -238,7 +238,6 @@ public class RoleCommand extends Command {
 			case "border":
 				return EditRoleUsernameSubcommand.usernameBorder(sender, args);
 		}
-
 		FeedbackHandler.error(sender, "Failed to Edit Role Username (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("username", sender);
 		return true;
