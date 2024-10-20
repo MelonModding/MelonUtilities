@@ -1,6 +1,6 @@
 package MelonUtilities.mixins.other;
 
-import MelonUtilities.rollback.RollbackManager;
+import MelonUtilities.utility.RollbackManager;
 import MelonUtilities.utility.TpaManager;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;

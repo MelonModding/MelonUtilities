@@ -1,6 +1,6 @@
 package MelonUtilities.mixins.rollback;
 
-import MelonUtilities.rollback.RollbackManager;
+import MelonUtilities.utility.RollbackManager;
 import net.minecraft.core.world.chunk.Chunk;
 import net.minecraft.server.world.chunk.provider.ChunkProviderServer;
 import org.spongepowered.asm.mixin.Mixin;

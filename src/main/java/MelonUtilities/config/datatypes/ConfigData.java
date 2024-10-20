@@ -12,9 +12,15 @@ public class ConfigData {
 		@SerializedName(value = "Display Mode: ")
 		@Expose public String displayMode = "multi";
 
+		@SerializedName(value = "Snapshots Enabled: ")
+		@Expose public boolean snapshotsEnabled = true;
+
 		@SerializedName(value = "Time Between Snapshots (in seconds): ")
 		@Expose public int timeBetweenSnapshots = 120;
 		public double lastSnapshot = 0;
+
+		@SerializedName(value = "Backups Enabled: ")
+		@Expose public boolean backupsEnabled = true;
 
 		@SerializedName(value = "Time Between Backups (in hours): ")
 		@Expose public int timeBetweenBackups = 12;

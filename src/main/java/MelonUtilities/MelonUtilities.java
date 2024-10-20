@@ -23,7 +23,7 @@ import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.config.custom.jsonadapters.HomeJsonAdapter;
-import MelonUtilities.rollback.RollbackManager;
+import MelonUtilities.utility.RollbackManager;
 import MelonUtilities.utility.MUtil;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;

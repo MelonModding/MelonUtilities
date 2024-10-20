@@ -1,7 +1,9 @@
 package MelonUtilities.commands.rollback;
 
 import MelonUtilities.MelonUtilities;
-import MelonUtilities.rollback.RollbackManager;
+import MelonUtilities.config.Data;
+import MelonUtilities.config.datatypes.ConfigData;
+import MelonUtilities.utility.RollbackManager;
 import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.SyntaxBuilder;
@@ -17,7 +19,6 @@ import net.minecraft.core.net.command.CommandSender;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.Packet51MapChunk;
 import net.minecraft.core.world.chunk.Chunk;
-import net.minecraft.core.world.save.mcregion.RegionFileCache;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 import org.useless.serverlibe.api.gui.GuiHelper;
@@ -30,7 +31,7 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static MelonUtilities.rollback.RollbackManager.*;
+import static MelonUtilities.utility.RollbackManager.*;
 
 public class RollbackCommand extends Command {
 
@@ -74,6 +75,38 @@ public class RollbackCommand extends Command {
 		RollbackManager.pruneBackups();
 		FeedbackHandler.destructive(sender, "Pruning Backups");
 		return true;
+	}
+
+	private boolean toggleAutoSnapshots(CommandHandler handler, CommandSender sender, String[] args){
+		if(Data.configs.getOrCreate("config", ConfigData.class).snapshotsEnabled){
+			Data.configs.loadAll(ConfigData.class);
+			Data.configs.getOrCreate("config", ConfigData.class).snapshotsEnabled = false;
+			Data.configs.saveAll();
+			FeedbackHandler.destructive(sender, "Automatic Snapshots Disabled.");
+			return true;
+		} else {
+			Data.configs.loadAll(ConfigData.class);
+			Data.configs.getOrCreate("config", ConfigData.class).snapshotsEnabled = true;
+			Data.configs.saveAll();
+			FeedbackHandler.success(sender, "Automatic Snapshots Enabled!");
+			return true;
+		}
+	}
+
+	private boolean toggleAutoBackups(CommandHandler handler, CommandSender sender, String[] args){
+		if(Data.configs.getOrCreate("config", ConfigData.class).backupsEnabled){
+			Data.configs.loadAll(ConfigData.class);
+			Data.configs.getOrCreate("config", ConfigData.class).backupsEnabled = false;
+			Data.configs.saveAll();
+			FeedbackHandler.destructive(sender, "Automatic Backups Disabled.");
+			return true;
+		} else {
+			Data.configs.loadAll(ConfigData.class);
+			Data.configs.getOrCreate("config", ConfigData.class).backupsEnabled = true;
+			Data.configs.saveAll();
+			FeedbackHandler.success(sender, "Automatic Backups Enabled!");
+			return true;
+		}
 	}
 
 
@@ -216,6 +249,12 @@ public class RollbackCommand extends Command {
 			case "prunebackups":
 			case "pb":
 				return pruneBackups(handler, sender, args);
+			case "toggleautosnapshots":
+			case "tas":
+				return toggleAutoSnapshots(handler, sender, args);
+			case "toggleautobackups":
+			case "tab":
+				return toggleAutoBackups(handler, sender, args);
 			case "help":
 				return false;
 		}
