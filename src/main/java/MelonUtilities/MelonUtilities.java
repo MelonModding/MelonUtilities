@@ -144,24 +144,14 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		//ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
 
 		// Anything Else
-		Data.configs.loadAll(ConfigData.class);
 		Data.playerData.loadAll(PlayerData.class);
 		MUtil.timeOnInit = System.currentTimeMillis();
 
-		Data.configs.getOrCreate("config", ConfigData.class).lastSnapshot = correctTimeIfZero(Data.configs.getOrCreate("config", ConfigData.class).lastSnapshot);
-		Data.configs.getOrCreate("config", ConfigData.class).lastBackup = correctTimeIfZero(Data.configs.getOrCreate("config", ConfigData.class).lastBackup);
-		Data.configs.getOrCreate("config", ConfigData.class).lastSnapshotPrune = correctTimeIfZero(Data.configs.getOrCreate("config", ConfigData.class).lastSnapshotPrune);
-		Data.configs.getOrCreate("config", ConfigData.class).lastBackupPrune = correctTimeIfZero(Data.configs.getOrCreate("config", ConfigData.class).lastBackupPrune);
+		Data.configs.loadAll(ConfigData.class);
+
 
 		LOGGER.info("MelonUtilities initialized!");
     }
-
-	private double correctTimeIfZero(double d){
-		if(d == 0d){
-			return System.currentTimeMillis() / 1000d;
-		}
-		return d;
-	}
 
 	@Override
 	public void beforeGameStart() {
@@ -196,7 +186,23 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		CommandHelper.createCommand(new HelperCommand());
 		CommandHelper.createCommand(new MUCommand());
 		// Warp
+		// Anything Else
 
+		Data.configs.loadAll(ConfigData.class);
+		ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);
+		config.lastSnapshot = correctTimeIfZERO(Data.configs.getOrCreate("config", ConfigData.class).lastSnapshot);
+		config.lastBackup = correctTimeIfZERO(config.lastBackup);
+		config.lastSnapshotPrune = correctTimeIfZERO(config.lastSnapshotPrune);
+		config.lastBackupPrune = correctTimeIfZERO(config.lastBackupPrune);
+		Data.configs.saveAll();
+
+	}
+
+	private double correctTimeIfZERO(double d){
+		if(d == 0.0d){
+			return System.currentTimeMillis();
+		}
+		return d;
 	}
 
 	@Override

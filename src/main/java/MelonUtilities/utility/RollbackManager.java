@@ -372,28 +372,38 @@ public class RollbackManager {
 
 	//TODO Hard Backup Size Limit in Config
 
-	static ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);
+	static int configLoadCounter = 0;
 
-	public static void tick(){
-		if(!lock && config.snapshotsEnabled && System.currentTimeMillis() / 1000d >= config.lastSnapshot + config.timeBetweenSnapshots){
+	public static void tick() {
+		ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);
+
+		double systemTime = System.currentTimeMillis();
+		double difference = (systemTime - config.lastSnapshot);
+		if(!lock && config.snapshotsEnabled && difference >= config.timeBetweenSnapshots * 1000){
 			takeSnapshot();
-			config.lastSnapshot = System.currentTimeMillis() / 1000d;
+			config.lastSnapshot = System.currentTimeMillis();
+			Data.configs.saveAll();
 		}
 
-		if(!lock && config.backupsEnabled && System.currentTimeMillis() / 1000d >= config.lastBackup + config.timeBetweenBackups * 3600){
+		if(!lock && config.backupsEnabled && System.currentTimeMillis() - config.lastBackup >= config.timeBetweenBackups * 60 * 60 * 1000){
 			takeBackup();
-			config.lastBackup = System.currentTimeMillis() / 1000d;
+			config.lastBackup = System.currentTimeMillis();
+			Data.configs.saveAll();
 		}
 
-		if(!lock && config.backupsEnabled && System.currentTimeMillis() / 1000d >= config.lastBackupPrune + config.timeBetweenBackupPruning * 3600){
+		if(!lock && config.backupsEnabled && System.currentTimeMillis() - config.lastBackupPrune >= config.timeBetweenBackupPruning * 60 * 60 * 1000){
 			pruneBackups();
-			config.lastBackupPrune = System.currentTimeMillis() / 1000f;
+			config.lastBackupPrune = System.currentTimeMillis();
+			Data.configs.saveAll();
 		}
 
-		if(!lock && config.snapshotsEnabled && System.currentTimeMillis() / 1000d >= config.lastSnapshotPrune + config.timeBetweenSnapshotPruning * 3600){
+		if(!lock && config.snapshotsEnabled && System.currentTimeMillis() - config.lastSnapshotPrune >= config.timeBetweenSnapshotPruning * 60 * 60 * 1000){
 			pruneSnapshots();
-			config.lastSnapshotPrune = System.currentTimeMillis() / 1000d;
+			config.lastSnapshotPrune = System.currentTimeMillis();
+			Data.configs.saveAll();
 		}
 
+
+		configLoadCounter++;
 	}
 }

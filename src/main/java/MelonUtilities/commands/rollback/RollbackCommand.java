@@ -79,13 +79,11 @@ public class RollbackCommand extends Command {
 
 	private boolean toggleAutoSnapshots(CommandHandler handler, CommandSender sender, String[] args){
 		if(Data.configs.getOrCreate("config", ConfigData.class).snapshotsEnabled){
-			Data.configs.loadAll(ConfigData.class);
 			Data.configs.getOrCreate("config", ConfigData.class).snapshotsEnabled = false;
 			Data.configs.saveAll();
 			FeedbackHandler.destructive(sender, "Automatic Snapshots Disabled.");
 			return true;
 		} else {
-			Data.configs.loadAll(ConfigData.class);
 			Data.configs.getOrCreate("config", ConfigData.class).snapshotsEnabled = true;
 			Data.configs.saveAll();
 			FeedbackHandler.success(sender, "Automatic Snapshots Enabled!");
@@ -95,13 +93,11 @@ public class RollbackCommand extends Command {
 
 	private boolean toggleAutoBackups(CommandHandler handler, CommandSender sender, String[] args){
 		if(Data.configs.getOrCreate("config", ConfigData.class).backupsEnabled){
-			Data.configs.loadAll(ConfigData.class);
 			Data.configs.getOrCreate("config", ConfigData.class).backupsEnabled = false;
 			Data.configs.saveAll();
 			FeedbackHandler.destructive(sender, "Automatic Backups Disabled.");
 			return true;
 		} else {
-			Data.configs.loadAll(ConfigData.class);
 			Data.configs.getOrCreate("config", ConfigData.class).backupsEnabled = true;
 			Data.configs.saveAll();
 			FeedbackHandler.success(sender, "Automatic Backups Enabled!");
