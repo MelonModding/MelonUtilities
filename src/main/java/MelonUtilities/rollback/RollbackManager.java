@@ -298,7 +298,7 @@ public class RollbackManager {
 										return Long.compare(l2, l1);
 									});
 
-									List<File> toPrune = snapshotList.subList(snapshotList.size()/2, snapshotList.size() - 1);
+									List<File> toPrune = snapshotList.subList(snapshotList.size()/2, snapshotList.size());
 									try {
 										prune(toPrune);
 									} catch (IOException e) {
@@ -337,22 +337,22 @@ public class RollbackManager {
 	static ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);
 
 	public static void tick(){
-		if(System.currentTimeMillis() <= config.lastSnapshot + config.timeBetweenSnapshots){
+		if(System.currentTimeMillis() / 1000f >= config.lastSnapshot + config.timeBetweenSnapshots){
 			takeSnapshot();
 			config.lastSnapshot = System.currentTimeMillis() / 1000f;
 		}
 
-		if(System.currentTimeMillis() <= config.lastBackup + config.timeBetweenBackups * 120){
+		if(System.currentTimeMillis() / 1000f >= config.lastBackup + config.timeBetweenBackups * 120){
 			takeBackup();
 			config.lastBackup = System.currentTimeMillis() / 1000f;
 		}
 
-		if(System.currentTimeMillis() <= config.lastBackupPrune + config.timeBetweenBackupPruning * 120){
+		if(System.currentTimeMillis() / 1000f >= config.lastBackupPrune + config.timeBetweenBackupPruning * 120){
 			pruneBackups();
 			config.lastBackupPrune = System.currentTimeMillis() / 1000f;
 		}
 
-		if(System.currentTimeMillis() <= config.lastSnapshotPrune + config.timeBetweenSnapshotPruning * 120){
+		if(System.currentTimeMillis() / 1000f >= config.lastSnapshotPrune + config.timeBetweenSnapshotPruning * 120){
 			pruneSnapshots();
 			config.lastSnapshotPrune = System.currentTimeMillis() / 1000f;
 		}
