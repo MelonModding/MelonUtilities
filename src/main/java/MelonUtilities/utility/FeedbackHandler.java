@@ -1,4 +1,4 @@
 package MelonUtilities.utility;
 
-public class ResponseHelper {
+public class FeedbackHandler {
 }

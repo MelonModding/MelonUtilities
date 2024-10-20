@@ -237,7 +237,6 @@ public class RoleCommand extends Command {
 			case "border":
 				return EditRoleUsernameSubcommand.usernameBorder(sender, args);
 		}
-
 		sender.sendMessage(TextFormatting.RED + "Failed to Edit Role Username (Default Error) (Invalid Syntax?)");
 		syntax.printLayerAndSubLayers("username", sender);
 		return true;

@@ -27,7 +27,7 @@ import java.util.*;
 
 public class RollbackManager {
 
-	static Set<Chunk> ModifiedChunkQueue = new HashSet<>();
+	static final Set<Chunk> modifiedChunkQueue = new HashSet<>();
 
 	public static boolean skipModifiedQueuing = false;
 
@@ -138,21 +138,23 @@ public class RollbackManager {
 	}
 
 	public static void queueModifiedChunk(Chunk chunk){
-		ModifiedChunkQueue.add(chunk);
+		modifiedChunkQueue.add(chunk);
 	}
 
 	public static void takeModifiedChunkSnapshot(){
+		List<Chunk> tempModifiedChunkQueue = new ArrayList<>(modifiedChunkQueue);
+		modifiedChunkQueue.clear();
+
 		new Thread(() -> {
-			Iterator<Chunk> chunkIterator = ModifiedChunkQueue.iterator();
-			while(chunkIterator.hasNext()){
-				Chunk c = chunkIterator.next();
-				try {
-					saveChunk(c.world, c);
-				} catch (IOException e) {
-					MelonUtilities.LOGGER.error("Chunk [x:{}, z:{}] Failed to Save During Snapshot!", c.xPosition, c.zPosition);
-					continue;
+			synchronized (tempModifiedChunkQueue){
+				for (Chunk chunk : tempModifiedChunkQueue){
+					try {
+						saveChunk(chunk.world, chunk);
+					} catch (IOException e) {
+						MelonUtilities.LOGGER.error("Chunk [x:{}, z:{}] Failed to Save During Snapshot!", chunk.xPosition, chunk.zPosition);
+						continue;
+					}
 				}
-				chunkIterator.remove();
 			}
 		}).start();
 	}
