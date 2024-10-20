@@ -37,6 +37,8 @@ public class RollbackManager {
 
 	public static boolean skipModifiedQueuing = false;
 
+	public static boolean lock = false;
+
 	public static File backupsDir = new File("./rollbackdata/backups");
 	public static File snapshotsDir = new File("./rollbackdata/snapshots");
 
@@ -161,52 +163,60 @@ public class RollbackManager {
 
 
 	public static void takeBackup(){
+		if(lock){
+			return;
+		}
+		lock = true;
 		new Thread(() -> {
-			SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
-			File thisBackupDir = new File(backupsDir, System.currentTimeMillis() + " [" + sdf.format(new Date(System.currentTimeMillis())) + "]");
-			File[] dimFiles = getDimensionsDir().listFiles();
-			if(dimFiles != null){
-				int totalFiles = 0;
-				int completedFiles = 0;
-				long startTime, lastMessage;
-				startTime = lastMessage = System.currentTimeMillis();
+			try {
+				SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
+				File thisBackupDir = new File(backupsDir, System.currentTimeMillis() + " [" + sdf.format(new Date(System.currentTimeMillis())) + "]");
+				File[] dimFiles = getDimensionsDir().listFiles();
+				if(dimFiles != null){
+					int totalFiles = 0;
+					int completedFiles = 0;
+					long startTime, lastMessage;
+					startTime = lastMessage = System.currentTimeMillis();
 
-				for(File dim : dimFiles){
-					File regionDir = new File(getDimensionsDir(),dim.getName() + "/region");
-					if(regionDir.exists()){
-						File[] regionFiles = regionDir.listFiles();
-						if(regionFiles != null) {
-							totalFiles += regionFiles.length;
+					for(File dim : dimFiles){
+						File regionDir = new File(getDimensionsDir(),dim.getName() + "/region");
+						if(regionDir.exists()){
+							File[] regionFiles = regionDir.listFiles();
+							if(regionFiles != null) {
+								totalFiles += regionFiles.length;
+							}
 						}
 					}
-				}
 
-				MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sStarting Backup of all %s files!", TextFormatting.GRAY, totalFiles));
-				for(File dim : dimFiles){
-					File thisBackupRegionDir = new File(thisBackupDir,dim.getName() + "/region");
-					thisBackupRegionDir.mkdirs();
-					File regionDir = new File(getDimensionsDir(),dim.getName() + "/region");
-					if(regionDir.exists()){
-						File[] regionFiles = regionDir.listFiles();
-						if(regionFiles != null) {
-							for (File regionFile : regionFiles) {
-								try {
-									Files.copy(regionFile.toPath(), new File(thisBackupRegionDir, regionFile.getName()).toPath());
-								} catch (IOException e) {
-									MelonUtilities.LOGGER.error("Exception while trying to copy file {} to {}!", regionFile, thisBackupRegionDir, e);
-									continue;
-								}
-								completedFiles++;
+					MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sStarting Backup of all %s files!", TextFormatting.GRAY, totalFiles));
+					for(File dim : dimFiles){
+						File thisBackupRegionDir = new File(thisBackupDir,dim.getName() + "/region");
+						thisBackupRegionDir.mkdirs();
+						File regionDir = new File(getDimensionsDir(),dim.getName() + "/region");
+						if(regionDir.exists()){
+							File[] regionFiles = regionDir.listFiles();
+							if(regionFiles != null) {
+								for (File regionFile : regionFiles) {
+									try {
+										Files.copy(regionFile.toPath(), new File(thisBackupRegionDir, regionFile.getName()).toPath());
+									} catch (IOException e) {
+										MelonUtilities.LOGGER.error("Exception while trying to copy file {} to {}!", regionFile, thisBackupRegionDir, e);
+										continue;
+									}
+									completedFiles++;
 
-								if (System.currentTimeMillis() - lastMessage > 500) {
-									lastMessage = System.currentTimeMillis();
-									MinecraftServer.getInstance().playerList.sendChatMessageToAllOps( String.format("%s%.2f%% complete", TextFormatting.GRAY, ((float)completedFiles/totalFiles) * 100f));
+									if (System.currentTimeMillis() - lastMessage > 500) {
+										lastMessage = System.currentTimeMillis();
+										MinecraftServer.getInstance().playerList.sendChatMessageToAllOps( String.format("%s%.2f%% complete", TextFormatting.GRAY, ((float)completedFiles/totalFiles) * 100f));
+									}
 								}
 							}
 						}
 					}
+					MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sFinished Backup of all %s files in %.3f seconds", TextFormatting.GRAY, totalFiles, (System.currentTimeMillis() - startTime)/1000f));
 				}
-				MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sFinished Backup of all %s files in %.3f seconds", TextFormatting.GRAY, totalFiles, (System.currentTimeMillis() - startTime)/1000f));
+			} finally {
+				lock = false;
 			}
 		}).start();
 	}
@@ -216,29 +226,37 @@ public class RollbackManager {
 	}
 
 	public static void takeSnapshot(){
+		if(lock){
+			return;
+		}
+		lock = true;
 		List<Chunk> tempModifiedChunkQueue = new ArrayList<>(modifiedChunkQueue);
 		modifiedChunkQueue.clear();
 
 		new Thread(() -> {
-			synchronized (tempModifiedChunkQueue){
-				int completedFiles = 0;
-				long startTime, lastMessage;
-				startTime = lastMessage = System.currentTimeMillis();
-				MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sStarting Snapshot of all %s modified chunks!", TextFormatting.GRAY, tempModifiedChunkQueue.size()));
-				for (Chunk chunk : tempModifiedChunkQueue){
-					try {
-						saveChunk(chunk.world, chunk);
-					} catch (IOException e) {
-						MelonUtilities.LOGGER.error("Chunk [x:{}, z:{}] Failed to Save During Snapshot!", chunk.xPosition, chunk.zPosition);
-					}
+			try {
+				synchronized (tempModifiedChunkQueue){
+					int completedFiles = 0;
+					long startTime, lastMessage;
+					startTime = lastMessage = System.currentTimeMillis();
+					MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sStarting Snapshot of all %s modified chunks!", TextFormatting.GRAY, tempModifiedChunkQueue.size()));
+					for (Chunk chunk : tempModifiedChunkQueue){
+						try {
+							saveChunk(chunk.world, chunk);
+						} catch (IOException e) {
+							MelonUtilities.LOGGER.error("Chunk [x:{}, z:{}] Failed to Save During Snapshot!", chunk.xPosition, chunk.zPosition);
+						}
 
-					completedFiles++;
-					if (System.currentTimeMillis() - lastMessage > 500) {
-						lastMessage = System.currentTimeMillis();
-						MinecraftServer.getInstance().playerList.sendChatMessageToAllOps( String.format("%s%.2f%% complete", TextFormatting.GRAY, ((float)completedFiles/tempModifiedChunkQueue.size()) * 100f));
+						completedFiles++;
+						if (System.currentTimeMillis() - lastMessage > 500) {
+							lastMessage = System.currentTimeMillis();
+							MinecraftServer.getInstance().playerList.sendChatMessageToAllOps( String.format("%s%.2f%% complete", TextFormatting.GRAY, ((float)completedFiles/tempModifiedChunkQueue.size()) * 100f));
+						}
 					}
+					MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sFinished Snapshot of all %s modified chunks in %.3f seconds", TextFormatting.GRAY, tempModifiedChunkQueue.size(), (System.currentTimeMillis() - startTime)/1000f));
 				}
-				MinecraftServer.getInstance().playerList.sendChatMessageToAllOps(String.format("%sFinished Snapshot of all %s modified chunks in %.3f seconds", TextFormatting.GRAY, tempModifiedChunkQueue.size(), (System.currentTimeMillis() - startTime)/1000f));
+			} finally {
+				lock = false;
 			}
 		}).start();
 	}
@@ -280,56 +298,77 @@ public class RollbackManager {
 	}
 
 	public static void pruneSnapshots(){
-		File[] dimensions = snapshotsDir.listFiles();
-		if(dimensions != null) {
-			for (File dimension : dimensions) {
-				if (dimension.isDirectory()) {
-					File chunksDir = new File(snapshotsDir, dimension.getName());
-					File[] chunks = chunksDir.listFiles();
-					if (chunks != null) {
-						for (File chunk : chunks) {
-							if (chunk.isDirectory()) {
-								File[] snapshots = chunk.listFiles();
-								if (snapshots != null) {
-									List<File> snapshotList = Arrays.asList(snapshots);
-									snapshotList.sort((o1, o2) -> {
-										long l1 = Long.parseLong(o1.getName().split(" ")[0]);
-										long l2 = Long.parseLong(o2.getName().split(" ")[0]);
-										return Long.compare(l2, l1);
-									});
+		if(lock){
+			return;
+		}
+		lock = true;
+		new Thread(() -> {
+			try {
+				File[] dimensions = snapshotsDir.listFiles();
+				if (dimensions != null) {
+					for (File dimension : dimensions) {
+						if (dimension.isDirectory()) {
+							File chunksDir = new File(snapshotsDir, dimension.getName());
+							File[] chunks = chunksDir.listFiles();
+							if (chunks != null) {
+								for (File chunk : chunks) {
+									if (chunk.isDirectory()) {
+										File[] snapshots = chunk.listFiles();
+										if (snapshots != null) {
+											List<File> snapshotList = Arrays.asList(snapshots);
+											snapshotList.sort((o1, o2) -> {
+												long l1 = Long.parseLong(o1.getName().split(" ")[0]);
+												long l2 = Long.parseLong(o2.getName().split(" ")[0]);
+												return Long.compare(l2, l1);
+											});
 
-									List<File> toPrune = snapshotList.subList(snapshotList.size()/2, snapshotList.size());
-									try {
-										prune(toPrune);
-									} catch (IOException e) {
-										MelonUtilities.LOGGER.error("Failed to Prune Snapshot files in {}!", toPrune);
+											List<File> toPrune = snapshotList.subList(snapshotList.size() / 2, snapshotList.size());
+											try {
+												prune(toPrune);
+											} catch (IOException e) {
+												MelonUtilities.LOGGER.error("Failed to Prune Snapshot files in {}!", toPrune);
+											}
+										}
 									}
 								}
 							}
 						}
 					}
 				}
+			} finally {
+				lock = false;
 			}
-		}
+		}).start();
 	}
 
 	public static void pruneBackups(){
-		File[] backups = backupsDir.listFiles();
-		if(backups != null){
-			List<File> backupList = Arrays.asList(backups);
-			backupList.sort((o1, o2) -> {
-				long l1 = Long.parseLong(o1.getName().split(" ")[0]);
-				long l2 = Long.parseLong(o2.getName().split(" ")[0]);
-				return Long.compare(l2, l1);
-			});
-
-			List<File> toPrune = backupList.subList(backupList.size()/2, backupList.size());
-			try {
-				prune(toPrune);
-			} catch (IOException e) {
-				MelonUtilities.LOGGER.error("Failed to Prune Backup files in {}!", toPrune);
-			}
+		if(lock){
+			return;
 		}
+		lock = true;
+		new Thread(() -> {
+			try {
+				File[] backups = backupsDir.listFiles();
+				if (backups != null) {
+					List<File> backupList = Arrays.asList(backups);
+					backupList.sort((o1, o2) -> {
+						long l1 = Long.parseLong(o1.getName().split(" ")[0]);
+						long l2 = Long.parseLong(o2.getName().split(" ")[0]);
+						return Long.compare(l2, l1);
+					});
+
+					List<File> toPrune = backupList.subList(backupList.size() / 2, backupList.size());
+					try {
+						prune(toPrune);
+					} catch (IOException e) {
+						MelonUtilities.LOGGER.error("Failed to Prune Backup files in {}!", toPrune);
+					}
+				}
+			} finally {
+				lock = false;
+			}
+		}).start();
+
 	}
 
 	//TODO Hard Backup Size Limit in Config
@@ -337,24 +376,24 @@ public class RollbackManager {
 	static ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);
 
 	public static void tick(){
-		if(System.currentTimeMillis() / 1000f >= config.lastSnapshot + config.timeBetweenSnapshots){
+		if(!lock && System.currentTimeMillis() / 1000d >= config.lastSnapshot + config.timeBetweenSnapshots){
 			takeSnapshot();
-			config.lastSnapshot = System.currentTimeMillis() / 1000f;
+			config.lastSnapshot = System.currentTimeMillis() / 1000d;
 		}
 
-		if(System.currentTimeMillis() / 1000f >= config.lastBackup + config.timeBetweenBackups * 120){
+		if(!lock && System.currentTimeMillis() / 1000d >= config.lastBackup + config.timeBetweenBackups * 3600){
 			takeBackup();
-			config.lastBackup = System.currentTimeMillis() / 1000f;
+			config.lastBackup = System.currentTimeMillis() / 1000d;
 		}
 
-		if(System.currentTimeMillis() / 1000f >= config.lastBackupPrune + config.timeBetweenBackupPruning * 120){
+		if(!lock && System.currentTimeMillis() / 1000d >= config.lastBackupPrune + config.timeBetweenBackupPruning * 3600){
 			pruneBackups();
 			config.lastBackupPrune = System.currentTimeMillis() / 1000f;
 		}
 
-		if(System.currentTimeMillis() / 1000f >= config.lastSnapshotPrune + config.timeBetweenSnapshotPruning * 120){
+		if(!lock && System.currentTimeMillis() / 1000d >= config.lastSnapshotPrune + config.timeBetweenSnapshotPruning * 3600){
 			pruneSnapshots();
-			config.lastSnapshotPrune = System.currentTimeMillis() / 1000f;
+			config.lastSnapshotPrune = System.currentTimeMillis() / 1000d;
 		}
 
 	}

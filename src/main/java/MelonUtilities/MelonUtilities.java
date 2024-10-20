@@ -156,11 +156,11 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		LOGGER.info("MelonUtilities initialized!");
     }
 
-	private float correctTimeIfZero(float f){
-		if(f == 0f){
-			return System.currentTimeMillis() / 1000f;
+	private double correctTimeIfZero(double d){
+		if(d == 0d){
+			return System.currentTimeMillis() / 1000d;
 		}
-		return f;
+		return d;
 	}
 
 	@Override
