@@ -110,19 +110,11 @@ public class RollbackCommand extends Command {
 		String[] segments = chunkDir.getName().split("\\.");
 		//"c[x"   "0-z"   "0]"
 
-		int x1;
-		if(segments[1].substring(0, 1).contains("-")){
-			x1 = Integer.parseInt(segments[1].substring(0, 2));
-		} else {
-			x1 = Integer.parseInt(segments[1].substring(0, 1));
-		}
+		String xString = segments[1].substring(0, segments[1].length() - 2);
+		String zString = segments[1].substring(0, segments[1].length() - 1);
 
-		int z1;
-		if(segments[2].substring(0, 1).contains("-")){
-			z1 = Integer.parseInt(segments[2].substring(0, 2));
-		} else {
-			z1 = Integer.parseInt(segments[2].substring(0, 1));
-		}
+		int x = Integer.parseInt(xString);
+		int z = Integer.parseInt(zString);
 
 
 
@@ -144,7 +136,7 @@ public class RollbackCommand extends Command {
 		if(backups != null){
 			for (File backup : backups) {
 				if (backup.isDirectory()) {
-					capturesHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(sender.getWorld().dimension.id)), x1, z1));
+					capturesHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(sender.getWorld().dimension.id)), x, z));
 				}
 			}
 		}
@@ -156,8 +148,11 @@ public class RollbackCommand extends Command {
 	private HashMap<Long, File> getSortedBackups(CommandSender sender, File chunkDir){
 		String[] segments = chunkDir.getName().split("\\.");
 		//"c[x"   "0-z"   "0]"
-		int x1 = Integer.parseInt(segments[1].substring(0, 1));
-		int z1 = Integer.parseInt(segments[2].substring(0, 1));
+		String xString = segments[1].substring(0, segments[1].length() - 2);
+		String zString = segments[1].substring(0, segments[1].length() - 1);
+
+		int x = Integer.parseInt(xString);
+		int z = Integer.parseInt(zString);
 
 		HashMap<Long, File> backupsHashmap = new HashMap<>();
 
@@ -166,7 +161,7 @@ public class RollbackCommand extends Command {
 		if(backups != null){
 			for (File backup : backups) {
 				if (backup.isDirectory()) {
-					backupsHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(sender.getWorld().dimension.id)), x1, z1));
+					backupsHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(sender.getWorld().dimension.id)), x, z));
 				}
 			}
 		}
@@ -350,19 +345,12 @@ public class RollbackCommand extends Command {
 			String[] segments = path.split("\\.");
 			//"c[x"   "0-z"   "0]"
 
-			int x;
-			if(segments[1].substring(0, 1).contains("-")){
-				x = Integer.parseInt(segments[1].substring(0, 2));
-			} else {
-				x = Integer.parseInt(segments[1].substring(0, 1));
-			}
+			String xString = segments[1].substring(0, segments[1].length() - 2);
+			String zString = segments[1].substring(0, segments[1].length() - 1);
 
-			int z;
-			if(segments[2].substring(0, 1).contains("-")){
-				z = Integer.parseInt(segments[2].substring(0, 2));
-			} else {
-				z = Integer.parseInt(segments[2].substring(0, 1));
-			}
+			int x = Integer.parseInt(xString);
+			int z = Integer.parseInt(zString);
+
 
 			HashMap<Long, File> captures = getSortedCaptures(sender, chunkDir);
 
