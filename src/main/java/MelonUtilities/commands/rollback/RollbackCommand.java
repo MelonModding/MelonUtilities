@@ -20,7 +20,7 @@ import net.minecraft.core.net.packet.Packet51MapChunk;
 import net.minecraft.core.world.chunk.Chunk;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.EntityPlayerMP;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.useless.serverlibe.api.gui.GuiHelper;
 import org.useless.serverlibe.api.gui.ServerGuiBuilder;
 import org.useless.serverlibe.api.gui.slot.ServerSlotButton;
@@ -109,8 +109,23 @@ public class RollbackCommand extends Command {
 
 		String[] segments = chunkDir.getName().split("\\.");
 		//"c[x"   "0-z"   "0]"
-		int x1 = Integer.parseInt(segments[1].substring(0, 1));
-		int z1 = Integer.parseInt(segments[2].substring(0, 1));
+
+		int x1;
+		if(segments[1].substring(0, 1).contains("-")){
+			x1 = Integer.parseInt(segments[1].substring(0, 2));
+		} else {
+			x1 = Integer.parseInt(segments[1].substring(0, 1));
+		}
+
+		int z1;
+		if(segments[2].substring(0, 1).contains("-")){
+			z1 = Integer.parseInt(segments[2].substring(0, 2));
+		} else {
+			z1 = Integer.parseInt(segments[2].substring(0, 1));
+		}
+
+
+
 
 		HashMap<Long, File> capturesHashmap = new HashMap<>();
 
@@ -299,25 +314,25 @@ public class RollbackCommand extends Command {
 		int x2;
 		int z2;
 
-		if (StringUtils.isNumeric(args[0])) {
+		if (MUtil.isNumeric(args[0])) {
 			x1 = Integer.parseInt(args[0]);
 		} else {
 			FeedbackHandler.error(sender, "Failed to Rollback Chunk Area! (Invalid Chunks)");
 			return true;
 		}
-		if (StringUtils.isNumeric(args[1])) {
+		if (MUtil.isNumeric(args[1])) {
 			z1 = Integer.parseInt(args[1]);
 		} else {
 			FeedbackHandler.error(sender, "Failed to Rollback Chunk Area! (Invalid Chunks)");
 			return true;
 		}
-		if (StringUtils.isNumeric(args[2])) {
+		if (MUtil.isNumeric(args[2])) {
 			x2 = Integer.parseInt(args[2]);
 		} else {
 			FeedbackHandler.error(sender, "Failed to Rollback Chunk Area! (Invalid Chunks)");
 			return true;
 		}
-		if (StringUtils.isNumeric(args[3])) {
+		if (MUtil.isNumeric(args[3])) {
 			z2 = Integer.parseInt(args[3]);
 		} else {
 			FeedbackHandler.error(sender, "Failed to Rollback Chunk Area! (Invalid Chunks)");
@@ -335,8 +350,19 @@ public class RollbackCommand extends Command {
 			String[] segments = path.split("\\.");
 			//"c[x"   "0-z"   "0]"
 
-			int x = Integer.parseInt(segments[1].substring(0, 1));
-			int z = Integer.parseInt(segments[2].substring(0, 1));
+			int x;
+			if(segments[1].substring(0, 1).contains("-")){
+				x = Integer.parseInt(segments[1].substring(0, 2));
+			} else {
+				x = Integer.parseInt(segments[1].substring(0, 1));
+			}
+
+			int z;
+			if(segments[2].substring(0, 1).contains("-")){
+				z = Integer.parseInt(segments[2].substring(0, 2));
+			} else {
+				z = Integer.parseInt(segments[2].substring(0, 1));
+			}
 
 			HashMap<Long, File> captures = getSortedCaptures(sender, chunkDir);
 

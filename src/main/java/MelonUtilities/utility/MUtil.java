@@ -45,6 +45,18 @@ public class MUtil {
 		return new File(RollbackManager.snapshotsDir, sender.getWorld().dimension.id + "/c[x." + x + "-z." + z + "]");
 	}
 
+	public static boolean isNumeric(String strNum) {
+		if (strNum == null) {
+			return false;
+		}
+		try {
+			double d = Double.parseDouble(strNum);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
+	}
+
 	public static List<File> getChunkGridFromCorners(CommandSender sender, int x1, int z1, int x2, int z2){
 		int temp;
 		if (x1 > x2) {
