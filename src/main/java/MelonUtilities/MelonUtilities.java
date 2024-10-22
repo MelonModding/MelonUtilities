@@ -35,6 +35,7 @@ import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import turniplabs.halplibe.HalpLibe;
 import turniplabs.halplibe.helper.CommandHelper;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
@@ -113,6 +114,7 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 
     @Override
     public void onInitialize() {
+		if (HalpLibe.isClient) return;
 		LOGGER.info("MelonUtilities initializing!");
 		// Crew
 		// Helper
@@ -160,7 +162,7 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 
 	@Override
 	public void afterGameStart() {
-
+		if (HalpLibe.isClient) return;
 		// Crew
 		// Helper
 		// Home

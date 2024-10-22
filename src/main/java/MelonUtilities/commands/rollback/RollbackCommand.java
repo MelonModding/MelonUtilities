@@ -105,19 +105,48 @@ public class RollbackCommand extends Command {
 		}
 	}
 
-	private HashMap<Long, File> getSortedCaptures(CommandSender sender, File chunkDir){
+	// TODO there actually really isn't much reason for the rollback command to need to parse coordinates from the chunkDirectory since it *should* already have the location context anyway
+	private int[] parseCoordsFromChunkDir(File chunkDir) {
+		int xIndex = chunkDir.getName().indexOf('x');
+		int zIndex = chunkDir.getName().indexOf('z');
 
-		String[] segments = chunkDir.getName().split("\\.");
-		//"c[x"   "0-z"   "0]"
+		StringBuilder xStringBuilder = new StringBuilder();
+		StringBuilder zStringBuilder = new StringBuilder();
 
-		String xString = segments[1].substring(0, segments[1].length() - 2);
-		String zString = segments[1].substring(0, segments[1].length() - 1);
+		String s = chunkDir.getName();
+
+		boolean firstMinus = true;
+		for (int i = xIndex + 2; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (Character.isDigit(c) || (c == '-' && firstMinus)) {
+				xStringBuilder.append(c);
+				firstMinus = false;
+			} else {
+				break;
+			}
+		}
+
+		firstMinus = true;
+		for (int i = zIndex + 2; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (Character.isDigit(c) || (c == '-' && firstMinus)) {
+				zStringBuilder.append(c);
+				firstMinus = false;
+			} else {
+				break;
+			}
+		}
+
+		String xString = xStringBuilder.toString();
+		String zString = zStringBuilder.toString();
 
 		int x = Integer.parseInt(xString);
 		int z = Integer.parseInt(zString);
+		return new int[]{x, z};
+	}
 
-
-
+	private HashMap<Long, File> getSortedCaptures(CommandSender sender, File chunkDir){
+		int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
 
 		HashMap<Long, File> capturesHashmap = new HashMap<>();
 
@@ -136,7 +165,7 @@ public class RollbackCommand extends Command {
 		if(backups != null){
 			for (File backup : backups) {
 				if (backup.isDirectory()) {
-					capturesHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(sender.getWorld().dimension.id)), x, z));
+					capturesHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(sender.getWorld().dimension.id)), chunkCoords[0], chunkCoords[1]));
 				}
 			}
 		}
@@ -146,13 +175,7 @@ public class RollbackCommand extends Command {
 	}
 
 	private HashMap<Long, File> getSortedBackups(CommandSender sender, File chunkDir){
-		String[] segments = chunkDir.getName().split("\\.");
-		//"c[x"   "0-z"   "0]"
-		String xString = segments[1].substring(0, segments[1].length() - 2);
-		String zString = segments[1].substring(0, segments[1].length() - 1);
-
-		int x = Integer.parseInt(xString);
-		int z = Integer.parseInt(zString);
+		int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
 
 		HashMap<Long, File> backupsHashmap = new HashMap<>();
 
@@ -161,7 +184,7 @@ public class RollbackCommand extends Command {
 		if(backups != null){
 			for (File backup : backups) {
 				if (backup.isDirectory()) {
-					backupsHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(sender.getWorld().dimension.id)), x, z));
+					backupsHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(sender.getWorld().dimension.id)), chunkCoords[0], chunkCoords[1]));
 				}
 			}
 		}
@@ -262,7 +285,19 @@ public class RollbackCommand extends Command {
 		File chunkDir = new File("./rollbackdata/snapshots/" + sender.getWorld().dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
 		chunkDir.mkdirs();
 		if (chunkDir.isDirectory()) {
-			HashMap<Long, File> captures = getSortedCaptures(sender, chunkDir);
+			HashMap<Long, File> captures = null;
+			int minX = Math.min(x1, x2);
+			int maxX = Math.max(x1, x2);
+			int minZ = Math.min(z1, z2);
+			int maxZ = Math.max(z1, z2);
+			for (int _x = minX; _x <= maxX; _x++) {
+				for (int _z = minZ; _z <= maxZ; _z++) {
+					HashMap<Long, File> _captures = getSortedCaptures(sender, new File("./rollbackdata/snapshots/" + sender.getWorld().dimension.id + "/c[x." + _x + "-z." + _z + "]"));
+					if (captures == null || captures.size() < _captures.size()) {
+						captures = _captures;
+					}
+				}
+			}
 			ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
 			rollbackGui.setSize((int)Math.ceil((captures.size() + 1) / 9.0F));
 			int i = 0;
@@ -309,27 +344,12 @@ public class RollbackCommand extends Command {
 		int x2;
 		int z2;
 
-		if (MUtil.isNumeric(args[0])) {
+		try {
 			x1 = Integer.parseInt(args[0]);
-		} else {
-			FeedbackHandler.error(sender, "Failed to Rollback Chunk Area! (Invalid Chunks)");
-			return true;
-		}
-		if (MUtil.isNumeric(args[1])) {
 			z1 = Integer.parseInt(args[1]);
-		} else {
-			FeedbackHandler.error(sender, "Failed to Rollback Chunk Area! (Invalid Chunks)");
-			return true;
-		}
-		if (MUtil.isNumeric(args[2])) {
 			x2 = Integer.parseInt(args[2]);
-		} else {
-			FeedbackHandler.error(sender, "Failed to Rollback Chunk Area! (Invalid Chunks)");
-			return true;
-		}
-		if (MUtil.isNumeric(args[3])) {
 			z2 = Integer.parseInt(args[3]);
-		} else {
+		} catch (NumberFormatException numberFormatException) {
 			FeedbackHandler.error(sender, "Failed to Rollback Chunk Area! (Invalid Chunks)");
 			return true;
 		}
@@ -341,16 +361,7 @@ public class RollbackCommand extends Command {
 
 	private void rollbackChunkArea(CommandSender sender, List<File> chunkGrid, Map.Entry<Long, File> primaryCapture){
 		for(File chunkDir : chunkGrid) {
-			String path = chunkDir.getName();
-			String[] segments = path.split("\\.");
-			//"c[x"   "0-z"   "0]"
-
-			String xString = segments[1].substring(0, segments[1].length() - 2);
-			String zString = segments[1].substring(0, segments[1].length() - 1);
-
-			int x = Integer.parseInt(xString);
-			int z = Integer.parseInt(zString);
-
+			int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
 
 			HashMap<Long, File> captures = getSortedCaptures(sender, chunkDir);
 
@@ -375,17 +386,17 @@ public class RollbackCommand extends Command {
 			if(oldestClosestCapture != null) {
 				if (oldestClosestCapture.getValue().getName().contains(".dat")) {
 					for (Entity entity : sender.getWorld().loadedEntityList) {
-						if (entity.chunkCoordX == x && entity.chunkCoordZ == z) {
+						if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
 							if (!(entity instanceof EntityPlayer)) {
 								entity.remove();
 							}
 						}
 					}
 					try {
-						Chunk chunk = sender.getWorld().getChunkFromChunkCoords(x, z);
+						Chunk chunk = sender.getWorld().getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]);
 						CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(oldestClosestCapture.getValue().toPath()));
 						rollbackChunk(chunk, tag);
-						MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(x * 16, 0, z * 16, 16, 256, 16, sender.getWorld()), sender.getWorld().dimension.id);
+						MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, sender.getWorld()), sender.getWorld().dimension.id);
 					} catch (IOException e) {
 						MelonUtilities.LOGGER.error("IOException occurred trying to read compressed data from Chunk File: {}", oldestClosestCapture.getValue());
 					}
@@ -393,15 +404,15 @@ public class RollbackCommand extends Command {
 
 				if (oldestClosestCapture.getValue().getName().contains(".mcr")) {
 					for (Entity entity : sender.getWorld().loadedEntityList) {
-						if (entity.chunkCoordX == x && entity.chunkCoordZ == z) {
+						if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
 							if (!(entity instanceof EntityPlayer)) {
 								entity.remove();
 							}
 						}
 					}
 					File backupDir = oldestClosestCapture.getValue().getParentFile().getParentFile().getParentFile();
-					rollbackChunkFromBackup(sender.getWorld().getChunkFromChunkCoords(x, z), backupDir);
-					MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(x * 16, 0, z * 16, 16, 256, 16, sender.getWorld()), sender.getWorld().dimension.id);
+					rollbackChunkFromBackup(sender.getWorld().getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]), backupDir);
+					MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, sender.getWorld()), sender.getWorld().dimension.id);
 				}
 			}
 		}
@@ -410,33 +421,37 @@ public class RollbackCommand extends Command {
 
 	@Override
 	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
-		if (args.length == 0) {
-			return rollbackCommand(handler, sender, args);
-		} else if(args.length == 4) {
-			return rollbackAreaCommand(handler, sender, args);
-		}
+		try {
+			if (args.length == 0) {
+				return rollbackCommand(handler, sender, args);
+			} else if(args.length == 4) {
+				return rollbackAreaCommand(handler, sender, args);
+			}
 
-		switch(args[0].toLowerCase()){
-			case "takesnapshot":
-			case "ts":
-				return takeSnapshotCommand(handler, sender, args);
-			case "takebackup":
-			case "tb":
-				return takeBackupCommand(handler, sender, args);
-			case "prunesnapshots":
-			case "ps":
-				return pruneSnapshotsCommand(handler, sender, args);
-			case "prunebackups":
-			case "pb":
-				return pruneBackupsCommand(handler, sender, args);
-			case "toggleautosnapshots":
-			case "tas":
-				return toggleAutoSnapshotsCommand(handler, sender, args);
-			case "toggleautobackups":
-			case "tab":
-				return toggleAutoBackupsCommand(handler, sender, args);
-			case "help":
-				return false;
+			switch(args[0].toLowerCase()){
+				case "takesnapshot":
+				case "ts":
+					return takeSnapshotCommand(handler, sender, args);
+				case "takebackup":
+				case "tb":
+					return takeBackupCommand(handler, sender, args);
+				case "prunesnapshots":
+				case "ps":
+					return pruneSnapshotsCommand(handler, sender, args);
+				case "prunebackups":
+				case "pb":
+					return pruneBackupsCommand(handler, sender, args);
+				case "toggleautosnapshots":
+				case "tas":
+					return toggleAutoSnapshotsCommand(handler, sender, args);
+				case "toggleautobackups":
+				case "tab":
+					return toggleAutoBackupsCommand(handler, sender, args);
+				case "help":
+					return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 
 		FeedbackHandler.error(sender, " " + NAME + " Error: (Invalid Syntax)");

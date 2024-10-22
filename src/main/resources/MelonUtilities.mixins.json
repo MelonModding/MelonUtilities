@@ -4,6 +4,10 @@
   "package": "MelonUtilities.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+  ],
+  "client": [
+  ],
+  "server": [
     "other.ExplosionMixin",
     "other.MinecraftServerMixin",
     "other.NetLoginHandlerMixin",
@@ -28,8 +32,6 @@
     "tile_entities.golden_mesh.TileEntityMeshGoldMixin",
     "tile_entities.trommel.BlockTrommelMixin",
     "tile_entities.trommel.TileEntityTrommelMixin"
-  ],
-  "client": [
   ],
   "injectors": {
     "defaultRequire": 1
