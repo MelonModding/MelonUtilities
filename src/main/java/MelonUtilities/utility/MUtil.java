@@ -4,13 +4,16 @@ import net.minecraft.core.HitResult;
 import net.minecraft.core.block.BlockChest;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.commands.SetBlockCommand;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.phys.Vec3d;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.chunk.Chunk;
 import net.minecraft.server.entity.player.EntityPlayerMP;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MUtil {
@@ -36,6 +39,32 @@ public class MUtil {
 		double reachDistance = sender.getPlayer().getGamemode().getBlockReachDistance();
 		Vec3d vec3d1 = vec3d.addVector((double) f7 * reachDistance, (double) f8 * reachDistance, (double) f9 * reachDistance);
 		return sender.getWorld().checkBlockCollisionBetweenPoints(vec3d, vec3d1, false);
+	}
+
+	public static File getChunkFileFromCoords(CommandSender sender, int x, int z){
+		return new File(RollbackManager.snapshotsDir, sender.getWorld().dimension.id + "/c[x." + x + "-z." + z + "]");
+	}
+
+	public static List<File> getChunkGridFromCorners(CommandSender sender, int x1, int z1, int x2, int z2){
+		int temp;
+		if (x1 > x2) {
+			temp = x1;
+			x1 = x2;
+			x2 = temp;
+		}
+		if (z1 > z2) {
+			temp = z1;
+			z1 = z2;
+			z2 = temp;
+		}
+
+		List<File> chunksInArea = new ArrayList<>();
+		for (int x = x1; x <= x2; ++x) {
+			for (int z = z1; z <= z2; ++z) {
+				chunksInArea.add(getChunkFileFromCoords(sender, x, z));
+			}
+		}
+		return chunksInArea;
 	}
 
 	public static HashMap<Long, File> sortByKey(HashMap<Long, File> hm) {

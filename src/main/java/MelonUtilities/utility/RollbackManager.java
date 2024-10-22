@@ -51,13 +51,20 @@ public class RollbackManager {
 		return regionFile;
 	}
 
-	public static void rollbackChunkFromBackup(Chunk chunk, File backupDir) throws IOException {
+	public static void rollbackChunkFromBackup(Chunk chunk, File backupDir) {
 		DataInputStream regionStream = RegionFileCache.getChunkInputStream(new File(backupDir, String.valueOf(chunk.world.dimension.id)), chunk.xPosition, chunk.zPosition);
 
 		if (regionStream == null) {return;}
 
-		CompoundTag tag = NbtIo.read(regionStream);
-		rollbackChunk(chunk, tag.getCompound("Level"));
+		CompoundTag tag = null;
+		try {
+			tag = NbtIo.read(regionStream);
+		} catch (IOException e) {
+			MelonUtilities.LOGGER.error("Failed to read NBT Data while reading Chunk {} from Backup {}", chunk, backupDir);
+		}
+		if(tag != null){
+			rollbackChunk(chunk, tag.getCompound("Level"));
+		}
 	}
 
 
