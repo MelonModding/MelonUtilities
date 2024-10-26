@@ -14,6 +14,7 @@ import MelonUtilities.commands.rules.RulesCommand;
 import MelonUtilities.commands.tpa.TPACommand;
 import MelonUtilities.commands.tpa.TPADenyCommand;
 import MelonUtilities.commands.tpa.TPAcceptCommand;
+import MelonUtilities.commands.utility.HelpCommandExample;
 import MelonUtilities.commands.utility.MUCommand;
 import MelonUtilities.config.*;
 import MelonUtilities.config.custom.classes.Crew;
@@ -34,6 +35,8 @@ import net.minecraft.core.data.gamerule.GameRuleBoolean;
 import net.minecraft.core.data.gamerule.GameRules;
 import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.net.command.CommandManager;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import turniplabs.halplibe.HalpLibe;
@@ -167,31 +170,32 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		// Crew
 		// Helper
 		// Home
-		CommandHelper.createCommand(new SetHomeCommand());
-		CommandHelper.createCommand(new HomeCommand());
-		CommandHelper.createCommand(new DelHomeCommand());
+		CommandManager.registerCommand(new SetHomeCommand());
+		CommandManager.registerCommand(new HomeCommand());
+		CommandManager.registerCommand(new DelHomeCommand());
 		// Kit
-		CommandHelper.createCommand(new KitCommand());
-		CommandHelper.createCommand(new KittenCommand());
+		CommandManager.registerCommand(new KitCommand());
+		CommandManager.registerCommand(new KittenCommand());
 		// Lock
-		CommandHelper.createCommand(new LockCommand());
+		CommandManager.registerCommand(new LockCommand());
 		// Misc
-		CommandHelper.createCommand(new WhereAmICommand());
+		CommandManager.registerCommand(new WhereAmICommand());
 		// Role
-		CommandHelper.createCommand(new RoleCommand());
+		CommandManager.registerCommand(new RoleCommand());
 		// Rollback
-		CommandHelper.createCommand(new RollbackCommand());
+		CommandManager.registerCommand(new RollbackCommand());
 		// Tpa
-		CommandHelper.createCommand(new TPACommand());
-		CommandHelper.createCommand(new TPAcceptCommand());
-		CommandHelper.createCommand(new TPADenyCommand());
+		CommandManager.registerCommand(new TPACommand());
+		CommandManager.registerCommand(new TPAcceptCommand());
+		CommandManager.registerCommand(new TPADenyCommand());
 		// Utility
-		CommandHelper.createCommand(new HelperCommand());
-		CommandHelper.createCommand(new MUCommand());
+		CommandManager.registerCommand(new HelpCommandExample());
+		CommandManager.registerCommand(new HelperCommand());
+		CommandManager.registerCommand(new MUCommand());
 		// Warp
 
 		// Rules
-		CommandHelper.createCommand(new RulesCommand());
+		CommandManager.registerCommand(new RulesCommand());
 		// Anything Else
 
 		Data.configs.loadAll(ConfigData.class);
