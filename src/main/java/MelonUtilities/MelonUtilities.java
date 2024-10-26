@@ -10,6 +10,7 @@ import MelonUtilities.commands.lock.LockCommand;
 import MelonUtilities.commands.misc.WhereAmICommand;
 import MelonUtilities.commands.role.RoleCommand;
 import MelonUtilities.commands.rollback.RollbackCommand;
+import MelonUtilities.commands.rules.RulesCommand;
 import MelonUtilities.commands.tpa.TPACommand;
 import MelonUtilities.commands.tpa.TPADenyCommand;
 import MelonUtilities.commands.tpa.TPAcceptCommand;
@@ -188,6 +189,9 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		CommandHelper.createCommand(new HelperCommand());
 		CommandHelper.createCommand(new MUCommand());
 		// Warp
+
+		// Rules
+		CommandHelper.createCommand(new RulesCommand());
 		// Anything Else
 
 		Data.configs.loadAll(ConfigData.class);
