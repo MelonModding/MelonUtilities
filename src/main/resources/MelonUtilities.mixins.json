@@ -7,6 +7,7 @@
     "tile_entities.basket.BasketBlockEntityMixin",
     "tile_entities.blast_furnace.BlastFurnaceBlockEntityMixin",
     "tile_entities.chest.ChestBlockEntityMixin",
+    "tile_entities.chest.ChestBlockMixin",
     "tile_entities.dispenser.DispenserBlockEntityMixin",
     "tile_entities.furnace.FurnaceBlockEntityMixin",
     "tile_entities.golden_mesh.GoldMeshBlockEntityMixin",
