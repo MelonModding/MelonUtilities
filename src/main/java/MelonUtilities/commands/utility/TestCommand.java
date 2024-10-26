@@ -4,7 +4,7 @@ import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.SyntaxBuilder;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 
 public class TestCommand extends Command {
@@ -21,12 +21,12 @@ public class TestCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
 		if (args.length == 0) {
 			return false;
 		}
 
-		FeedbackHandler.error(sender,  " " + NAME + " Error: (Invalid Syntax)");
+		FeedbackHandler.error(source,  " " + NAME + " Error: (Invalid Syntax)");
 		return false;
 	}
 
@@ -36,7 +36,7 @@ public class TestCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
-		syntax.printAllLines(sender);
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
+		syntax.printAllLines(source);
 	}
 }

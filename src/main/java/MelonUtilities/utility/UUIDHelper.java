@@ -122,13 +122,13 @@ static {
 	ServerPlayer player = server.playerList.getPlayerEntity(nameToBan);
 	if (player != null) {
 		server.playerList.banPlayer(player.uuid);
-		sendNoticeToOps(senderName, "Banning " + nameToBan);
+		sendNoticeToOps(sourceName, "Banning " + nameToBan);
 		player.playerNetServerHandler.kickPlayer("Banned by admin");
 	} else {
 		UUIDHelper.runConversionAction(nameToBan, (uuid) ->
 			{server.playerList.banPlayer(uuid);
-			sendNoticeToOps(senderName, "Banning " + nameToBan);},
-			(username) -> handler.sendCommandFeedback(sender, "Could not retrieve UUID of player '" + username + "'"));
+			sendNoticeToOps(sourceName, "Banning " + nameToBan);},
+			(username) -> handler.sendCommandFeedback(source, "Could not retrieve UUID of player '" + username + "'"));
 	}
 }
 */

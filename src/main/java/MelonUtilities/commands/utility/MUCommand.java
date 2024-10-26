@@ -10,79 +10,65 @@ import MelonUtilities.config.datatypes.KitData;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.utility.FeedbackHandler;
-import net.minecraft.core.net.command.Command;
-import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
-import net.minecraft.core.net.command.TextFormatting;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.tree.CommandNode;
+import net.minecraft.core.net.command.CommandManager;
+import net.minecraft.core.net.command.CommandSource;
+import net.minecraft.core.net.command.arguments.IntegerCoordinatesArgumentType;
 
 import static net.minecraft.server.util.helper.PlayerList.updateList;
 
-public class MUCommand extends Command {
-
-	private final static String COMMAND = "mu";
-	private final static String NAME = "MelonUtilities";
-
-	public MUCommand(){super(COMMAND);}
+public class MUCommand implements CommandManager.CommandRegistry{
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
-		if (args.length == 0) {
-			return false;
-		}
+	public void register(CommandDispatcher<CommandSource> dispatcher) {
+		CommandNode<CommandSource> command = dispatcher
+			.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) LiteralArgumentBuilder
+				.<CommandSource>literal("melonutilities")
+				.requires(CommandSource::hasAdmin))
+				.then(RequiredArgumentBuilder.argument("reload", IntegerCoordinatesArgumentType.intCoordinates())
+					.executes((c) -> {
+			CommandSource source = (CommandSource) c.getSource();
+			FeedbackHandler.success(source, "Reloading MelonUtilities...");
 
-		if (args[0].equals("reload")) {
-			FeedbackHandler.success(sender, "Reloading " + NAME + "...");
-
-			FeedbackHandler.destructive(sender, "Reloading Player Data...");
+			FeedbackHandler.destructive(source, "Reloading Player Data...");
 			Data.playerData.loadAll(PlayerData.class);
-			FeedbackHandler.success(sender, "Reloaded " + Data.playerData.dataHashMap.size() + " Player(s)!");
+			FeedbackHandler.success(source, "Reloaded " + Data.playerData.dataHashMap.size() + " Player(s)!");
 
-			FeedbackHandler.destructive(sender, "Building Helper Syntax...");
+			FeedbackHandler.destructive(source, "Building Helper Syntax...");
 			HelperCommand.buildHelperSyntax();
-			FeedbackHandler.success(sender, "Helper Syntax Built!");
+			FeedbackHandler.success(source, "Helper Syntax Built!");
 
-			FeedbackHandler.destructive(sender, "Reloading Kit Data...");
+			FeedbackHandler.destructive(source, "Reloading Kit Data...");
 			Data.kits.loadAll(KitData.class);
-			FeedbackHandler.success(sender, "Reloaded " + Data.kits.dataHashMap.size() + " Kit(s)!");
+			FeedbackHandler.success(source, "Reloaded " + Data.kits.dataHashMap.size() + " Kit(s)!");
 
-			FeedbackHandler.destructive(sender, "Building Kit Syntax...");
+			FeedbackHandler.destructive(source, "Building Kit Syntax...");
 			KitCommand.buildKitSyntax();
-			FeedbackHandler.success(sender, "Kit Syntax Built!");
+			FeedbackHandler.success(source, "Kit Syntax Built!");
 
-			FeedbackHandler.destructive(sender, "Reloading Role Data...");
+			FeedbackHandler.destructive(source, "Reloading Role Data...");
 			Data.roles.loadAll(RoleData.class);
-			FeedbackHandler.success(sender, "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
+			FeedbackHandler.success(source, "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
 
-			FeedbackHandler.destructive(sender, "Building Role Syntax...");
+			FeedbackHandler.destructive(source, "Building Role Syntax...");
 			RoleCommand.buildRoleSyntax();
-			FeedbackHandler.success(sender, "Role Syntax Built!");
+			FeedbackHandler.success(source, "Role Syntax Built!");
 
-			FeedbackHandler.destructive(sender, "Building Rollback Syntax...");
+			FeedbackHandler.destructive(source, "Building Rollback Syntax...");
 			RollbackCommand.buildSyntax();
-			FeedbackHandler.success(sender, "Rollback Syntax Built!");
+			FeedbackHandler.success(source, "Rollback Syntax Built!");
 
-			FeedbackHandler.destructive(sender, "Reloading General Configs...");
+			FeedbackHandler.destructive(source, "Reloading General Configs...");
 			Data.configs.loadAll(ConfigData.class);
-			FeedbackHandler.success(sender, "Reloaded Configs!");
+			FeedbackHandler.success(source, "Reloaded Configs!");
 
-			FeedbackHandler.destructive(sender, "Updating Player List...");
+			FeedbackHandler.destructive(source, "Updating Player List...");
 			updateList();
-			FeedbackHandler.success(sender, "Updated List!");
-
-			return true;
-		}
-
-		FeedbackHandler.error(sender, " " + NAME + " Error: (Invalid Syntax)");
-        return false;
-    }
-
-	@Override
-	public boolean opRequired(String[] strings) {
-		return true;
-	}
-
-	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-
+			FeedbackHandler.success(source, "Updated List!");
+			return 1;
+				})));
 	}
 }

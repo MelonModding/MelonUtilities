@@ -29,7 +29,7 @@ public class ChunkMixin {
 	@Inject(at = @At("TAIL"), method = "setBlockIDWithMetadata")
 	private void ModifiedQueue0(int x, int y, int z, int id, int data, CallbackInfoReturnable<Boolean> cir) {ModifiedQueueCheck((Chunk) (Object) this);}
 
-	@Inject(at = @At("TAIL"), method = "setBlockIDRaw")
+	@Inject(at = @At("TAIL"), method = "setBlockID")
 	private void ModifiedQueue1(int x, int y, int z, int id, CallbackInfoReturnable<Boolean> cir) {ModifiedQueueCheck((Chunk) (Object) this);}
 
 	@Inject(at = @At("TAIL"), method = "setBlockMetadata")

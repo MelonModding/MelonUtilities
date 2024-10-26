@@ -3,7 +3,7 @@ package MelonUtilities.commands.tpa;
 import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.TpaManager;
 import net.minecraft.core.net.command.*;
-import net.minecraft.server.entity.player.EntityPlayerMP;
+import net.minecraft.server.entity.player.ServerPlayer;
 
 public class TPADenyCommand extends Command {
 	private final static String COMMAND = "tpadeny";
@@ -13,10 +13,10 @@ public class TPADenyCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
-		if (!sender.isPlayer()) throw new CommandError("Must be used by a player!");
-		if (!TpaManager.deny((EntityPlayerMP) sender.getPlayer())) {
-			FeedbackHandler.error(sender, "No pending request found to deny");
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
+		if (!source.isPlayer()) throw new CommandError("Must be used by a player!");
+		if (!TpaManager.deny((ServerPlayer) source.getSender())) {
+			FeedbackHandler.error(source, "No pending request found to deny");
 		}
 		return true;
 	}
@@ -27,8 +27,8 @@ public class TPADenyCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender sender) {
-		FeedbackHandler.syntax(sender, "< Command Syntax >");
-		FeedbackHandler.syntax(sender, "  > /tpadeny");
+	public void sendCommandSyntax(CommandHandler commandHandler, CommandSource source) {
+		FeedbackHandler.syntax(source, "< Command Syntax >");
+		FeedbackHandler.syntax(source, "  > /tpadeny");
 	}
 }

@@ -2,13 +2,13 @@ package MelonUtilities.mixins.gamerules;
 
 import MelonUtilities.MelonUtilities;
 import net.minecraft.core.entity.Entity;
-import net.minecraft.core.entity.EntityLightningBolt;
+import net.minecraft.core.entity.LightningEntity;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(value = EntityLightningBolt.class, remap = false)
+@Mixin(value = LightningEntity.class, remap = false)
 public abstract class EntityLightningBoltMixin extends Entity{
 	public EntityLightningBoltMixin(World world) {
 		super(world);

@@ -3,7 +3,7 @@ package MelonUtilities.commands.crew;
 import MelonUtilities.utility.SyntaxBuilder;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 
 public class CrewCommand extends Command {
@@ -39,7 +39,7 @@ public class CrewCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler commandHandler, CommandSender commandSender, String[] strings) {
+	public boolean execute(CommandHandler commandHandler, CommandSource commandSource, String[] strings) {
 		return false;
 	}
 
@@ -49,7 +49,7 @@ public class CrewCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
+	public void sendCommandSyntax(CommandHandler commandHandler, CommandSource commandSource) {
 
 	}
 }

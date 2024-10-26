@@ -1,8 +1,8 @@
 package MelonUtilities.mixins.gamerules;
 
 import net.minecraft.core.net.NetworkManager;
-import net.minecraft.core.net.packet.Packet1Login;
-import net.minecraft.server.net.handler.NetLoginHandler;
+import net.minecraft.core.net.packet.LoginPacket;
+import net.minecraft.server.net.handler.LoginPacketHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,21 +10,21 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(
-	value = {NetLoginHandler.class},
+	value = {LoginPacketHandler.class},
 	remap = false
 )
-public class NetLoginHandlerMixin {
+public class LoginPacketHandlerMixin {
 	@Shadow
 	public NetworkManager netManager;
 
-	public NetLoginHandlerMixin() {
+	public LoginPacketHandlerMixin() {
 	}
 
 	@Inject(
 		method = {"doLogin"},
 		at = {@At("HEAD")}
 	)
-	public void doLogin(Packet1Login packet1login, CallbackInfo ci) {
+	public void doLogin(LoginPacket loginPacket, CallbackInfo ci) {
 		//this.netManager.addToSendQueue(new Packet3Chat(TextFormatting.RED + "MelonCommands: /kit does not save Flag data"));
 		//this.netManager.addToSendQueue(new Packet3Chat(TextFormatting.RED + "            (item names were given custom support)"));
 	}

@@ -1,27 +1,27 @@
-package MelonUtilities.mixins.tile_entities.basket;
+package MelonUtilities.mixins.tile_entities.dispenser;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.interfaces.BlockEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.TileEntityBasket;
-import net.minecraft.core.entity.player.EntityPlayer;
-import net.minecraft.core.world.World;
+import net.minecraft.core.block.entity.DispenserBlockEntity;
+import net.minecraft.core.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = TileEntityBasket.class, remap = false)
-public class TileEntityBasketMixin implements TileEntityContainerInterface {
+@Mixin(value = DispenserBlockEntity.class, remap = false)
+public class DispenserBlockEntityMixin implements BlockEntityContainerInterface {
 	@Unique
 	private boolean isLocked;
 
@@ -65,8 +65,8 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "givePlayerAllItems", cancellable = true)
-	public void canInteractWithInject(World world, EntityPlayer entityplayer, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "canInteractWith", cancellable = true)
+	public void canInteractWithInject(Player entityplayer, CallbackInfoReturnable<Boolean> cir) {
 		if(isLocked){
 			if(lockOwner != null) {
 				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))
@@ -74,7 +74,7 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 					&& !Data.playerData.getOrCreate(lockOwner.toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
 					&& !isCommunityContainer
 					&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(entityplayer.username).toString(), PlayerData.class).lockBypass){
-					ci.cancel();
+					cir.setReturnValue(false);
 					return;
 				}
 			}

@@ -1,6 +1,6 @@
 package MelonUtilities.utility;
 
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 
 import java.util.ArrayList;
 
@@ -211,29 +211,29 @@ public class SyntaxBuilder {
 		}
 	}
 
-	public void printAllLines(CommandSender sender){
+	public void printAllLines(CommandSource source){
 		for(SyntaxLine syntaxLine : syntaxLines){
-			if(sender.isAdmin() && syntaxLine.op) {
-				sender.sendMessage(syntaxLine.message);
+			if(source.hasAdmin() && syntaxLine.op) {
+				source.sendMessage(syntaxLine.message);
 			} else if(!syntaxLine.op){
-				sender.sendMessage(syntaxLine.message);
+				source.sendMessage(syntaxLine.message);
 			}
 		}
 	}
 
 	String thisLayerOwner = null;
-	public void printLayer(String name, CommandSender sender){
+	public void printLayer(String name, CommandSource source){
 		for(int i = 0; i < syntaxLines.size(); i++){
 			if(syntaxLines.get(i).name.equals(name)){
-				printLayerOwners(syntaxLines.get(i), sender);
-				sender.sendMessage(syntaxLines.get(i).message);
+				printLayerOwners(syntaxLines.get(i), source);
+				source.sendMessage(syntaxLines.get(i).message);
 				for(int j = i+1; j < syntaxLines.size(); j++){
 					if(syntaxLines.get(j).owner.equals(name)){
-						if(sender.isAdmin() && syntaxLines.get(j).op) {
-							sender.sendMessage(syntaxLines.get(j).message);
+						if(source.hasAdmin() && syntaxLines.get(j).op) {
+							source.sendMessage(syntaxLines.get(j).message);
 							thisLayerOwner = syntaxLines.get(j).name;
 						} else if(!syntaxLines.get(j).op){
-							sender.sendMessage(syntaxLines.get(j).message);
+							source.sendMessage(syntaxLines.get(j).message);
 							thisLayerOwner = syntaxLines.get(j).name;
 						}
 					}
@@ -244,22 +244,22 @@ public class SyntaxBuilder {
 	}
 
 	boolean printedLayerOwners = false;
-	public void printLayerAndSubLayers(String name, CommandSender sender){
+	public void printLayerAndSubLayers(String name, CommandSource source){
 
 		for(int i = 0; i < syntaxLines.size(); i++){
 			if(syntaxLines.get(i).name.equals(name)){
 				if(!printedLayerOwners) {
-					printLayerOwners(syntaxLines.get(i), sender);
-					sender.sendMessage(syntaxLines.get(i).message);
+					printLayerOwners(syntaxLines.get(i), source);
+					source.sendMessage(syntaxLines.get(i).message);
 					printedLayerOwners = true;
 				}
 				for(int j = i+1; j < syntaxLines.size(); j++){
 					if(syntaxLines.get(j).owner.equals(name)){
-						sender.sendMessage(syntaxLines.get(j).message);
+						source.sendMessage(syntaxLines.get(j).message);
 						thisLayerOwner = syntaxLines.get(j).name;
 					} else if (syntaxLines.get(j).owner.equals(thisLayerOwner)) {
 						printedLayerOwners = true;
-						printLayerAndSubLayers(thisLayerOwner, sender);
+						printLayerAndSubLayers(thisLayerOwner, source);
 					}
 				}
 			}
@@ -271,7 +271,7 @@ public class SyntaxBuilder {
 	ArrayList<String> layerOwnerMessages = new ArrayList<>();
 	String insideLayersOwner;
 	SyntaxLine insideLayer;
-	private void printLayerOwners(SyntaxLine syntaxLine, CommandSender sender){
+	private void printLayerOwners(SyntaxLine syntaxLine, CommandSource source){
 		insideLayer = syntaxLine;
 		for(int i = syntaxLines.size() - 1; i >= 0; i--){
 			if(insideLayer.owner.equals("none")) {
@@ -284,13 +284,13 @@ public class SyntaxBuilder {
 					if(syntaxLines.get(j).name.equals(insideLayer.owner)){
 						layerOwnerMessages.add(0, syntaxLines.get(j).message);
 						insideLayer = syntaxLines.get(j);
-						printLayerOwners(insideLayer, sender);
+						printLayerOwners(insideLayer, source);
 					}
 				}
 			}
 		}
 		for(String message : layerOwnerMessages) {
-			sender.sendMessage(message);
+			source.sendMessage(message);
 		}
 		layerOwnerMessages.clear();
 		insideLayersOwner = null;

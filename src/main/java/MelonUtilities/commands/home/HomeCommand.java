@@ -6,11 +6,11 @@ import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.SyntaxBuilder;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.utility.UUIDHelper;
-import net.minecraft.client.entity.player.EntityPlayerSP;
-import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.client.entity.player.PlayerSP;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.entity.player.EntityPlayerMP;
+import net.minecraft.server.entity.player.ServerPlayer;
 
 import java.util.Objects;
 
@@ -20,24 +20,24 @@ public class HomeCommand extends Command {
 		super("home");
 	}
 
-	public static Home getHome(String name, CommandSender sender){
-		for(int i = 0; i < Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.size(); i++){
-			if(Objects.equals(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.get(i).name, name)){
-				return Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.get(i);
+	public static Home getHome(String name, CommandSource source){
+		for(int i = 0; i < Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.size(); i++){
+			if(Objects.equals(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.get(i).name, name)){
+				return Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.get(i);
 			}
 		}
 		return null;
 	}
 
-	public static void teleport(double x, double y, double z, EntityPlayer player){
+	public static void teleport(double x, double y, double z, Player player){
 		if (player.world.isClientSide) return;
 
-		if (player instanceof EntityPlayerMP){
-			EntityPlayerMP playerMP = (EntityPlayerMP)player;
+		if (player instanceof ServerPlayer){
+			ServerPlayer playerMP = (ServerPlayer)player;
 			player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
 			playerMP.playerNetServerHandler.teleport(x, y, z);
-		} else if (player instanceof EntityPlayerSP) {
-			EntityPlayerSP playerSP = (EntityPlayerSP)player;
+		} else if (player instanceof PlayerSP) {
+			PlayerSP playerSP = (PlayerSP)player;
 			playerSP.setPos(x, y + playerSP.bbHeight, z);
 		}
 		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
@@ -52,45 +52,45 @@ public class HomeCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
-		Home home = getHome("home", sender);
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
+		Home home = getHome("home", source);
 		if (args.length == 0 && home != null) {
-			FeedbackHandler.success(sender, "Teleporting to Home: <home>");
+			FeedbackHandler.success(source, "Teleporting to Home: <home>");
 
-			return sendHome(sender, home);
+			return sendHome(source, home);
 		}
 
 		if (args.length == 0) {
-			FeedbackHandler.error(sender, "Failed to Teleport Home (Home does not exist!)");
+			FeedbackHandler.error(source, "Failed to Teleport Home (Home does not exist!)");
 
-			syntax.printLayerAndSubLayers("home", sender);
+			syntax.printLayerAndSubLayers("home", source);
 			return true;
 		}
 
 		if (args.length == 1) {
-			home = getHome(args[0], sender);
+			home = getHome(args[0], source);
 			if (home == null) {
-				FeedbackHandler.error(sender, "Failed to Teleport Home (Home does not exist!)");
-				syntax.printLayerAndSubLayers("home", sender);
+				FeedbackHandler.error(source, "Failed to Teleport Home (Home does not exist!)");
+				syntax.printLayerAndSubLayers("home", source);
 				return true;
 			}
 
-			FeedbackHandler.success(sender, "Teleporting to Home: <" + args[0] + ">");
-			return sendHome(sender, home);
+			FeedbackHandler.success(source, "Teleporting to Home: <" + args[0] + ">");
+			return sendHome(source, home);
 		}
 
-		FeedbackHandler.error(sender, "Failed to Teleport Home (Invalid Syntax)");
-		syntax.printLayerAndSubLayers("home", sender);
+		FeedbackHandler.error(source, "Failed to Teleport Home (Invalid Syntax)");
+		syntax.printLayerAndSubLayers("home", source);
 		return true;
 	}
 
-	private boolean sendHome(CommandSender sender, Home home) {
-		if (sender.getPlayer().dimension != home.dimID) {
+	private boolean sendHome(CommandSource source, Home home) {
+		if (source.getSender().dimension != home.dimID) {
 			MinecraftServer mc = MinecraftServer.getInstance();
-			EntityPlayerMP player = (EntityPlayerMP) sender.getPlayer();
+			ServerPlayer player = (ServerPlayer) source.getSender();
 			mc.playerList.sendPlayerToOtherDimension(player, home.dimID, false);
 		}
-		teleport(home.x, home.y, home.z, sender.getPlayer());
+		teleport(home.x, home.y, home.z, source.getSender());
 		return true;
 	}
 
@@ -100,7 +100,7 @@ public class HomeCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
-		syntax.printAllLines(sender);
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
+		syntax.printAllLines(source);
 	}
 }

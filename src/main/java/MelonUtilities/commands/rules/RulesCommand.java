@@ -8,7 +8,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.server.MinecraftServer;
 
 import java.io.File;
@@ -28,14 +28,14 @@ public class RulesCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler commandHandler, CommandSender commandSender, String[] strings) {
+	public boolean execute(CommandHandler commandHandler, CommandSource commandSource, String[] strings) {
 		if (strings.length == 0) {
 			for (Map.Entry<String, List<String>> entry : rulesData.entrySet()) {
-				commandSender.sendMessage(entry.getKey());
+				commandSource.sendMessage(entry.getKey());
 				int i = 1;
 				for (String s : entry.getValue()) {
-					commandSender.sendMessage(String.format("  - §3§nRule #%s§r: %s", i, s));
-					commandSender.sendMessage("");
+					commandSource.sendMessage(String.format("  - §3§nRule #%s§r: %s", i, s));
+					commandSource.sendMessage("");
 					i++;
 				}
 			}
@@ -63,10 +63,10 @@ public class RulesCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-		commandSender.sendMessage("/rules");
-		if (commandSender.isAdmin()) {
-			commandSender.sendMessage("/rules reload");
+	public void sendCommandSyntax(CommandHandler commandHandler, CommandSource commandSource) {
+		commandSource.sendMessage("/rules");
+		if (commandSource.isAdmin()) {
+			commandSource.sendMessage("/rules reload");
 		}
 	}
 

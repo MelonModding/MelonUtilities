@@ -8,7 +8,7 @@ import net.minecraft.core.entity.EntityItem;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.player.inventory.InventoryPlayer;
 
@@ -91,9 +91,9 @@ public class KitCommand extends Command {
 		return slotEval;
 	}
 
-	public static void insertItemAtSlot(int idealSlot, ItemStack item, CommandSender sender){
+	public static void insertItemAtSlot(int idealSlot, ItemStack item, CommandSource source){
 
-		int[] slotEval = evalInventory(sender.getPlayer().inventory, item);
+		int[] slotEval = evalInventory(source.getSender().inventory, item);
 
 
 		for (int i = 0; i < 36; i++) {
@@ -106,11 +106,11 @@ public class KitCommand extends Command {
 			}
 
 			if(slot == 0){
-				sender.getPlayer().inventory.setInventorySlotContents(currentID, new ItemStack(item));
+				source.getSender().inventory.setInventorySlotContents(currentID, new ItemStack(item));
 				return;
 			}
 
-			ItemStack inventoryStack = sender.getPlayer().inventory.getStackInSlot(currentID);
+			ItemStack inventoryStack = source.getSender().inventory.getStackInSlot(currentID);
 
 			if(slot == 1){
 				inventoryStack.stackSize += item.stackSize;
@@ -124,13 +124,13 @@ public class KitCommand extends Command {
 				inventoryStack.stackSize = item.getMaxStackSize();
 				ItemStack newStack = new ItemStack(item);
 				newStack.stackSize = stackSum - item.getMaxStackSize();
-				insertItemAtSlot((currentID + 1) % 36, newStack, sender);
+				insertItemAtSlot((currentID + 1) % 36, newStack, source);
 				return;
 			}
 		}
-		EntityItem itemToDrop = new EntityItem(sender.getPlayer().world, sender.getPlayer().x, sender.getPlayer().y + 1, sender.getPlayer().z, new ItemStack(item));
+		EntityItem itemToDrop = new EntityItem(source.getSender().world, source.getSender().x, source.getSender().y + 1, source.getSender().z, new ItemStack(item));
 		itemToDrop.delayBeforeCanPickup = 10;
-		sender.getPlayer().world.entityJoinedWorld(itemToDrop);
+		source.getSender().world.entityJoinedWorld(itemToDrop);
 	}
 
 	static int listIndexOf(ItemStack[] items, ItemStack target) {
@@ -156,7 +156,7 @@ public class KitCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
         {
             if (args.length == 0) {
                 return false;
@@ -164,8 +164,8 @@ public class KitCommand extends Command {
 
             if (args[0].equals("give")) {
                 if (args.length == 1) {
-					FeedbackHandler.success(sender, "Failed to Give Kit (Invalid Syntax)");
-                    FeedbackHandler.syntax(sender, "/kit give <kit> [<overwrite?>]");
+					FeedbackHandler.success(source, "Failed to Give Kit (Invalid Syntax)");
+                    FeedbackHandler.syntax(source, "/kit give <kit> [<overwrite?>]");
                     return true;
                 }
 
@@ -177,8 +177,8 @@ public class KitCommand extends Command {
 
                     if (args.length > 2 && args[2].equals("true")) {
 
-                        if (System.currentTimeMillis() - cooldowns.getOrDefault(kit, new HashMap<>()).getOrDefault(sender.getPlayer().username, 0L) > cooldown) {
-                            cooldowns.get(kit).put(sender.getPlayer().username, System.currentTimeMillis());
+                        if (System.currentTimeMillis() - cooldowns.getOrDefault(kit, new HashMap<>()).getOrDefault(source.getSender().username, 0L) > cooldown) {
+                            cooldowns.get(kit).put(source.getSender().username, System.currentTimeMillis());
 
                             int counter = 0;
 
@@ -186,7 +186,7 @@ public class KitCommand extends Command {
                                 if (kitdata.kitItemNames.get(counter) != null) {
                                     item.setCustomName(kitdata.kitItemNames.get(counter));
                                 }
-                                sender.getPlayer().inventory.setInventorySlotContents(kitdata.kitItemSlots.get(counter++), new ItemStack(item));
+                                source.getSender().inventory.setInventorySlotContents(kitdata.kitItemSlots.get(counter++), new ItemStack(item));
                             }
                             //give items ^
 
@@ -196,19 +196,19 @@ public class KitCommand extends Command {
                                 if (kitdata.kitArmorNames.get(counter) != null) {
                                     armor.setCustomName(kitdata.kitArmorNames.get(counter));
                                 }
-                                sender.getPlayer().inventory.setInventorySlotContents(kitdata.kitArmorSlots.get(counter++), new ItemStack(armor));
+                                source.getSender().inventory.setInventorySlotContents(kitdata.kitArmorSlots.get(counter++), new ItemStack(armor));
                             }
                             //give armor ^
 
                             Data.kits.saveAll();
-							FeedbackHandler.success(sender, "Given Kit: '" + kit + "' to " + sender.getPlayer().username);
+							FeedbackHandler.success(source, "Given Kit: '" + kit + "' to " + source.getSender().username);
                             return true;
                         }
                     }
 
-                    if (System.currentTimeMillis() - cooldowns.getOrDefault(kit, new HashMap<>()).getOrDefault(sender.getPlayer().username, 0L) > cooldown) {
+                    if (System.currentTimeMillis() - cooldowns.getOrDefault(kit, new HashMap<>()).getOrDefault(source.getSender().username, 0L) > cooldown) {
                         cooldowns.putIfAbsent(kit, new HashMap<>());
-                        cooldowns.getOrDefault(kit, new HashMap<>()).put(sender.getPlayer().username, System.currentTimeMillis());
+                        cooldowns.getOrDefault(kit, new HashMap<>()).put(source.getSender().username, System.currentTimeMillis());
 
                         int counter = 0;
 
@@ -217,7 +217,7 @@ public class KitCommand extends Command {
                             if (kitdata.kitItemNames.get(counter) != null) {
                                 item.setCustomName(kitdata.kitItemNames.get(counter));
                             }
-                            insertItemAtSlot(kitdata.kitItemSlots.get(counter++), item, sender);
+                            insertItemAtSlot(kitdata.kitItemSlots.get(counter++), item, source);
                         }
                         //give items ^
 
@@ -227,33 +227,33 @@ public class KitCommand extends Command {
                             if (kitdata.kitArmorNames.get(counter) != null) {
                                 armor.setCustomName(kitdata.kitArmorNames.get(counter));
                             }
-                            if (sender.getPlayer().inventory.getStackInSlot(39 - counter) != null) {
-                                insertItemAtSlot(0, armor, sender);
+                            if (source.getSender().inventory.getStackInSlot(39 - counter) != null) {
+                                insertItemAtSlot(0, armor, source);
                                 counter++;
                                 continue;
                             }
-                            sender.getPlayer().inventory.setInventorySlotContents(kitdata.kitArmorSlots.get(counter++), new ItemStack(armor));
+                            source.getSender().inventory.setInventorySlotContents(kitdata.kitArmorSlots.get(counter++), new ItemStack(armor));
                         }
                         //give armor ^
 
                         Data.kits.saveAll();
-						FeedbackHandler.success(sender, "Given Kit: '" + kit + "' to " + sender.getPlayer().username);
+						FeedbackHandler.success(source, "Given Kit: '" + kit + "' to " + source.getSender().username);
                         return true;
                     }
                     if (!Data.kits.dataHashMap.containsKey(kit)) {
-						FeedbackHandler.error(sender, "Failed to Give Kit: '" + kit + "' to " + sender.getPlayer().username + " (Kit Doesn't Exist)");
-                        sender.sendMessage("");
+						FeedbackHandler.error(source, "Failed to Give Kit: '" + kit + "' to " + source.getSender().username + " (Kit Doesn't Exist)");
+                        source.sendMessage("");
                     } else {
-						FeedbackHandler.destructive(sender, "You've already used this kit... time left until next kit: ");
-						FeedbackHandler.destructive(sender, hmsConversion(cooldown - (System.currentTimeMillis() - cooldowns.getOrDefault(kit, new HashMap<>()).getOrDefault(sender.getPlayer().username, 0L))));
+						FeedbackHandler.destructive(source, "You've already used this kit... time left until next kit: ");
+						FeedbackHandler.destructive(source, hmsConversion(cooldown - (System.currentTimeMillis() - cooldowns.getOrDefault(kit, new HashMap<>()).getOrDefault(source.getSender().username, 0L))));
                         return true;
                     }
                 }
             }
             if (args[0].equals("reset")) {
                 if (args.length == 1) {
-					FeedbackHandler.error(sender, "Failed to Reset Kit Cooldown (Invalid Syntax)");
-					FeedbackHandler.syntax(sender, "/kit reset <kit> [<player>]");
+					FeedbackHandler.error(source, "Failed to Reset Kit Cooldown (Invalid Syntax)");
+					FeedbackHandler.syntax(source, "/kit reset <kit> [<player>]");
                     return true;
                 }
                 if (args.length > 2) {
@@ -261,18 +261,18 @@ public class KitCommand extends Command {
                     String player = args[2];
                     if (handler.playerExists(player)) {
                         cooldowns.getOrDefault(kit, new HashMap<>()).put(handler.getPlayer(player).username, 0L);
-						FeedbackHandler.success(sender, handler.getPlayer(player).username + "'s Kit: '" + kit + "' Cooldown Reset");
+						FeedbackHandler.success(source, handler.getPlayer(player).username + "'s Kit: '" + kit + "' Cooldown Reset");
                         return true;
                     } else {
-                        FeedbackHandler.error(sender, "Failed to Reset " + player + "'s Cooldown for Kit: " + kit);
-                        FeedbackHandler.error(sender, "(Player Doesn't Exist)");
+                        FeedbackHandler.error(source, "Failed to Reset " + player + "'s Cooldown for Kit: " + kit);
+                        FeedbackHandler.error(source, "(Player Doesn't Exist)");
                         return true;
                     }
                 }
                 String kit = args[1];
                 if (Data.kits.dataHashMap.containsKey(kit)) {
-                    cooldowns.getOrDefault(kit, new HashMap<>()).put(sender.getPlayer().username, 0L);
-					FeedbackHandler.success(sender, "Kit: '" + kit + "' Cooldown Reset!");
+                    cooldowns.getOrDefault(kit, new HashMap<>()).put(source.getSender().username, 0L);
+					FeedbackHandler.success(source, "Kit: '" + kit + "' Cooldown Reset!");
                     return true;
                 }
 
@@ -282,9 +282,9 @@ public class KitCommand extends Command {
 
             if (args[0].equals("reload")) {
                 Data.kits.loadAll(KitData.class);
-				FeedbackHandler.success(sender, "Reloaded " + Data.kits.dataHashMap.size() + " Kit(s)!");
+				FeedbackHandler.success(source, "Reloaded " + Data.kits.dataHashMap.size() + " Kit(s)!");
 				buildKitSyntax();
-				FeedbackHandler.success(sender, "Built Kit Syntax!");
+				FeedbackHandler.success(source, "Built Kit Syntax!");
                 return true;
             }
 
@@ -292,8 +292,8 @@ public class KitCommand extends Command {
             if (args[0].equals("setcooldown")) {
 
                 if (args.length == 1) {
-					FeedbackHandler.error(sender, "Failed to Set Kit Cooldown (Invalid Syntax)");
-					FeedbackHandler.syntax(sender, "/kit setcooldown <kit> <cooldown>");
+					FeedbackHandler.error(source, "Failed to Set Kit Cooldown (Invalid Syntax)");
+					FeedbackHandler.syntax(source, "/kit setcooldown <kit> <cooldown>");
                     return true;
                 }
 
@@ -303,7 +303,7 @@ public class KitCommand extends Command {
                     KitData kitdata = Data.kits.getOrCreate(kit, KitData.class);
                     kitdata.kitCooldown = Long.parseLong(args[2]);
                     Data.kits.saveAll();
-					FeedbackHandler.success(sender, "Set Cooldown for Kit: '" + kit + "' to: " + args[2]);
+					FeedbackHandler.success(source, "Set Cooldown for Kit: '" + kit + "' to: " + args[2]);
                     return true;
                 }
 
@@ -317,15 +317,15 @@ public class KitCommand extends Command {
 
                     KitData kitdata = Data.kits.getOrCreate(args[1], KitData.class);
 
-                    FeedbackHandler.syntax(sender, "< Kit: '" + args[1] + "' List >");
-                    FeedbackHandler.syntax(sender, "  < Cooldown: " + hmsConversion(kitdata.kitCooldown * 1000) + " >");
-                    FeedbackHandler.syntax(sender, "  < Armor: >");
+                    FeedbackHandler.syntax(source, "< Kit: '" + args[1] + "' List >");
+                    FeedbackHandler.syntax(source, "  < Cooldown: " + hmsConversion(kitdata.kitCooldown * 1000) + " >");
+                    FeedbackHandler.syntax(source, "  < Armor: >");
                     for (ItemStack armor : kitdata.kitArmorStacks) {
-                        FeedbackHandler.syntax(sender, "    > " + armor.getDisplayName());
+                        FeedbackHandler.syntax(source, "    > " + armor.getDisplayName());
                     }
-                    FeedbackHandler.syntax(sender, "  < Items: >");
+                    FeedbackHandler.syntax(source, "  < Items: >");
                     for (ItemStack item : kitdata.kitItemStacks) {
-                        FeedbackHandler.syntax(sender, "    > " + item.getDisplayName() + " * " + item.stackSize);
+                        FeedbackHandler.syntax(source, "    > " + item.getDisplayName() + " * " + item.stackSize);
                     }
 
 
@@ -334,15 +334,15 @@ public class KitCommand extends Command {
                 }
 
                 if (Data.kits.dataHashMap.isEmpty()) {
-                    FeedbackHandler.syntax(sender, "< Kits: >");
-                    FeedbackHandler.syntax(sender, "  -No Kits Created-");
+                    FeedbackHandler.syntax(source, "< Kits: >");
+                    FeedbackHandler.syntax(source, "  -No Kits Created-");
                     return true;
                 }
 
-                FeedbackHandler.syntax(sender, "< Kits: >");
+                FeedbackHandler.syntax(source, "< Kits: >");
 
                 for (String kit : Data.kits.dataHashMap.keySet()) {
-                    FeedbackHandler.syntax(sender, "  > " + kit);
+                    FeedbackHandler.syntax(source, "  > " + kit);
                 }
 
                 return true;
@@ -351,15 +351,15 @@ public class KitCommand extends Command {
             if (args[0].equals("create")) {
 
                 if (args.length == 1) {
-					FeedbackHandler.error(sender, "Failed to Create Kit (Invalid Syntax)");
-					FeedbackHandler.syntax(sender, "/kit create <kit> [<cooldown>]");
+					FeedbackHandler.error(source, "Failed to Create Kit (Invalid Syntax)");
+					FeedbackHandler.syntax(source, "/kit create <kit> [<cooldown>]");
                     return true;
                 }
 
                 String kit = args[1];
 
                 if (Data.kits.dataHashMap.containsKey(kit)) {
-                    FeedbackHandler.error(sender, "Failed to Create Kit: '" + kit + "' (Kit Already Exists)");
+                    FeedbackHandler.error(source, "Failed to Create Kit: '" + kit + "' (Kit Already Exists)");
                     return true;
                 }
 
@@ -373,29 +373,29 @@ public class KitCommand extends Command {
                     KitData kitdata = Data.kits.getOrCreate(kit, KitData.class);
                     kitdata.kitCooldown = Long.parseLong(args[2]);
                     Data.kits.saveAll();
-                    FeedbackHandler.success(sender, "Created Kit: '" + kit + "' with Cooldown: " + args[2]);
+                    FeedbackHandler.success(source, "Created Kit: '" + kit + "' with Cooldown: " + args[2]);
                     return true;
                 }
 
                 Data.kits.getOrCreate(kit, KitData.class);
                 Data.kits.saveAll();
-                FeedbackHandler.success(sender, "Created Kit: '" + kit + "' with Cooldown: 0");
+                FeedbackHandler.success(source, "Created Kit: '" + kit + "' with Cooldown: 0");
                 return true;
             }
 
             if (args[0].equals("addto")) {
 
                 if (args.length == 1) {
-                    FeedbackHandler.error(sender, "Failed to Add To Kit (Invalid Syntax)");
-					syntax.printLayerAndSubLayers("addto", sender);
+                    FeedbackHandler.error(source, "Failed to Add To Kit (Invalid Syntax)");
+					syntax.printLayerAndSubLayers("addto", source);
                     return true;
                 }
 
                 String kit = args[1];
 
                 if (!Data.kits.dataHashMap.containsKey(kit)) {
-                    FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Kit Doesn't Exist)");
-                    FeedbackHandler.syntax(sender, "*Tip: Double Check your Spelling*");
+                    FeedbackHandler.error(source, "Failed to Add To Kit: '" + kit + "' (Kit Doesn't Exist)");
+                    FeedbackHandler.syntax(source, "*Tip: Double Check your Spelling*");
                     return true;
                 }
 
@@ -403,86 +403,86 @@ public class KitCommand extends Command {
 
                 if (args[2].equals("item")) {
 
-                    if (sender.getPlayer().getHeldItem() == null) {
-                        FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Held Item is Null)");
-                        FeedbackHandler.syntax(sender, "*Tip: Hold an item in your hand*");
+                    if (source.getSender().getHeldItem() == null) {
+                        FeedbackHandler.error(source, "Failed to Add To Kit: '" + kit + "' (Held Item is Null)");
+                        FeedbackHandler.syntax(source, "*Tip: Hold an item in your hand*");
                         return true;
                     }
 
-                    kitdata.additem(new ItemStack(sender.getPlayer().getHeldItem()), listIndexOf(sender.getPlayer().inventory.mainInventory, sender.getPlayer().getHeldItem()));
-                    FeedbackHandler.success(sender, "Added [" + sender.getPlayer().getHeldItem() + "] to Kit: '" + kit + "'");
+                    kitdata.additem(new ItemStack(source.getSender().getHeldItem()), listIndexOf(source.getSender().inventory.mainInventory, source.getSender().getHeldItem()));
+                    FeedbackHandler.success(source, "Added [" + source.getSender().getHeldItem() + "] to Kit: '" + kit + "'");
                     Data.kits.saveAll();
                     return true;
                 }
                 if (args[2].equals("row")) {
-                    int row = sender.getPlayer().inventory.hotbarOffset;
+                    int row = source.getSender().inventory.hotbarOffset;
                     for (int i = 0; i < 9; i++) {
 
-                        if (sender.getPlayer().inventory.getStackInSlot(i + row) == null) {
+                        if (source.getSender().inventory.getStackInSlot(i + row) == null) {
                             continue;
                         }
 
-                        kitdata.additem(new ItemStack(sender.getPlayer().inventory.getStackInSlot(i + row)), listIndexOf(sender.getPlayer().inventory.mainInventory, sender.getPlayer().inventory.getStackInSlot(i + row)));
+                        kitdata.additem(new ItemStack(source.getSender().inventory.getStackInSlot(i + row)), listIndexOf(source.getSender().inventory.mainInventory, source.getSender().inventory.getStackInSlot(i + row)));
 
                     }
 
                     Data.kits.saveAll();
-                    FeedbackHandler.success(sender, "Added Row to Kit: '" + kit + "'");
+                    FeedbackHandler.success(source, "Added Row to Kit: '" + kit + "'");
 
                     return true;
                 }
                 if (args[2].equals("armor")) {
 					switch (args[3]) {
 						case "head":
-							if (sender.getPlayer().inventory.getStackInSlot(39) == null) {
-								FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
-								FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
+							if (source.getSender().inventory.getStackInSlot(39) == null) {
+								FeedbackHandler.error(source, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
+								FeedbackHandler.syntax(source, "*Tip: Equip armor in your " + args[3] + " slot*");
 								return true;
 							}
-							kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(39), 39);
-							FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(39) + " to Kit: '" + kit + "'");
+							kitdata.addarmor(source.getSender().inventory.getStackInSlot(39), 39);
+							FeedbackHandler.success(source, "Added " + source.getSender().inventory.getStackInSlot(39) + " to Kit: '" + kit + "'");
 							return true;
 						case "chest":
-							if (sender.getPlayer().inventory.getStackInSlot(38) == null) {
-								FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
-								FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
+							if (source.getSender().inventory.getStackInSlot(38) == null) {
+								FeedbackHandler.error(source, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
+								FeedbackHandler.syntax(source, "*Tip: Equip armor in your " + args[3] + " slot*");
 								return true;
 							}
-							kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(38), 38);
-							FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(38) + " to Kit: '" + kit + "'");
+							kitdata.addarmor(source.getSender().inventory.getStackInSlot(38), 38);
+							FeedbackHandler.success(source, "Added " + source.getSender().inventory.getStackInSlot(38) + " to Kit: '" + kit + "'");
 							return true;
 						case "legs":
-							if (sender.getPlayer().inventory.getStackInSlot(37) == null) {
-								FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
-								FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
+							if (source.getSender().inventory.getStackInSlot(37) == null) {
+								FeedbackHandler.error(source, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
+								FeedbackHandler.syntax(source, "*Tip: Equip armor in your " + args[3] + " slot*");
 								return true;
 							}
-							kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(37), 37);
-							FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(37) + " to Kit: '" + kit + "'");
+							kitdata.addarmor(source.getSender().inventory.getStackInSlot(37), 37);
+							FeedbackHandler.success(source, "Added " + source.getSender().inventory.getStackInSlot(37) + " to Kit: '" + kit + "'");
 							return true;
 						case "boots":
-							if (sender.getPlayer().inventory.getStackInSlot(36) == null) {
-								FeedbackHandler.error(sender, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
-								FeedbackHandler.syntax(sender, "*Tip: Equip armor in your " + args[3] + " slot*");
+							if (source.getSender().inventory.getStackInSlot(36) == null) {
+								FeedbackHandler.error(source, "Failed to Add To Kit: '" + kit + "' (Equipped Armor is Null)");
+								FeedbackHandler.syntax(source, "*Tip: Equip armor in your " + args[3] + " slot*");
 								return true;
 							}
-							kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(36), 36);
-							FeedbackHandler.success(sender, "Added " + sender.getPlayer().inventory.getStackInSlot(36) + " to Kit: '" + kit + "'");
+							kitdata.addarmor(source.getSender().inventory.getStackInSlot(36), 36);
+							FeedbackHandler.success(source, "Added " + source.getSender().inventory.getStackInSlot(36) + " to Kit: '" + kit + "'");
 							return true;
 						case "all":
-							if (sender.getPlayer().inventory.getStackInSlot(39) != null) {
-								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(39), 39);
+							if (source.getSender().inventory.getStackInSlot(39) != null) {
+								kitdata.addarmor(source.getSender().inventory.getStackInSlot(39), 39);
 							}
-							if (sender.getPlayer().inventory.getStackInSlot(38) != null) {
-								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(38), 38);
+							if (source.getSender().inventory.getStackInSlot(38) != null) {
+								kitdata.addarmor(source.getSender().inventory.getStackInSlot(38), 38);
 							}
-							if (sender.getPlayer().inventory.getStackInSlot(37) != null) {
-								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(37), 37);
+							if (source.getSender().inventory.getStackInSlot(37) != null) {
+								kitdata.addarmor(source.getSender().inventory.getStackInSlot(37), 37);
 							}
-							if (sender.getPlayer().inventory.getStackInSlot(36) != null) {
-								kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(36), 36);
+							if (source.getSender().inventory.getStackInSlot(36) != null) {
+								kitdata.addarmor(source.getSender().inventory.getStackInSlot(36), 36);
 							}
-							FeedbackHandler.success(sender, "Added All Armor to Kit: '" + kit + "'");
+							FeedbackHandler.success(source, "Added All Armor to Kit: '" + kit + "'");
 							return true;
 					}
 					return true;
@@ -492,28 +492,28 @@ public class KitCommand extends Command {
                         int row = i * 9;
                         for (int j = 0; j < 9; j++) {
 
-                            if (sender.getPlayer().inventory.getStackInSlot(j + row) == null) {
+                            if (source.getSender().inventory.getStackInSlot(j + row) == null) {
                                 continue;
                             }
 
-                            kitdata.additem(new ItemStack(sender.getPlayer().inventory.getStackInSlot(j + row)), listIndexOf(sender.getPlayer().inventory.mainInventory, sender.getPlayer().inventory.getStackInSlot(j + row)));
+                            kitdata.additem(new ItemStack(source.getSender().inventory.getStackInSlot(j + row)), listIndexOf(source.getSender().inventory.mainInventory, source.getSender().inventory.getStackInSlot(j + row)));
 
                         }
                     }
-                    if (sender.getPlayer().inventory.getStackInSlot(39) != null) {
-                        kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(39), 39);
+                    if (source.getSender().inventory.getStackInSlot(39) != null) {
+                        kitdata.addarmor(source.getSender().inventory.getStackInSlot(39), 39);
                     }
-                    if (sender.getPlayer().inventory.getStackInSlot(38) != null) {
-                        kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(38), 38);
+                    if (source.getSender().inventory.getStackInSlot(38) != null) {
+                        kitdata.addarmor(source.getSender().inventory.getStackInSlot(38), 38);
                     }
-                    if (sender.getPlayer().inventory.getStackInSlot(37) != null) {
-                        kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(37), 37);
+                    if (source.getSender().inventory.getStackInSlot(37) != null) {
+                        kitdata.addarmor(source.getSender().inventory.getStackInSlot(37), 37);
                     }
-                    if (sender.getPlayer().inventory.getStackInSlot(36) != null) {
-                        kitdata.addarmor(sender.getPlayer().inventory.getStackInSlot(36), 36);
+                    if (source.getSender().inventory.getStackInSlot(36) != null) {
+                        kitdata.addarmor(source.getSender().inventory.getStackInSlot(36), 36);
                     }
 
-                    FeedbackHandler.success(sender, "Added All Items and Armor to Kit: " + kit);
+                    FeedbackHandler.success(source, "Added All Items and Armor to Kit: " + kit);
                     Data.kits.saveAll();
                     return true;
                 }
@@ -523,8 +523,8 @@ public class KitCommand extends Command {
             if (args[0].equals("delete")) {
 
                 if (args.length == 1) {
-                    FeedbackHandler.error(sender, "Failed to Delete Kit (Invalid Syntax)");
-                    FeedbackHandler.syntax(sender, "/kit delete <kit>");
+                    FeedbackHandler.error(source, "Failed to Delete Kit (Invalid Syntax)");
+                    FeedbackHandler.syntax(source, "/kit delete <kit>");
                     return true;
                 }
 
@@ -532,18 +532,18 @@ public class KitCommand extends Command {
 
                 switch (Data.kits.remove(kit)) {
                     case 0:
-                        sender.sendMessage(TextFormatting.ORANGE + "Deleted Kit: '" + kit + "'");
+                        source.sendMessage(TextFormatting.ORANGE + "Deleted Kit: '" + kit + "'");
                         return true;
                     case 1:
-                        FeedbackHandler.error(sender, "Failed to Delete Kit: '" + kit + "' (Kit Doesn't Exist)");
+                        FeedbackHandler.error(source, "Failed to Delete Kit: '" + kit + "' (Kit Doesn't Exist)");
                         return true;
                     case 2:
-                        FeedbackHandler.error(sender, "Failed to Delete Kit: '" + kit + "' (IO Error)");
+                        FeedbackHandler.error(source, "Failed to Delete Kit: '" + kit + "' (IO Error)");
                         return true;
                 }
             }
         }
-		FeedbackHandler.error(sender, " Kit Error: (Invalid Syntax)");
+		FeedbackHandler.error(source, " Kit Error: (Invalid Syntax)");
 		return false;
 	}
 
@@ -566,13 +566,13 @@ public class KitCommand extends Command {
     }
 
 	@Override
-	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
-		if (sender.isAdmin()) {
-			syntax.printAllLines(sender);
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
+		if (source.hasAdmin()) {
+			syntax.printAllLines(source);
 		} else {
-			FeedbackHandler.syntax(sender, "< Command Syntax >");
-			FeedbackHandler.syntax(sender, "  > /kit give <kit> [<overwrite?>]");
-			FeedbackHandler.syntax(sender, "  > /kit list [<kit>]");
+			FeedbackHandler.syntax(source, "< Command Syntax >");
+			FeedbackHandler.syntax(source, "  > /kit give <kit> [<overwrite?>]");
+			FeedbackHandler.syntax(source, "  > /kit list [<kit>]");
 		}
 	}
 }

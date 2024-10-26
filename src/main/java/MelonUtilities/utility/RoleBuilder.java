@@ -4,7 +4,7 @@ import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.RoleData;
-import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.TextFormatting;
 
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public class RoleBuilder {
 		return roleTextFormat;
 	}
 
-	public static String buildPlayerRoleDisplay(EntityPlayer player) {
+	public static String buildPlayerRoleDisplay(Player player) {
 
 		String defaultRoleDisplay;
 		if(Data.roles.dataHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole) == null){

@@ -14,7 +14,6 @@ import MelonUtilities.commands.rules.RulesCommand;
 import MelonUtilities.commands.tpa.TPACommand;
 import MelonUtilities.commands.tpa.TPADenyCommand;
 import MelonUtilities.commands.tpa.TPAcceptCommand;
-import MelonUtilities.commands.utility.HelpCommandExample;
 import MelonUtilities.commands.utility.MUCommand;
 import MelonUtilities.config.*;
 import MelonUtilities.config.custom.classes.Crew;
@@ -30,26 +29,23 @@ import MelonUtilities.utility.MUtil;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.data.gamerule.GameRuleBoolean;
 import net.minecraft.core.data.gamerule.GameRules;
 import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.net.command.CommandManager;
-import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import turniplabs.halplibe.HalpLibe;
-import turniplabs.halplibe.helper.CommandHelper;
-import turniplabs.halplibe.util.GameStartEntrypoint;
-import turniplabs.halplibe.util.RecipeEntrypoint;
 
 import java.util.HashMap;
 
 import static net.minecraft.server.util.helper.PlayerList.updateList;
 
 
-public class MelonUtilities implements ModInitializer, GameStartEntrypoint, RecipeEntrypoint {
+public class MelonUtilities implements ModInitializer{
 
     public static final String MOD_ID = "melonutilities";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -118,7 +114,7 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 
     @Override
     public void onInitialize() {
-		if (HalpLibe.isClient) return;
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) return;
 		LOGGER.info("MelonUtilities initializing!");
 		// Crew
 		// Helper
@@ -166,7 +162,7 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 
 	@Override
 	public void afterGameStart() {
-		if (HalpLibe.isClient) return;
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) return;
 		// Crew
 		// Helper
 		// Home
@@ -189,7 +185,7 @@ public class MelonUtilities implements ModInitializer, GameStartEntrypoint, Reci
 		CommandManager.registerCommand(new TPAcceptCommand());
 		CommandManager.registerCommand(new TPADenyCommand());
 		// Utility
-		CommandManager.registerCommand(new HelpCommandExample());
+		CommandManager.registerCommand(new HelpCommand());
 		CommandManager.registerCommand(new HelperCommand());
 		CommandManager.registerCommand(new MUCommand());
 		// Warp

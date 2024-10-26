@@ -3,8 +3,8 @@ package MelonUtilities.commands.misc;
 import MelonUtilities.utility.FeedbackHandler;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
-import net.minecraft.server.entity.player.EntityPlayerMP;
+import net.minecraft.core.net.command.CommandSource;
+import net.minecraft.server.entity.player.ServerPlayer;
 
 /**
  * This command when run prints out information of the players current coordinates.
@@ -16,9 +16,9 @@ public class WhereAmICommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler commandHandler, CommandSender sender, String[] strings) {
-		// Get the player and cast it to EntityPlayerMP
-		EntityPlayerMP player = (EntityPlayerMP) sender.getPlayer();
+	public boolean execute(CommandHandler commandHandler, CommandSource source, String[] strings) {
+		// Get the player and cast it to ServerPlayer
+		ServerPlayer player = (ServerPlayer) source.getSender();
 
 		// Get the players coords
 		// cast to int to shorten them
@@ -27,7 +27,7 @@ public class WhereAmICommand extends Command {
 		int pz = (int) player.z;
 
 		// Send the info to the chat
-		FeedbackHandler.success(sender, "You are at " + px + " " + py + " " + pz);
+		FeedbackHandler.success(source, "You are at " + px + " " + py + " " + pz);
 
 		return false;
 	}
@@ -38,8 +38,8 @@ public class WhereAmICommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
+	public void sendCommandSyntax(CommandHandler commandHandler, CommandSource commandSource) {
 		// Feedback is unneeded, since execute is printing the message
-		//commandSender.sendMessage("whereami");
+		//commandSource.sendMessage("whereami");
 	}
 }

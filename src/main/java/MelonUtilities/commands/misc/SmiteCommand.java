@@ -4,7 +4,7 @@ import MelonUtilities.utility.FeedbackHandler;
 import net.minecraft.core.entity.EntityLightningBolt;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.LocationTarget;
 
 public class SmiteCommand extends Command {
@@ -15,8 +15,8 @@ public class SmiteCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler commandHandler, CommandSender commandSender, String[] strings) {
-		LocationTarget location = new LocationTarget(commandHandler, commandSender);
+	public boolean execute(CommandHandler commandHandler, CommandSource commandSource, String[] strings) {
+		LocationTarget location = new LocationTarget(commandHandler, commandSource);
 		location.getWorld().addWeatherEffect(new EntityLightningBolt(location.getWorld(), location.getX(), location.getY()-1, location.getZ()));
 		return true;
 	}
@@ -27,7 +27,7 @@ public class SmiteCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
-		FeedbackHandler.syntax(commandSender, "smite");
+	public void sendCommandSyntax(CommandHandler commandHandler, CommandSource commandSource) {
+		FeedbackHandler.syntax(commandSource, "smite");
 	}
 }

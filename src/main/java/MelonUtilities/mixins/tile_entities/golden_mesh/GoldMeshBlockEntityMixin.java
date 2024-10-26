@@ -2,13 +2,13 @@ package MelonUtilities.mixins.tile_entities.golden_mesh;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.interfaces.BlockEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.TileEntityMeshGold;
-import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.block.entity.GoldMeshBlockEntity;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = TileEntityMeshGold.class, remap = false)
-public class TileEntityMeshGoldMixin implements TileEntityContainerInterface {
+@Mixin(value = GoldMeshBlockEntity.class, remap = false)
+public class GoldMeshBlockEntityMixin implements BlockEntityContainerInterface {
 	@Unique
 	private boolean isLocked;
 
@@ -67,7 +67,7 @@ public class TileEntityMeshGoldMixin implements TileEntityContainerInterface {
 	}
 
 	@Inject(at = @At("HEAD"), method = "setFilterItem", cancellable = true)
-	public void setFilterItemInject(EntityPlayer entityplayer, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+	public void setFilterItemInject(Player entityplayer, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
 		if(isLocked){
 			if(lockOwner != null) {
 				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))

@@ -16,10 +16,10 @@ public class DelHomeCommand extends Command {
 		super("delhome");
 	}
 
-	public void deleteHome(String name, CommandSender sender){
-		for(int i = 0; i < Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.size(); i++) {
-			if(Objects.equals(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.get(i).name, name)){
-				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.remove(i);
+	public void deleteHome(String name, CommandSource source){
+		for(int i = 0; i < Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.size(); i++) {
+			if(Objects.equals(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.get(i).name, name)){
+				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.remove(i);
 				Data.playerData.saveAll();
 				return;
 			}
@@ -35,31 +35,31 @@ public class DelHomeCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
-		Home home = HomeCommand.getHome("home", sender);
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
+		Home home = HomeCommand.getHome("home", source);
 
 		if (args.length == 0 && home != null) {
-			deleteHome("home", sender);
-			FeedbackHandler.destructive(sender, "Deleted Home: <home>");
+			deleteHome("home", source);
+			FeedbackHandler.destructive(source, "Deleted Home: <home>");
 			return true;
 		} else if (args.length == 0){
-			FeedbackHandler.error(sender, "Failed to Delete Home (Home does not exist!)");
-			syntax.printLayerAndSubLayers("home", sender);
+			FeedbackHandler.error(source, "Failed to Delete Home (Home does not exist!)");
+			syntax.printLayerAndSubLayers("home", source);
 			return true;
 		} else if (args.length == 1) {
-			home = HomeCommand.getHome(args[0], sender);
+			home = HomeCommand.getHome(args[0], source);
 			if (home != null) {
-				deleteHome(args[0], sender);
-				FeedbackHandler.destructive(sender, "Deleted Home: <" + args[0] + ">");
+				deleteHome(args[0], source);
+				FeedbackHandler.destructive(source, "Deleted Home: <" + args[0] + ">");
 				return true;
 			}
-			FeedbackHandler.error(sender, "Failed to Delete Home (Home does not exist!)");
-			syntax.printLayerAndSubLayers("home", sender);
+			FeedbackHandler.error(source, "Failed to Delete Home (Home does not exist!)");
+			syntax.printLayerAndSubLayers("home", source);
 			return true;
 		}
 
-		FeedbackHandler.error(sender, "Failed to Delete Home (Invalid Syntax)");
-		syntax.printLayerAndSubLayers("delhome", sender);
+		FeedbackHandler.error(source, "Failed to Delete Home (Invalid Syntax)");
+		syntax.printLayerAndSubLayers("delhome", source);
         return true;
     }
 
@@ -69,7 +69,7 @@ public class DelHomeCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
-		syntax.printAllLines(sender);
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
+		syntax.printAllLines(source);
 	}
 }

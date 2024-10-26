@@ -3,7 +3,7 @@ package MelonUtilities.mixins.other;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.interfaces.BlockEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.UUIDHelper;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -11,14 +11,13 @@ import MelonUtilities.utility.RoleBuilder;
 import MelonUtilities.config.datatypes.RoleData;
 import net.minecraft.core.block.entity.*;
 import net.minecraft.core.net.command.*;
+import net.minecraft.core.net.packet.BlockUpdatePacket;
+import net.minecraft.core.net.packet.ChatPacket;
 import net.minecraft.core.net.packet.Packet;
-import net.minecraft.core.net.packet.Packet14BlockDig;
-import net.minecraft.core.net.packet.Packet3Chat;
-import net.minecraft.core.net.packet.Packet53BlockChange;
+import net.minecraft.core.net.packet.PlayerActionPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.entity.player.EntityPlayerMP;
-import net.minecraft.server.net.PlayerList;
-import net.minecraft.server.net.handler.NetServerHandler;
+import net.minecraft.server.entity.player.ServerPlayer;
+import net.minecraft.server.net.handler.ServerPacketHandler;
 import net.minecraft.server.world.WorldServer;
 import org.apache.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,13 +30,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 
-@Mixin(value = NetServerHandler.class, remap = false)
-public abstract class NetServerHandlerMixin {
+@Mixin(value = ServerPacketHandler.class, remap = false)
+public abstract class ServerPacketHandlerMixin {
 	@Shadow
-	private EntityPlayerMP playerEntity;
+	private ServerPlayer playerEntity;
 
 	@Shadow
-	public static Logger logger;
+	public static Logger LOGGER;
 
 	@Shadow
 	private MinecraftServer mcServer;
@@ -49,7 +48,7 @@ public abstract class NetServerHandlerMixin {
 	public abstract void sendPacket(Packet packet);
 
 	@Inject(at = @At(shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleChat", cancellable = true)
-	public void handleChat(Packet3Chat packet, CallbackInfo ci, @Local String message) {
+	public void handleChat(ChatPacket packet, CallbackInfo ci, @Local String message) {
 
 		String defaultRoleDisplay;
 		String defaultRoleUsername;
@@ -116,7 +115,7 @@ public abstract class NetServerHandlerMixin {
 			message = roleUsername + message;
 		}
 
-		logger.info(message);
+		LOGGER.info(message);
 		this.mcServer.playerList.sendEncryptedChatToAllPlayers(message);
 		ci.cancel();
 
@@ -126,7 +125,7 @@ public abstract class NetServerHandlerMixin {
 	String commandString = "";
 
 	@Redirect(
-		method = "Lnet/minecraft/server/net/handler/NetServerHandler;handleSlashCommand(Ljava/lang/String;)V",
+		method = "Lnet/minecraft/server/net/handler/ServerPacketHandler;handleSlashCommand(Ljava/lang/String;)V",
 		at = @At(value = "INVOKE", target = "Ljava/lang/String;substring(I)Ljava/lang/String;"),
 		remap = false
 	)
@@ -135,14 +134,17 @@ public abstract class NetServerHandlerMixin {
 		return s.substring(beginIndex, s.length());
 	}
 
-	@Redirect(
-		method = "Lnet/minecraft/server/net/handler/NetServerHandler;handleSlashCommand(Ljava/lang/String;)V",
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/core/net/command/PlayerCommandSender;isAdmin()Z"),
+	//TODO fix/update helper command checks, old methods below:
+
+	/*@Redirect(
+		method = "Lnet/minecraft/server/net/handler/ServerPacketHandler;handleSlashCommand(Ljava/lang/String;)V",
+		at = @At(value = "INVOKE", target = "Lnet/minecraft/core/net/command/PlayerCommandSource;isAdmin()Z"),
 		remap = false
 	)
-	private boolean redirectIsAdmin(PlayerCommandSender sender){
 
-		if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).isHelper) {
+	private boolean redirectIsAdmin(PlayerCommandSource source){
+
+		if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).isHelper) {
 
 			String[] args = commandString.substring(1).split(" ");
 
@@ -157,11 +159,11 @@ public abstract class NetServerHandlerMixin {
 				}
 			}
 		}
-		if(sender.isAdmin()){return true;} else{return false;}
-	}
+		if(source.hasAdmin()){return true;} else{return false;}
+	}*/
 
-	@Redirect(
-		method = "Lnet/minecraft/server/net/handler/NetServerHandler;handleSlashCommand(Ljava/lang/String;)V",
+	/*@Redirect(
+		method = "Lnet/minecraft/server/net/handler/ServerPacketHandler;handleSlashCommand(Ljava/lang/String;)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/server/net/PlayerList;isOp(Ljava/lang/String;)Z"),
 		remap = false
 	)
@@ -181,28 +183,28 @@ public abstract class NetServerHandlerMixin {
 			}
 		}
 		if(this.playerEntity.isOperator()){return true;} else{return false;}
-	}
+	}*/
 
 	@Inject(
 		at = @At("HEAD"),
 		method = "handleBlockDig",
 		cancellable = true)
-	private void handleBlockDigInject(Packet14BlockDig packet, CallbackInfo ci){
+	private void handleBlockDigInject(PlayerActionPacket packet, CallbackInfo ci){
 		WorldServer world = this.mcServer.getDimensionWorld(this.playerEntity.dimension);
-		TileEntity container = world.getBlockTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
-		if(container instanceof TileEntityContainerInterface) {
-			TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+		BlockEntity container = world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+		if(container instanceof BlockEntityContainerInterface) {
+			BlockEntityContainerInterface iContainer = (BlockEntityContainerInterface) world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 			if (iContainer.getLockOwner() != null
 				&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username))
 				&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))
 				&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))
 				&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockBypass){
 				ci.cancel();
-				sendPacket(new Packet53BlockChange(packet.xPosition, packet.yPosition, packet.zPosition, world));
+				sendPacket(new BlockUpdatePacket(packet.xPosition, packet.yPosition, packet.zPosition, world));
 			}
-			if(packet.status == 1 && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched && !iContainer.getIsLocked()){
-				if (container instanceof TileEntityChest) {
-					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) MUtil.getOtherChest(world, (TileEntityChest) container);
+			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched && !iContainer.getIsLocked()){
+				if (container instanceof ChestBlockEntity) {
+					BlockEntityContainerInterface iOtherContainer = (BlockEntityContainerInterface) MUtil.getOtherChest(world, (ChestBlockEntity) container);
 					if (iOtherContainer != null) {
 						iContainer.setIsLocked(true);
 						iOtherContainer.setIsLocked(true);
@@ -213,17 +215,17 @@ public abstract class NetServerHandlerMixin {
 					} else {
 						this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Chest!");
 					}
-				} else if (container instanceof TileEntityBlastFurnace) {
+				} else if (container instanceof BlastFurnaceBlockEntity) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Blast Furnace!");
-				} else if (container instanceof TileEntityFurnace) {
+				} else if (container instanceof FurnaceBlockEntity) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Furnace!");
-				} else if (container instanceof TileEntityDispenser) {
+				} else if (container instanceof DispenserBlockEntity) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Dispenser!");
-				} else if (container instanceof TileEntityMeshGold) {
+				} else if (container instanceof GoldMeshBlockEntity) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Golden Mesh!");
-				} else if (container instanceof TileEntityTrommel) {
+				} else if (container instanceof TrommelBlockEntity) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Trommel!");
-				} else if (container instanceof TileEntityBasket) {
+				} else if (container instanceof BasketBlockEntity) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Basket!");
 				}
 
@@ -232,7 +234,7 @@ public abstract class NetServerHandlerMixin {
 				ci.cancel();
 			}
 
-			else if (packet.status == 1
+			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
 			&& Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched
 			&& iContainer.getIsLocked()
 			&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username)))
@@ -241,7 +243,7 @@ public abstract class NetServerHandlerMixin {
 				ci.cancel();
 			}
 
-			else if (packet.status == 1
+			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
 			&& Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched
 			&& iContainer.getIsLocked()
 			&& iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username)))

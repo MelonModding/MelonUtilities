@@ -1,28 +1,23 @@
-package MelonUtilities.mixins.tile_entities.chest;
+package MelonUtilities.mixins.tile_entities.blast_furnace;
 
-import MelonUtilities.config.Data;
-import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.interfaces.BlockEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.TileEntityChest;
-import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.block.entity.BlastFurnaceBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = TileEntityChest.class, remap = false)
-public class TileEntityChestMixin implements TileEntityContainerInterface {
-
+@Mixin(value = BlastFurnaceBlockEntity.class, remap = false)
+public class BlastFurnaceBlockEntityMixin implements BlockEntityContainerInterface {
 	@Unique
 	private boolean isLocked;
 
@@ -35,7 +30,7 @@ public class TileEntityChestMixin implements TileEntityContainerInterface {
 	@Unique
 	private final List<UUID> trustedPlayers = new ArrayList<>();
 
-	@Inject(at = @At("TAIL"), method = "writeToNBT")
+@Inject(at = @At("TAIL"), method = "writeToNBT")
 	public void writeToNBTInject(CompoundTag nbttagcompound, CallbackInfo ci){
 		nbttagcompound.putBoolean("isLocked", isLocked);
 		UUIDHelper.writeToTag(nbttagcompound, lockOwner, "lockOwner");
@@ -58,26 +53,10 @@ public class TileEntityChestMixin implements TileEntityContainerInterface {
 
 		ListTag tempListTag = nbttagcompound.getList("trustedPlayers");
 
-		for(Tag <?> tag : tempListTag){
+		for(Tag<?> tag : tempListTag){
 			if(tag instanceof CompoundTag){
 				CompoundTag compoundTag = (CompoundTag) tag;
 				trustedPlayers.add(UUIDHelper.readFromTag(compoundTag, "uuid"));
-			}
-		}
-	}
-
-	@Inject(at = @At("HEAD"), method = "canInteractWith", cancellable = true)
-	public void canInteractWithInject(EntityPlayer entityplayer, CallbackInfoReturnable<Boolean> cir) {
-		if(isLocked){
-			if(lockOwner != null) {
-				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !trustedPlayers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !Data.playerData.getOrCreate(lockOwner.toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !isCommunityContainer
-					&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(entityplayer.username).toString(), PlayerData.class).lockBypass){
-					cir.setReturnValue(false);
-					return;
-				}
 			}
 		}
 	}

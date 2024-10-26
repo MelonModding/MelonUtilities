@@ -3,7 +3,6 @@ package MelonUtilities.config;
 
 import MelonUtilities.MelonUtilities;
 import net.fabricmc.loader.api.FabricLoader;
-import turniplabs.halplibe.helper.RecipeBuilder;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -87,7 +86,6 @@ public class DataBank<Data> {
 	}
 
 	private void save(String id) {
-		RecipeBuilder.isExporting = true;
 		prepareFile(id);
 
 		String jsonString = MelonUtilities.GSON.toJson(dataHashMap.get(id));
@@ -99,7 +97,6 @@ public class DataBank<Data> {
 			System.err.println("Couldn't save [" + id + "]'s data file");
 			e.printStackTrace();
 		}
-		RecipeBuilder.isExporting = false;
 	}
 
 	public void saveAll(){

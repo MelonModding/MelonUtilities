@@ -2,13 +2,13 @@ package MelonUtilities.mixins.tile_entities.furnace;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.interfaces.BlockEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.TileEntityFurnace;
-import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.block.entity.FurnaceBlockEntity;
+import net.minecraft.core.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = TileEntityFurnace.class, remap = false)
-public class TileEntityFurnaceMixin implements TileEntityContainerInterface {
+@Mixin(value = FurnaceBlockEntity.class, remap = false)
+public class FurnaceBlockEntityMixin implements BlockEntityContainerInterface {
 	@Unique
 	private boolean isLocked;
 
@@ -66,7 +66,7 @@ public class TileEntityFurnaceMixin implements TileEntityContainerInterface {
 	}
 
 	@Inject(at = @At("HEAD"), method = "canInteractWith", cancellable = true)
-	public void canInteractWithInject(EntityPlayer entityplayer, CallbackInfoReturnable<Boolean> cir) {
+	public void canInteractWithInject(Player entityplayer, CallbackInfoReturnable<Boolean> cir) {
 		if(isLocked){
 			if(lockOwner != null) {
 				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))

@@ -3,7 +3,7 @@ package MelonUtilities.commands.tpa;
 import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.TpaManager;
 import net.minecraft.core.net.command.*;
-import net.minecraft.server.entity.player.EntityPlayerMP;
+import net.minecraft.server.entity.player.ServerPlayer;
 
 public class TPACommand extends Command {
 	private final static String COMMAND = "tpa";
@@ -11,14 +11,14 @@ public class TPACommand extends Command {
 	public TPACommand() {super(COMMAND);}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
-		if (!sender.isPlayer()) throw new CommandError("Must be used by a player!");
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
+		if (!source.isPlayer()) throw new CommandError("Must be used by a player!");
 		if (args.length != 1 && args.length != 2) return false;
 
-		EntityPlayerMP player = (EntityPlayerMP) sender.getPlayer();
-		EntityPlayerMP receiver = (EntityPlayerMP) handler.getPlayer(args[0]);
+		ServerPlayer player = (ServerPlayer) source.getSender();
+		ServerPlayer receiver = (ServerPlayer) handler.getPlayer(args[0]);
 		if (receiver == null) {
-			FeedbackHandler.error(sender, "Could not find this " + args[0] + " you seek");
+			FeedbackHandler.error(source, "Could not find this " + args[0] + " you seek");
 		    return false;
 	    }
 	    boolean here = args.length == 2 && args[1].equals("here");
@@ -32,8 +32,8 @@ public class TPACommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender sender) {
-		FeedbackHandler.syntax(sender, "< Command Syntax >");
-		FeedbackHandler.syntax(sender, "  > /tpa <destination player> [here]");
+	public void sendCommandSyntax(CommandHandler commandHandler, CommandSource source) {
+		FeedbackHandler.syntax(source, "< Command Syntax >");
+		FeedbackHandler.syntax(source, "  > /tpa <destination player> [here]");
 	}
 }

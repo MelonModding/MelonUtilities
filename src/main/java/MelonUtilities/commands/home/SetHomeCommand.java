@@ -8,7 +8,7 @@ import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 
 public class SetHomeCommand extends Command {
@@ -19,8 +19,8 @@ public class SetHomeCommand extends Command {
 
 	double scale = Math.pow(10, 1);
 
-	public void addHome(String name, double x, double y, double z, int dimID, CommandSender sender){
-		Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(sender.getPlayer().username).toString(), PlayerData.class).homes.add(new Home(name, x, y, z, dimID));
+	public void addHome(String name, double x, double y, double z, int dimID, CommandSource source){
+		Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.add(new Home(name, x, y, z, dimID));
 		Data.playerData.saveAll();
 	}
 
@@ -33,38 +33,38 @@ public class SetHomeCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
 
-		int dimID = sender.getPlayer().dimension;
-		double x = Math.round(sender.getPlayer().x * scale) / scale;
-		double y = Math.round(sender.getPlayer().y * scale) / scale;
-		double z = Math.round(sender.getPlayer().z * scale) / scale;
+		int dimID = source.getSender().dimension;
+		double x = Math.round(source.getSender().x * scale) / scale;
+		double y = Math.round(source.getSender().y * scale) / scale;
+		double z = Math.round(source.getSender().z * scale) / scale;
 
-		Home home = HomeCommand.getHome("home", sender);
+		Home home = HomeCommand.getHome("home", source);
 
 		if (args.length == 0 && home == null) {
 
-			addHome("home", x, y, z, dimID, sender);
-			FeedbackHandler.success(sender, "Set Home: <home> to:");
-			FeedbackHandler.success(sender, "[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
-			FeedbackHandler.success(sender, "[x: " + x + " y: " + y + " z: " + z + "]");
+			addHome("home", x, y, z, dimID, source);
+			FeedbackHandler.success(source, "Set Home: <home> to:");
+			FeedbackHandler.success(source, "[Dimension: " + source.getSender().world.dimension.getTranslatedName() + "]");
+			FeedbackHandler.success(source, "[x: " + x + " y: " + y + " z: " + z + "]");
 			return true;
 
 		} else if (args.length == 0) {
-			sender.sendMessage(TextFormatting.RED + "Failed to Set Home (Home already exists!))");
-			syntax.printLayerAndSubLayers("sethome", sender);
+			source.sendMessage(TextFormatting.RED + "Failed to Set Home (Home already exists!))");
+			syntax.printLayerAndSubLayers("sethome", source);
 			return true;
 		} else if (args.length == 1) {
-			home = HomeCommand.getHome(args[0], sender);
+			home = HomeCommand.getHome(args[0], source);
 			if(home == null){
-				addHome(args[0], x, y, z, dimID, sender);
-				FeedbackHandler.success(sender, "Set Home: <" + args[0] + "> to:");
-				FeedbackHandler.success(sender, "[Dimension: " + sender.getPlayer().world.dimension.getTranslatedName() + "]");
-				FeedbackHandler.success(sender, "[x: " + x + " y: " + y + " z: " + z + "]");
+				addHome(args[0], x, y, z, dimID, source);
+				FeedbackHandler.success(source, "Set Home: <" + args[0] + "> to:");
+				FeedbackHandler.success(source, "[Dimension: " + source.getSender().world.dimension.getTranslatedName() + "]");
+				FeedbackHandler.success(source, "[x: " + x + " y: " + y + " z: " + z + "]");
 				return true;
 			}
-			FeedbackHandler.error(sender, "Failed to Set Home (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("sethome", sender);
+			FeedbackHandler.error(source, "Failed to Set Home (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("sethome", source);
 			return true;
 		}
         return true;
@@ -76,7 +76,7 @@ public class SetHomeCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
-		syntax.printAllLines(sender);
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
+		syntax.printAllLines(source);
 	}
 }

@@ -4,34 +4,32 @@
   "package": "MelonUtilities.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "tile_entities.basket.BasketBlockEntityMixin",
+    "tile_entities.blast_furnace.BlastFurnaceBlockEntityMixin",
+    "tile_entities.chest.ChestBlockEntityMixin",
+    "tile_entities.dispenser.DispenserBlockEntityMixin",
+    "tile_entities.furnace.FurnaceBlockEntityMixin",
+    "tile_entities.golden_mesh.GoldMeshBlockEntityMixin",
+    "tile_entities.trommel.TrommelBlockEntityMixin"
   ],
   "client": [
   ],
   "server": [
-    "other.ExplosionMixin",
-    "other.MinecraftServerMixin",
-    "other.NetLoginHandlerMixin",
-    "other.NetServerHandlerMixin",
-    "other.PlayerListMixin",
     "gamerules.EntityLightningBoltMixin",
     "gamerules.FireTickMixin",
-    "gamerules.NetLoginHandlerMixin",
+    "gamerules.LoginPacketHandlerMixin",
+    "other.ExplosionMixin",
+    "other.MinecraftServerMixin",
+    "other.PlayerListMixin",
+    "other.ServerPacketHandlerMixin",
     "rollback.ChunkMixin",
     "rollback.ChunkProviderServerMixin",
     "tile_entities.basket.BlockBasketMixin",
-    "tile_entities.basket.TileEntityBasketMixin",
     "tile_entities.blast_furnace.BlockBlastFurnaceMixin",
-    "tile_entities.blast_furnace.TileEntityBlastFurnaceMixin",
-    "tile_entities.chest.BlockChestMixin",
-    "tile_entities.chest.TileEntityChestMixin",
     "tile_entities.dispenser.BlockDispenserMixin",
-    "tile_entities.dispenser.TileEntityDispenserMixin",
     "tile_entities.furnace.BlockFurnaceMixin",
-    "tile_entities.furnace.TileEntityFurnaceMixin",
     "tile_entities.golden_mesh.BlockMeshGoldMixin",
-    "tile_entities.golden_mesh.TileEntityMeshGoldMixin",
-    "tile_entities.trommel.BlockTrommelMixin",
-    "tile_entities.trommel.TileEntityTrommelMixin"
+    "tile_entities.trommel.BlockTrommelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

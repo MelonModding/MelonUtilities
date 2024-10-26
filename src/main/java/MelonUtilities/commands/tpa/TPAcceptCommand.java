@@ -3,7 +3,7 @@ package MelonUtilities.commands.tpa;
 import MelonUtilities.utility.FeedbackHandler;
 import MelonUtilities.utility.TpaManager;
 import net.minecraft.core.net.command.*;
-import net.minecraft.server.entity.player.EntityPlayerMP;
+import net.minecraft.server.entity.player.ServerPlayer;
 
 public class TPAcceptCommand extends Command {
 	private final static String COMMAND = "tpaccept";
@@ -13,10 +13,10 @@ public class TPAcceptCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args) {
-		if (!sender.isPlayer()) throw new CommandError("Must be used by a player!");
-		if (!TpaManager.accept((EntityPlayerMP) sender.getPlayer())) {
-			FeedbackHandler.error(sender, "Failed to tpa, are you sure there is a pending request?");
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
+		if (!source.isPlayer()) throw new CommandError("Must be used by a player!");
+		if (!TpaManager.accept((ServerPlayer) source.getSender())) {
+			FeedbackHandler.error(source, "Failed to tpa, are you sure there is a pending request?");
 		}
 		return true;
 	}
@@ -27,8 +27,8 @@ public class TPAcceptCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
-		FeedbackHandler.syntax(sender, "< Command Syntax >");
-		FeedbackHandler.syntax(sender, "  > /tpaccept");
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
+		FeedbackHandler.syntax(source, "< Command Syntax >");
+		FeedbackHandler.syntax(source, "  > /tpaccept");
 	}
 }

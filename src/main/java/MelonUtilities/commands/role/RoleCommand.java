@@ -11,7 +11,7 @@ import MelonUtilities.utility.RoleBuilder;
 import MelonUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 
 @SuppressWarnings("SameReturnValue")
@@ -68,18 +68,18 @@ public class RoleCommand extends Command {
 	}
 
 
-	private boolean create(CommandSender sender, String[] args){
+	private boolean create(CommandSource source, String[] args){
 
 		if (args.length == 1) {
-			FeedbackHandler.error(sender, "Failed to Create Role (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("create", sender);
+			FeedbackHandler.error(source, "Failed to Create Role (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("create", source);
 			return true;
 		}
 
 		String role = args[1];
 
 		if (Data.roles.dataHashMap.containsKey(role)) {
-			FeedbackHandler.error(sender, "Failed to Create Role: " + role + " (Role Already Exists)");
+			FeedbackHandler.error(source, "Failed to Create Role: " + role + " (Role Already Exists)");
 			return true;
 		}
 
@@ -92,14 +92,14 @@ public class RoleCommand extends Command {
 			getRoleFromArg(role).priority = Integer.parseInt(args[2]);
 		}
 
-		FeedbackHandler.success(sender, "Created Role: " + getRoleFromArg(role).displayName + " with Priority: " + getRoleFromArg(role).priority);
+		FeedbackHandler.success(source, "Created Role: " + getRoleFromArg(role).displayName + " with Priority: " + getRoleFromArg(role).priority);
 		return true;
 	}
 
-	private boolean delete(CommandSender sender, String[] args){
+	private boolean delete(CommandSource source, String[] args){
 		if (args.length == 1) {
-			FeedbackHandler.error(sender, "Failed to Delete Role (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("delete", sender);
+			FeedbackHandler.error(source, "Failed to Delete Role (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("delete", source);
 			return true;
 		}
 
@@ -107,73 +107,73 @@ public class RoleCommand extends Command {
 
 		switch (Data.roles.remove(role)) {
 			case 0:
-				FeedbackHandler.destructive(sender, "Deleted Role: " + role);
+				FeedbackHandler.destructive(source, "Deleted Role: " + role);
 				return true;
 			case 1:
-				FeedbackHandler.error(sender, "Failed to Delete Role: " + role + " (Role Doesn't Exist)");
-				syntax.printLayerAndSubLayers("delete", sender);
+				FeedbackHandler.error(source, "Failed to Delete Role: " + role + " (Role Doesn't Exist)");
+				syntax.printLayerAndSubLayers("delete", source);
 				return true;
 			case 2:
-				FeedbackHandler.error(sender, "Failed to Delete Role: " + role + " (IO Error)");
+				FeedbackHandler.error(source, "Failed to Delete Role: " + role + " (IO Error)");
 				return true;
 		}
 
-		FeedbackHandler.error(sender, "Failed to Delete Role (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("delete", sender);
+		FeedbackHandler.error(source, "Failed to Delete Role (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("delete", source);
 		return true;
     }
 
-	private boolean reload(CommandSender sender){
+	private boolean reload(CommandSource source){
 		Data.roles.loadAll(RoleData.class);
-		FeedbackHandler.success(sender, "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
+		FeedbackHandler.success(source, "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
 		RoleCommand.buildRoleSyntax();
-		FeedbackHandler.success(sender, "Built Role Syntax!");
+		FeedbackHandler.success(source, "Built Role Syntax!");
 		Data.configs.loadAll(ConfigData.class);
-		FeedbackHandler.success(sender, "Reloaded Config!");
+		FeedbackHandler.success(source, "Reloaded Config!");
 		return true;
 	}
 
-	private boolean edit(CommandSender sender, String[] args){
+	private boolean edit(CommandSource source, String[] args){
 
 		if(args.length == 1){
-			FeedbackHandler.error(sender, "Failed to Edit Role (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("edit", sender);
+			FeedbackHandler.error(source, "Failed to Edit Role (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("edit", source);
 			return true;
 		}
 
 		if(!Data.roles.dataHashMap.containsKey(args[1])){
-			FeedbackHandler.error(sender, "Failed to Edit Role (Invalid Role)");
-			syntax.printLayer("edit", sender);
+			FeedbackHandler.error(source, "Failed to Edit Role (Invalid Role)");
+			syntax.printLayer("edit", source);
 			return true;
 		}
 
 		if(args.length == 2){
-			FeedbackHandler.error(sender, "Failed to Edit Role (Invalid Syntax)");
-			syntax.printLayer("edit", sender);
+			FeedbackHandler.error(source, "Failed to Edit Role (Invalid Syntax)");
+			syntax.printLayer("edit", source);
 			return true;
 		}
 
 		switch(args[2]){
 			case "priority":
-				return priority(sender, args);
+				return priority(source, args);
 			case "display":
-				return display(sender, args);
+				return display(source, args);
 			case "username":
-				return username(sender, args);
+				return username(source, args);
 			case "text":
-				return text(sender, args);
+				return text(source, args);
 		}
 
-		FeedbackHandler.error(sender, "Failed to Edit Role (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("edit", sender);
+		FeedbackHandler.error(source, "Failed to Edit Role (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("edit", source);
 		return true;
     }
 
-	private boolean priority(CommandSender sender, String[] args){
+	private boolean priority(CommandSource source, String[] args){
 
 		if(args.length == 3){
-			FeedbackHandler.error(sender, "Failed to Edit Role Priority (Invalid Syntax)");
-			syntax.printLayer("priority", sender);
+			FeedbackHandler.error(source, "Failed to Edit Role Priority (Invalid Syntax)");
+			syntax.printLayer("priority", source);
 			return true;
 		}
 
@@ -181,143 +181,143 @@ public class RoleCommand extends Command {
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).priority = Integer.parseInt(args[3]);
 			Data.roles.saveAll();
-			FeedbackHandler.success(sender, "Set Priority for Role " + args[1] + " to: " + TextFormatting.LIGHT_GRAY + args[3]);
+			FeedbackHandler.success(source, "Set Priority for Role " + args[1] + " to: " + TextFormatting.LIGHT_GRAY + args[3]);
 			return true;
 		}
 
-		FeedbackHandler.error(sender, "Failed to Edit Role Priority (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("priority", sender);
+		FeedbackHandler.error(source, "Failed to Edit Role Priority (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("priority", source);
 		return true;
 	}
 
-	private boolean display(CommandSender sender, String[] args){
+	private boolean display(CommandSource source, String[] args){
 
 		if(args.length == 3){
-			FeedbackHandler.error(sender, "Failed to Edit Role Display (Invalid Syntax)");
-			syntax.printLayer("display", sender);
+			FeedbackHandler.error(source, "Failed to Edit Role Display (Invalid Syntax)");
+			syntax.printLayer("display", source);
 			return true;
 		}
 
 		switch(args[3]){
 			case "name":
-				return EditRoleDisplaySubcommand.displayName(sender, args);
+				return EditRoleDisplaySubcommand.displayName(source, args);
 			case "color":
-				return EditRoleDisplaySubcommand.displayColor(sender, args);
+				return EditRoleDisplaySubcommand.displayColor(source, args);
 			case "underline":
-				return EditRoleDisplaySubcommand.displayUnderline(sender, args);
+				return EditRoleDisplaySubcommand.displayUnderline(source, args);
 			case "bold":
-				return EditRoleDisplaySubcommand.displayBold(sender, args);
+				return EditRoleDisplaySubcommand.displayBold(source, args);
 			case "italics":
-				return EditRoleDisplaySubcommand.displayItalics(sender, args);
+				return EditRoleDisplaySubcommand.displayItalics(source, args);
 			case "border":
-				return EditRoleDisplaySubcommand.displayBorder(sender, args);
+				return EditRoleDisplaySubcommand.displayBorder(source, args);
 		}
 
-		FeedbackHandler.error(sender, "Failed to Edit Role Display (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("display", sender);
+		FeedbackHandler.error(source, "Failed to Edit Role Display (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("display", source);
 		return true;
 	}
 
-	private boolean username(CommandSender sender, String[] args){
+	private boolean username(CommandSource source, String[] args){
 
 		if(args.length == 3){
-			FeedbackHandler.error(sender, "Failed to Edit Role Username (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("username", sender);
+			FeedbackHandler.error(source, "Failed to Edit Role Username (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("username", source);
 			return true;
 		}
 
 		switch(args[3]){
 			/*case "color":
-				return EditRoleUsername.usernameColor(sender, args);
+				return EditRoleUsername.usernameColor(source, args);
 			case "underline":
-				return EditRoleUsername.usernameUnderline(sender, args);
+				return EditRoleUsername.usernameUnderline(source, args);
 			case "bold":
-				return EditRoleUsername.usernameBold(sender, args);
+				return EditRoleUsername.usernameBold(source, args);
 			case "italics":
-				return EditRoleUsername.usernameItalics(sender, args);*/
+				return EditRoleUsername.usernameItalics(source, args);*/
 			case "border":
-				return EditRoleUsernameSubcommand.usernameBorder(sender, args);
+				return EditRoleUsernameSubcommand.usernameBorder(source, args);
 		}
-		FeedbackHandler.error(sender, "Failed to Edit Role Username (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("username", sender);
+		FeedbackHandler.error(source, "Failed to Edit Role Username (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("username", source);
 		return true;
 	}
 
-	private boolean text(CommandSender sender, String[] args){
+	private boolean text(CommandSource source, String[] args){
 
 		if(args.length == 3){
-			FeedbackHandler.error(sender, "Failed to Edit Role Text (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("text", sender);
+			FeedbackHandler.error(source, "Failed to Edit Role Text (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("text", source);
 			return true;
 		}
 
 		switch(args[3]){
 			case "color":
-				return EditRoleTextSubcommand.textColor(sender, args);
+				return EditRoleTextSubcommand.textColor(source, args);
 			case "underline":
-				return EditRoleTextSubcommand.textUnderline(sender, args);
+				return EditRoleTextSubcommand.textUnderline(source, args);
 			case "bold":
-				return EditRoleTextSubcommand.textBold(sender, args);
+				return EditRoleTextSubcommand.textBold(source, args);
 			case "italics":
-				return EditRoleTextSubcommand.textItalics(sender, args);
+				return EditRoleTextSubcommand.textItalics(source, args);
 		}
 
-		FeedbackHandler.error(sender, "Failed to Edit Role Text (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("text", sender);
+		FeedbackHandler.error(source, "Failed to Edit Role Text (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("text", source);
 		return true;
 	}
 
-	private boolean grant(CommandSender sender, String[] args){
+	private boolean grant(CommandSource source, String[] args){
 
 		if(args.length == 1){
-			FeedbackHandler.error(sender, "Failed to Grant Role (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("grant", sender);
+			FeedbackHandler.error(source, "Failed to Grant Role (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("grant", source);
 			return true;
 		}
 
 
 		if(!Data.roles.dataHashMap.containsKey(args[1])){
-			FeedbackHandler.error(sender, "Failed to Grant Role (Role doesn't exist!)");
-			syntax.printLayerAndSubLayers("grant", sender);
+			FeedbackHandler.error(source, "Failed to Grant Role (Role doesn't exist!)");
+			syntax.printLayerAndSubLayers("grant", source);
 			return true;
 		}
 
 		RoleData roleData = getRoleFromArg(args[1]);
 
-		if(args.length == 2 && !roleData.playersGrantedRole.contains(sender.getPlayer().username)){
+		if(args.length == 2 && !roleData.playersGrantedRole.contains(source.getSender().username)){
 			Data.roles.loadAll(RoleData.class);
-			getRoleFromArg(args[1]).playersGrantedRole.add(sender.getPlayer().username);
+			getRoleFromArg(args[1]).playersGrantedRole.add(source.getSender().username);
 			Data.roles.saveAll();
-			FeedbackHandler.success(sender, "Granted Role: " + args[1] + " to player: " + TextFormatting.LIGHT_GRAY + sender.getPlayer().username);
+			FeedbackHandler.success(source, "Granted Role: " + args[1] + " to player: " + TextFormatting.LIGHT_GRAY + source.getSender().username);
 			return true;
 		} else if (args.length == 3 && !roleData.playersGrantedRole.contains(args[2])){
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.add(args[2]);
 			Data.roles.saveAll();
-			FeedbackHandler.success(sender, "Granted Role: " + args[1] + " to player: " + TextFormatting.LIGHT_GRAY + args[2]);
+			FeedbackHandler.success(source, "Granted Role: " + args[1] + " to player: " + TextFormatting.LIGHT_GRAY + args[2]);
 			return true;
-		} else if (roleData.playersGrantedRole.contains(sender.getPlayer().username) || roleData.playersGrantedRole.contains(args[2])) {
-			FeedbackHandler.error(sender, "Failed to Grant Role (Player already has Role!)");
+		} else if (roleData.playersGrantedRole.contains(source.getSender().username) || roleData.playersGrantedRole.contains(args[2])) {
+			FeedbackHandler.error(source, "Failed to Grant Role (Player already has Role!)");
 			return true;
 		}
 
 
-		FeedbackHandler.error(sender, "Failed to Grant Role (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("grant", sender);
+		FeedbackHandler.error(source, "Failed to Grant Role (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("grant", source);
 		return true;
 	}
 
-	private boolean revoke(CommandSender sender, String[] args){
+	private boolean revoke(CommandSource source, String[] args){
 
 		if(args.length == 1){
-			FeedbackHandler.error(sender, "Failed to Revoke Role (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("revoke", sender);
+			FeedbackHandler.error(source, "Failed to Revoke Role (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("revoke", source);
 			return true;
 		}
 
 		if(!Data.roles.dataHashMap.containsKey(args[1])){
-			FeedbackHandler.error(sender, "Failed to Revoke Role (Role doesn't exist!)");
-			syntax.printLayerAndSubLayers("revoke", sender);
+			FeedbackHandler.error(source, "Failed to Revoke Role (Role doesn't exist!)");
+			syntax.printLayerAndSubLayers("revoke", source);
 			return true;
 		}
 
@@ -327,69 +327,69 @@ public class RoleCommand extends Command {
 			Data.roles.loadAll(RoleData.class);
 			getRoleFromArg(args[1]).playersGrantedRole.remove(args[2]);
 			Data.roles.saveAll();
-			FeedbackHandler.destructive(sender, "Revoked Role: " + args[1] + " from player: " + TextFormatting.LIGHT_GRAY + args[2]);
+			FeedbackHandler.destructive(source, "Revoked Role: " + args[1] + " from player: " + TextFormatting.LIGHT_GRAY + args[2]);
 			return true;
-		} else if (args.length == 2 && roleData.playersGrantedRole.contains(sender.getPlayer().username)){
+		} else if (args.length == 2 && roleData.playersGrantedRole.contains(source.getSender().username)){
 			Data.roles.loadAll(RoleData.class);
-			getRoleFromArg(args[1]).playersGrantedRole.remove(sender.getPlayer().username);
+			getRoleFromArg(args[1]).playersGrantedRole.remove(source.getSender().username);
 			Data.roles.saveAll();
-			FeedbackHandler.destructive(sender, "Revoked Role: " + args[1] + " from player: " + TextFormatting.LIGHT_GRAY + sender.getPlayer().username);
+			FeedbackHandler.destructive(source, "Revoked Role: " + args[1] + " from player: " + TextFormatting.LIGHT_GRAY + source.getSender().username);
 			return true;
-		} else if (!roleData.playersGrantedRole.contains(sender.getPlayer().username) || !roleData.playersGrantedRole.contains(args[2])) {
-			FeedbackHandler.error(sender, "Failed to Revoke Role (Player does not have Role!)");
+		} else if (!roleData.playersGrantedRole.contains(source.getSender().username) || !roleData.playersGrantedRole.contains(args[2])) {
+			FeedbackHandler.error(source, "Failed to Revoke Role (Player does not have Role!)");
 			return true;
 		}
 
-		FeedbackHandler.error(sender, "Failed to Revoke Role (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("revoke", sender);
+		FeedbackHandler.error(source, "Failed to Revoke Role (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("revoke", source);
 		return true;
 	}
 
-	private boolean list(CommandSender sender) {
+	private boolean list(CommandSource source) {
 		if (Data.roles.dataHashMap.isEmpty()) {
-			sender.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
-			sender.sendMessage(TextFormatting.LIGHT_GRAY + "  -No Roles Created-");
+			source.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
+			source.sendMessage(TextFormatting.LIGHT_GRAY + "  -No Roles Created-");
 			return true;
 		}
 
-		sender.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
+		source.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
 
 		for (String role : Data.roles.dataHashMap.keySet()) {
-			sender.sendMessage(TextFormatting.LIGHT_GRAY + "  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + role + TextFormatting.LIGHT_GRAY + " - Priority: " + TextFormatting.WHITE + getRoleFromArg(role).priority);
-			sender.sendMessage(TextFormatting.LIGHT_GRAY + "    > " + RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(role))
-												+ RoleBuilder.buildRoleUsername(Data.roles.dataHashMap.get(role), sender.getPlayer().getDisplayName())
+			source.sendMessage(TextFormatting.LIGHT_GRAY + "  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + role + TextFormatting.LIGHT_GRAY + " - Priority: " + TextFormatting.WHITE + getRoleFromArg(role).priority);
+			source.sendMessage(TextFormatting.LIGHT_GRAY + "    > " + RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(role))
+												+ RoleBuilder.buildRoleUsername(Data.roles.dataHashMap.get(role), source.getSender().getDisplayName())
 												+ RoleBuilder.buildRoleTextFormat(Data.roles.dataHashMap.get(role)) + "text");
 		}
 
 		return true;
 	}
 
-	private boolean set(CommandSender sender, String[] args) {
+	private boolean set(CommandSource source, String[] args) {
 		if (args.length == 1) {
-			FeedbackHandler.error(sender, "Failed to Set Role Value (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("set", sender);
+			FeedbackHandler.error(source, "Failed to Set Role Value (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("set", source);
 			return true;
 		}
 
 		if (args.length >= 2) {
 			switch(args[1]){
 				case "defaultRole" :
-					return setDefaultRole(sender, args);
+					return setDefaultRole(source, args);
 				case "displayMode" :
-					return setDisplayMode(sender, args);
+					return setDisplayMode(source, args);
 			}
 		}
 
-		FeedbackHandler.error(sender, "Failed to Set Role Value (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("set", sender);
+		FeedbackHandler.error(source, "Failed to Set Role Value (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("set", source);
 		return true;
 	}
 
-	private boolean setDefaultRole(CommandSender sender, String[] args){
+	private boolean setDefaultRole(CommandSource source, String[] args){
 
 		if(args.length == 2){
-			FeedbackHandler.error(sender, "Failed to Set Default Role (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("setDefaultRole", sender);
+			FeedbackHandler.error(source, "Failed to Set Default Role (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("setDefaultRole", source);
 			return true;
 		}
 
@@ -399,31 +399,31 @@ public class RoleCommand extends Command {
 					Data.configs.loadAll(ConfigData.class);
 					Data.configs.getOrCreate("config", ConfigData.class).defaultRole = args[2];
 					Data.configs.saveAll();
-					FeedbackHandler.success(sender, "Set defaultRole to: " + args[2]);
+					FeedbackHandler.success(source, "Set defaultRole to: " + args[2]);
 					return true;
 				} else if (args[2].equals("none")) {
 					Data.configs.loadAll(ConfigData.class);
 					Data.configs.getOrCreate("config", ConfigData.class).defaultRole = null;
 					Data.configs.saveAll();
-					FeedbackHandler.success(sender, "Set defaultRole to: none");
+					FeedbackHandler.success(source, "Set defaultRole to: none");
 					return true;
 				}
 			}
-			FeedbackHandler.error(sender, "Failed to Set Default Role (Invalid Role)");
-			syntax.printLayerAndSubLayers("setDefaultRole", sender);
+			FeedbackHandler.error(source, "Failed to Set Default Role (Invalid Role)");
+			syntax.printLayerAndSubLayers("setDefaultRole", source);
 			return true;
 		}
 
-		FeedbackHandler.error(sender, "Failed to Set Default Role (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("setDefaultRole", sender);
+		FeedbackHandler.error(source, "Failed to Set Default Role (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("setDefaultRole", source);
 		return true;
 	}
 
-	private boolean setDisplayMode(CommandSender sender, String[] args){
+	private boolean setDisplayMode(CommandSource source, String[] args){
 
 		if(args.length == 2){
-			FeedbackHandler.error(sender, "Failed to Set Display Mode (Invalid Syntax)");
-			syntax.printLayerAndSubLayers("setDisplayMode", sender);
+			FeedbackHandler.error(source, "Failed to Set Display Mode (Invalid Syntax)");
+			syntax.printLayerAndSubLayers("setDisplayMode", source);
 			return true;
 		}
 
@@ -431,23 +431,23 @@ public class RoleCommand extends Command {
 			Data.configs.loadAll(ConfigData.class);
 			Data.configs.getOrCreate("config", ConfigData.class).displayMode = "single";
 			Data.configs.saveAll();
-			FeedbackHandler.success(sender, "Set displayMode to: single");
+			FeedbackHandler.success(source, "Set displayMode to: single");
 			return true;
 		} else if (args.length == 3 && args[2].equals("multi")) {
 			Data.configs.loadAll(ConfigData.class);
 			Data.configs.getOrCreate("config", ConfigData.class).displayMode = "multi";
 			Data.configs.saveAll();
-			FeedbackHandler.success(sender, "Set displayMode to: multi");
+			FeedbackHandler.success(source, "Set displayMode to: multi");
 			return true;
 		}
 
-		FeedbackHandler.error(sender, "Failed to Set Display Mode (Default Error) (Invalid Syntax?)");
-		syntax.printLayerAndSubLayers("setDisplayMode", sender);
+		FeedbackHandler.error(source, "Failed to Set Display Mode (Default Error) (Invalid Syntax?)");
+		syntax.printLayerAndSubLayers("setDisplayMode", source);
 		return true;
 	}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] args){
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args){
 
 		if (args.length == 0) {
 			return false;
@@ -455,26 +455,26 @@ public class RoleCommand extends Command {
 
 		switch(args[0]){
 			case "create" :
-				return create(sender, args);
+				return create(source, args);
 			case "delete" :
-				return delete(sender, args);
+				return delete(source, args);
 			case "reload" :
-				return reload(sender);
+				return reload(source);
 			case "edit" :
-				return edit(sender, args);
+				return edit(source, args);
 			case "grant" :
-				return grant(sender, args);
+				return grant(source, args);
 			case "revoke" :
-				return revoke(sender, args);
+				return revoke(source, args);
 			case "list" :
-				return list(sender);
+				return list(source);
 			case "set" :
-				return set(sender, args);
+				return set(source, args);
 		}
 
 
-		FeedbackHandler.error(sender, "Role Command Failed (Invalid Syntax)");
-		syntax.printAllLines(sender);
+		FeedbackHandler.error(source, "Role Command Failed (Invalid Syntax)");
+		syntax.printAllLines(source);
 		return true;
 	}
 
@@ -484,7 +484,7 @@ public class RoleCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
-		syntax.printAllLines(sender);
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
+		syntax.printAllLines(source);
 	}
 }

@@ -2,7 +2,7 @@ package MelonUtilities.commands.kit;
 
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 
 public class KittenCommand extends Command {
 	private final static String COMMAND = "kitten";
@@ -13,11 +13,11 @@ public class KittenCommand extends Command {
 	}
 
 	@Override
-	public boolean execute(CommandHandler handler, CommandSender sender, String[] strings) {
+	public boolean execute(CommandHandler handler, CommandSource source, String[] strings) {
 		if(Math.random() > .5)
-		sender.sendMessage("/ᐠ-ꞈ-ᐟ\\ ɴʏᴀ~");
+		source.sendMessage("/ᐠ-ꞈ-ᐟ\\ ɴʏᴀ~");
 		else{
-		sender.sendMessage("/ᐠ - ˕ -マ ɴʏᴀᴀᴀᴀᴀ!");
+		source.sendMessage("/ᐠ - ˕ -マ ɴʏᴀᴀᴀᴀᴀ!");
 		}
 		return true;
 	}
@@ -28,7 +28,7 @@ public class KittenCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler commandHandler, CommandSender commandSender) {
+	public void sendCommandSyntax(CommandHandler commandHandler, CommandSource commandSource) {
 
 	}
 }

@@ -1,14 +1,14 @@
-package MelonUtilities.mixins.tile_entities.dispenser;
+package MelonUtilities.mixins.tile_entities.chest;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.interfaces.BlockEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.TileEntityDispenser;
-import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.block.entity.ChestBlockEntity;
+import net.minecraft.core.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = TileEntityDispenser.class, remap = false)
-public class TileEntityDispenserMixin implements TileEntityContainerInterface {
+@Mixin(value = ChestBlockEntity.class, remap = false)
+public class ChestBlockEntityMixin implements BlockEntityContainerInterface {
+
 	@Unique
 	private boolean isLocked;
 
@@ -34,7 +35,7 @@ public class TileEntityDispenserMixin implements TileEntityContainerInterface {
 	@Unique
 	private final List<UUID> trustedPlayers = new ArrayList<>();
 
-@Inject(at = @At("TAIL"), method = "writeToNBT")
+	@Inject(at = @At("TAIL"), method = "writeToNBT")
 	public void writeToNBTInject(CompoundTag nbttagcompound, CallbackInfo ci){
 		nbttagcompound.putBoolean("isLocked", isLocked);
 		UUIDHelper.writeToTag(nbttagcompound, lockOwner, "lockOwner");
@@ -57,7 +58,7 @@ public class TileEntityDispenserMixin implements TileEntityContainerInterface {
 
 		ListTag tempListTag = nbttagcompound.getList("trustedPlayers");
 
-		for(Tag<?> tag : tempListTag){
+		for(Tag <?> tag : tempListTag){
 			if(tag instanceof CompoundTag){
 				CompoundTag compoundTag = (CompoundTag) tag;
 				trustedPlayers.add(UUIDHelper.readFromTag(compoundTag, "uuid"));
@@ -66,7 +67,7 @@ public class TileEntityDispenserMixin implements TileEntityContainerInterface {
 	}
 
 	@Inject(at = @At("HEAD"), method = "canInteractWith", cancellable = true)
-	public void canInteractWithInject(EntityPlayer entityplayer, CallbackInfoReturnable<Boolean> cir) {
+	public void canInteractWithInject(Player entityplayer, CallbackInfoReturnable<Boolean> cir) {
 		if(isLocked){
 			if(lockOwner != null) {
 				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))

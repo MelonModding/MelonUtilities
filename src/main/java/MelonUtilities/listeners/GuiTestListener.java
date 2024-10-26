@@ -4,7 +4,7 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.gamemode.Gamemode;
-import net.minecraft.server.entity.player.EntityPlayerMP;
+import net.minecraft.server.entity.player.ServerPlayer;
 import org.useless.serverlibe.api.Listener;
 import org.useless.serverlibe.api.annotations.EventListener;
 import org.useless.serverlibe.api.event.player.PlayerItemUseEvent;
@@ -19,7 +19,7 @@ public class GuiTestListener implements Listener {
 	public void openCustomGui(PlayerItemUseEvent useEvent){
 		// When a player right-clicks a book named "gamemode book" it'll open a gui offering two buttons for switching game-modes and another for opening a separate gui
 		if (useEvent.itemstack.getItem() == Item.book && useEvent.itemstack.hasCustomName() && useEvent.itemstack.getCustomName().equalsIgnoreCase("gamemode book")){
-			GuiHelper.openCustomServerGui((EntityPlayerMP) useEvent.player,
+			GuiHelper.openCustomServerGui((ServerPlayer) useEvent.player,
 				new ServerGuiBuilder()
 					.setContainerSlot(0, (inventory -> {
 						ItemStack survivalIcon = Item.toolAxeStone.getDefaultStack();
@@ -35,7 +35,7 @@ public class GuiTestListener implements Listener {
 						ItemStack nextMenuIcon = Item.book.getDefaultStack();
 						nextMenuIcon.setCustomName("Sub Gui");
 						return new ServerSlotButton(nextMenuIcon,i, 8, () -> {
-							GuiHelper.openCustomServerGui((EntityPlayerMP) useEvent.player, new ServerGuiBase(useEvent.player, "Test", 2));
+							GuiHelper.openCustomServerGui((ServerPlayer) useEvent.player, new ServerGuiBase(useEvent.player, "Test", 2));
 						});
 					})
 					.setDefaultContainerSlot(ServerSlotDisplay::new) // Sets the gui slot default to display, making it so player's can't interract with them

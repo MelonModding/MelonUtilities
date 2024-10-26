@@ -5,7 +5,7 @@ import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
-import net.minecraft.core.net.command.CommandSender;
+import net.minecraft.core.net.command.CommandSource;
 
 /**
  * This command gives the player a compass.
@@ -20,9 +20,9 @@ public class CompassCommand extends Command {
     }
 
 	@Override
-	public boolean execute(CommandHandler commandHandler, CommandSender commandSender, String[] strings) {
+	public boolean execute(CommandHandler commandHandler, CommandSource commandSource, String[] strings) {
 		// Give the player a compass
-		commandSender.getPlayer().inventory.insertItem(new ItemStack(Item.toolCompass), false);
+		commandSource.getPlayer().inventory.insertItem(new ItemStack(Item.toolCompass), false);
 		return false;
 	}
 
@@ -32,8 +32,8 @@ public class CompassCommand extends Command {
 	}
 
 	@Override
-	public void sendCommandSyntax(CommandHandler handler, CommandSender sender) {
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
 		// Feedback to the player that it executed
-		FeedbackHandler.success(sender, "Given 1x " + NAME + " to " + sender.getPlayer().username);
+		FeedbackHandler.success(source, "Given 1x " + NAME + " to " + source.getSender().username);
 	}
 }
