@@ -111,6 +111,8 @@ dependencies {
 	implementation "org.lwjgl:lwjgl-openal::$lwjglNatives"
 	implementation "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 	implementation "org.lwjgl:lwjgl-stb::$lwjglNatives"
+
+	implementation "serverlibe:serverlibe:${project.serverlibe_version}"
 }
 
 java {
