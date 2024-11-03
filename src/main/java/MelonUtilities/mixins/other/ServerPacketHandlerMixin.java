@@ -1,5 +1,6 @@
 package MelonUtilities.mixins.other;
 
+import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.PlayerData;
@@ -34,9 +35,6 @@ import java.util.ArrayList;
 public abstract class ServerPacketHandlerMixin {
 	@Shadow
 	private ServerPlayer playerEntity;
-
-	@Shadow
-	public static Logger LOGGER;
 
 	@Shadow
 	private MinecraftServer mcServer;
@@ -115,7 +113,7 @@ public abstract class ServerPacketHandlerMixin {
 			message = roleUsername + message;
 		}
 
-		LOGGER.info(message);
+		MelonUtilities.LOGGER.info(message);
 		this.mcServer.playerList.sendEncryptedChatToAllPlayers(message);
 		ci.cancel();
 

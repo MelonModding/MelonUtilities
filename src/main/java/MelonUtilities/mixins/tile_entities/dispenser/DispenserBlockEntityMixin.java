@@ -65,7 +65,7 @@ public class DispenserBlockEntityMixin implements BlockEntityContainerInterface 
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "canInteractWith", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "stillValid", cancellable = true)
 	public void canInteractWithInject(Player entityplayer, CallbackInfoReturnable<Boolean> cir) {
 		if(isLocked){
 			if(lockOwner != null) {

@@ -14,7 +14,8 @@ import net.minecraft.core.world.chunk.ChunkCoordinates;
 public class SetSpawnCommand implements CommandManager.CommandRegistry{
 
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		CommandNode<CommandSource> command = dispatcher.register(LiteralArgumentBuilder.<CommandSource>literal("setworldspawn")
+		CommandNode<CommandSource> command =
+			dispatcher.register(LiteralArgumentBuilder.<CommandSource>literal("setworldspawn")
 			.requires(CommandSource::hasAdmin)
 			.then(RequiredArgumentBuilder.<CommandSource, IntegerCoordinates>argument("position", IntegerCoordinatesArgumentType.intCoordinates())
 				.executes(c -> {

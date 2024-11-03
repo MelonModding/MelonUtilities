@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = CommandManager.class, remap = false)
 public class CommandManagerMixin {
-	@Inject(at = @At("TAIL"), method = "init")
+	@Inject(at = @At("HEAD"), method = "init")
 	public void initInject(CallbackInfo ci) {
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER){
 			// Crew
@@ -47,7 +47,6 @@ public class CommandManagerMixin {
 			//TODO CommandManager.registerCommand(new TPADenyCommand());
 
 			// Utility
-			CommandManager.registerCommand(new HelpCommand());
 			//TODO CommandManager.registerCommand(new HelperCommand());
 			CommandManager.registerCommand(new MUCommand());
 

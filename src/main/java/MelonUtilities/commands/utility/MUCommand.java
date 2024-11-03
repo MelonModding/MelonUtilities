@@ -7,12 +7,17 @@ import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.utility.FeedbackHandler;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.arguments.IntegerCoordinatesArgumentType;
+import net.minecraft.core.net.command.util.Iterables;
+
+import java.util.Map;
 
 import static net.minecraft.server.util.helper.PlayerList.updateList;
 
@@ -20,14 +25,12 @@ public class MUCommand implements CommandManager.CommandRegistry{
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		System.out.println("REGISTER BEING RUN");
 		CommandNode<CommandSource> command = dispatcher
-			.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) LiteralArgumentBuilder
-				.<CommandSource>literal("melonutilities")
+			.register((LiteralArgumentBuilder.<CommandSource>literal("melonutilities")
 				.requires(CommandSource::hasAdmin))
-				.then(RequiredArgumentBuilder.argument("reload", IntegerCoordinatesArgumentType.intCoordinates())
+				.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
 					.executes((c) -> {
-			CommandSource source = (CommandSource) c.getSource();
+			CommandSource source = c.getSource();
 			FeedbackHandler.success(source, "Reloading MelonUtilities...");
 
 			FeedbackHandler.destructive(source, "Reloading Player Data...");

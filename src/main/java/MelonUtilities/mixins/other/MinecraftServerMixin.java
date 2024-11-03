@@ -18,8 +18,9 @@ public abstract class MinecraftServerMixin {
 		RollbackManager.tick();
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/core/block/Blocks;init()V", shift = At.Shift.BEFORE), method = "startServer")
-	private void startServer(CallbackInfoReturnable<Boolean> cir){
-		MelonUtilities.onServerStart();
+	@Inject(at = @At("TAIL"), method = "startServer")
+	private void startServerInject(CallbackInfoReturnable<Boolean> cir){
+		MelonUtilities.afterServerStart();
 	}
+
 }
