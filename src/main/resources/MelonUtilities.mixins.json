@@ -4,6 +4,7 @@
   "package": "MelonUtilities.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "other.CommandManagerMixin",
     "tile_entities.basket.BasketBlockEntityMixin",
     "tile_entities.blast_furnace.BlastFurnaceBlockEntityMixin",
     "tile_entities.chest.ChestBlockEntityMixin",

@@ -8,8 +8,6 @@
   "authors": [
     "MelonMojito",
 		"UselessBullets"
-
-
   ],
   "contact": {
     "homepage": "",
@@ -23,23 +21,14 @@
   "entrypoints": {
     "main": [
 			"MelonUtilities.MelonUtilities"
-    ],
-		"beforeGameStart": [
-			"MelonUtilities.MelonUtilities"
-		],
-		"afterGameStart": [
-			"MelonUtilities.MelonUtilities"
-		],
-		"recipesReady": [
-			"MelonUtilities.MelonUtilities"
-		]
+    ]
 	},
   "mixins": [
 		"MelonUtilities.mixins.json"
   ],
 
   "depends": {
-		"minecraft": "~7.2",
+		"minecraft": "Nightly.2024-10-27",
     "fabricloader": ">=0.15.5"
   },
   "suggests": {

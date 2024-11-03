@@ -3,6 +3,7 @@ package MelonUtilities.utility;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.ChatPacket;
 import net.minecraft.core.util.helper.AES;
+import net.minecraft.core.util.helper.DyeColor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.ServerPlayer;
 
@@ -58,7 +59,7 @@ public class TpaManager {
 		ServerPlayer target = tpr.target;
 		ServerPlayer moved = tpr.player;
 		if (target.dimension != moved.dimension) {
-			MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension(moved, target.dimension, false);
+			MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension(moved, target.dimension, DyeColor.PURPLE, false);
 		}
 		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 100f);
 		moved.playerNetServerHandler.teleportAndRotate(target.x, target.y, target.z, target.yRot, target.xRot);

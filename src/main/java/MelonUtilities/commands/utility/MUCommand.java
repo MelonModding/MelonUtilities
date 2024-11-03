@@ -1,9 +1,5 @@
 package MelonUtilities.commands.utility;
 
-import MelonUtilities.commands.helper.HelperCommand;
-import MelonUtilities.commands.kit.KitCommand;
-import MelonUtilities.commands.role.RoleCommand;
-import MelonUtilities.commands.rollback.RollbackCommand;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.KitData;
@@ -24,6 +20,7 @@ public class MUCommand implements CommandManager.CommandRegistry{
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
+		System.out.println("REGISTER BEING RUN");
 		CommandNode<CommandSource> command = dispatcher
 			.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) LiteralArgumentBuilder
 				.<CommandSource>literal("melonutilities")
@@ -37,29 +34,29 @@ public class MUCommand implements CommandManager.CommandRegistry{
 			Data.playerData.loadAll(PlayerData.class);
 			FeedbackHandler.success(source, "Reloaded " + Data.playerData.dataHashMap.size() + " Player(s)!");
 
-			FeedbackHandler.destructive(source, "Building Helper Syntax...");
-			HelperCommand.buildHelperSyntax();
-			FeedbackHandler.success(source, "Helper Syntax Built!");
+			//TODO FeedbackHandler.destructive(source, "Building Helper Syntax...");
+			//TODO HelperCommand.buildHelperSyntax();
+			//TODO FeedbackHandler.success(source, "Helper Syntax Built!");
 
 			FeedbackHandler.destructive(source, "Reloading Kit Data...");
 			Data.kits.loadAll(KitData.class);
 			FeedbackHandler.success(source, "Reloaded " + Data.kits.dataHashMap.size() + " Kit(s)!");
 
-			FeedbackHandler.destructive(source, "Building Kit Syntax...");
-			KitCommand.buildKitSyntax();
-			FeedbackHandler.success(source, "Kit Syntax Built!");
+			//TODO FeedbackHandler.destructive(source, "Building Kit Syntax...");
+			//TODO KitCommand.buildKitSyntax();
+			//TODO FeedbackHandler.success(source, "Kit Syntax Built!");
 
 			FeedbackHandler.destructive(source, "Reloading Role Data...");
 			Data.roles.loadAll(RoleData.class);
 			FeedbackHandler.success(source, "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
 
-			FeedbackHandler.destructive(source, "Building Role Syntax...");
-			RoleCommand.buildRoleSyntax();
-			FeedbackHandler.success(source, "Role Syntax Built!");
+			//TODO FeedbackHandler.destructive(source, "Building Role Syntax...");
+			//TODO RoleCommand.buildRoleSyntax();
+			//TODO FeedbackHandler.success(source, "Role Syntax Built!");
 
-			FeedbackHandler.destructive(source, "Building Rollback Syntax...");
-			RollbackCommand.buildSyntax();
-			FeedbackHandler.success(source, "Rollback Syntax Built!");
+			//TODO FeedbackHandler.destructive(source, "Building Rollback Syntax...");
+			//TODO RollbackCommand.buildSyntax();
+			//TODO FeedbackHandler.success(source, "Rollback Syntax Built!");
 
 			FeedbackHandler.destructive(source, "Reloading General Configs...");
 			Data.configs.loadAll(ConfigData.class);
