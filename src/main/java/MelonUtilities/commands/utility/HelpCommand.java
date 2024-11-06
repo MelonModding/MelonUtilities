@@ -31,7 +31,8 @@ public class HelpCommand implements CommandManager.CommandRegistry{
 					source.sendMessage("/" + string);
 				}
 				return map.size();
-			})
+				}
+			)
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("command", StringArgumentType.greedyString())
 				.executes(commandContext -> {
 					ParseResults<CommandSource> parseResults = commandDispatcher.parse(StringArgumentType.getString(commandContext, "command"), commandContext.getSource());
@@ -43,6 +44,9 @@ public class HelpCommand implements CommandManager.CommandRegistry{
 						commandContext.getSource().sendMessage("/" + parseResults.getReader().getString() + " " + string);
 					}
 					return map.size();
-				})));
+					}
+				)
+			)
+		);
 	}
 }

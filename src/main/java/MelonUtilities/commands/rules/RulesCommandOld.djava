@@ -18,10 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RulesCommand extends Command {
+public class RulesCommandOld extends Command {
 	public static final File rulesFile = new File("./config/" + MelonUtilities.MOD_ID + "/rules.json");
 	public static final Map<String /*Category*/, List<String> /*lines*/> rulesData = new HashMap<>();
-	public RulesCommand() {
+	public RulesCommandOld() {
 		super("rules");
 	}
 
