@@ -1,0 +1,469 @@
+package MelonUtilities.commands.rollback;
+
+import MelonUtilities.MelonUtilities;
+import MelonUtilities.config.Data;
+import MelonUtilities.config.datatypes.ConfigData;
+import MelonUtilities.utility.FeedbackHandler;
+import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.SyntaxBuilder;
+import com.mojang.nbt.CompoundTag;
+import com.mojang.nbt.NbtIo;
+import net.minecraft.core.entity.Entity;
+import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.item.Item;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.net.command.Command;
+import net.minecraft.core.net.command.CommandHandler;
+import net.minecraft.core.net.command.CommandSource;
+import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.net.packet.Packet51MapChunk;
+import net.minecraft.core.world.chunk.Chunk;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.entity.player.ServerPlayer;
+import org.useless.serverlibe.api.gui.GuiHelper;
+import org.useless.serverlibe.api.gui.ServerGuiBuilder;
+import org.useless.serverlibe.api.gui.slot.ServerSlotButton;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static MelonUtilities.utility.RollbackManager.*;
+
+public class RollbackCommandOld extends Command {
+
+	private final static String COMMAND = "rollback";
+	private final static String NAME = "RollbackCommand";
+
+	public RollbackCommandOld(){super(COMMAND, "rb");}
+
+	static SyntaxBuilder syntax = new SyntaxBuilder();
+	public static void buildSyntax(){
+		syntax.clear();
+		syntax.append("title",                                               TextFormatting.LIGHT_GRAY + "< Command Syntax > ([] = optional, <> = variable, / = or)");
+		syntax.append("rollback", "title",                             TextFormatting.LIGHT_GRAY + "  > /rollback [<x> <z> <x> <z>] / [<mode>]");
+		syntax.append("takeSnapshot", "rollback",                      TextFormatting.LIGHT_GRAY + "    > takeSnapshot");
+		syntax.append("takeBackup", "rollback",                        TextFormatting.LIGHT_GRAY + "    > takeBackup");
+		syntax.append("pruneSnapshots", "rollback",                    TextFormatting.LIGHT_GRAY + "    > pruneSnapshots");
+		syntax.append("pruneBackups", "rollback",                      TextFormatting.LIGHT_GRAY + "    > pruneBackups");
+		syntax.append("help", "rollback",                              TextFormatting.LIGHT_GRAY + "    > help");
+
+	}
+
+	private boolean takeSnapshotCommand(CommandHandler handler, CommandSource source, String[] args){
+		takeSnapshot();
+		FeedbackHandler.success(source, "Taking a Snapshot!");
+		return true;
+	}
+
+	private boolean takeBackupCommand(CommandHandler handler, CommandSource source, String[] args){
+		takeBackup();
+		FeedbackHandler.success(source, "Backing Up World!");
+		return true;
+	}
+
+	private boolean pruneSnapshotsCommand(CommandHandler handler, CommandSource source, String[] args){
+		pruneSnapshots();
+		FeedbackHandler.destructive(source, "Pruning Snapshots");
+		return true;
+	}
+
+	private boolean pruneBackupsCommand(CommandHandler handler, CommandSource source, String[] args){
+		pruneBackups();
+		FeedbackHandler.destructive(source, "Pruning Backups");
+		return true;
+	}
+
+	private boolean toggleAutoSnapshotsCommand(CommandHandler handler, CommandSource source, String[] args){
+		if(Data.configs.getOrCreate("config", ConfigData.class).snapshotsEnabled){
+			Data.configs.getOrCreate("config", ConfigData.class).snapshotsEnabled = false;
+			Data.configs.saveAll();
+			FeedbackHandler.destructive(source, "Automatic Snapshots Disabled.");
+			return true;
+		} else {
+			Data.configs.getOrCreate("config", ConfigData.class).snapshotsEnabled = true;
+			Data.configs.saveAll();
+			FeedbackHandler.success(source, "Automatic Snapshots Enabled!");
+			return true;
+		}
+	}
+
+	private boolean toggleAutoBackupsCommand(CommandHandler handler, CommandSource source, String[] args){
+		if(Data.configs.getOrCreate("config", ConfigData.class).backupsEnabled){
+			Data.configs.getOrCreate("config", ConfigData.class).backupsEnabled = false;
+			Data.configs.saveAll();
+			FeedbackHandler.destructive(source, "Automatic Backups Disabled.");
+			return true;
+		} else {
+			Data.configs.getOrCreate("config", ConfigData.class).backupsEnabled = true;
+			Data.configs.saveAll();
+			FeedbackHandler.success(source, "Automatic Backups Enabled!");
+			return true;
+		}
+	}
+
+	// TODO there actually really isn't much reason for the rollback command to need to parse coordinates from the chunkDirectory since it *should* already have the location context anyway
+	private int[] parseCoordsFromChunkDir(File chunkDir) {
+		int xIndex = chunkDir.getName().indexOf('x');
+		int zIndex = chunkDir.getName().indexOf('z');
+
+		StringBuilder xStringBuilder = new StringBuilder();
+		StringBuilder zStringBuilder = new StringBuilder();
+
+		String s = chunkDir.getName();
+
+		boolean firstMinus = true;
+		for (int i = xIndex + 2; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (Character.isDigit(c) || (c == '-' && firstMinus)) {
+				xStringBuilder.append(c);
+				firstMinus = false;
+			} else {
+				break;
+			}
+		}
+
+		firstMinus = true;
+		for (int i = zIndex + 2; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (Character.isDigit(c) || (c == '-' && firstMinus)) {
+				zStringBuilder.append(c);
+				firstMinus = false;
+			} else {
+				break;
+			}
+		}
+
+		String xString = xStringBuilder.toString();
+		String zString = zStringBuilder.toString();
+
+		int x = Integer.parseInt(xString);
+		int z = Integer.parseInt(zString);
+		return new int[]{x, z};
+	}
+
+	private HashMap<Long, File> getSortedCaptures(CommandSource source, File chunkDir){
+		int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
+
+		HashMap<Long, File> capturesHashmap = new HashMap<>();
+
+		//Add Snapshots To Hashmap
+		File[] snapshots = chunkDir.listFiles();
+		if(snapshots != null) {
+			for (File snapshot : snapshots) {
+				if (snapshot.isFile()) {
+					capturesHashmap.putIfAbsent(Long.parseLong(snapshot.getName().split(" ")[0]), snapshot);
+				}
+			}
+		}
+
+		//Add Backups To Hashmap
+		File[] backups = backupsDir.listFiles();
+		if(backups != null){
+			for (File backup : backups) {
+				if (backup.isDirectory()) {
+					capturesHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(source.getWorld().dimension.id)), chunkCoords[0], chunkCoords[1]));
+				}
+			}
+		}
+
+		//Return Sorted Hashmap of all Captures (Both Backups and Snapshots)
+		return MUtil.sortByKey(capturesHashmap);
+	}
+
+	private HashMap<Long, File> getSortedBackups(CommandSource source, File chunkDir){
+		int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
+
+		HashMap<Long, File> backupsHashmap = new HashMap<>();
+
+		//Add Backups To Hashmap
+		File[] backups = backupsDir.listFiles();
+		if(backups != null){
+			for (File backup : backups) {
+				if (backup.isDirectory()) {
+					backupsHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(source.getWorld().dimension.id)), chunkCoords[0], chunkCoords[1]));
+				}
+			}
+		}
+
+		return MUtil.sortByKey(backupsHashmap);
+	}
+
+	private HashMap<Long, File> getSortedSnapshots(File chunkDir){
+
+		HashMap<Long, File> snapshotsHashmap = new HashMap<>();
+
+		File[] snapshots = chunkDir.listFiles();
+		if(snapshots != null) {
+			for (File snapshot : snapshots) {
+				if (snapshot.isFile()) {
+					snapshotsHashmap.putIfAbsent(Long.parseLong(snapshot.getName().split(" ")[0]), snapshot);
+				}
+			}
+		}
+
+		return MUtil.sortByKey(snapshotsHashmap);
+	}
+
+
+
+	private boolean rollbackGui(CommandSource source, int x1, int z1){
+		File chunkDir = new File("./rollbackdata/snapshots/" + source.getWorld().dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
+		chunkDir.mkdirs();
+		if (chunkDir.isDirectory()) {
+
+			HashMap<Long, File> captures = getSortedCaptures(source, chunkDir);
+
+			ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
+			rollbackGui.setSize((int)Math.ceil((captures.size() + 1) / 9.0F));
+			int i = 0;
+			for(Map.Entry<Long, File> capture : captures.entrySet()){
+				int finalI = i;
+				if(capture.getValue().getName().contains(".dat")){
+					rollbackGui.setContainerSlot(i, (inventory ->
+					{
+						ItemStack snapshotIcon = Item.paper.getDefaultStack();
+						SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
+						snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]");
+						snapshotIcon.setCustomColor((byte) TextFormatting.LIGHT_BLUE.id);
+						return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
+							for(Entity entity : source.getWorld().loadedEntityList){
+								if(entity.chunkCoordX == x1 && entity.chunkCoordZ == z1){
+									if(!(entity instanceof Player)){
+										entity.remove();
+									}
+								}
+							}
+							try {
+								CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(capture.getValue().toPath()));
+								rollbackChunk(source.getWorld().getChunkFromChunkCoords(x1, z1), tag);
+								MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(x1 * 16, 0, z1 * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+								((ServerPlayer) source.getSender()).usePersonalCraftingInventory();
+							} catch (IOException e) {
+								throw new RuntimeException(e);
+							}
+						});
+					}));
+				} else if(capture.getValue().getName().contains(".mcr")){
+					rollbackGui.setContainerSlot(i, (inventory ->
+					{
+						ItemStack backupIcon = Item.book.getDefaultStack();
+						SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
+						backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]");
+						backupIcon.setCustomColor((byte) TextFormatting.CYAN.id);
+						return new ServerSlotButton(backupIcon, inventory, finalI, () -> {
+							for(Entity entity : source.getWorld().loadedEntityList){
+								if(entity.chunkCoordX == x1 && entity.chunkCoordZ == z1){
+									if(!(entity instanceof Player)){
+										entity.remove();
+									}
+								}
+							}
+							File backupDir = capture.getValue().getParentFile().getParentFile().getParentFile();
+							Chunk chunk1 = source.getWorld().getChunkFromChunkCoords(x1, z1);
+							rollbackChunkFromBackup(chunk1, backupDir);
+							MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(chunk1.xPosition * 16, 0, chunk1.zPosition * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+							((ServerPlayer) source.getSender()).usePersonalCraftingInventory();
+						});
+					}));
+				}
+				i++;
+			}
+			GuiHelper.openCustomServerGui((ServerPlayer) source.getSender(), rollbackGui.build((Player) source.getSender(), "Captures:"));
+			FeedbackHandler.success(source, "Opened Rollback GUI!");
+			return true;
+		} else {
+			FeedbackHandler.error(source, "Chunk has never been Modified!");
+			return true;
+		}
+	}
+
+	private boolean rollbackAreaGui(CommandSource source, int x1, int z1, int x2, int z2){
+		File chunkDir = new File("./rollbackdata/snapshots/" + source.getWorld().dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
+		chunkDir.mkdirs();
+		if (chunkDir.isDirectory()) {
+			HashMap<Long, File> captures = null;
+			int minX = Math.min(x1, x2);
+			int maxX = Math.max(x1, x2);
+			int minZ = Math.min(z1, z2);
+			int maxZ = Math.max(z1, z2);
+			for (int _x = minX; _x <= maxX; _x++) {
+				for (int _z = minZ; _z <= maxZ; _z++) {
+					HashMap<Long, File> _captures = getSortedCaptures(source, new File("./rollbackdata/snapshots/" + source.getWorld().dimension.id + "/c[x." + _x + "-z." + _z + "]"));
+					if (captures == null || captures.size() < _captures.size()) {
+						captures = _captures;
+					}
+				}
+			}
+			ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
+			rollbackGui.setSize((int)Math.ceil((captures.size() + 1) / 9.0F));
+			int i = 0;
+			for(Map.Entry<Long, File> capture : captures.entrySet()){
+				int finalI = i;
+				if(capture.getValue().getName().contains(".dat")){
+					rollbackGui.setContainerSlot(i, (inventory ->
+					{
+						ItemStack snapshotIcon = Item.paper.getDefaultStack();
+						SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
+						snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]");
+						snapshotIcon.setCustomColor((byte) TextFormatting.LIME.id);
+						return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture));
+					}));
+				} else if(capture.getValue().getName().contains(".mcr")){
+					rollbackGui.setContainerSlot(i, (inventory ->
+					{
+						ItemStack backupIcon = Item.book.getDefaultStack();
+						SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
+						backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]");
+						backupIcon.setCustomColor((byte) TextFormatting.GREEN.id);
+						return new ServerSlotButton(backupIcon, inventory, finalI, () -> rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture));
+					}));
+				}
+				i++;
+			}
+			GuiHelper.openCustomServerGui((ServerPlayer) source.getSender(), rollbackGui.build((Player) source.getSender(), "Captures:"));
+			FeedbackHandler.success(source, "Opened Rollback GUI!");
+			return true;
+		} else {
+			FeedbackHandler.error(source, "Chunk has never been Modified!");
+			return true;
+		}
+	}
+
+	private boolean rollbackCommand(CommandHandler handler, CommandSource source, String[] args){
+		rollbackGui(source, source.getSender().chunkCoordX, source.getSender().chunkCoordZ);
+		return true;
+	}
+
+	private boolean rollbackAreaCommand(CommandHandler handler, CommandSource source, String[] args){
+		int x1;
+		int z1;
+		int x2;
+		int z2;
+
+		try {
+			x1 = Integer.parseInt(args[0]);
+			z1 = Integer.parseInt(args[1]);
+			x2 = Integer.parseInt(args[2]);
+			z2 = Integer.parseInt(args[3]);
+		} catch (NumberFormatException numberFormatException) {
+			FeedbackHandler.error(source, "Failed to Rollback Chunk Area! (Invalid Chunks)");
+			return true;
+		}
+
+		rollbackAreaGui(source, x1, z1, x2, z2);
+
+		return true;
+	}
+
+	private void rollbackChunkArea(CommandSource source, List<File> chunkGrid, Map.Entry<Long, File> primaryCapture){
+		for(File chunkDir : chunkGrid) {
+			int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
+
+			HashMap<Long, File> captures = getSortedCaptures(source, chunkDir);
+
+
+			long timeOfPrimaryCapture = primaryCapture.getKey();
+			long lowestDifference = Long.MAX_VALUE;
+			Map.Entry<Long, File> oldestClosestCapture = null;
+
+			for(Map.Entry<Long, File> capture : captures.entrySet()){
+				long timeOfCapture = capture.getKey();
+				if(timeOfCapture <= timeOfPrimaryCapture){
+					long difference = Math.abs(timeOfPrimaryCapture - timeOfCapture);
+					if(difference < lowestDifference){
+						lowestDifference = difference;
+						oldestClosestCapture = capture;
+					}
+
+				}
+			}
+
+
+			if(oldestClosestCapture != null) {
+				if (oldestClosestCapture.getValue().getName().contains(".dat")) {
+					for (Entity entity : source.getWorld().loadedEntityList) {
+						if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
+							if (!(entity instanceof Player)) {
+								entity.remove();
+							}
+						}
+					}
+					try {
+						Chunk chunk = source.getWorld().getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]);
+						CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(oldestClosestCapture.getValue().toPath()));
+						rollbackChunk(chunk, tag);
+						MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+					} catch (IOException e) {
+						MelonUtilities.LOGGER.error("IOException occurred trying to read compressed data from Chunk File: {}", oldestClosestCapture.getValue());
+					}
+				}
+
+				if (oldestClosestCapture.getValue().getName().contains(".mcr")) {
+					for (Entity entity : source.getWorld().loadedEntityList) {
+						if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
+							if (!(entity instanceof Player)) {
+								entity.remove();
+							}
+						}
+					}
+					File backupDir = oldestClosestCapture.getValue().getParentFile().getParentFile().getParentFile();
+					rollbackChunkFromBackup(source.getWorld().getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]), backupDir);
+					MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new Packet51MapChunk(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+				}
+			}
+		}
+		((ServerPlayer) source.getSender()).usePersonalCraftingInventory();
+	}
+
+	@Override
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
+		try {
+			if (args.length == 0) {
+				return rollbackCommand(handler, source, args);
+			} else if(args.length == 4) {
+				return rollbackAreaCommand(handler, source, args);
+			}
+
+			switch(args[0].toLowerCase()){
+				case "takesnapshot":
+				case "ts":
+					return takeSnapshotCommand(handler, source, args);
+				case "takebackup":
+				case "tb":
+					return takeBackupCommand(handler, source, args);
+				case "prunesnapshots":
+				case "ps":
+					return pruneSnapshotsCommand(handler, source, args);
+				case "prunebackups":
+				case "pb":
+					return pruneBackupsCommand(handler, source, args);
+				case "toggleautosnapshots":
+				case "tas":
+					return toggleAutoSnapshotsCommand(handler, source, args);
+				case "toggleautobackups":
+				case "tab":
+					return toggleAutoBackupsCommand(handler, source, args);
+				case "help":
+					return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		FeedbackHandler.error(source, " " + NAME + " Error: (Invalid Syntax)");
+		return false;
+	}
+
+	@Override
+	public boolean opRequired(String[] args) {
+		return true;
+	}
+
+	@Override
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
+		syntax.printAllLines(source);
+	}
+}
