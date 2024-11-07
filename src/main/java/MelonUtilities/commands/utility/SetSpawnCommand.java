@@ -7,7 +7,7 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
-import net.minecraft.core.net.command.arguments.IntegerCoordinatesArgumentType;
+import net.minecraft.core.net.command.arguments.ArgumentTypeIntegerCoordinates;
 import net.minecraft.core.net.command.helpers.IntegerCoordinates;
 import net.minecraft.core.world.chunk.ChunkCoordinates;
 
@@ -17,7 +17,7 @@ public class SetSpawnCommand implements CommandManager.CommandRegistry{
 		CommandNode<CommandSource> command =
 			dispatcher.register(LiteralArgumentBuilder.<CommandSource>literal("setworldspawn")
 			.requires(CommandSource::hasAdmin)
-			.then(RequiredArgumentBuilder.<CommandSource, IntegerCoordinates>argument("position", IntegerCoordinatesArgumentType.intCoordinates())
+			.then(RequiredArgumentBuilder.<CommandSource, IntegerCoordinates>argument("position", ArgumentTypeIntegerCoordinates.intCoordinates())
 				.executes(c -> {
 					CommandSource source = c.getSource();
 					IntegerCoordinates coordinates = c.getArgument("position", IntegerCoordinates.class);

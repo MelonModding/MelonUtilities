@@ -1,11 +1,12 @@
 package MelonUtilities.mixins.tile_entities.blast_furnace;
 
-import MelonUtilities.interfaces.BlockEntityContainerInterface;
+import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.BlastFurnaceBlockEntity;
+import net.minecraft.core.block.entity.TileEntityFurnaceBlastFurnace;
+import net.minecraft.core.block.entity.TileEntityFurnaceBlastFurnace;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = BlastFurnaceBlockEntity.class, remap = false)
-public class BlastFurnaceBlockEntityMixin implements BlockEntityContainerInterface {
+@Mixin(value = TileEntityFurnaceBlastFurnace.class, remap = false)
+public class TileEntityFurnaceBlastFurnaceMixin implements TileEntityContainerInterface {
 	@Unique
 	private boolean isLocked;
 

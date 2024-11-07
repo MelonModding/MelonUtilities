@@ -2,9 +2,9 @@ package MelonUtilities.mixins.tile_entities.furnace;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.BlockEntityContainerInterface;
+import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
-import net.minecraft.core.block.FurnaceBlock;
+import net.minecraft.core.block.BlockFurnace;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Side;
@@ -14,12 +14,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = FurnaceBlock.class, remap = false)
+@Mixin(value = BlockFurnace.class, remap = false)
 public class BlockFurnaceMixin {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		BlockEntityContainerInterface iContainer = (BlockEntityContainerInterface) world.getBlockEntity(x, y, z);
+		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(x, y, z);
 
 		if(iContainer.getIsLocked()){
 			if(iContainer.getLockOwner() != null) {

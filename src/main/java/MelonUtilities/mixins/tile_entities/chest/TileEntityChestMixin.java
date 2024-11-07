@@ -1,13 +1,13 @@
-package MelonUtilities.mixins.tile_entities.dispenser;
+package MelonUtilities.mixins.tile_entities.chest;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.BlockEntityContainerInterface;
+import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.DispenserBlockEntity;
+import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,8 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = DispenserBlockEntity.class, remap = false)
-public class DispenserBlockEntityMixin implements BlockEntityContainerInterface {
+@Mixin(value = TileEntityChest.class, remap = false)
+public class TileEntityChestMixin implements TileEntityContainerInterface {
+
 	@Unique
 	private boolean isLocked;
 
@@ -34,7 +35,7 @@ public class DispenserBlockEntityMixin implements BlockEntityContainerInterface 
 	@Unique
 	private final List<UUID> trustedPlayers = new ArrayList<>();
 
-@Inject(at = @At("TAIL"), method = "writeToNBT")
+	@Inject(at = @At("TAIL"), method = "writeToNBT")
 	public void writeToNBTInject(CompoundTag nbttagcompound, CallbackInfo ci){
 		nbttagcompound.putBoolean("isLocked", isLocked);
 		UUIDHelper.writeToTag(nbttagcompound, lockOwner, "lockOwner");
@@ -57,7 +58,7 @@ public class DispenserBlockEntityMixin implements BlockEntityContainerInterface 
 
 		ListTag tempListTag = nbttagcompound.getList("trustedPlayers");
 
-		for(Tag<?> tag : tempListTag){
+		for(Tag <?> tag : tempListTag){
 			if(tag instanceof CompoundTag){
 				CompoundTag compoundTag = (CompoundTag) tag;
 				trustedPlayers.add(UUIDHelper.readFromTag(compoundTag, "uuid"));

@@ -4,7 +4,7 @@ import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.BlockEntityContainerInterface;
+import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.UUIDHelper;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -17,8 +17,8 @@ import net.minecraft.core.net.packet.ChatPacket;
 import net.minecraft.core.net.packet.Packet;
 import net.minecraft.core.net.packet.PlayerActionPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.entity.player.ServerPlayer;
-import net.minecraft.server.net.handler.ServerPacketHandler;
+import net.minecraft.server.entity.player.PlayerServer;
+import net.minecraft.server.net.handler.PacketHandlerServer;
 import net.minecraft.server.world.WorldServer;
 import org.apache.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,10 +31,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 
-@Mixin(value = ServerPacketHandler.class, remap = false)
-public abstract class ServerPacketHandlerMixin {
+@Mixin(value = PacketHandlerServer.class, remap = false)
+public abstract class PacketHandlerServerMixin {
 	@Shadow
-	private ServerPlayer playerEntity;
+	private PlayerServer playerEntity;
 
 	@Shadow
 	private MinecraftServer mcServer;
@@ -123,7 +123,7 @@ public abstract class ServerPacketHandlerMixin {
 	String commandString = "";
 
 	@Redirect(
-		method = "Lnet/minecraft/server/net/handler/ServerPacketHandler;handleSlashCommand(Ljava/lang/String;)V",
+		method = "Lnet/minecraft/server/net/handler/PacketHandlerServer;handleSlashCommand(Ljava/lang/String;)V",
 		at = @At(value = "INVOKE", target = "Ljava/lang/String;substring(I)Ljava/lang/String;"),
 		remap = false
 	)
@@ -135,7 +135,7 @@ public abstract class ServerPacketHandlerMixin {
 	//TODO fix/update helper command checks, old methods below:
 
 	/*@Redirect(
-		method = "Lnet/minecraft/server/net/handler/ServerPacketHandler;handleSlashCommand(Ljava/lang/String;)V",
+		method = "Lnet/minecraft/server/net/handler/PacketHandlerServer;handleSlashCommand(Ljava/lang/String;)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/core/net/command/PlayerCommandSource;isAdmin()Z"),
 		remap = false
 	)
@@ -161,7 +161,7 @@ public abstract class ServerPacketHandlerMixin {
 	}*/
 
 	/*@Redirect(
-		method = "Lnet/minecraft/server/net/handler/ServerPacketHandler;handleSlashCommand(Ljava/lang/String;)V",
+		method = "Lnet/minecraft/server/net/handler/PacketHandlerServer;handleSlashCommand(Ljava/lang/String;)V",
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/server/net/PlayerList;isOp(Ljava/lang/String;)Z"),
 		remap = false
 	)
@@ -189,9 +189,9 @@ public abstract class ServerPacketHandlerMixin {
 		cancellable = true)
 	private void handleBlockDigInject(PlayerActionPacket packet, CallbackInfo ci){
 		WorldServer world = this.mcServer.getDimensionWorld(this.playerEntity.dimension);
-		BlockEntity container = world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
-		if(container instanceof BlockEntityContainerInterface) {
-			BlockEntityContainerInterface iContainer = (BlockEntityContainerInterface) world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+		TileEntity container = world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+		if(container instanceof TileEntityContainerInterface) {
+			TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 			if (iContainer.getLockOwner() != null
 				&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username))
 				&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))
@@ -201,8 +201,8 @@ public abstract class ServerPacketHandlerMixin {
 				sendPacket(new BlockUpdatePacket(packet.xPosition, packet.yPosition, packet.zPosition, world));
 			}
 			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched && !iContainer.getIsLocked()){
-				if (container instanceof ChestBlockEntity) {
-					BlockEntityContainerInterface iOtherContainer = (BlockEntityContainerInterface) MUtil.getOtherChest(world, (ChestBlockEntity) container);
+				if (container instanceof TileEntityChest) {
+					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) MUtil.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
 						iContainer.setIsLocked(true);
 						iOtherContainer.setIsLocked(true);
@@ -213,17 +213,17 @@ public abstract class ServerPacketHandlerMixin {
 					} else {
 						this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Chest!");
 					}
-				} else if (container instanceof BlastFurnaceBlockEntity) {
+				} else if (container instanceof TileEntityFurnaceBlastFurnace) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Blast Furnace!");
-				} else if (container instanceof FurnaceBlockEntity) {
+				} else if (container instanceof TileEntityFurnace) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Furnace!");
-				} else if (container instanceof DispenserBlockEntity) {
+				} else if (container instanceof TileEntityDispenser) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Dispenser!");
-				} else if (container instanceof GoldMeshBlockEntity) {
+				} else if (container instanceof TileEntityMeshGold) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Golden Mesh!");
-				} else if (container instanceof TrommelBlockEntity) {
+				} else if (container instanceof TileEntityTrommel) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Trommel!");
-				} else if (container instanceof BasketBlockEntity) {
+				} else if (container instanceof TileEntityBasket) {
 					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Basket!");
 				}
 

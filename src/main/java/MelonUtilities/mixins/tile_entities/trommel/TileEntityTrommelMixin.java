@@ -1,13 +1,13 @@
-package MelonUtilities.mixins.tile_entities.chest;
+package MelonUtilities.mixins.tile_entities.trommel;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.BlockEntityContainerInterface;
+import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.ChestBlockEntity;
+import net.minecraft.core.block.entity.TileEntityTrommel;
 import net.minecraft.core.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,9 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = ChestBlockEntity.class, remap = false)
-public class ChestBlockEntityMixin implements BlockEntityContainerInterface {
-
+@Mixin(value = TileEntityTrommel.class, remap = false)
+public class TileEntityTrommelMixin implements TileEntityContainerInterface {
 	@Unique
 	private boolean isLocked;
 
@@ -58,7 +57,7 @@ public class ChestBlockEntityMixin implements BlockEntityContainerInterface {
 
 		ListTag tempListTag = nbttagcompound.getList("trustedPlayers");
 
-		for(Tag <?> tag : tempListTag){
+		for(Tag<?> tag : tempListTag){
 			if(tag instanceof CompoundTag){
 				CompoundTag compoundTag = (CompoundTag) tag;
 				trustedPlayers.add(UUIDHelper.readFromTag(compoundTag, "uuid"));

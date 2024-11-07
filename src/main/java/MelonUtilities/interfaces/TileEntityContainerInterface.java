@@ -3,7 +3,7 @@ package MelonUtilities.interfaces;
 import java.util.List;
 import java.util.UUID;
 
-public interface BlockEntityContainerInterface {
+public interface TileEntityContainerInterface {
 
 	boolean getIsLocked();
 

@@ -10,14 +10,14 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class RoleIDArgumentType implements ArgumentType<String>{
+public class ArgumentTypeRoleID implements ArgumentType<String>{
 	private static final List<String> EXAMPLES = Arrays.asList("starter", "pvp1", "saplings");
 
-	public RoleIDArgumentType() {
+	public ArgumentTypeRoleID() {
 	}
 
 	public static ArgumentType<String> roleID() {
-		return new RoleIDArgumentType();
+		return new ArgumentTypeRoleID();
 	}
 
 	public String parse(StringReader reader) throws CommandSyntaxException {

@@ -5,25 +5,25 @@ import net.minecraft.core.net.packet.ChatPacket;
 import net.minecraft.core.util.helper.AES;
 import net.minecraft.core.util.helper.DyeColor;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.entity.player.ServerPlayer;
+import net.minecraft.server.entity.player.PlayerServer;
 
 import java.util.HashMap;
 
 public class TpaManager {
-    public static HashMap<ServerPlayer, TpaRequest> tpas = new HashMap<>();
+    public static HashMap<PlayerServer, TpaRequest> tpas = new HashMap<>();
 	public static int timeout = 15;
 
 	public static class TpaRequest {
-        public ServerPlayer player, target;
+        public PlayerServer player, target;
         public int time = 0;
 
-        public TpaRequest(ServerPlayer player, ServerPlayer target) {
+        public TpaRequest(PlayerServer player, PlayerServer target) {
             this.player = player;
             this.target = target;
         }
     }
 
-	static void messagePlayer(ServerPlayer player, String message) {
+	static void messagePlayer(PlayerServer player, String message) {
 		MinecraftServer.getInstance().playerList.sendPacketToPlayer(player.username, new ChatPacket(message, AES.keyChain.get(player.username)));
 	}
     static void killRequest(TpaRequest tpr, String reason) {
@@ -31,7 +31,7 @@ public class TpaManager {
     	messagePlayer(tpr.target, TextFormatting.RED + "> Your tpa request from " + tpr.player.username + " expired! (" + reason + ")");
     }
 
-	static public void addRequest(ServerPlayer player, ServerPlayer target, boolean reverse) {
+	static public void addRequest(PlayerServer player, PlayerServer target, boolean reverse) {
         TpaRequest tpr = reverse ? tpas.put(target, new TpaRequest(target, player)) : tpas.put(target, new TpaRequest(player, target));
         if (tpr != null) {
             if (tpr.target == target) return;
@@ -48,16 +48,16 @@ public class TpaManager {
 		}
 	}
 
-	static public boolean deny(ServerPlayer player) {
+	static public boolean deny(PlayerServer player) {
 		TpaRequest tpr = tpas.remove(player);
 		return tpr != null;
 	}
 
-	static public boolean accept(ServerPlayer player) {
+	static public boolean accept(PlayerServer player) {
 		TpaRequest tpr = tpas.remove(player);
 		if (tpr == null) return false;
-		ServerPlayer target = tpr.target;
-		ServerPlayer moved = tpr.player;
+		PlayerServer target = tpr.target;
+		PlayerServer moved = tpr.player;
 		if (target.dimension != moved.dimension) {
 			MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension(moved, target.dimension, DyeColor.PURPLE, false);
 		}
@@ -75,7 +75,7 @@ public class TpaManager {
             }
 			tpr.time++;
         });
-		HashMap<ServerPlayer, TpaRequest> newTpas = new HashMap<>();
+		HashMap<PlayerServer, TpaRequest> newTpas = new HashMap<>();
 		tpas.entrySet()
 			.stream()
 			.filter(x->x.getValue().time < timeout * 20)

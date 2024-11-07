@@ -7,8 +7,8 @@ import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.NbtIo;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.BlockEntity;
-import net.minecraft.core.block.entity.BlockEntityDispatcher;
+import net.minecraft.core.block.entity.TileEntity;
+import net.minecraft.core.block.entity.TileEntityDispatcher;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityDispatcher;
 import net.minecraft.core.net.command.TextFormatting;
@@ -114,7 +114,7 @@ public class RollbackManager {
 	}
 
 	public static void rollbackChunk(Chunk chunk, CompoundTag tag){
-		ListTag blockEntityListTag;
+		ListTag tileEntityListTag;
 		ListTag entityListTag;
 		int version = tag.getIntegerOrDefault("Version", -1);
 		ChunkReader reader = getChunkReaderByVersion(chunk.world, tag, version);
@@ -150,11 +150,11 @@ public class RollbackManager {
 				chunk.world.entityJoinedWorld(entity);
 			}
 		}
-		if ((blockEntityListTag = tag.getList("TileEntities")) != null) {
-			for (Tag<?> blockEntityTagBase : blockEntityListTag) {
-				BlockEntity blockEntity;
-				if (!(blockEntityTagBase instanceof CompoundTag) || (blockEntity = BlockEntityDispatcher.createAndLoadEntity((CompoundTag)blockEntityTagBase)) == null) continue;
-				chunk.addBlockEntity(blockEntity);
+		if ((tileEntityListTag = tag.getList("TileEntities")) != null) {
+			for (Tag<?> tileEntityTagBase : tileEntityListTag) {
+				TileEntity tileEntity;
+				if (!(tileEntityTagBase instanceof CompoundTag) || (tileEntity = TileEntityDispatcher.createAndLoadEntity((CompoundTag)tileEntityTagBase)) == null) continue;
+				chunk.addBlockEntity(tileEntity);
 			}
 		}
 	}

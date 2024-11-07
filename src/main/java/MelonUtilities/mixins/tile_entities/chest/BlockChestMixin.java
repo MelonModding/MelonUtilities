@@ -2,12 +2,12 @@ package MelonUtilities.mixins.tile_entities.chest;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.BlockEntityContainerInterface;
+import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.UUIDHelper;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.core.block.ChestBlock;
-import net.minecraft.core.block.entity.ChestBlockEntity;
+import net.minecraft.core.block.BlockChest;
+import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.TextFormatting;
@@ -19,12 +19,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = ChestBlock.class, remap = false)
-public class ChestBlockMixin {
+@Mixin(value = BlockChest.class, remap = false)
+public class BlockChestMixin {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		BlockEntityContainerInterface iContainer = (BlockEntityContainerInterface) world.getBlockEntity(x, y, z);
+		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(x, y, z);
 
 		if(iContainer.getIsLocked()){
 			if(iContainer.getLockOwner() != null) {
@@ -42,12 +42,12 @@ public class ChestBlockMixin {
 	}
 
 	@Inject(at = @At("TAIL"), method = "onBlockPlacedByMob", cancellable = true)
-	public void onBlockPlacedInject(World world, int x, int y, int z, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") ChestBlock.Type type) {
-		ChestBlockEntity existingChest = MUtil.getOtherChest(world, (ChestBlockEntity) world.getBlockEntity(x, y, z));
-		ChestBlockEntity placedChest = (ChestBlockEntity) world.getBlockEntity(x, y, z);
+	public void onBlockPlacedInject(World world, int x, int y, int z, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") BlockChest.Type type) {
+		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getBlockEntity(x, y, z));
+		TileEntityChest placedChest = (TileEntityChest) world.getBlockEntity(x, y, z);
 
-		BlockEntityContainerInterface existingIContainer = (BlockEntityContainerInterface) existingChest;
-		BlockEntityContainerInterface placedIContainer = (BlockEntityContainerInterface) placedChest;
+		TileEntityContainerInterface existingIContainer = (TileEntityContainerInterface) existingChest;
+		TileEntityContainerInterface placedIContainer = (TileEntityContainerInterface) placedChest;
 
 		if(existingIContainer != null) {
 			placedIContainer.setLockOwner(existingIContainer.getLockOwner());

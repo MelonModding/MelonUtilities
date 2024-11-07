@@ -2,12 +2,12 @@ package MelonUtilities.mixins.tile_entities.furnace;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.BlockEntityContainerInterface;
+import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.FurnaceBlockEntity;
+import net.minecraft.core.block.entity.TileEntityFurnace;
 import net.minecraft.core.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = FurnaceBlockEntity.class, remap = false)
-public class FurnaceBlockEntityMixin implements BlockEntityContainerInterface {
+@Mixin(value = TileEntityFurnace.class, remap = false)
+public class TileEntityFurnaceMixin implements TileEntityContainerInterface {
 	@Unique
 	private boolean isLocked;
 

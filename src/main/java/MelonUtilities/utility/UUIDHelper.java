@@ -119,7 +119,7 @@ public class UUIDHelper {
 
 /*
 static {
-	ServerPlayer player = server.playerList.getPlayerEntity(nameToBan);
+	PlayerServer player = server.playerList.getPlayerEntity(nameToBan);
 	if (player != null) {
 		server.playerList.banPlayer(player.uuid);
 		sendNoticeToOps(sourceName, "Banning " + nameToBan);

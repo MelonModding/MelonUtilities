@@ -1,6 +1,6 @@
 package MelonUtilities.commands.role;
 
-import MelonUtilities.command_arguments.RoleIDArgumentType;
+import MelonUtilities.command_arguments.ArgumentTypeRoleID;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.DataBank;
 import MelonUtilities.config.datatypes.RoleData;
@@ -101,7 +101,7 @@ public class RoleCommand implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleDelete(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("delete")
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", RoleIDArgumentType.roleID())
+			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", ArgumentTypeRoleID.roleID())
 				.executes(
 					command -> {
 						CommandSource source = command.getSource();

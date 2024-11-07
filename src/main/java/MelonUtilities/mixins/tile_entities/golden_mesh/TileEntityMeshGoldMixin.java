@@ -1,27 +1,28 @@
-package MelonUtilities.mixins.tile_entities.basket;
+package MelonUtilities.mixins.tile_entities.golden_mesh;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.interfaces.BlockEntityContainerInterface;
+import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.BasketBlockEntity;
+import net.minecraft.core.block.entity.TileEntityMeshGold;
 import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.world.World;
+import net.minecraft.core.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = BasketBlockEntity.class, remap = false)
-public class BasketBlockEntityMixin implements BlockEntityContainerInterface {
+@Mixin(value = TileEntityMeshGold.class, remap = false)
+public class TileEntityMeshGoldMixin implements TileEntityContainerInterface {
 	@Unique
 	private boolean isLocked;
 
@@ -65,8 +66,8 @@ public class BasketBlockEntityMixin implements BlockEntityContainerInterface {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "givePlayerAllItems", cancellable = true)
-	public void canInteractWithInject(World world, Player entityplayer, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "setFilterItem", cancellable = true)
+	public void setFilterItemInject(Player entityplayer, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
 		if(isLocked){
 			if(lockOwner != null) {
 				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))
@@ -74,7 +75,7 @@ public class BasketBlockEntityMixin implements BlockEntityContainerInterface {
 					&& !Data.playerData.getOrCreate(lockOwner.toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
 					&& !isCommunityContainer
 					&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(entityplayer.username).toString(), PlayerData.class).lockBypass){
-					ci.cancel();
+					cir.setReturnValue(false);
 					return;
 				}
 			}

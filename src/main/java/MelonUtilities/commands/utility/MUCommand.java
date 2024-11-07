@@ -14,7 +14,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
-import net.minecraft.core.net.command.arguments.IntegerCoordinatesArgumentType;
 import net.minecraft.core.net.command.util.Iterables;
 
 import java.util.Map;

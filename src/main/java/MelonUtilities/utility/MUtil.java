@@ -1,19 +1,16 @@
 package MelonUtilities.utility;
 
-import net.minecraft.core.block.ChestBlock;
-import net.minecraft.core.block.entity.ChestBlockEntity;
+import net.minecraft.core.block.BlockChest;
+import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.net.command.CommandSource;
-import net.minecraft.core.net.command.commands.SetBlockCommand;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.phys.HitResult;
 import net.minecraft.core.util.phys.Vec3;
 import net.minecraft.core.world.World;
-import net.minecraft.core.world.chunk.Chunk;
-import net.minecraft.server.entity.player.ServerPlayer;
+import net.minecraft.server.entity.player.PlayerServer;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class MUtil {
@@ -25,7 +22,7 @@ public class MUtil {
 		float f1 = source.getSender().xRotO + (source.getSender().xRot - source.getSender().xRotO) * f;
 		float f2 = source.getSender().yRotO + (source.getSender().yRot - source.getSender().yRotO) * f;
 		double posX = source.getSender().xo + (source.getSender().x - source.getSender().xo) * (double) f;
-		float yOff = source.getSender() instanceof ServerPlayer ? source.getSender().getHeightOffset() : 0.0f;
+		float yOff = source.getSender() instanceof PlayerServer ? source.getSender().getHeightOffset() : 0.0f;
 		double posY = source.getSender().yo + (source.getSender().y - source.getSender().yo) + (double) yOff;
 		double posZ = source.getSender().zo + (source.getSender().z - source.getSender().zo) * (double) f;
 		Vec3 vec3 = Vec3.getTempVec3(posX, posY, posZ);
@@ -97,46 +94,46 @@ public class MUtil {
 		return result;
 	}
 
-	public static ChestBlockEntity getOtherChest(World world, ChestBlockEntity chest){
+	public static TileEntityChest getOtherChest(World world, TileEntityChest chest){
 		int meta = world.getBlockMetadata(chest.x, chest.y, chest.z);
-		ChestBlock.Type type = ChestBlock.getTypeFromMeta(meta);
-		if (type != ChestBlock.Type.SINGLE) {
-			Direction direction = ChestBlock.getDirectionFromMeta(meta);
+		BlockChest.Type type = BlockChest.getTypeFromMeta(meta);
+		if (type != BlockChest.Type.SINGLE) {
+			Direction direction = BlockChest.getDirectionFromMeta(meta);
 			int otherChestX = chest.x;
 			int otherChestZ = chest.z;
 			if (direction == Direction.NORTH) {
-				if (type == ChestBlock.Type.LEFT) {
+				if (type == BlockChest.Type.LEFT) {
 					--otherChestX;
 				}
-				if (type == ChestBlock.Type.RIGHT) {
+				if (type == BlockChest.Type.RIGHT) {
 					++otherChestX;
 				}
 			}
 			if (direction == Direction.EAST) {
-				if (type == ChestBlock.Type.LEFT) {
+				if (type == BlockChest.Type.LEFT) {
 					--otherChestZ;
 				}
-				if (type == ChestBlock.Type.RIGHT) {
+				if (type == BlockChest.Type.RIGHT) {
 					++otherChestZ;
 				}
 			}
 			if (direction == Direction.SOUTH) {
-				if (type == ChestBlock.Type.LEFT) {
+				if (type == BlockChest.Type.LEFT) {
 					++otherChestX;
 				}
-				if (type == ChestBlock.Type.RIGHT) {
+				if (type == BlockChest.Type.RIGHT) {
 					--otherChestX;
 				}
 			}
 			if (direction == Direction.WEST) {
-				if (type == ChestBlock.Type.LEFT) {
+				if (type == BlockChest.Type.LEFT) {
 					++otherChestZ;
 				}
-				if (type == ChestBlock.Type.RIGHT) {
+				if (type == BlockChest.Type.RIGHT) {
 					--otherChestZ;
 				}
 			}
-			return (ChestBlockEntity) world.getBlockEntity(otherChestX, chest.y, otherChestZ);
+			return (TileEntityChest) world.getBlockEntity(otherChestX, chest.y, otherChestZ);
 		}
 		//return's null if chest is a single chest
 		return  null;
