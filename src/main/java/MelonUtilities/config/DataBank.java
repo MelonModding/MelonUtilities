@@ -118,17 +118,23 @@ public class DataBank<Data> {
 		return dataHashMap.get(id);
 	}
 
-	public int remove(String id){
-		int error = 2;
+
+	public static final int NO_ERROR = 0;
+	public static final int ROLE_DOESNT_EXIST = 1;
+	public static final int IO_ERROR = 2;
+
+	public int remove(String id) {
 		if (!fileHashMap.containsKey(id)) {
-			error = 1;
-			return error;
+			return ROLE_DOESNT_EXIST;
 		}
-		if(fileHashMap.get(id).delete()){
-			error = 0;
+		if (!fileHashMap.get(id).delete()) {
+			fileHashMap.remove(id);
+			dataHashMap.remove(id);
+			return IO_ERROR;
+		} else {
+			fileHashMap.remove(id);
+			dataHashMap.remove(id);
+			return NO_ERROR;
 		}
-		fileHashMap.remove(id);
-		dataHashMap.remove(id);
-		return error;
 	}
 }
