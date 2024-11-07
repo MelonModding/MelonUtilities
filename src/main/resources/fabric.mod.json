@@ -28,7 +28,7 @@
   ],
 
   "depends": {
-		"minecraft": "Nightly.2024-10-27",
+		"minecraft": "Nightly.2024-11-06",
     "fabricloader": ">=0.15.5"
   },
   "suggests": {

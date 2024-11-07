@@ -6,23 +6,14 @@
   "mixins": [
     "other.CommandManagerMixin",
     "other.PacketHandlerServerMixin",
-    "tile_entities.basket.BasketBlockEntityMixin",
     "tile_entities.basket.TileEntityBasketMixin",
-    "tile_entities.blast_furnace.BlastFurnaceBlockEntityMixin",
-    "tile_entities.blast_furnace.BlastFurnaceTileEntityMixin",
     "tile_entities.blast_furnace.TileEntityFurnaceBlastFurnaceMixin",
     "tile_entities.chest.BlockChestMixin",
-    "tile_entities.chest.ChestBlockEntityMixin",
-    "tile_entities.chest.ChestBlockMixin",
     "tile_entities.chest.TileEntityChestMixin",
-    "tile_entities.dispenser.DispenserBlockEntityMixin",
     "tile_entities.dispenser.TileEntityDispenserMixin",
-    "tile_entities.furnace.FurnaceBlockEntityMixin",
     "tile_entities.furnace.TileEntityFurnaceMixin",
-    "tile_entities.golden_mesh.GoldMeshBlockEntityMixin",
     "tile_entities.golden_mesh.TileEntityMeshGoldMixin",
-    "tile_entities.trommel.TileEntityTrommelMixin",
-    "tile_entities.trommel.TrommelBlockEntityMixin"
+    "tile_entities.trommel.TileEntityTrommelMixin"
   ],
   "client": [
   ],
@@ -33,7 +24,6 @@
     "other.ExplosionMixin",
     "other.MinecraftServerMixin",
     "other.PlayerListMixin",
-    "other.ServerPacketHandlerMixin",
     "rollback.ChunkMixin",
     "rollback.ChunkProviderServerMixin",
     "tile_entities.basket.BlockBasketMixin",
