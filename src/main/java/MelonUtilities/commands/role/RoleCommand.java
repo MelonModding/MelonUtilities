@@ -127,7 +127,6 @@ public class RoleCommand implements CommandManager.CommandRegistry{
 								FeedbackHandler.error(source, "Failed to Delete Role: " + role + " (IO Error)");
 								return Command.SINGLE_SUCCESS;
 						}
-
 						return Command.SINGLE_SUCCESS;
 					}
 				)
