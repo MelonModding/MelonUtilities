@@ -1,6 +1,6 @@
 package MelonUtilities.commands.crew;
 
-import MelonUtilities.utility.SyntaxBuilder;
+import MelonUtilities.utility.syntax.SyntaxBuilder;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;
 import net.minecraft.core.net.command.CommandSource;

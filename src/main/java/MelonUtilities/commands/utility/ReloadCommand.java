@@ -1,6 +1,6 @@
 package MelonUtilities.commands.utility;
 
-import MelonUtilities.utility.FeedbackHandler;
+import MelonUtilities.utility.feedback.FeedbackHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

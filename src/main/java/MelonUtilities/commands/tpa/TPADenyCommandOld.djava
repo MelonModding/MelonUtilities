@@ -1,7 +1,7 @@
 package MelonUtilities.commands.tpa;
 
-import MelonUtilities.utility.FeedbackHandler;
-import MelonUtilities.utility.TpaManager;
+import MelonUtilities.utility.feedback.FeedbackHandler;
+import MelonUtilities.utility.managers.TpaManager;
 import net.minecraft.core.net.command.*;
 import net.minecraft.server.entity.player.ServerPlayer;
 

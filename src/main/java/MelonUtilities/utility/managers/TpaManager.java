@@ -1,4 +1,4 @@
-package MelonUtilities.utility;
+package MelonUtilities.utility.managers;
 
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.ChatPacket;

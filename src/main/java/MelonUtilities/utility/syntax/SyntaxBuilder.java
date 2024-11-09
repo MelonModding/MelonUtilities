@@ -1,4 +1,4 @@
-package MelonUtilities.utility;
+package MelonUtilities.utility.syntax;
 
 import net.minecraft.core.net.command.CommandSource;
 

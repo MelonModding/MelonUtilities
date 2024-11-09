@@ -7,7 +7,7 @@ import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.KitData;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.datatypes.RoleData;
-import MelonUtilities.utility.FeedbackHandler;
+import MelonUtilities.utility.feedback.FeedbackHandler;
 import MelonUtilities.utility.RoleBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
@@ -134,13 +134,13 @@ public class ExecuteMethods {
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleDataFromRoleID(role).playersGrantedRole.remove(target);
 			Data.roles.saveAll();
-			FeedbackHandler.destructive(source, "Revoked Role: " + role + " from player: " + TextFormatting.LIGHT_GRAY + target);
+			FeedbackHandler.destructive(source, "Revoked Role %" + role + " from Player %" + target);
 			return Command.SINGLE_SUCCESS;
 		} else if (roleData.playersGrantedRole.contains(source.getSender().username)){
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleDataFromRoleID(role).playersGrantedRole.remove(source.getSender().username);
 			Data.roles.saveAll();
-			FeedbackHandler.destructive(source, "Revoked Role: " + role + " from player: " + TextFormatting.LIGHT_GRAY + source.getSender().username);
+			FeedbackHandler.destructive(source, "Revoked Role %" + role + " from Player %" + source.getSender().username);
 			return Command.SINGLE_SUCCESS;
 		} else if (!roleData.playersGrantedRole.contains(source.getSender().username) || !roleData.playersGrantedRole.contains(target)) {
 			FeedbackHandler.error(source, "Failed to Revoke Role (Player does not have Role!)");
@@ -170,13 +170,13 @@ public class ExecuteMethods {
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleDataFromRoleID(role).playersGrantedRole.add(source.getSender().username);
 			Data.roles.saveAll();
-			FeedbackHandler.success(source, "Granted Role: " + role + " to player: " + TextFormatting.LIGHT_GRAY + source.getSender().username);
+			FeedbackHandler.success(source, "Granted Role %" + role + " to Player %" + source.getSender().username);
 			return Command.SINGLE_SUCCESS;
 		} else if (!roleData.playersGrantedRole.contains(target)){
 			Data.roles.loadAll(RoleData.class);
 			RoleCommand.getRoleDataFromRoleID(role).playersGrantedRole.add(target);
 			Data.roles.saveAll();
-			FeedbackHandler.success(source, "Granted Role: " + role + " to player: " + TextFormatting.LIGHT_GRAY + target);
+			FeedbackHandler.success(source, "Granted Role %" + role + " to Player %" + target);
 			return Command.SINGLE_SUCCESS;
 		} else if (roleData.playersGrantedRole.contains(source.getSender().username) || roleData.playersGrantedRole.contains(target)) {
 			FeedbackHandler.error(source, "Failed to Grant Role (Player already has Role!)");
@@ -196,7 +196,7 @@ public class ExecuteMethods {
 
 
 		if (Data.roles.dataHashMap.containsKey(roleID)) {
-			FeedbackHandler.error(source, "Failed to Create Role: " + roleID + " (Role Already Exists)");
+			FeedbackHandler.error(source, "Failed to Create Role %" + roleID + " (Role Already Exists)");
 			return Command.SINGLE_SUCCESS;
 		}
 
@@ -206,7 +206,7 @@ public class ExecuteMethods {
 		RoleCommand.getRoleDataFromRoleID(roleID).priority = rolePriority;
 		Data.roles.saveAll();
 
-		FeedbackHandler.success(source, "Created Role: " + RoleCommand.getRoleDataFromRoleID(roleID).displayName + " with Priority: " + RoleCommand.getRoleDataFromRoleID(roleID).priority);
+		FeedbackHandler.success(source, "Created Role %" + RoleCommand.getRoleDataFromRoleID(roleID).displayName + " with Priority %" + RoleCommand.getRoleDataFromRoleID(roleID).priority);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -216,14 +216,14 @@ public class ExecuteMethods {
 
 		switch (Data.roles.remove(role)) {
 			case DataBank.NO_ERROR:
-				FeedbackHandler.destructive(source, "Deleted Role: " + role);
+				FeedbackHandler.destructive(source, "Deleted Role %" + role);
 				return Command.SINGLE_SUCCESS;
 			case DataBank.ROLE_DOESNT_EXIST:
-				FeedbackHandler.error(source, "Failed to Delete Role: " + role + " (Role Doesn't Exist)");
+				FeedbackHandler.error(source, "Failed to Delete Role %" + role + " (Role Doesn't Exist)");
 				RoleCommand.syntax.printLayerAndSubLayers("delete", source);
 				return Command.SINGLE_SUCCESS;
 			case DataBank.IO_ERROR:
-				FeedbackHandler.error(source, "Failed to Delete Role: " + role + " (IO Error)");
+				FeedbackHandler.error(source, "Failed to Delete Role %" + role + " (IO Error)");
 				return Command.SINGLE_SUCCESS;
 		}
 		return Command.SINGLE_SUCCESS;
@@ -238,7 +238,7 @@ public class ExecuteMethods {
 				Data.configs.loadAll(ConfigData.class);
 				Data.configs.getOrCreate("config", ConfigData.class).defaultRole = roleID;
 				Data.configs.saveAll();
-				FeedbackHandler.success(source, "Set Default Role to: " + roleID);
+				FeedbackHandler.success(source, "Set Default Role to %" + roleID);
 				return Command.SINGLE_SUCCESS;
 			}
 		}
@@ -262,7 +262,7 @@ public class ExecuteMethods {
 		Data.configs.loadAll(ConfigData.class);
 		Data.configs.getOrCreate("config", ConfigData.class).displayMode = "single";
 		Data.configs.saveAll();
-		FeedbackHandler.success(source, "Set Display Mode to: single");
+		FeedbackHandler.success(source, "Set Display Mode to %single");
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -271,7 +271,7 @@ public class ExecuteMethods {
 		Data.configs.loadAll(ConfigData.class);
 		Data.configs.getOrCreate("config", ConfigData.class).displayMode = "multi";
 		Data.configs.saveAll();
-		FeedbackHandler.success(source, "Set Display Mode to: multi");
+		FeedbackHandler.success(source, "Set Display Mode to %multi");
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -283,7 +283,7 @@ public class ExecuteMethods {
 		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleDataFromRoleID(roleID).priority = priorityValue;
 		Data.roles.saveAll();
-		FeedbackHandler.success(source, "Set Priority for Role " + roleID + " to: " + TextFormatting.LIGHT_GRAY + priorityValue);
+		FeedbackHandler.success(source, "Set Priority for Role %" + roleID + " to " + "%" + priorityValue);
 		return Command.SINGLE_SUCCESS;
 	}
 

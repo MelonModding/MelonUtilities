@@ -1,5 +1,6 @@
 package MelonUtilities.utility;
 
+import MelonUtilities.utility.managers.RollbackManager;
 import net.minecraft.core.block.BlockChest;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.net.command.CommandSource;
@@ -17,6 +18,68 @@ import java.util.*;
 public class MelonUtility {
 
 	public static float timeOnInit = 0;
+	public static final String SECTION_PURPLE = "§a";
+	public static final String SECTION_BLUE = "§b";
+	public static final String SECTION_BROWN = "§c";
+	public static final String SECTION_GREEN = "§d";
+	public static final String SECTION_RED = "§e";
+	public static final String SECTION_BLACK = "§f";
+	public static final String SECTION_ORANGE = "§1";
+	public static final String SECTION_MAGENTA = "§2";
+	public static final String SECTION_LIGHT_BLUE = "§3";
+	public static final String SECTION_YELLOW = "§4";
+	public static final String SECTION_LIME = "§5";
+	public static final String SECTION_PINK = "§6";
+	public static final String SECTION_GREY = "§7";
+	public static final String SECTION_GRAY = "§7";
+	public static final String SECTION_LIGHT_GREY = "§8";
+	public static final String SECTION_LIGHT_GRAY = "§8";
+	public static final String SECTION_CYAN = "§9";
+	public static final String SECTION_WHITE = "§0";
+
+	public static final HashMap<String, String> colorSectionMap = new HashMap<>();
+	static{
+		colorSectionMap.put("purple", "§a");
+		colorSectionMap.put("blue", "§b");
+		colorSectionMap.put("brown", "§c");
+		colorSectionMap.put("green", "§d");
+		colorSectionMap.put("red", "§e");
+		colorSectionMap.put("black", "§f");
+		colorSectionMap.put("orange", "§1");
+		colorSectionMap.put("magenta", "§2");
+		colorSectionMap.put("light_blue", "§3");
+		colorSectionMap.put("yellow", "§4");
+		colorSectionMap.put("lime", "§5");
+		colorSectionMap.put("pink", "§6");
+		colorSectionMap.put("grey", "§7");
+		colorSectionMap.put("gray", "§7");
+		colorSectionMap.put("light_grey", "§8");
+		colorSectionMap.put("light_gray", "§8");
+		colorSectionMap.put("cyan", "§9");
+		colorSectionMap.put("white", "§0");
+	}
+
+	public static final HashMap<String, TextFormatting> colorFormattingMap = new HashMap<>();
+	static{
+		colorFormattingMap.put("purple", TextFormatting.PURPLE);
+		colorFormattingMap.put("blue", TextFormatting.BLUE);
+		colorFormattingMap.put("brown", TextFormatting.BROWN);
+		colorFormattingMap.put("green", TextFormatting.GREEN);
+		colorFormattingMap.put("red", TextFormatting.RED);
+		colorFormattingMap.put("black", TextFormatting.BLACK);
+		colorFormattingMap.put("orange", TextFormatting.ORANGE);
+		colorFormattingMap.put("magenta", TextFormatting.MAGENTA);
+		colorFormattingMap.put("light_blue", TextFormatting.LIGHT_BLUE);
+		colorFormattingMap.put("yellow", TextFormatting.YELLOW);
+		colorFormattingMap.put("lime", TextFormatting.LIME);
+		colorFormattingMap.put("pink", TextFormatting.PINK);
+		colorFormattingMap.put("grey", TextFormatting.GRAY);
+		colorFormattingMap.put("gray", TextFormatting.GRAY);
+		colorFormattingMap.put("light_grey", TextFormatting.LIGHT_GRAY);
+		colorFormattingMap.put("light_gray", TextFormatting.LIGHT_GRAY);
+		colorFormattingMap.put("cyan", TextFormatting.CYAN);
+		colorFormattingMap.put("white", TextFormatting.WHITE);
+	}
 
 	public static HitResult rayCastFromPlayer(CommandSource source) {
 		float f = 1.0f;
@@ -43,49 +106,6 @@ public class MelonUtility {
 		return new File(RollbackManager.snapshotsDir, source.getWorld().dimension.id + "/c[x." + x + "-z." + z + "]");
 	}
 
-	public static final HashMap<String, String> colorToSectionMap = new HashMap<>();
-	static{
-		colorToSectionMap.put("purple", "§a");
-		colorToSectionMap.put("blue", "§b");
-		colorToSectionMap.put("brown", "§c");
-		colorToSectionMap.put("green", "§d");
-		colorToSectionMap.put("red", "§e");
-		colorToSectionMap.put("black", "§f");
-		colorToSectionMap.put("orange", "§1");
-		colorToSectionMap.put("magenta", "§2");
-		colorToSectionMap.put("light_blue", "§3");
-		colorToSectionMap.put("yellow", "§4");
-		colorToSectionMap.put("lime", "§5");
-		colorToSectionMap.put("pink", "§6");
-		colorToSectionMap.put("grey", "§7");
-		colorToSectionMap.put("gray", "§7");
-		colorToSectionMap.put("light_grey", "§8");
-		colorToSectionMap.put("light_gray", "§8");
-		colorToSectionMap.put("cyan", "§9");
-		colorToSectionMap.put("white", "§0");
-	}
-
-	public static final HashMap<String, TextFormatting> colorToFormattingMap = new HashMap<>();
-	static{
-		colorToFormattingMap.put("purple", TextFormatting.PURPLE);
-		colorToFormattingMap.put("blue", TextFormatting.BLUE);
-		colorToFormattingMap.put("brown", TextFormatting.BROWN);
-		colorToFormattingMap.put("green", TextFormatting.GREEN);
-		colorToFormattingMap.put("red", TextFormatting.RED);
-		colorToFormattingMap.put("black", TextFormatting.BLACK);
-		colorToFormattingMap.put("orange", TextFormatting.ORANGE);
-		colorToFormattingMap.put("magenta", TextFormatting.MAGENTA);
-		colorToFormattingMap.put("light_blue", TextFormatting.LIGHT_BLUE);
-		colorToFormattingMap.put("yellow", TextFormatting.YELLOW);
-		colorToFormattingMap.put("lime", TextFormatting.LIME);
-		colorToFormattingMap.put("pink", TextFormatting.PINK);
-		colorToFormattingMap.put("grey", TextFormatting.GRAY);
-		colorToFormattingMap.put("gray", TextFormatting.GRAY);
-		colorToFormattingMap.put("light_grey", TextFormatting.LIGHT_GRAY);
-		colorToFormattingMap.put("light_gray", TextFormatting.LIGHT_GRAY);
-		colorToFormattingMap.put("cyan", TextFormatting.CYAN);
-		colorToFormattingMap.put("white", TextFormatting.WHITE);
-	}
 
 	public static boolean isNumeric(String strNum) {
 		if (strNum == null) {

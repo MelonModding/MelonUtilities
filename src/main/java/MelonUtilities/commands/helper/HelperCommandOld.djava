@@ -2,8 +2,8 @@ package MelonUtilities.commands.helper;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.utility.FeedbackHandler;
-import MelonUtilities.utility.SyntaxBuilder;
+import MelonUtilities.utility.feedback.FeedbackHandler;
+import MelonUtilities.utility.syntax.SyntaxBuilder;
 import MelonUtilities.utility.UUIDHelper;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;

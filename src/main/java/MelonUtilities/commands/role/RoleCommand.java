@@ -5,7 +5,7 @@ import MelonUtilities.command_arguments.ArgumentTypeRoleID;
 import MelonUtilities.commands.ExecuteMethods;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.RoleData;
-import MelonUtilities.utility.SyntaxBuilder;
+import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;

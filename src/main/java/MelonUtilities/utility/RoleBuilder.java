@@ -1,6 +1,5 @@
 package MelonUtilities.utility;
 
-import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.RoleData;
@@ -13,8 +12,8 @@ public class RoleBuilder {
 
 	public static String getCodeOrHex(String string){
 		string = string.toLowerCase();
-		if (MelonUtility.colorToSectionMap.containsKey(string)){
-			string = MelonUtility.colorToSectionMap.get(string);
+		if (MelonUtility.colorSectionMap.containsKey(string)){
+			string = MelonUtility.colorSectionMap.get(string);
 		} else{
 			string = "§<" + string + ">";
 		}

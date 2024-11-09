@@ -1,5 +1,6 @@
 package MelonUtilities;
 
+import MelonUtilities.commands.role.RoleCommand;
 import MelonUtilities.config.*;
 import MelonUtilities.config.custom.classes.Crew;
 import MelonUtilities.config.custom.jsonadapters.CrewJsonAdapter;
@@ -7,6 +8,7 @@ import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.config.custom.jsonadapters.HomeJsonAdapter;
+import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.utility.MelonUtility;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -48,8 +50,8 @@ public class MelonUtilities implements ModInitializer {
 		// Misc
 
 		// Role
-		//TODO Data.roles.loadAll(RoleData.class);
-		//TODO RoleCommand.buildRoleSyntax();
+		Data.roles.loadAll(RoleData.class);
+		RoleCommand.buildRoleSyntax();
 
 		// Tpa
 
@@ -58,16 +60,16 @@ public class MelonUtilities implements ModInitializer {
 		// Warp
 
 		// Anything Else
-		//TODO Data.configs.loadAll(ConfigData.class);
-		//TODO Data.playerData.loadAll(PlayerData.class);
+		Data.configs.loadAll(ConfigData.class);
+		Data.playerData.loadAll(PlayerData.class);
 		updateList();
 
 	}
 
 	public void updateRoles(){
-		//TODO Data.configs.loadAll(ConfigData.class);
-		//TODO Data.roles.loadAll(RoleData.class);
-		//TODO RoleCommand.buildRoleSyntax();
+		Data.configs.loadAll(ConfigData.class);
+		Data.roles.loadAll(RoleData.class);
+		RoleCommand.buildRoleSyntax();
 		updateList();
 	}
 
@@ -98,8 +100,8 @@ public class MelonUtilities implements ModInitializer {
 
 		// Misc
 		// Role
-		//TODO Data.roles.loadAll(RoleData.class);
-		//TODO RoleCommand.buildRoleSyntax();
+		Data.roles.loadAll(RoleData.class);
+		RoleCommand.buildRoleSyntax();
 
 		// Rollback
 		//TODO RollbackCommand.buildSyntax();

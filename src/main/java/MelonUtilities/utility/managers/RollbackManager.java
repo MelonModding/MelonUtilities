@@ -1,4 +1,4 @@
-package MelonUtilities.utility;
+package MelonUtilities.utility.managers;
 
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;

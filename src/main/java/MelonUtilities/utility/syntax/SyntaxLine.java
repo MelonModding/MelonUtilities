@@ -1,4 +1,4 @@
-package MelonUtilities.utility;
+package MelonUtilities.utility.syntax;
 
 public class SyntaxLine {
 
