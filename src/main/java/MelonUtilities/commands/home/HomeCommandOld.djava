@@ -5,7 +5,7 @@ import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.utility.feedback.FeedbackHandler;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
 import MelonUtilities.config.custom.classes.Home;
-import MelonUtilities.utility.UUIDHelper;
+import MelonUtilities.utility.helpers.UUIDHelper;
 import net.minecraft.client.entity.player.PlayerSP;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.*;

@@ -7,7 +7,7 @@ import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.utility.feedback.FeedbackHandler;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
-import MelonUtilities.utility.RoleBuilder;
+import MelonUtilities.utility.builders.RoleBuilder;
 import MelonUtilities.config.datatypes.RoleData;
 import net.minecraft.core.net.command.Command;
 import net.minecraft.core.net.command.CommandHandler;

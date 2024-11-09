@@ -1,6 +1,6 @@
 package MelonUtilities.utility.feedback;
 
-import MelonUtilities.utility.MelonUtility;
+import MelonUtilities.utility.MUtil;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
 import org.jetbrains.annotations.NotNull;
@@ -23,14 +23,14 @@ public class FeedbackHandler {
 			if(c != variableStarter){
 				tempmsg.append(c);
 			} else{
-				tempmsg.append(MelonUtility.SECTION_GRAY);
+				tempmsg.append(MUtil.SECTION_GRAY);
 				tempmsg.append(variableOpener);
-				tempmsg.append(MelonUtility.SECTION_LIGHT_GRAY);
+				tempmsg.append(MUtil.SECTION_LIGHT_GRAY);
 				for(int j = i+1; j < msg.length(); j++){
 					i = j;
 					c = msg.charAt(j);
 					if(Character.isSpaceChar(c)){
-						tempmsg.append(MelonUtility.SECTION_GRAY);
+						tempmsg.append(MUtil.SECTION_GRAY);
 						tempmsg.append(variableCloser);
 						tempmsg.append(feedbackType.getColorSection());
 						tempmsg.append(' ');
@@ -38,7 +38,7 @@ public class FeedbackHandler {
 					} else {
 						tempmsg.append(c);
 						if(msg.length()-1 == j){
-							tempmsg.append(MelonUtility.SECTION_GRAY);
+							tempmsg.append(MUtil.SECTION_GRAY);
 							tempmsg.append(variableCloser);
 						}
 					}

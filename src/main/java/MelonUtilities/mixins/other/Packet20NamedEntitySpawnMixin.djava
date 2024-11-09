@@ -1,6 +1,6 @@
 package MelonModding.MelonUtilities.mixin;
 
-import MelonUtilities.utility.RoleBuilder;
+import MelonUtilities.utility.builders.RoleBuilder;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.net.packet.Packet20NamedEntitySpawn;
 import org.spongepowered.asm.mixin.Mixin;

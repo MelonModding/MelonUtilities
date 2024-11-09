@@ -3,7 +3,7 @@ package MelonUtilities.mixins.tile_entities.trommel;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
-import MelonUtilities.utility.UUIDHelper;
+import MelonUtilities.utility.helpers.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;

@@ -1,4 +1,4 @@
-package MelonUtilities.utility;
+package MelonUtilities.utility.helpers;
 
 import com.b100.json.JsonParser;
 import com.b100.json.element.JsonObject;

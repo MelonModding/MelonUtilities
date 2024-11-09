@@ -1,6 +1,6 @@
 package MelonUtilities.command_arguments;
 
-import MelonUtilities.utility.MelonUtility;
+import MelonUtilities.utility.MUtil;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -24,7 +24,7 @@ public class ArgumentTypeColor implements ArgumentType<String> {
 	public String parse(StringReader reader) throws CommandSyntaxException {
 		final String string = reader.readString();
 
-		for (Map.Entry<String, String> entry : MelonUtility.colorSectionMap.entrySet()) {
+		for (Map.Entry<String, String> entry : MUtil.colorSectionMap.entrySet()) {
 			if (entry.getKey().equalsIgnoreCase(string)) {
 				return string;
 			}
@@ -33,7 +33,7 @@ public class ArgumentTypeColor implements ArgumentType<String> {
 	}
 
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		for(Map.Entry<String, String> entry : MelonUtility.colorSectionMap.entrySet()){
+		for(Map.Entry<String, String> entry : MUtil.colorSectionMap.entrySet()){
 			if (entry.getKey().startsWith(builder.getRemainingLowerCase())) {
 				builder.suggest(entry.getKey());
 			}
@@ -43,7 +43,7 @@ public class ArgumentTypeColor implements ArgumentType<String> {
 	}
 
 	public Collection<String> colors() {
-		return new ArrayList<>(MelonUtility.colorSectionMap.keySet());
+		return new ArrayList<>(MUtil.colorSectionMap.keySet());
 	}
 
 	public Collection<String> getExamples() {

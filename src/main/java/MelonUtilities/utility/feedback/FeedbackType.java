@@ -1,6 +1,6 @@
 package MelonUtilities.utility.feedback;
 
-import MelonUtilities.utility.MelonUtility;
+import MelonUtilities.utility.MUtil;
 import net.minecraft.core.net.command.TextFormatting;
 
 public class FeedbackType {
@@ -30,11 +30,11 @@ public class FeedbackType {
 	}
 
 	public String getColorSection() {
-		return MelonUtility.colorSectionMap.get(color);
+		return MUtil.colorSectionMap.get(color);
 	}
 
 	public TextFormatting getColorFormat() {
-		return MelonUtility.colorFormattingMap.get(color);
+		return MUtil.colorFormattingMap.get(color);
 	}
 
 	public String getSoundPath() {

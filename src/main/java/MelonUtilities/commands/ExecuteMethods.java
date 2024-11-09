@@ -8,7 +8,7 @@ import MelonUtilities.config.datatypes.KitData;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.utility.feedback.FeedbackHandler;
-import MelonUtilities.utility.RoleBuilder;
+import MelonUtilities.utility.builders.RoleBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;

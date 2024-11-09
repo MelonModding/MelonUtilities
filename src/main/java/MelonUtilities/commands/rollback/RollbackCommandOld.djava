@@ -4,7 +4,7 @@ import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.utility.feedback.FeedbackHandler;
-import MelonUtilities.utility.MelonUtility;
+import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.NbtIo;

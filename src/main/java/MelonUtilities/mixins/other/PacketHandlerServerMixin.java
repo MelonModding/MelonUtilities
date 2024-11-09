@@ -5,10 +5,10 @@ import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
-import MelonUtilities.utility.MelonUtility;
-import MelonUtilities.utility.UUIDHelper;
+import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.helpers.UUIDHelper;
 import com.llamalad7.mixinextras.sugar.Local;
-import MelonUtilities.utility.RoleBuilder;
+import MelonUtilities.utility.builders.RoleBuilder;
 import MelonUtilities.config.datatypes.RoleData;
 import net.minecraft.core.block.entity.*;
 import net.minecraft.core.net.command.*;
@@ -201,7 +201,7 @@ public abstract class PacketHandlerServerMixin {
 			}
 			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched && !iContainer.getIsLocked()){
 				if (container instanceof TileEntityChest) {
-					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) MelonUtility.getOtherChest(world, (TileEntityChest) container);
+					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) MUtil.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
 						iContainer.setIsLocked(true);
 						iOtherContainer.setIsLocked(true);

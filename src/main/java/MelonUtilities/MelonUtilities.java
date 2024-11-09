@@ -9,7 +9,7 @@ import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.config.custom.jsonadapters.HomeJsonAdapter;
 import MelonUtilities.config.datatypes.RoleData;
-import MelonUtilities.utility.MelonUtility;
+import MelonUtilities.utility.MUtil;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -125,7 +125,7 @@ public class MelonUtilities implements ModInitializer {
 
 	public static void afterServerStart(){
 		Data.playerData.loadAll(PlayerData.class);
-		MelonUtility.timeOnInit = System.currentTimeMillis();
+		MUtil.timeOnInit = System.currentTimeMillis();
 
 		Data.configs.loadAll(ConfigData.class);
 		ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);

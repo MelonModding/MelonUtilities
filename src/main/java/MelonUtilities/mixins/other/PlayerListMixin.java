@@ -1,6 +1,6 @@
 package MelonUtilities.mixins.other;
 
-import MelonUtilities.utility.RoleBuilder;
+import MelonUtilities.utility.builders.RoleBuilder;
 import net.minecraft.core.net.packet.PlayerListPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;

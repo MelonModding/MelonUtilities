@@ -3,7 +3,7 @@ package MelonUtilities.mixins.tile_entities.golden_mesh;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
-import MelonUtilities.utility.UUIDHelper;
+import MelonUtilities.utility.helpers.UUIDHelper;
 import net.minecraft.core.block.BlockMeshGold;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.TextFormatting;

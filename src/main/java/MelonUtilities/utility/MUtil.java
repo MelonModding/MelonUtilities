@@ -15,7 +15,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 import java.io.File;
 import java.util.*;
 
-public class MelonUtility {
+public class MUtil {
 
 	public static float timeOnInit = 0;
 	public static final String SECTION_PURPLE = "§a";
