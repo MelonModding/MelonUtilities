@@ -28,7 +28,7 @@ public class ArgumentTypeRoleID implements ArgumentType<String>{
 				return string;
 			}
 		}
-		throw new CommandSyntaxException(CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument(), () -> "Failed to Delete Role: " + string + " (Role Doesn't Exist)");
+		throw new CommandSyntaxException(CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument(), () -> "Failed to find Role: " + string + " (Role Doesn't Exist)");
 	}
 
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {

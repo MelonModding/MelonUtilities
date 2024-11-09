@@ -3,7 +3,7 @@ package MelonUtilities.mixins.tile_entities.chest;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MelonUtility;
 import MelonUtilities.utility.UUIDHelper;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.block.BlockChest;
@@ -43,7 +43,7 @@ public class BlockChestMixin {
 
 	@Inject(at = @At("TAIL"), method = "onBlockPlacedByMob", cancellable = true)
 	public void onBlockPlacedInject(World world, int x, int y, int z, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") BlockChest.Type type) {
-		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getBlockEntity(x, y, z));
+		TileEntityChest existingChest = MelonUtility.getOtherChest(world, (TileEntityChest) world.getBlockEntity(x, y, z));
 		TileEntityChest placedChest = (TileEntityChest) world.getBlockEntity(x, y, z);
 
 		TileEntityContainerInterface existingIContainer = (TileEntityContainerInterface) existingChest;

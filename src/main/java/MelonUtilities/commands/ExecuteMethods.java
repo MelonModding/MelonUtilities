@@ -23,9 +23,24 @@ import static net.minecraft.server.util.helper.PlayerList.updateList;
 public class ExecuteMethods {
 
 	/*
-	 Naming Scheme for methods in this class is [  (arg = command argument/literal) arg_arg_arg ...etc ]
-	 Arguments in method name should match their registered name/literal in the ArgumentBuilder for their respective command
-	 Use ctrl+f to search for the specific command you want to edit/view. Same as in-game except no '/' and replace spaces with '_'
+	 Naming Scheme for methods in this class is:
+
+	 (arg = command argument/literal)
+	 Ex: [ arg_arg_arg ]
+
+	 Naming can also include arguments in all caps:
+	 Ex: [ arg.arg.ARG ]
+
+	 !!!Only use capitalized arguments when necessary!!!
+	 Capitalized arguments should only be used for arguments that are NOT literals, and are variable.
+	 Specifically when two methods share the same base command, and need to be differentiated from each-other
+
+	 Ex: [ role_set_defaultrole_ROLEID ]
+	 	 [ role_set_defaultrole_none ]
+
+	 * Note that both methods share the same parent argument (defaultrole), and that none is a literal (so it is not capitalized)
+
+	 PS. Arguments inside the method name should match their registered name/literal in the ArgumentBuilder for their respective command
 	*/
 
 	public static int melonutilities_reload(CommandContext<CommandSource> command){
@@ -177,7 +192,7 @@ public class ExecuteMethods {
 	public static int role_create(CommandContext<CommandSource> command) {
 		CommandSource source = command.getSource();
 		String roleID = command.getArgument("roleID", String.class);
-		String rolePriority = command.getArgument("rolePriority", String.class);
+		int rolePriority = command.getArgument("priorityValue", Integer.class);
 
 
 		if (Data.roles.dataHashMap.containsKey(roleID)) {
@@ -188,7 +203,7 @@ public class ExecuteMethods {
 		Data.roles.getOrCreate(roleID, RoleData.class);
 		Data.roles.loadAll(RoleData.class);
 		RoleCommand.getRoleDataFromRoleID(roleID).displayName = roleID;
-		RoleCommand.getRoleDataFromRoleID(roleID).priority = Integer.parseInt(rolePriority);
+		RoleCommand.getRoleDataFromRoleID(roleID).priority = rolePriority;
 		Data.roles.saveAll();
 
 		FeedbackHandler.success(source, "Created Role: " + RoleCommand.getRoleDataFromRoleID(roleID).displayName + " with Priority: " + RoleCommand.getRoleDataFromRoleID(roleID).priority);
@@ -211,6 +226,164 @@ public class ExecuteMethods {
 				FeedbackHandler.error(source, "Failed to Delete Role: " + role + " (IO Error)");
 				return Command.SINGLE_SUCCESS;
 		}
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_set_defaultrole_ROLEID(CommandContext<CommandSource> command) {
+		CommandSource source = command.getSource();
+		String roleID = command.getArgument("roleID", String.class);
+
+		for (String role : Data.roles.dataHashMap.keySet()) {
+			if (roleID.equals(role)) {
+				Data.configs.loadAll(ConfigData.class);
+				Data.configs.getOrCreate("config", ConfigData.class).defaultRole = roleID;
+				Data.configs.saveAll();
+				FeedbackHandler.success(source, "Set Default Role to: " + roleID);
+				return Command.SINGLE_SUCCESS;
+			}
+		}
+
+		FeedbackHandler.error(source, "Failed to Set Default Role (Invalid Role)");
+		RoleCommand.syntax.printLayerAndSubLayers("setDefaultRole", source);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_set_defaultrole_none(CommandContext<CommandSource> command) {
+		CommandSource source = command.getSource();
+		Data.configs.loadAll(ConfigData.class);
+		Data.configs.getOrCreate("config", ConfigData.class).defaultRole = null;
+		Data.configs.saveAll();
+		FeedbackHandler.destructive(source, "Removed Default Role");
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_set_displaymode_single(CommandContext<CommandSource> command) {
+		CommandSource source = command.getSource();
+		Data.configs.loadAll(ConfigData.class);
+		Data.configs.getOrCreate("config", ConfigData.class).displayMode = "single";
+		Data.configs.saveAll();
+		FeedbackHandler.success(source, "Set Display Mode to: single");
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_set_displaymode_multi(CommandContext<CommandSource> command) {
+		CommandSource source = command.getSource();
+		Data.configs.loadAll(ConfigData.class);
+		Data.configs.getOrCreate("config", ConfigData.class).displayMode = "multi";
+		Data.configs.saveAll();
+		FeedbackHandler.success(source, "Set Display Mode to: multi");
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_priority(CommandContext<CommandSource> command) {
+		CommandSource source = command.getSource();
+		String roleID = command.getArgument("roleID", String.class);
+		int priorityValue = command.getArgument("priorityValue", Integer.class);
+
+		Data.roles.loadAll(RoleData.class);
+		RoleCommand.getRoleDataFromRoleID(roleID).priority = priorityValue;
+		Data.roles.saveAll();
+		FeedbackHandler.success(source, "Set Priority for Role " + roleID + " to: " + TextFormatting.LIGHT_GRAY + priorityValue);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_name(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_color_COLOR(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_color_HEX(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_underline(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_bold(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_italics(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_border_color_COLOR(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_border_color_HEX(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_border_style_bracket(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_border_style_curly(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_border_style_caret(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_border_style_custom_prefix(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_border_style_custom_suffix(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_username_border_color_COLOR(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_username_border_color_HEX(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_username_border_style_bracket(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_username_border_style_curly(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_username_border_style_caret(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_username_border_style_custom_prefix(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_username_border_style_custom_suffix(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_text_color_COLOR(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_text_color_HEX(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_text_underline(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_text_bold(CommandContext<CommandSource> command) {
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_text_italics(CommandContext<CommandSource> command) {
 		return Command.SINGLE_SUCCESS;
 	}
 

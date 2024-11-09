@@ -7,9 +7,7 @@ import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.config.custom.jsonadapters.HomeJsonAdapter;
-import MelonUtilities.listeners.DebugInfoListener;
-import MelonUtilities.listeners.GuiTestListener;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MelonUtility;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,9 +18,6 @@ import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.useless.serverlibe.ServerLibe;
-
-import java.util.HashMap;
 
 import static net.minecraft.server.util.helper.PlayerList.updateList;
 
@@ -36,27 +31,6 @@ public class MelonUtilities implements ModInitializer {
 
 	public static GameRuleBoolean FIRE_TICKS = GameRules.register(new GameRuleBoolean("doFireTick", true));
 
-	public static final HashMap<String, String> colorMap = new HashMap<>();
-	static{
-		colorMap.put("purple", "§a");
-		colorMap.put("blue", "§b");
-		colorMap.put("brown", "§c");
-		colorMap.put("green", "§d");
-		colorMap.put("red", "§e");
-		colorMap.put("black", "§f");
-		colorMap.put("orange", "§1");
-		colorMap.put("magenta", "§2");
-		colorMap.put("light_blue", "§3");
-		colorMap.put("yellow", "§4");
-		colorMap.put("lime", "§5");
-		colorMap.put("pink", "§6");
-		colorMap.put("grey", "§7");
-		colorMap.put("gray", "§7");
-		colorMap.put("light_grey", "§8");
-		colorMap.put("light_gray", "§8");
-		colorMap.put("cyan", "§9");
-		colorMap.put("white", "§0");
-	}
 
 	public static void updateAll() {
 		// Crew
@@ -149,7 +123,7 @@ public class MelonUtilities implements ModInitializer {
 
 	public static void afterServerStart(){
 		Data.playerData.loadAll(PlayerData.class);
-		MUtil.timeOnInit = System.currentTimeMillis();
+		MelonUtility.timeOnInit = System.currentTimeMillis();
 
 		Data.configs.loadAll(ConfigData.class);
 		ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);

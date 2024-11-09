@@ -3,6 +3,7 @@ package MelonUtilities.utility;
 import net.minecraft.core.block.BlockChest;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.net.command.CommandSource;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.phys.HitResult;
@@ -13,7 +14,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 import java.io.File;
 import java.util.*;
 
-public class MUtil {
+public class MelonUtility {
 
 	public static float timeOnInit = 0;
 
@@ -40,6 +41,50 @@ public class MUtil {
 
 	public static File getChunkFileFromCoords(CommandSource source, int x, int z){
 		return new File(RollbackManager.snapshotsDir, source.getWorld().dimension.id + "/c[x." + x + "-z." + z + "]");
+	}
+
+	public static final HashMap<String, String> colorToSectionMap = new HashMap<>();
+	static{
+		colorToSectionMap.put("purple", "§a");
+		colorToSectionMap.put("blue", "§b");
+		colorToSectionMap.put("brown", "§c");
+		colorToSectionMap.put("green", "§d");
+		colorToSectionMap.put("red", "§e");
+		colorToSectionMap.put("black", "§f");
+		colorToSectionMap.put("orange", "§1");
+		colorToSectionMap.put("magenta", "§2");
+		colorToSectionMap.put("light_blue", "§3");
+		colorToSectionMap.put("yellow", "§4");
+		colorToSectionMap.put("lime", "§5");
+		colorToSectionMap.put("pink", "§6");
+		colorToSectionMap.put("grey", "§7");
+		colorToSectionMap.put("gray", "§7");
+		colorToSectionMap.put("light_grey", "§8");
+		colorToSectionMap.put("light_gray", "§8");
+		colorToSectionMap.put("cyan", "§9");
+		colorToSectionMap.put("white", "§0");
+	}
+
+	public static final HashMap<String, TextFormatting> colorToFormattingMap = new HashMap<>();
+	static{
+		colorToFormattingMap.put("purple", TextFormatting.PURPLE);
+		colorToFormattingMap.put("blue", TextFormatting.BLUE);
+		colorToFormattingMap.put("brown", TextFormatting.BROWN);
+		colorToFormattingMap.put("green", TextFormatting.GREEN);
+		colorToFormattingMap.put("red", TextFormatting.RED);
+		colorToFormattingMap.put("black", TextFormatting.BLACK);
+		colorToFormattingMap.put("orange", TextFormatting.ORANGE);
+		colorToFormattingMap.put("magenta", TextFormatting.MAGENTA);
+		colorToFormattingMap.put("light_blue", TextFormatting.LIGHT_BLUE);
+		colorToFormattingMap.put("yellow", TextFormatting.YELLOW);
+		colorToFormattingMap.put("lime", TextFormatting.LIME);
+		colorToFormattingMap.put("pink", TextFormatting.PINK);
+		colorToFormattingMap.put("grey", TextFormatting.GRAY);
+		colorToFormattingMap.put("gray", TextFormatting.GRAY);
+		colorToFormattingMap.put("light_grey", TextFormatting.LIGHT_GRAY);
+		colorToFormattingMap.put("light_gray", TextFormatting.LIGHT_GRAY);
+		colorToFormattingMap.put("cyan", TextFormatting.CYAN);
+		colorToFormattingMap.put("white", TextFormatting.WHITE);
 	}
 
 	public static boolean isNumeric(String strNum) {

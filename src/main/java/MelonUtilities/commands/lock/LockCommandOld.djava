@@ -4,7 +4,7 @@ import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.BlockEntityContainerInterface;
 import MelonUtilities.utility.FeedbackHandler;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MelonUtility;
 import MelonUtilities.utility.SyntaxBuilder;
 import MelonUtilities.utility.UUIDHelper;
 import net.minecraft.core.HitResult;
