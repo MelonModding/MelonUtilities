@@ -1,4 +1,4 @@
-package MelonUtilities.commands.utility;
+package MelonUtilities.commands.examples;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;

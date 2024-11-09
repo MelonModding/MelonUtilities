@@ -1,29 +1,26 @@
 package MelonUtilities.commands.role;
 
 import MelonUtilities.command_arguments.ArgumentTypeRoleID;
+import MelonUtilities.commands.ExecuteMethods;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.DataBank;
-import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.utility.FeedbackHandler;
-import MelonUtilities.utility.RoleBuilder;
 import MelonUtilities.utility.SyntaxBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.command.arguments.ArgumentTypeEntity;
 import net.minecraft.core.net.command.helpers.EntitySelector;
-import net.minecraft.server.entity.player.PlayerServer;
 
+@SuppressWarnings("UnusedReturnValue")
 public class RoleCommand implements CommandManager.CommandRegistry{
 
 	public static SyntaxBuilder syntax = new SyntaxBuilder();
@@ -75,31 +72,11 @@ public class RoleCommand implements CommandManager.CommandRegistry{
 	}
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleCreate(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("create")
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", StringArgumentType.string())
 				.then(RequiredArgumentBuilder.<CommandSource, String>argument("rolePriority", StringArgumentType.string())
 					.executes(
-						command -> {
-							CommandSource source = command.getSource();
-							String roleID = command.getArgument("roleID", String.class);
-							String rolePriority = command.getArgument("rolePriority", String.class);
-
-
-							if (Data.roles.dataHashMap.containsKey(roleID)) {
-								FeedbackHandler.error(source, "Failed to Create Role: " + roleID + " (Role Already Exists)");
-								return Command.SINGLE_SUCCESS;
-							}
-
-							Data.roles.getOrCreate(roleID, RoleData.class);
-							Data.roles.loadAll(RoleData.class);
-							getRoleDataFromRoleID(roleID).displayName = roleID;
-							getRoleDataFromRoleID(roleID).priority = Integer.parseInt(rolePriority);
-							Data.roles.saveAll();
-
-							FeedbackHandler.success(source, "Created Role: " + getRoleDataFromRoleID(roleID).displayName + " with Priority: " + getRoleDataFromRoleID(roleID).priority);
-							return Command.SINGLE_SUCCESS;
-						}
+						ExecuteMethods::role_create
 					)
 				)
 			)
@@ -111,24 +88,7 @@ public class RoleCommand implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("delete")
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", ArgumentTypeRoleID.roleID())
 				.executes(
-					command -> {
-						CommandSource source = command.getSource();
-						String role = command.getArgument("roleID", String.class);
-
-						switch (Data.roles.remove(role)) {
-							case DataBank.NO_ERROR:
-								FeedbackHandler.destructive(source, "Deleted Role: " + role);
-								return Command.SINGLE_SUCCESS;
-							case DataBank.ROLE_DOESNT_EXIST:
-								FeedbackHandler.error(source, "Failed to Delete Role: " + role + " (Role Doesn't Exist)");
-								syntax.printLayerAndSubLayers("delete", source);
-								return Command.SINGLE_SUCCESS;
-							case DataBank.IO_ERROR:
-								FeedbackHandler.error(source, "Failed to Delete Role: " + role + " (IO Error)");
-								return Command.SINGLE_SUCCESS;
-						}
-						return Command.SINGLE_SUCCESS;
-					}
+					ExecuteMethods::role_delete
 				)
 			)
 		);
@@ -145,43 +105,7 @@ public class RoleCommand implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", ArgumentTypeRoleID.roleID())
 				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
 					.executes(
-						command -> {
-
-							CommandSource source = command.getSource();
-							String role = command.getArgument("roleID", String.class);
-							EntitySelector entitySelector = (EntitySelector)command.getArgument("target", EntitySelector.class);
-							String target = ((Player)entitySelector.get(source).get(0)).username;
-
-							if(!Data.roles.dataHashMap.containsKey(role)){
-								FeedbackHandler.error(source, "Failed to Grant Role (Role doesn't exist!)");
-								syntax.printLayerAndSubLayers("grant", source);
-								return Command.SINGLE_SUCCESS;
-							}
-
-							RoleData roleData = getRoleDataFromRoleID(role);
-
-							if(!roleData.playersGrantedRole.contains(source.getSender().username)){
-								Data.roles.loadAll(RoleData.class);
-								getRoleDataFromRoleID(role).playersGrantedRole.add(source.getSender().username);
-								Data.roles.saveAll();
-								FeedbackHandler.success(source, "Granted Role: " + role + " to player: " + TextFormatting.LIGHT_GRAY + source.getSender().username);
-								return Command.SINGLE_SUCCESS;
-							} else if (!roleData.playersGrantedRole.contains(target)){
-								Data.roles.loadAll(RoleData.class);
-								getRoleDataFromRoleID(role).playersGrantedRole.add(target);
-								Data.roles.saveAll();
-								FeedbackHandler.success(source, "Granted Role: " + role + " to player: " + TextFormatting.LIGHT_GRAY + target);
-								return Command.SINGLE_SUCCESS;
-							} else if (roleData.playersGrantedRole.contains(source.getSender().username) || roleData.playersGrantedRole.contains(target)) {
-								FeedbackHandler.error(source, "Failed to Grant Role (Player already has Role!)");
-								return Command.SINGLE_SUCCESS;
-							}
-
-
-							FeedbackHandler.error(source, "Failed to Grant Role (Default Error) (Invalid Syntax?)");
-							syntax.printLayerAndSubLayers("grant", source);
-							return Command.SINGLE_SUCCESS;
-						}
+						ExecuteMethods::role_grant
 					)
 				)
 			)
@@ -194,42 +118,7 @@ public class RoleCommand implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", ArgumentTypeRoleID.roleID())
 				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
 					.executes(
-						command -> {
-
-							CommandSource source = command.getSource();
-							String role = command.getArgument("roleID", String.class);
-							EntitySelector entitySelector = (EntitySelector)command.getArgument("target", EntitySelector.class);
-							String target = ((Player)entitySelector.get(source).get(0)).username;
-
-							if(!Data.roles.dataHashMap.containsKey(role)){
-								FeedbackHandler.error(source, "Failed to Revoke Role (Role doesn't exist!)");
-								syntax.printLayerAndSubLayers("revoke", source);
-								return Command.SINGLE_SUCCESS;
-							}
-
-							RoleData roleData = getRoleDataFromRoleID(role);
-
-							if (roleData.playersGrantedRole.contains(target)) {
-								Data.roles.loadAll(RoleData.class);
-								getRoleDataFromRoleID(role).playersGrantedRole.remove(target);
-								Data.roles.saveAll();
-								FeedbackHandler.destructive(source, "Revoked Role: " + role + " from player: " + TextFormatting.LIGHT_GRAY + target);
-								return Command.SINGLE_SUCCESS;
-							} else if (roleData.playersGrantedRole.contains(source.getSender().username)){
-								Data.roles.loadAll(RoleData.class);
-								getRoleDataFromRoleID(role).playersGrantedRole.remove(source.getSender().username);
-								Data.roles.saveAll();
-								FeedbackHandler.destructive(source, "Revoked Role: " + role + " from player: " + TextFormatting.LIGHT_GRAY + source.getSender().username);
-								return Command.SINGLE_SUCCESS;
-							} else if (!roleData.playersGrantedRole.contains(source.getSender().username) || !roleData.playersGrantedRole.contains(target)) {
-								FeedbackHandler.error(source, "Failed to Revoke Role (Player does not have Role!)");
-								return Command.SINGLE_SUCCESS;
-							}
-
-							FeedbackHandler.error(source, "Failed to Revoke Role (Default Error) (Invalid Syntax?)");
-							syntax.printLayerAndSubLayers("revoke", source);
-							return Command.SINGLE_SUCCESS;
-						}
+						ExecuteMethods::role_revoke
 					)
 				)
 			)
@@ -244,25 +133,7 @@ public class RoleCommand implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleList(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("list")
 			.executes(
-				command -> {
-					CommandSource source = command.getSource();
-					if (Data.roles.dataHashMap.isEmpty()) {
-						source.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
-						source.sendMessage(TextFormatting.LIGHT_GRAY + "  -No Roles Created-");
-						return Command.SINGLE_SUCCESS;
-					}
-
-					source.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
-
-					for (String role : Data.roles.dataHashMap.keySet()) {
-						source.sendMessage(TextFormatting.LIGHT_GRAY + "  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + role + TextFormatting.LIGHT_GRAY + " - Priority: " + TextFormatting.WHITE + getRoleDataFromRoleID(role).priority);
-						source.sendMessage(TextFormatting.LIGHT_GRAY + "    > " + RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(role))
-							+ RoleBuilder.buildRoleUsername(Data.roles.dataHashMap.get(role), source.getSender().getDisplayName())
-							+ RoleBuilder.buildRoleTextFormat(Data.roles.dataHashMap.get(role)) + "text");
-					}
-
-					return Command.SINGLE_SUCCESS;
-				}
+				ExecuteMethods::role_list
 			)
 		);
 		return builder;
@@ -271,16 +142,7 @@ public class RoleCommand implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleReload(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
 			.executes(
-				command -> {
-					CommandSource source = command.getSource();
-					Data.roles.loadAll(RoleData.class);
-					FeedbackHandler.success(source, "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
-					buildRoleSyntax();
-					FeedbackHandler.success(source, "Built Role Syntax!");
-					Data.configs.loadAll(ConfigData.class);
-					FeedbackHandler.success(source, "Reloaded Config!");
-					return Command.SINGLE_SUCCESS;
-				}
+				ExecuteMethods::role_reload
 			)
 		);
 		return builder;

@@ -1,14 +1,13 @@
-package MelonUtilities.commands.utility;
+package MelonUtilities.commands.examples;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import com.mojang.brigadier.context.ParsedCommandNode;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.CommandNode;
-import java.util.Iterator;
+
 import java.util.Map;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.CommandManager;

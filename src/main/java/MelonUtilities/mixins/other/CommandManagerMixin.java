@@ -1,16 +1,12 @@
 package MelonUtilities.mixins.other;
 
 import MelonUtilities.commands.role.RoleCommand;
-import MelonUtilities.commands.utility.HelpCommand;
-import MelonUtilities.commands.utility.MUCommand;
+import MelonUtilities.commands.utility.MelonUtilitiesCommand;
 import MelonUtilities.commands.utility.ReloadCommand;
-import MelonUtilities.config.Data;
-import MelonUtilities.config.datatypes.ConfigData;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.net.command.CommandManager;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -50,7 +46,7 @@ public class CommandManagerMixin {
 
 			// Utility
 			//TODO CommandManager.registerCommand(new HelperCommand());
-			CommandManager.registerCommand(new MUCommand());
+			CommandManager.registerCommand(new MelonUtilitiesCommand());
 			CommandManager.registerCommand(new ReloadCommand());
 
 			// Warp
