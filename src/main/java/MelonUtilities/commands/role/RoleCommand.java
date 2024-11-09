@@ -364,8 +364,10 @@ public class RoleCommand implements CommandManager.CommandRegistry{
 		roleDelete(commandBuilder);
 		roleGrant(commandBuilder);
 		roleRevoke(commandBuilder);
+		roleEdit(commandBuilder);
 		roleList(commandBuilder);
 		roleReload(commandBuilder);
+		roleSet(commandBuilder);
 
 		dispatcher.register(commandBuilder);
 	}
