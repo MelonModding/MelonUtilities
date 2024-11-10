@@ -1,8 +1,8 @@
 package MelonUtilities.utility.builders;
 
 import MelonUtilities.config.Data;
+import MelonUtilities.config.custom.classes.Role;
 import MelonUtilities.config.datatypes.ConfigData;
-import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.utility.MUtil;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.TextFormatting;
@@ -21,7 +21,7 @@ public class RoleBuilder {
 		return string;
 	}
 
-	public static String buildRoleDisplay(RoleData role){
+	public static String buildRoleDisplay(Role role){
 		String roleDisplay = "";
 
 		String borderColor = getCodeOrHex(role.displayBorderColor);
@@ -56,7 +56,7 @@ public class RoleBuilder {
 		return roleDisplay;
 	}
 
-	public static String buildRoleUsername(RoleData role, String username){
+	public static String buildRoleUsername(Role role, String username){
 		String roleUsername = "";
 
 		String borderColor = getCodeOrHex(role.usernameBorderColor);
@@ -91,7 +91,7 @@ public class RoleBuilder {
 		return roleUsername;
 	}
 
-	public static String buildRoleTextFormat(RoleData role){
+	public static String buildRoleTextFormat(Role role){
 		String roleTextFormat = "";
 
 		String color = getCodeOrHex(role.textColor);
@@ -116,20 +116,20 @@ public class RoleBuilder {
 	public static String buildPlayerRoleDisplay(Player player) {
 
 		String defaultRoleDisplay;
-		if(Data.roles.dataHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole) == null){
+		if(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
-		ArrayList<RoleData> rolesGranted = new ArrayList<>();
+		ArrayList<Role> rolesGranted = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
 			rolesGranted.add(null);
 		}
 
 		boolean hasBeenGrantedRole = false;
-		for (RoleData role : Data.roles.dataHashMap.values()) {
+		for (Role role : Data.Roles.roleHashMap.values()) {
 			if (role.playersGrantedRole.contains(player.username)) {
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
@@ -138,7 +138,7 @@ public class RoleBuilder {
 
 		String highestPriorityRoleDisplay = "";
 		int tempPriority = Integer.MAX_VALUE;
-		for (RoleData role : rolesGranted) {
+		for (Role role : rolesGranted) {
 			if (role != null && role.priority < tempPriority) {
 				tempPriority = role.priority;
 				highestPriorityRoleDisplay = buildRoleDisplay(role);

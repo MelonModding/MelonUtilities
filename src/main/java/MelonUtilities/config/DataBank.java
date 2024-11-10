@@ -27,13 +27,13 @@ public class DataBank<Data> {
 	//Using the getOrCreateData method on an unused/empty id will create a file with that id, hence there being no createData method
 
 
-	String filePath = FabricLoader.getInstance().getConfigDir() + "/" + MelonUtilities.MOD_ID + "/";
+	String dirPath = FabricLoader.getInstance().getConfigDir() + "/" + MelonUtilities.MOD_ID + "/";
 	Data dataType;
 	public final HashMap<String, File> fileHashMap = new HashMap<>();
 	public final HashMap<String, Data> dataHashMap = new HashMap<>();
 
 	public DataBank(String dirName, Data dataType){
-		this.filePath = this.filePath + dirName;
+		this.dirPath = this.dirPath + dirName;
 		this.dataType = dataType;
 		new File("./config/"  + MelonUtilities.MOD_ID + "/" + dirName).mkdirs();
 	}
@@ -49,10 +49,11 @@ public class DataBank<Data> {
 	}
 
 	private void prepareFile(String id) {
+
 		if (fileHashMap.get(id) != null) {
 			return;
 		}
-		fileHashMap.put(id, new File(Paths.get(filePath).toFile(), id + ".json"));
+		fileHashMap.put(id, new File(Paths.get(dirPath).toFile(), id + ".json"));
 	}
 
 	private void load(String id, Class<Data> dataClass) {
@@ -75,7 +76,7 @@ public class DataBank<Data> {
 
 	public void loadAll(Class<Data> dataClass){
 		try {
-			Set<String> files = listFilesUsingFilesList(filePath);
+			Set<String> files = listFilesUsingFilesList(dirPath);
 			dataHashMap.clear();
 			for (String file : files){
 				load(file.replace(".json", ""), dataClass);
@@ -108,33 +109,40 @@ public class DataBank<Data> {
 
 	public Data getOrCreate(String id, Class<Data> dataClass) {
 		if (dataHashMap.get(id) == null){
-			{
-				dataHashMap.put(id, dataType);
-				load(id, dataClass);
+			dataHashMap.put(id, dataType);
+			load(id, dataClass);
 
-				return dataHashMap.get(id);
-			}
+			return dataHashMap.get(id);
 		}
 		return dataHashMap.get(id);
 	}
 
 
 	public static final int NO_ERROR = 0;
-	public static final int ROLE_DOESNT_EXIST = 1;
+	public static final int DOESNT_EXIST = 1;
 	public static final int IO_ERROR = 2;
 
 	public int remove(String id) {
-		if (!fileHashMap.containsKey(id)) {
-			return ROLE_DOESNT_EXIST;
+		if(!dataHashMap.containsKey(id) && !fileHashMap.containsKey(id)){
+			return DOESNT_EXIST;
 		}
-		if (!fileHashMap.get(id).delete()) {
+
+		if (!dataHashMap.containsKey(id) && fileHashMap.containsKey(id)) {
 			fileHashMap.remove(id);
-			dataHashMap.remove(id);
-			return IO_ERROR;
-		} else {
-			fileHashMap.remove(id);
+			return NO_ERROR;
+		}
+
+		if (dataHashMap.containsKey(id) && !fileHashMap.containsKey(id)) {
 			dataHashMap.remove(id);
 			return NO_ERROR;
 		}
+
+		if(!fileHashMap.get(id).delete()) {
+			return IO_ERROR;
+		}
+
+		fileHashMap.remove(id);
+		dataHashMap.remove(id);
+		return NO_ERROR;
 	}
 }

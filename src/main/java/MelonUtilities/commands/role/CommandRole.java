@@ -1,10 +1,9 @@
 package MelonUtilities.commands.role;
 
 import MelonUtilities.command_arguments.ArgumentTypeColor;
-import MelonUtilities.command_arguments.ArgumentTypeRoleID;
+import MelonUtilities.command_arguments.ArgumentTypeRole;
 import MelonUtilities.commands.ExecuteMethods;
-import MelonUtilities.config.Data;
-import MelonUtilities.config.datatypes.RoleData;
+import MelonUtilities.config.custom.classes.Role;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -66,10 +65,6 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		syntax.append("reload", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role reload");
 	}
 
-	public static RoleData getRoleDataFromRoleID(String arg){
-		return Data.roles.getOrCreate(arg, RoleData.class);
-	}
-
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleCreate(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("create")
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", StringArgumentType.string())
@@ -85,7 +80,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleDelete(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("delete")
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", ArgumentTypeRoleID.roleID())
+			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.executes(
 					ExecuteMethods::role_delete
 				)
@@ -96,7 +91,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleEdit(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("edit")
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", ArgumentTypeRoleID.roleID())
+			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(LiteralArgumentBuilder.<CommandSource>literal("priority")
 					.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 4096))
 						.executes(
@@ -159,6 +154,11 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 						.then(LiteralArgumentBuilder.<CommandSource>literal("style")
+							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
+								.executes(
+									ExecuteMethods::role_edit_display_border_style_none
+								)
+							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
 								.executes(
 									ExecuteMethods::role_edit_display_border_style_bracket
@@ -208,6 +208,11 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 						.then(LiteralArgumentBuilder.<CommandSource>literal("style")
+							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
+								.executes(
+									ExecuteMethods::role_edit_username_border_style_none
+								)
+							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
 								.executes(
 									ExecuteMethods::role_edit_username_border_style_bracket
@@ -284,7 +289,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleGrant(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("grant")
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", ArgumentTypeRoleID.roleID())
+			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
 					.executes(
 						ExecuteMethods::role_grant
@@ -297,7 +302,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleRevoke(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("revoke")
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", ArgumentTypeRoleID.roleID())
+			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
 					.executes(
 						ExecuteMethods::role_revoke
@@ -311,7 +316,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleSet(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("set")
 			.then(LiteralArgumentBuilder.<CommandSource>literal("defaultrole")
-				.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", ArgumentTypeRoleID.roleID())
+				.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 					.executes(
 						ExecuteMethods::role_set_defaultrole_ROLEID
 					)

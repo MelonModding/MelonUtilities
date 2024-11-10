@@ -56,7 +56,7 @@ public class FeedbackHandler {
 
 		msg = String.valueOf(tempmsg);
 		source.sendMessage(feedbackType.getColorFormat() + msg);
-		MelonUtilities.LOGGER.info("{} used command '{}' ", source.getName(), context.getCommand());
+		MelonUtilities.LOGGER.info("{} used command '{}' ", source.getName(), context.getInput());
 
 		if(!feedbackType.getSoundPath().equals("NO_SOUND")){
 			Player player = source.getSender();

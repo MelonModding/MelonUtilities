@@ -2,6 +2,7 @@ package MelonUtilities.mixins.other;
 
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
+import MelonUtilities.config.custom.classes.Role;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
@@ -9,7 +10,6 @@ import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.helpers.UUIDHelper;
 import com.llamalad7.mixinextras.sugar.Local;
 import MelonUtilities.utility.builders.RoleBuilder;
-import MelonUtilities.config.datatypes.RoleData;
 import net.minecraft.core.block.entity.*;
 import net.minecraft.core.net.command.*;
 import net.minecraft.core.net.packet.BlockUpdatePacket;
@@ -51,27 +51,27 @@ public abstract class PacketHandlerServerMixin {
 		String defaultRoleUsername;
 		String defaultRoleTextFormatting;
 
-		if(Data.roles.dataHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole) == null){
+		if(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole) == null){
 			defaultRoleDisplay = null;
 			defaultRoleUsername = null;
 			defaultRoleTextFormatting = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole));
-			defaultRoleUsername = RoleBuilder.buildRoleUsername(Data.roles.dataHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole), this.playerEntity.getDisplayName());
-			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(Data.roles.dataHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole));
+			defaultRoleUsername = RoleBuilder.buildRoleUsername(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole), this.playerEntity.getDisplayName());
+			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
 		String roleUsername = "" + TextFormatting.RESET + TextFormatting.WHITE + "<" + this.playerEntity.getDisplayName() + TextFormatting.RESET + "> ";
 		String roleTextFormatting = "" + TextFormatting.WHITE;
 
-		ArrayList<RoleData> rolesGranted = new ArrayList<>();
+		ArrayList<Role> rolesGranted = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
 			rolesGranted.add(null);
 		}
 
 		boolean hasBeenGrantedRole = false;
-		for(RoleData role : Data.roles.dataHashMap.values()){
+		for(Role role : Data.Roles.roleHashMap.values()){
 			if(role.playersGrantedRole.contains(this.playerEntity.username)){
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
@@ -80,7 +80,7 @@ public abstract class PacketHandlerServerMixin {
 
 		String highestPriorityRoleDisplay = "";
 		int tempPriority = Integer.MAX_VALUE;
-		for(RoleData role : rolesGranted){
+		for(Role role : rolesGranted){
 			if (role != null && role.priority < tempPriority) {
 				tempPriority = role.priority;
 				highestPriorityRoleDisplay = RoleBuilder.buildRoleDisplay(role);

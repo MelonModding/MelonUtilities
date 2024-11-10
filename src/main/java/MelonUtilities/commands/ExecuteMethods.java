@@ -2,17 +2,17 @@ package MelonUtilities.commands;
 
 import MelonUtilities.commands.role.CommandRole;
 import MelonUtilities.config.Data;
-import MelonUtilities.config.DataBank;
+import MelonUtilities.config.custom.classes.Role;
 import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.KitData;
 import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandler;
 import MelonUtilities.utility.builders.RoleBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
@@ -64,8 +64,8 @@ public class ExecuteMethods {
 		//TODO FeedbackHandler.success(source, "Kit Syntax Built!");
 
 		FeedbackHandler.destructive(context, "Reloading Role Data...");
-		Data.roles.loadAll(RoleData.class);
-		FeedbackHandler.success(context, "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
+		Data.Roles.reload();
+		FeedbackHandler.success(context, "Reloaded " + Data.Roles.roleHashMap.size() + " Role(s)!");
 
 		FeedbackHandler.destructive(context, "Building Role Syntax...");
 		CommandRole.buildRoleSyntax();
@@ -86,8 +86,8 @@ public class ExecuteMethods {
 	}
 
 	public static int role_reload(CommandContext<CommandSource> context) {
-		Data.roles.loadAll(RoleData.class);
-		FeedbackHandler.success(context, "Reloaded %" + Data.roles.dataHashMap.size() + "% Role(s)!");
+		Data.Roles.reload();
+		FeedbackHandler.success(context, "Reloaded %" + Data.Roles.roleHashMap.size() + "% Role(s)!");
 		CommandRole.buildRoleSyntax();
 		FeedbackHandler.success(context, "Built Role Syntax!");
 		Data.configs.loadAll(ConfigData.class);
@@ -98,20 +98,19 @@ public class ExecuteMethods {
 	public static int role_list(CommandContext<CommandSource> context) {
 		CommandSource source = context.getSource();
 
-		if (Data.roles.dataHashMap.isEmpty()) {
-			source.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
-			source.sendMessage(TextFormatting.LIGHT_GRAY + "  -No Roles Created-");
+		if (Data.Roles.roleHashMap.isEmpty()) {
+			source.sendMessage(TextFormatting.GRAY + "< " + TextFormatting.LIGHT_GRAY + "Roles: " + TextFormatting.GRAY + " >");
+			source.sendMessage(TextFormatting.GRAY + "  -No Roles Created-");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		source.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
+		source.sendMessage(TextFormatting.GRAY + "< " + TextFormatting.LIGHT_GRAY + "Roles: " + TextFormatting.GRAY + " >");
 
-		for (String roleID : Data.roles.dataHashMap.keySet()) {
-			RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
-			source.sendMessage(TextFormatting.LIGHT_GRAY + "  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + roleID + TextFormatting.LIGHT_GRAY + " - Priority: " + TextFormatting.WHITE + roleData.priority);
-			source.sendMessage(TextFormatting.LIGHT_GRAY + "    > " + RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(roleID))
-				+ RoleBuilder.buildRoleUsername(roleData, source.getSender().getDisplayName())
-				+ RoleBuilder.buildRoleTextFormat(roleData) + "keep on melon(ing)!"
+		for (Role role : Data.Roles.roleHashMap.values()) {
+			source.sendMessage(TextFormatting.GRAY + "  > " + TextFormatting.LIGHT_GRAY + "Role ID: " + TextFormatting.GRAY + "[" + TextFormatting.LIGHT_GRAY + role.roleID + TextFormatting.GRAY + "]" + TextFormatting.LIGHT_GRAY + " - Priority: " + TextFormatting.GRAY + "[" + TextFormatting.LIGHT_GRAY + role.priority + TextFormatting.GRAY + "]");
+			source.sendMessage(TextFormatting.GRAY + "    > " + RoleBuilder.buildRoleDisplay(role)
+				+ RoleBuilder.buildRoleUsername(role, source.getSender().getDisplayName())
+				+ RoleBuilder.buildRoleTextFormat(role) + "text"
 			);
 		}
 
@@ -120,24 +119,17 @@ public class ExecuteMethods {
 
 	public static int role_revoke(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		CommandSource source = context.getSource();
-		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
+		Role role = context.getArgument("role", Role.class);
+
 		EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
 		String target = ((Player)entitySelector.get(source).get(0)).username;
 
-		if(!Data.roles.dataHashMap.containsKey(roleID)){
-			FeedbackHandler.error(context, "Failed to Revoke Role %" + roleData.displayName + "% (Role doesn't exist!)");
-			CommandRole.syntax.printLayerAndSubLayers("revoke", source);
-			return Command.SINGLE_SUCCESS;
-		}
-
-		if (roleData.playersGrantedRole.contains(target)) {
-			Data.roles.loadAll(RoleData.class);
-			roleData.playersGrantedRole.remove(target);
-			Data.roles.saveAll();
-			FeedbackHandler.destructive(context, "Revoked Role %" + roleID + "% from Player %" + target);
+		if (role.playersGrantedRole.contains(target)) {
+			role.playersGrantedRole.remove(target);
+			role.save();
+			FeedbackHandler.destructive(context, "Revoked Role %" + role.displayName + "% from Player %" + target);
 		} else {
-			FeedbackHandler.error(context, "Failed to Revoke Role %" + roleData.displayName + "% from Player %" + target);
+			FeedbackHandler.error(context, "Failed to Revoke Role %" + role.displayName + "% from Player %" + target);
 			FeedbackHandler.error(context, "(Player does not have Role!)");
 		}
 
@@ -146,24 +138,17 @@ public class ExecuteMethods {
 
 	public static int role_grant(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		CommandSource source = context.getSource();
-		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
+		Role role = context.getArgument("role", Role.class);
+
 		EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
 		String target = ((Player)entitySelector.get(source).get(0)).username;
 
-		if(!Data.roles.dataHashMap.containsKey(roleID)){
-			FeedbackHandler.error(context, "Failed to Grant Role %" + roleData.displayName + "% (Role doesn't exist!)");
-			CommandRole.syntax.printLayerAndSubLayers("grant", source);
-			return Command.SINGLE_SUCCESS;
-		}
-
-		if (!roleData.playersGrantedRole.contains(target)){
-			Data.roles.loadAll(RoleData.class);
-			roleData.playersGrantedRole.add(target);
-			Data.roles.saveAll();
-			FeedbackHandler.success(context, "Granted Role %" + roleData.displayName + "% to Player %" + target);
+		if (!role.playersGrantedRole.contains(target)){
+			role.playersGrantedRole.add(target);
+			role.save();
+			FeedbackHandler.success(context, "Granted Role %" + role.displayName + "% to Player %" + target);
 		} else {
-			FeedbackHandler.error(context, "Failed to Grant Role %" + roleData.displayName + "% to Player %" + target);
+			FeedbackHandler.error(context, "Failed to Grant Role %" + role.displayName + "% to Player %" + target);
 			FeedbackHandler.error(context, "(Player already has Role!)");
 		}
 		return Command.SINGLE_SUCCESS;
@@ -171,64 +156,39 @@ public class ExecuteMethods {
 
 	public static int role_create(CommandContext<CommandSource> context) {
 		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
 		int rolePriority = context.getArgument("priorityValue", Integer.class);
 
-
-		if (Data.roles.dataHashMap.containsKey(roleID)) {
-			FeedbackHandler.error(context, "Failed to Create Role %" + roleData.displayName + "% (Role Already Exists)");
+		if (Data.Roles.roleHashMap.containsKey(roleID)) {
+			FeedbackHandler.error(context, "Failed to Create Role with RoleID %" + roleID + "% (Role Already Exists)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		Data.roles.getOrCreate(roleID, RoleData.class);
-		Data.roles.loadAll(RoleData.class);
-		roleData.displayName = roleID;
-		roleData.priority = rolePriority;
-		Data.roles.saveAll();
+		Role role = Data.Roles.create(roleID);
+		role.displayName = roleID;
+		role.priority = rolePriority;
+		role.save();
 
-		FeedbackHandler.success(context, "Created Role %" + roleData.displayName + "% with Priority %" + roleData.priority);
+		FeedbackHandler.success(context, "Created Role %" + role.displayName + "% with Priority %" + role.priority);
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_delete(CommandContext<CommandSource> context) {
-		CommandSource source = context.getSource();
-		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
+	public static int role_delete(CommandContext<CommandSource> context) throws CommandSyntaxException {
+		Role role = context.getArgument("role", Role.class);
 
-		switch (Data.roles.remove(roleID)) {
-			case DataBank.NO_ERROR:
-				FeedbackHandler.destructive(context, "Deleted Role %" + roleData.displayName);
-				return Command.SINGLE_SUCCESS;
-			case DataBank.ROLE_DOESNT_EXIST:
-				FeedbackHandler.error(context, "Failed to Delete Role %" + roleData.displayName + "% (Role Doesn't Exist)");
-				CommandRole.syntax.printLayerAndSubLayers("delete", source);
-				return Command.SINGLE_SUCCESS;
-			case DataBank.IO_ERROR:
-				FeedbackHandler.error(context, "Failed to Delete Role %" + roleData.displayName + "% (IO Error)");
-				return Command.SINGLE_SUCCESS;
-		}
+		FeedbackHandler.destructive(context, "Deleted Role %" + role.displayName);
+		role.delete();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_set_defaultrole_ROLEID(CommandContext<CommandSource> context) {
-		CommandSource source = context.getSource();
-		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
+	public static int role_set_defaultrole_ROLEID(CommandContext<CommandSource> context) throws CommandSyntaxException {
+		Role role = context.getArgument("role", Role.class);
 
-		for (String role : Data.roles.dataHashMap.keySet()) {
-			if (roleID.equals(role)) {
-				Data.configs.loadAll(ConfigData.class);
-				Data.configs.getOrCreate("config", ConfigData.class).defaultRole = roleID;
-				Data.configs.saveAll();
-				FeedbackHandler.success(context, "Set Default Role to %" + roleData.displayName);
-				return Command.SINGLE_SUCCESS;
-			}
-		}
-
-		FeedbackHandler.error(context, "Failed to Set Default Role to %" + roleData.displayName);
-		FeedbackHandler.error(context, "(Invalid Role)");
-		CommandRole.syntax.printLayerAndSubLayers("setDefaultRole", source);
+		Data.configs.loadAll(ConfigData.class);
+		Data.configs.getOrCreate("config", ConfigData.class).defaultRole = role.roleID;
+		Data.configs.saveAll();
+		FeedbackHandler.success(context, "Set Default Role to %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
+
 	}
 
 	public static int role_set_defaultrole_none(CommandContext<CommandSource> context) {
@@ -255,327 +215,327 @@ public class ExecuteMethods {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_priority(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+	public static int role_edit_priority(CommandContext<CommandSource> context) throws CommandSyntaxException {
+		Role role = context.getArgument("role", Role.class);
 		int priorityValue = context.getArgument("priorityValue", Integer.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.priority = priorityValue;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Priority for Role %" + roleData.displayName + "% to %" + priorityValue);
+		role.priority = priorityValue;
+		role.save();
+		FeedbackHandler.success(context, "Set Priority for Role %" + role.displayName + "% to %" + priorityValue);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_name(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String displayName = context.getArgument("displayName", String.class);
 
-		FeedbackHandler.success(context, "Set Display Name for Role %" + roleData.displayName + "% to %" + displayName);
-		Data.roles.loadAll(RoleData.class);
-		roleData.displayName = displayName;
-		Data.roles.saveAll();
+		FeedbackHandler.success(context, "Set Display Name for Role %" + role.displayName + "% to %" + displayName);
+		role.displayName = displayName;
+		role.save();
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_color_COLOR(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String color = context.getArgument("color", String.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.displayColor = color;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Color for Role %" + roleData.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
+		role.displayColor = color;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Color for Role %" + role.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_color_HEX(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.displayColor = hex;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Color for Role %" + roleData.displayName + "% to %§<" + hex + ">" + hex);
+		role.displayColor = hex;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Color for Role %" + role.displayName + "% to %§<" + hex + ">" + hex);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_underline(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		boolean value = context.getArgument("value", Boolean.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isDisplayUnderlined = value;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Underline for Role %" + roleData.displayName + "% to: %" + value);
+		role.isDisplayUnderlined = value;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Underline for Role %" + role.displayName + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_bold(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		boolean value = context.getArgument("value", Boolean.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isDisplayBold = value;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Bold for Role %" + roleData.displayName + "% to: %" + value);
+		role.isDisplayBold = value;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Bold for Role %" + role.displayName + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_italics(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		boolean value = context.getArgument("value", Boolean.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isDisplayItalics = value;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Italics for Role %" + roleData.displayName + "% to: %" + value);
+		role.isDisplayItalics = value;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Italics for Role %" + role.displayName + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_border_color_COLOR(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String color = context.getArgument("color", String.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.displayBorderColor = color;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Border Color for Role %" + roleData.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
+		role.displayBorderColor = color;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Border Color for Role %" + role.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_border_color_HEX(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.displayBorderColor = hex;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Border Color for Role %" + roleData.displayName + "% to %§<" + hex + ">" + hex);
+		role.displayBorderColor = hex;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Border Color for Role %" + role.displayName + "% to %§<" + hex + ">" + hex);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_display_border_style_none(CommandContext<CommandSource> context) {
+		Role role = context.getArgument("role", Role.class);
+
+		role.isUsernameBorderBracket = false;
+		role.isUsernameBorderNone = true;
+		role.isUsernameBorderCaret = false;
+		role.isUsernameBorderCurly = false;
+		role.isUsernameBorderCustom = false;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Border to % □None□ % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_border_style_bracket(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isDisplayBorderBracket = true;
-		roleData.isDisplayBorderNone = false;
-		roleData.isDisplayBorderCaret = false;
-		roleData.isDisplayBorderCurly = false;
-		roleData.isDisplayBorderCustom = false;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Border to % [Bracket] % for Role %" + roleData.displayName);
+		role.isDisplayBorderBracket = true;
+		role.isDisplayBorderNone = false;
+		role.isDisplayBorderCaret = false;
+		role.isDisplayBorderCurly = false;
+		role.isDisplayBorderCustom = false;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Border to % [Bracket] % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_border_style_curly(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isDisplayBorderBracket = false;
-		roleData.isDisplayBorderNone = false;
-		roleData.isDisplayBorderCaret = false;
-		roleData.isDisplayBorderCurly = true;
-		roleData.isDisplayBorderCustom = false;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Border to % {Curly} % for Role %" + roleData.displayName);
+		role.isDisplayBorderBracket = false;
+		role.isDisplayBorderNone = false;
+		role.isDisplayBorderCaret = false;
+		role.isDisplayBorderCurly = true;
+		role.isDisplayBorderCustom = false;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Border to % {Curly} % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_border_style_caret(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isDisplayBorderBracket = false;
-		roleData.isDisplayBorderNone = false;
-		roleData.isDisplayBorderCaret = true;
-		roleData.isDisplayBorderCurly = false;
-		roleData.isDisplayBorderCustom = false;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Border to % <Caret> % for Role %" + roleData.displayName);
+		role.isDisplayBorderBracket = false;
+		role.isDisplayBorderNone = false;
+		role.isDisplayBorderCaret = true;
+		role.isDisplayBorderCurly = false;
+		role.isDisplayBorderCustom = false;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Border to % <Caret> % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_border_style_custom_prefix(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String customAffix = context.getArgument("customAffix", String.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isDisplayBorderBracket = false;
-		roleData.isDisplayBorderNone = false;
-		roleData.isDisplayBorderCaret = false;
-		roleData.isDisplayBorderCurly = false;
-		roleData.isDisplayBorderCustom = true;
-		roleData.customDisplayBorderPrefix = customAffix;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Border Prefix to % " + customAffix + "Custom? % for Role %" + roleData.displayName);
+		role.isDisplayBorderBracket = false;
+		role.isDisplayBorderNone = false;
+		role.isDisplayBorderCaret = false;
+		role.isDisplayBorderCurly = false;
+		role.isDisplayBorderCustom = true;
+		role.customDisplayBorderPrefix = customAffix;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Border Prefix to % " + customAffix + " % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_display_border_style_custom_suffix(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String customAffix = context.getArgument("customAffix", String.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isDisplayBorderBracket = false;
-		roleData.isDisplayBorderNone = false;
-		roleData.isDisplayBorderCaret = false;
-		roleData.isDisplayBorderCurly = false;
-		roleData.isDisplayBorderCustom = true;
-		roleData.customDisplayBorderSuffix = customAffix;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Display Border Suffix to % ?Custom" + customAffix + " % for Role %" + roleData.displayName);
+		role.isDisplayBorderBracket = false;
+		role.isDisplayBorderNone = false;
+		role.isDisplayBorderCaret = false;
+		role.isDisplayBorderCurly = false;
+		role.isDisplayBorderCustom = true;
+		role.customDisplayBorderSuffix = customAffix;
+		role.save();
+		FeedbackHandler.success(context, "Set Display Border Suffix to % " + customAffix + " % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_username_border_color_COLOR(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String color = context.getArgument("color", String.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.usernameBorderColor = color;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Username Border Color for Role %" + roleData.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
+		role.usernameBorderColor = color;
+		role.save();
+		FeedbackHandler.success(context, "Set Username Border Color for Role %" + role.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_username_border_color_HEX(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.usernameBorderColor = hex;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Username Border Color for Role %" + roleData.displayName + "% to %§<" + hex + ">" + hex);
+		role.usernameBorderColor = hex;
+		role.save();
+		FeedbackHandler.success(context, "Set Username Border Color for Role %" + role.displayName + "% to %§<" + hex + ">" + hex);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int role_edit_username_border_style_none(CommandContext<CommandSource> context) {
+		Role role = context.getArgument("role", Role.class);
+
+		role.isUsernameBorderBracket = false;
+		role.isUsernameBorderNone = true;
+		role.isUsernameBorderCaret = false;
+		role.isUsernameBorderCurly = false;
+		role.isUsernameBorderCustom = false;
+		role.save();
+		FeedbackHandler.success(context, "Set Username Border to % □None□ % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_username_border_style_bracket(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isUsernameBorderBracket = true;
-		roleData.isUsernameBorderNone = false;
-		roleData.isUsernameBorderCaret = false;
-		roleData.isUsernameBorderCurly = false;
-		roleData.isUsernameBorderCustom = false;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Username Border to % [Bracket] % for Role %" + roleData.displayName);
+		role.isUsernameBorderBracket = true;
+		role.isUsernameBorderNone = false;
+		role.isUsernameBorderCaret = false;
+		role.isUsernameBorderCurly = false;
+		role.isUsernameBorderCustom = false;
+		role.save();
+		FeedbackHandler.success(context, "Set Username Border to % [Bracket] % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_username_border_style_curly(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isUsernameBorderBracket = false;
-		roleData.isUsernameBorderNone = false;
-		roleData.isUsernameBorderCaret = false;
-		roleData.isUsernameBorderCurly = true;
-		roleData.isUsernameBorderCustom = false;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Username Border to % {Curly} % for Role %" + roleData.displayName);
+		role.isUsernameBorderBracket = false;
+		role.isUsernameBorderNone = false;
+		role.isUsernameBorderCaret = false;
+		role.isUsernameBorderCurly = true;
+		role.isUsernameBorderCustom = false;
+		role.save();
+		FeedbackHandler.success(context, "Set Username Border to % {Curly} % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_username_border_style_caret(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isUsernameBorderBracket = false;
-		roleData.isUsernameBorderNone = false;
-		roleData.isUsernameBorderCaret = true;
-		roleData.isUsernameBorderCurly = false;
-		roleData.isUsernameBorderCustom = false;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Username Border to % <Caret> % for Role %" + roleData.displayName);
+		role.isUsernameBorderBracket = false;
+		role.isUsernameBorderNone = false;
+		role.isUsernameBorderCaret = true;
+		role.isUsernameBorderCurly = false;
+		role.isUsernameBorderCustom = false;
+		role.save();
+		FeedbackHandler.success(context, "Set Username Border to % <Caret> % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_username_border_style_custom_prefix(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String customAffix = context.getArgument("customAffix", String.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isUsernameBorderBracket = false;
-		roleData.isUsernameBorderNone = false;
-		roleData.isUsernameBorderCaret = false;
-		roleData.isUsernameBorderCurly = false;
-		roleData.isUsernameBorderCustom = true;
-		roleData.customUsernameBorderPrefix = customAffix;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Username Border Prefix to % " + customAffix + "Custom? % for Role %" + roleData.displayName);
+		role.isUsernameBorderBracket = false;
+		role.isUsernameBorderNone = false;
+		role.isUsernameBorderCaret = false;
+		role.isUsernameBorderCurly = false;
+		role.isUsernameBorderCustom = true;
+		role.customUsernameBorderPrefix = customAffix;
+		role.save();
+		FeedbackHandler.success(context, "Set Username Border Prefix to % " + customAffix + " % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_username_border_style_custom_suffix(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String customAffix = context.getArgument("customAffix", String.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isUsernameBorderBracket = false;
-		roleData.isUsernameBorderNone = false;
-		roleData.isUsernameBorderCaret = false;
-		roleData.isUsernameBorderCurly = false;
-		roleData.isUsernameBorderCustom = true;
-		roleData.customUsernameBorderSuffix = customAffix;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Username Border Suffix to % ?Custom" + customAffix + " % for Role %" + roleData.displayName);
+		role.isUsernameBorderBracket = false;
+		role.isUsernameBorderNone = false;
+		role.isUsernameBorderCaret = false;
+		role.isUsernameBorderCurly = false;
+		role.isUsernameBorderCustom = true;
+		role.customUsernameBorderSuffix = customAffix;
+		role.save();
+		FeedbackHandler.success(context, "Set Username Border Suffix to % " + customAffix + " % for Role %" + role.displayName);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_text_color_COLOR(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String color = context.getArgument("color", String.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.textColor = color;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Text Color for Role %" + roleData.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
+		role.textColor = color;
+		role.save();
+		FeedbackHandler.success(context, "Set Text Color for Role %" + role.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_text_color_HEX(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.textColor = hex;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Text Color for Role %" + roleData.displayName + "% to %§<" + hex + ">" + hex);
+		role.textColor = hex;
+		role.save();
+		FeedbackHandler.success(context, "Set Text Color for Role %" + role.displayName + "% to %§<" + hex + ">" + hex);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_text_underline(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		boolean value = context.getArgument("value", Boolean.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isTextUnderlined = value;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Text Underline for Role %" + roleData.displayName + "% to: %" + value);
+		role.isTextUnderlined = value;
+		role.save();
+		FeedbackHandler.success(context, "Set Text Underline for Role %" + role.displayName + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_text_bold(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		boolean value = context.getArgument("value", Boolean.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isTextBold = value;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Text Bold for Role %" + roleData.displayName + "% to: %" + value);
+		role.isTextBold = value;
+		role.save();
+		FeedbackHandler.success(context, "Set Text Bold for Role %" + role.displayName + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_edit_text_italics(CommandContext<CommandSource> context) {
-		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		Role role = context.getArgument("role", Role.class);
 		boolean value = context.getArgument("value", Boolean.class);
 
-		Data.roles.loadAll(RoleData.class);
-		roleData.isTextItalics = value;
-		Data.roles.saveAll();
-		FeedbackHandler.success(context, "Set Text Italics for Role %" + roleData.displayName + "% to: %" + value);
+		role.isTextItalics = value;
+		role.save();
+		FeedbackHandler.success(context, "Set Text Italics for Role %" + role.displayName + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 

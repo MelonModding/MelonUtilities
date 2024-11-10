@@ -8,7 +8,6 @@ import MelonUtilities.config.datatypes.ConfigData;
 import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.config.custom.classes.Home;
 import MelonUtilities.config.custom.jsonadapters.HomeJsonAdapter;
-import MelonUtilities.config.datatypes.RoleData;
 import MelonUtilities.utility.MUtil;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -50,7 +49,7 @@ public class MelonUtilities implements ModInitializer {
 		// Misc
 
 		// Role
-		Data.roles.loadAll(RoleData.class);
+		Data.Roles.reload();
 		CommandRole.buildRoleSyntax();
 
 		// Tpa
@@ -68,7 +67,7 @@ public class MelonUtilities implements ModInitializer {
 
 	public void updateRoles(){
 		Data.configs.loadAll(ConfigData.class);
-		Data.roles.loadAll(RoleData.class);
+		Data.Roles.reload();
 		CommandRole.buildRoleSyntax();
 		updateList();
 	}
@@ -100,7 +99,7 @@ public class MelonUtilities implements ModInitializer {
 
 		// Misc
 		// Role
-		Data.roles.loadAll(RoleData.class);
+		Data.Roles.reload();
 		CommandRole.buildRoleSyntax();
 
 		// Rollback

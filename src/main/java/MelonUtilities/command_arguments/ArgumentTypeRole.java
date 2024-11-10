@@ -1,6 +1,7 @@
 package MelonUtilities.command_arguments;
 
 import MelonUtilities.config.Data;
+import MelonUtilities.config.custom.classes.Role;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -10,39 +11,39 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-public class ArgumentTypeRoleID implements ArgumentType<String>{
+public class ArgumentTypeRole implements ArgumentType<Role>{
 	private static final List<String> EXAMPLES = Arrays.asList("starter", "pvp1", "saplings");
 
-	public ArgumentTypeRoleID() {
+	public ArgumentTypeRole() {
 	}
 
-	public static ArgumentType<String> roleID() {
-		return new ArgumentTypeRoleID();
+	public static ArgumentType<Role> role() {
+		return new ArgumentTypeRole();
 	}
 
-	public String parse(StringReader reader) throws CommandSyntaxException {
+	public Role parse(StringReader reader) throws CommandSyntaxException {
 		final String string = reader.readString();
 
-		for (String roleID : roleIDs()) {
-			if (roleID.equalsIgnoreCase(string)) {
-				return string;
+		for (Role role : roles()) {
+			if (role.roleID.equalsIgnoreCase(string)) {
+				return role;
 			}
 		}
 		throw new CommandSyntaxException(CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument(), () -> "Failed to find Role: " + string + " (Role Doesn't Exist)");
 	}
 
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		for(String roleID : roleIDs()){
-			if (roleID.startsWith(builder.getRemainingLowerCase())) {
-				builder.suggest(roleID);
+		for(Role role : roles()){
+			if (role.roleID.startsWith(builder.getRemainingLowerCase())) {
+				builder.suggest(role.roleID);
 			}
 		}
 
 		return builder.buildFuture();
 	}
 
-	public Collection<String> roleIDs() {
-		return new ArrayList<>(Data.roles.fileHashMap.keySet());
+	public Collection<Role> roles() {
+		return new ArrayList<>(Data.Roles.roleHashMap.values());
 	}
 
 	public Collection<String> getExamples() {
