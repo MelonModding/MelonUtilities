@@ -1,6 +1,6 @@
 package MelonUtilities.commands;
 
-import MelonUtilities.commands.role.RoleCommand;
+import MelonUtilities.commands.role.CommandRole;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.DataBank;
 import MelonUtilities.config.datatypes.ConfigData;
@@ -68,7 +68,7 @@ public class ExecuteMethods {
 		FeedbackHandler.success(context, "Reloaded " + Data.roles.dataHashMap.size() + " Role(s)!");
 
 		FeedbackHandler.destructive(context, "Building Role Syntax...");
-		RoleCommand.buildRoleSyntax();
+		CommandRole.buildRoleSyntax();
 		FeedbackHandler.success(context, "Role Syntax Built!");
 
 		//TODO FeedbackHandler.destructive(source, "Building Rollback Syntax...");
@@ -88,7 +88,7 @@ public class ExecuteMethods {
 	public static int role_reload(CommandContext<CommandSource> context) {
 		Data.roles.loadAll(RoleData.class);
 		FeedbackHandler.success(context, "Reloaded %" + Data.roles.dataHashMap.size() + "% Role(s)!");
-		RoleCommand.buildRoleSyntax();
+		CommandRole.buildRoleSyntax();
 		FeedbackHandler.success(context, "Built Role Syntax!");
 		Data.configs.loadAll(ConfigData.class);
 		FeedbackHandler.success(context, "Reloaded Config!");
@@ -107,7 +107,7 @@ public class ExecuteMethods {
 		source.sendMessage(TextFormatting.LIGHT_GRAY + "< Roles: >");
 
 		for (String roleID : Data.roles.dataHashMap.keySet()) {
-			RoleData roleData = RoleCommand.getRoleDataFromRoleID(roleID);
+			RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
 			source.sendMessage(TextFormatting.LIGHT_GRAY + "  > Role ID: " + TextFormatting.WHITE + TextFormatting.ITALIC + roleID + TextFormatting.LIGHT_GRAY + " - Priority: " + TextFormatting.WHITE + roleData.priority);
 			source.sendMessage(TextFormatting.LIGHT_GRAY + "    > " + RoleBuilder.buildRoleDisplay(Data.roles.dataHashMap.get(roleID))
 				+ RoleBuilder.buildRoleUsername(roleData, source.getSender().getDisplayName())
@@ -121,13 +121,13 @@ public class ExecuteMethods {
 	public static int role_revoke(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		CommandSource source = context.getSource();
 		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(roleID);
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
 		EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
 		String target = ((Player)entitySelector.get(source).get(0)).username;
 
 		if(!Data.roles.dataHashMap.containsKey(roleID)){
 			FeedbackHandler.error(context, "Failed to Revoke Role %" + roleData.displayName + "% (Role doesn't exist!)");
-			RoleCommand.syntax.printLayerAndSubLayers("revoke", source);
+			CommandRole.syntax.printLayerAndSubLayers("revoke", source);
 			return Command.SINGLE_SUCCESS;
 		}
 
@@ -147,13 +147,13 @@ public class ExecuteMethods {
 	public static int role_grant(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		CommandSource source = context.getSource();
 		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(roleID);
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
 		EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
 		String target = ((Player)entitySelector.get(source).get(0)).username;
 
 		if(!Data.roles.dataHashMap.containsKey(roleID)){
 			FeedbackHandler.error(context, "Failed to Grant Role %" + roleData.displayName + "% (Role doesn't exist!)");
-			RoleCommand.syntax.printLayerAndSubLayers("grant", source);
+			CommandRole.syntax.printLayerAndSubLayers("grant", source);
 			return Command.SINGLE_SUCCESS;
 		}
 
@@ -171,7 +171,7 @@ public class ExecuteMethods {
 
 	public static int role_create(CommandContext<CommandSource> context) {
 		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(roleID);
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
 		int rolePriority = context.getArgument("priorityValue", Integer.class);
 
 
@@ -193,7 +193,7 @@ public class ExecuteMethods {
 	public static int role_delete(CommandContext<CommandSource> context) {
 		CommandSource source = context.getSource();
 		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(roleID);
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
 
 		switch (Data.roles.remove(roleID)) {
 			case DataBank.NO_ERROR:
@@ -201,7 +201,7 @@ public class ExecuteMethods {
 				return Command.SINGLE_SUCCESS;
 			case DataBank.ROLE_DOESNT_EXIST:
 				FeedbackHandler.error(context, "Failed to Delete Role %" + roleData.displayName + "% (Role Doesn't Exist)");
-				RoleCommand.syntax.printLayerAndSubLayers("delete", source);
+				CommandRole.syntax.printLayerAndSubLayers("delete", source);
 				return Command.SINGLE_SUCCESS;
 			case DataBank.IO_ERROR:
 				FeedbackHandler.error(context, "Failed to Delete Role %" + roleData.displayName + "% (IO Error)");
@@ -213,7 +213,7 @@ public class ExecuteMethods {
 	public static int role_set_defaultrole_ROLEID(CommandContext<CommandSource> context) {
 		CommandSource source = context.getSource();
 		String roleID = context.getArgument("roleID", String.class);
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(roleID);
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(roleID);
 
 		for (String role : Data.roles.dataHashMap.keySet()) {
 			if (roleID.equals(role)) {
@@ -227,7 +227,7 @@ public class ExecuteMethods {
 
 		FeedbackHandler.error(context, "Failed to Set Default Role to %" + roleData.displayName);
 		FeedbackHandler.error(context, "(Invalid Role)");
-		RoleCommand.syntax.printLayerAndSubLayers("setDefaultRole", source);
+		CommandRole.syntax.printLayerAndSubLayers("setDefaultRole", source);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -256,7 +256,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_priority(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		int priorityValue = context.getArgument("priorityValue", Integer.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -267,7 +267,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_name(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String displayName = context.getArgument("displayName", String.class);
 
 		FeedbackHandler.success(context, "Set Display Name for Role %" + roleData.displayName + "% to %" + displayName);
@@ -278,7 +278,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_color_COLOR(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String color = context.getArgument("color", String.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -289,7 +289,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_color_HEX(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 
 		Data.roles.loadAll(RoleData.class);
@@ -300,7 +300,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_underline(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		boolean value = context.getArgument("value", Boolean.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -311,7 +311,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_bold(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		boolean value = context.getArgument("value", Boolean.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -322,7 +322,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_italics(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		boolean value = context.getArgument("value", Boolean.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -333,7 +333,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_border_color_COLOR(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String color = context.getArgument("color", String.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -344,7 +344,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_border_color_HEX(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 
 		Data.roles.loadAll(RoleData.class);
@@ -355,7 +355,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_border_style_bracket(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 
 		Data.roles.loadAll(RoleData.class);
 		roleData.isDisplayBorderBracket = true;
@@ -369,7 +369,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_border_style_curly(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 
 		Data.roles.loadAll(RoleData.class);
 		roleData.isDisplayBorderBracket = false;
@@ -383,7 +383,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_border_style_caret(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 
 		Data.roles.loadAll(RoleData.class);
 		roleData.isDisplayBorderBracket = false;
@@ -397,7 +397,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_border_style_custom_prefix(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String customAffix = context.getArgument("customAffix", String.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -413,7 +413,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_display_border_style_custom_suffix(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String customAffix = context.getArgument("customAffix", String.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -429,7 +429,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_username_border_color_COLOR(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String color = context.getArgument("color", String.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -440,7 +440,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_username_border_color_HEX(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 
 		Data.roles.loadAll(RoleData.class);
@@ -451,7 +451,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_username_border_style_bracket(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 
 		Data.roles.loadAll(RoleData.class);
 		roleData.isUsernameBorderBracket = true;
@@ -465,7 +465,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_username_border_style_curly(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 
 		Data.roles.loadAll(RoleData.class);
 		roleData.isUsernameBorderBracket = false;
@@ -479,7 +479,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_username_border_style_caret(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 
 		Data.roles.loadAll(RoleData.class);
 		roleData.isUsernameBorderBracket = false;
@@ -493,7 +493,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_username_border_style_custom_prefix(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String customAffix = context.getArgument("customAffix", String.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -509,7 +509,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_username_border_style_custom_suffix(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String customAffix = context.getArgument("customAffix", String.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -525,7 +525,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_text_color_COLOR(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String color = context.getArgument("color", String.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -536,7 +536,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_text_color_HEX(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 
 		Data.roles.loadAll(RoleData.class);
@@ -547,7 +547,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_text_underline(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		boolean value = context.getArgument("value", Boolean.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -558,7 +558,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_text_bold(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		boolean value = context.getArgument("value", Boolean.class);
 
 		Data.roles.loadAll(RoleData.class);
@@ -569,7 +569,7 @@ public class ExecuteMethods {
 	}
 
 	public static int role_edit_text_italics(CommandContext<CommandSource> context) {
-		RoleData roleData = RoleCommand.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
+		RoleData roleData = CommandRole.getRoleDataFromRoleID(context.getArgument("roleID", String.class));
 		boolean value = context.getArgument("value", Boolean.class);
 
 		Data.roles.loadAll(RoleData.class);

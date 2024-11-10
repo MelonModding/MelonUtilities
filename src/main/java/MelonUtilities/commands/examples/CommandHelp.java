@@ -14,7 +14,7 @@ import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.util.Iterables;
 
-public class HelpCommand implements CommandManager.CommandRegistry{
+public class CommandHelp implements CommandManager.CommandRegistry{
 	private static final SimpleCommandExceptionType FAILURE = new SimpleCommandExceptionType(() -> I18n.getInstance().translateKey("command.commands.help.exception_failure"));
 
 	public void register(CommandDispatcher<CommandSource> commandDispatcher) {
@@ -22,7 +22,7 @@ public class HelpCommand implements CommandManager.CommandRegistry{
 			.executes(c -> {
 				CommandSource source = c.getSource();
 				Map<CommandNode<CommandSource>, String> map = commandDispatcher.getSmartUsage(commandDispatcher.getRoot(), source);
-				if (!context.messageMayBeMultiline()) {
+				if (!source.messageMayBeMultiline()) {
 					source.sendMessage("Cannot display help on single-line command source");
 					return 0;
 				}

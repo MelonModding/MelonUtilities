@@ -7,7 +7,7 @@ import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 
-public class MelonUtilitiesCommand implements CommandManager.CommandRegistry{
+public class CommandMelonUtilities implements CommandManager.CommandRegistry{
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
 		CommandNode<CommandSource> command = dispatcher

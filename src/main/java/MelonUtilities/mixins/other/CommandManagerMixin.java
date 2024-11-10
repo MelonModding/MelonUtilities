@@ -1,8 +1,7 @@
 package MelonUtilities.mixins.other;
 
-import MelonUtilities.commands.role.RoleCommand;
-import MelonUtilities.commands.utility.MelonUtilitiesCommand;
-import MelonUtilities.commands.utility.ReloadCommand;
+import MelonUtilities.commands.role.CommandRole;
+import MelonUtilities.commands.utility.CommandMelonUtilities;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.net.command.CommandManager;
@@ -34,7 +33,7 @@ public class CommandManagerMixin {
 			//TODO CommandManager.registerCommand(new WhereAmICommand());
 
 			// Role
-			CommandManager.registerCommand(new RoleCommand());
+			CommandManager.registerCommand(new CommandRole());
 
 			// Rollback
 			//TODO CommandManager.registerCommand(new RollbackCommand());
@@ -46,8 +45,7 @@ public class CommandManagerMixin {
 
 			// Utility
 			//TODO CommandManager.registerCommand(new HelperCommand());
-			CommandManager.registerCommand(new MelonUtilitiesCommand());
-			CommandManager.registerCommand(new ReloadCommand());
+			CommandManager.registerCommand(new CommandMelonUtilities());
 
 			// Warp
 

@@ -5,9 +5,7 @@ import MelonUtilities.command_arguments.ArgumentTypeRoleID;
 import MelonUtilities.commands.ExecuteMethods;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.RoleData;
-import MelonUtilities.utility.feedback.FeedbackHandler;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -15,7 +13,6 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
@@ -23,7 +20,7 @@ import net.minecraft.core.net.command.arguments.ArgumentTypeEntity;
 import net.minecraft.core.net.command.helpers.EntitySelector;
 
 @SuppressWarnings("UnusedReturnValue")
-public class RoleCommand implements CommandManager.CommandRegistry{
+public class CommandRole implements CommandManager.CommandRegistry{
 
 	public static SyntaxBuilder syntax = new SyntaxBuilder();
 	public static void buildRoleSyntax(){

@@ -1,6 +1,6 @@
 package MelonUtilities;
 
-import MelonUtilities.commands.role.RoleCommand;
+import MelonUtilities.commands.role.CommandRole;
 import MelonUtilities.config.*;
 import MelonUtilities.config.custom.classes.Crew;
 import MelonUtilities.config.custom.jsonadapters.CrewJsonAdapter;
@@ -51,7 +51,7 @@ public class MelonUtilities implements ModInitializer {
 
 		// Role
 		Data.roles.loadAll(RoleData.class);
-		RoleCommand.buildRoleSyntax();
+		CommandRole.buildRoleSyntax();
 
 		// Tpa
 
@@ -69,7 +69,7 @@ public class MelonUtilities implements ModInitializer {
 	public void updateRoles(){
 		Data.configs.loadAll(ConfigData.class);
 		Data.roles.loadAll(RoleData.class);
-		RoleCommand.buildRoleSyntax();
+		CommandRole.buildRoleSyntax();
 		updateList();
 	}
 
@@ -101,7 +101,7 @@ public class MelonUtilities implements ModInitializer {
 		// Misc
 		// Role
 		Data.roles.loadAll(RoleData.class);
-		RoleCommand.buildRoleSyntax();
+		CommandRole.buildRoleSyntax();
 
 		// Rollback
 		//TODO RollbackCommand.buildSyntax();
