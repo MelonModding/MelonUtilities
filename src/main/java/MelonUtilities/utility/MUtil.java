@@ -81,6 +81,17 @@ public class MUtil {
 		colorFormattingMap.put("white", TextFormatting.WHITE);
 	}
 
+	public static String breakDownHex(String dirtyHex){
+		StringBuilder hex = new StringBuilder();
+		for (int i = 0; i < dirtyHex.length(); i++){
+			char c = dirtyHex.charAt(i);
+			if(Character.isDigit(c) || Character.isLetter(c)){
+				hex.append(c);
+			}
+		}
+		return String.valueOf(hex);
+	}
+
 	public static HitResult rayCastFromPlayer(CommandSource source) {
 		float f = 1.0f;
 		float f1 = source.getSender().xRotO + (source.getSender().xRot - source.getSender().xRotO) * f;

@@ -22,7 +22,7 @@ public class HelpCommand implements CommandManager.CommandRegistry{
 			.executes(c -> {
 				CommandSource source = c.getSource();
 				Map<CommandNode<CommandSource>, String> map = commandDispatcher.getSmartUsage(commandDispatcher.getRoot(), source);
-				if (!source.messageMayBeMultiline()) {
+				if (!context.messageMayBeMultiline()) {
 					source.sendMessage("Cannot display help on single-line command source");
 					return 0;
 				}
