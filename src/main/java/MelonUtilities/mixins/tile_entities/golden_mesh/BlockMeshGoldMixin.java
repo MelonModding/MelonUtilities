@@ -1,12 +1,10 @@
 package MelonUtilities.mixins.tile_entities.golden_mesh;
 
-import MelonUtilities.config.Data;
-import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
-import MelonUtilities.utility.helpers.UUIDHelper;
+import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.feedback.FeedbackHandler;
 import net.minecraft.core.block.BlockMeshGold;
 import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,18 +19,10 @@ public class BlockMeshGoldMixin {
 
 		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(x, y, z);
 
-		if(iContainer.getIsLocked()){
-			if(iContainer.getLockOwner() != null) {
-				if (!iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(player.username))
-					&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(player.username))
-					&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
-					&& !iContainer.getIsCommunityContainer()
-					&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(player.username).toString(), PlayerData.class).lockBypass){
-					player.sendMessage(TextFormatting.RED + "Golden Mesh is Locked!");
-					cir.setReturnValue(false);
-					return;
-				}
-			}
+		if(!MUtil.canInteractWithLock(iContainer.getIsLocked(), iContainer.getIsCommunityContainer(), iContainer.getLockOwner(), iContainer.getTrustedPlayers(), player)){
+			FeedbackHandler.error(player, "Golden Mesh is Locked!");
+			cir.setReturnValue(false);
 		}
+
 	}
 }

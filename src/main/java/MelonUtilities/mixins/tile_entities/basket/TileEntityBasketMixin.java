@@ -1,14 +1,13 @@
 package MelonUtilities.mixins.tile_entities.basket;
 
 import MelonUtilities.config.Data;
-import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
-import MelonUtilities.utility.helpers.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
 import net.minecraft.core.block.entity.TileEntityBasket;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -66,14 +65,14 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 	}
 
 	@Inject(at = @At("HEAD"), method = "givePlayerAllItems", cancellable = true)
-	public void canInteractWithInject(World world, Player entityplayer, CallbackInfo ci) {
+	public void givePlayerAllItemsInject(World world, Player entityplayer, CallbackInfo ci) {
 		if(isLocked){
 			if(lockOwner != null) {
 				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))
 					&& !trustedPlayers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !Data.playerData.getOrCreate(lockOwner.toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
+					&& !Data.Users.get(lockOwner).uuidsTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
 					&& !isCommunityContainer
-					&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(entityplayer.username).toString(), PlayerData.class).lockBypass){
+					&& !Data.Users.get(UUIDHelper.getUUIDFromName(entityplayer.username)).lockBypass){
 					ci.cancel();
 					return;
 				}

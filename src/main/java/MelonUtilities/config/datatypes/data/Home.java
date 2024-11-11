@@ -1,4 +1,4 @@
-package MelonUtilities.config.custom.classes;
+package MelonUtilities.config.datatypes.data;
 
 public class Home {
 	public String name;

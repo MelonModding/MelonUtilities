@@ -1,34 +1,24 @@
-package MelonUtilities.config.datatypes;
+package MelonUtilities.config.datatypes.data;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import net.minecraft.core.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class KitData {
+public class Kit {
 
-	@SerializedName(value = "Kit Cooldown")
-	@Expose public long kitCooldown = 0;
+	public long kitCooldown = 0;
+	public String kitID;
+	public List<ItemStack> kitItemStacks = new ArrayList<>();
+	public List<Integer> kitItemSlots = new ArrayList<>();
+	public List<String> kitItemNames = new ArrayList<>();
+	public List<ItemStack> kitArmorStacks = new ArrayList<>();
+	public List<Integer> kitArmorSlots = new ArrayList<>();
+	public List<String> kitArmorNames = new ArrayList<>();
 
-	@SerializedName(value = "Kit Items (Item Stack List)")
-	@Expose public List<ItemStack> kitItemStacks = new ArrayList<>();
-
-	@SerializedName(value = "Kit Items Slots (Integer List)")
-	@Expose public List<Integer> kitItemSlots = new ArrayList<>();
-
-	@SerializedName(value = "Kit Items Names (String List)")
-	@Expose public List<String> kitItemNames = new ArrayList<>();
-
-	@SerializedName(value = "Kit Armor (Item Stack List)")
-	@Expose public List<ItemStack> kitArmorStacks = new ArrayList<>();
-
-	@SerializedName(value = "Kit Armor Slots (Integer List)")
-	@Expose public List<Integer> kitArmorSlots = new ArrayList<>();
-
-	@SerializedName(value = "Kit Armor Names (Integer List)")
-	@Expose public List<String> kitArmorNames = new ArrayList<>();
+	public Kit(String kitID) {
+		this.kitID = kitID;
+	}
 
 	public void additem(ItemStack stack, int position){
 		stack = new ItemStack(stack);
@@ -49,7 +39,6 @@ public class KitData {
 	}
 
 	public void removeitem(int index){
-
 		kitItemStacks.remove(index);
 		kitItemSlots.remove(index);
 		kitItemNames.remove(index);
@@ -81,5 +70,4 @@ public class KitData {
 		kitArmorNames.remove(index);
 
 	}
-
 }

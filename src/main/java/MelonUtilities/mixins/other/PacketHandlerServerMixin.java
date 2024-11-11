@@ -2,12 +2,9 @@ package MelonUtilities.mixins.other;
 
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
-import MelonUtilities.config.custom.classes.Role;
-import MelonUtilities.config.datatypes.ConfigData;
-import MelonUtilities.config.datatypes.PlayerData;
+import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
-import MelonUtilities.utility.helpers.UUIDHelper;
 import com.llamalad7.mixinextras.sugar.Local;
 import MelonUtilities.utility.builders.RoleBuilder;
 import net.minecraft.core.block.entity.*;
@@ -16,10 +13,12 @@ import net.minecraft.core.net.packet.BlockUpdatePacket;
 import net.minecraft.core.net.packet.ChatPacket;
 import net.minecraft.core.net.packet.Packet;
 import net.minecraft.core.net.packet.PlayerActionPacket;
+import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
 import net.minecraft.server.net.handler.PacketHandlerServer;
 import net.minecraft.server.world.WorldServer;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -44,6 +43,9 @@ public abstract class PacketHandlerServerMixin {
 	@Shadow
 	public abstract void sendPacket(Packet packet);
 
+	@Shadow
+	public static Logger LOGGER;
+
 	@Inject(at = @At(shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleChat", cancellable = true)
 	public void handleChat(ChatPacket packet, CallbackInfo ci, @Local String message) {
 
@@ -51,14 +53,14 @@ public abstract class PacketHandlerServerMixin {
 		String defaultRoleUsername;
 		String defaultRoleTextFormatting;
 
-		if(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole) == null){
+		if(Data.Roles.roleDataHashMap.get(Data.MainConfig.config.defaultRole) == null){
 			defaultRoleDisplay = null;
 			defaultRoleUsername = null;
 			defaultRoleTextFormatting = null;
 		} else {
-			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole));
-			defaultRoleUsername = RoleBuilder.buildRoleUsername(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole), this.playerEntity.getDisplayName());
-			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(Data.Roles.roleHashMap.get(Data.configs.getOrCreate("config", ConfigData.class).defaultRole));
+			defaultRoleDisplay = RoleBuilder.buildRoleDisplay(Data.Roles.roleDataHashMap.get(Data.MainConfig.config.defaultRole));
+			defaultRoleUsername = RoleBuilder.buildRoleUsername(Data.Roles.roleDataHashMap.get(Data.MainConfig.config.defaultRole), this.playerEntity.getDisplayName());
+			defaultRoleTextFormatting = RoleBuilder.buildRoleTextFormat(Data.Roles.roleDataHashMap.get(Data.MainConfig.config.defaultRole));
 		}
 
 		StringBuilder roleDisplays = new StringBuilder();
@@ -71,8 +73,8 @@ public abstract class PacketHandlerServerMixin {
 		}
 
 		boolean hasBeenGrantedRole = false;
-		for(Role role : Data.Roles.roleHashMap.values()){
-			if(role.playersGrantedRole.contains(this.playerEntity.username)){
+		for(Role role : Data.Roles.roleDataHashMap.values()){
+			if(role.playersGrantedRole.contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))){
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
 			}
@@ -97,13 +99,13 @@ public abstract class PacketHandlerServerMixin {
 		}
 
 		if(hasBeenGrantedRole){
-			if (Data.configs.getOrCreate("config", ConfigData.class).displayMode.equals("multi")) {
+			if (Data.MainConfig.config.displayMode.equals("multi")) {
 				if(defaultRoleDisplay != null) {
 					message = defaultRoleDisplay + roleDisplays + roleUsername + roleTextFormatting + message;
 				} else {
 					message = roleDisplays + roleUsername + roleTextFormatting + message;
 				}
-			} else if (Data.configs.getOrCreate("config", ConfigData.class).displayMode.equals("single")) {
+			} else if (Data.MainConfig.config.displayMode.equals("single")) {
                 message = highestPriorityRoleDisplay + roleUsername + roleTextFormatting + message;
 			}
 		} else if(defaultRoleDisplay != null){
@@ -122,7 +124,7 @@ public abstract class PacketHandlerServerMixin {
 	String commandString = "";
 
 	@Redirect(
-		method = "Lnet/minecraft/server/net/handler/PacketHandlerServer;handleSlashCommand(Ljava/lang/String;)V",
+		method = "handleSlashCommand(Ljava/lang/String;)V",
 		at = @At(value = "INVOKE", target = "Ljava/lang/String;substring(I)Ljava/lang/String;"),
 		remap = false
 	)
@@ -194,12 +196,12 @@ public abstract class PacketHandlerServerMixin {
 			if (iContainer.getLockOwner() != null
 				&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username))
 				&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))
-				&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))
-				&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockBypass){
+				&& !Data.Users.get(iContainer.getLockOwner()).uuidsTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))
+				&& !Data.Users.get(UUIDHelper.getUUIDFromName(this.playerEntity.username)).lockBypass){
 				ci.cancel();
 				sendPacket(new BlockUpdatePacket(packet.xPosition, packet.yPosition, packet.zPosition, world));
 			}
-			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched && !iContainer.getIsLocked()){
+			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.Users.get(UUIDHelper.getUUIDFromName(this.playerEntity.username)).lockOnBlockPunched && !iContainer.getIsLocked()){
 				if (container instanceof TileEntityChest) {
 					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) MUtil.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
@@ -232,7 +234,7 @@ public abstract class PacketHandlerServerMixin {
 			}
 
 			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
-			&& Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched
+			&& Data.Users.get(UUIDHelper.getUUIDFromName(this.playerEntity.username)).lockOnBlockPunched
 			&& iContainer.getIsLocked()
 			&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username)))
 			{
@@ -241,7 +243,7 @@ public abstract class PacketHandlerServerMixin {
 			}
 
 			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
-			&& Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(this.playerEntity.username).toString(), PlayerData.class).lockOnBlockPunched
+			&& Data.Users.get(UUIDHelper.getUUIDFromName(this.playerEntity.username)).lockOnBlockPunched
 			&& iContainer.getIsLocked()
 			&& iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username)))
 			{

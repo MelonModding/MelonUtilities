@@ -1,13 +1,13 @@
 package MelonUtilities;
 
+import MelonUtilities.commands.lock.CommandLock;
 import MelonUtilities.commands.role.CommandRole;
 import MelonUtilities.config.*;
-import MelonUtilities.config.custom.classes.Crew;
-import MelonUtilities.config.custom.jsonadapters.CrewJsonAdapter;
-import MelonUtilities.config.datatypes.ConfigData;
-import MelonUtilities.config.datatypes.PlayerData;
-import MelonUtilities.config.custom.classes.Home;
-import MelonUtilities.config.custom.jsonadapters.HomeJsonAdapter;
+import MelonUtilities.config.datatypes.data.Config;
+import MelonUtilities.config.datatypes.data.Crew;
+import MelonUtilities.config.datatypes.data.Home;
+import MelonUtilities.config.datatypes.jsonadapters.CrewJsonAdapter;
+import MelonUtilities.config.datatypes.jsonadapters.HomeJsonAdapter;
 import MelonUtilities.utility.MUtil;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -59,14 +59,14 @@ public class MelonUtilities implements ModInitializer {
 		// Warp
 
 		// Anything Else
-		Data.configs.loadAll(ConfigData.class);
-		Data.playerData.loadAll(PlayerData.class);
+		Data.MainConfig.reload();
+		Data.Users.reload();
 		updateList();
 
 	}
 
 	public void updateRoles(){
-		Data.configs.loadAll(ConfigData.class);
+		Data.MainConfig.reload();
 		Data.Roles.reload();
 		CommandRole.buildRoleSyntax();
 		updateList();
@@ -90,12 +90,12 @@ public class MelonUtilities implements ModInitializer {
 		//TODO DelHomeCommand.buildSyntax();
 		//TODO HomeCommand.buildSyntax();
 
-		// Kit
+		// Kit 352246
 		//TODO Data.kits.loadAll(KitData.class);
 		//TODO KitCommand.buildKitSyntax();
 
 		// Lock
-		//TODO LockCommand.buildLockSyntax();
+		CommandLock.buildLockSyntax();
 
 		// Misc
 		// Role
@@ -123,16 +123,15 @@ public class MelonUtilities implements ModInitializer {
 	}
 
 	public static void afterServerStart(){
-		Data.playerData.loadAll(PlayerData.class);
+		Data.Users.reload();
 		MUtil.timeOnInit = System.currentTimeMillis();
 
-		Data.configs.loadAll(ConfigData.class);
-		ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);
-		config.lastSnapshot = correctTimeIfZERO(Data.configs.getOrCreate("config", ConfigData.class).lastSnapshot);
+		Config config = Data.MainConfig.config;
+		config.lastSnapshot = correctTimeIfZERO(config.lastSnapshot);
 		config.lastBackup = correctTimeIfZERO(config.lastBackup);
 		config.lastSnapshotPrune = correctTimeIfZERO(config.lastSnapshotPrune);
 		config.lastBackupPrune = correctTimeIfZERO(config.lastBackupPrune);
-		Data.configs.saveAll();
+		Data.MainConfig.save();
 	}
 
 	public static double correctTimeIfZERO(double d){

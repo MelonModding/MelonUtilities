@@ -1,11 +1,11 @@
 package MelonUtilities.mixins.tile_entities.blast_furnace;
 
 import MelonUtilities.interfaces.TileEntityContainerInterface;
-import MelonUtilities.utility.helpers.UUIDHelper;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
 import net.minecraft.core.block.entity.TileEntityFurnaceBlastFurnace;
+import net.minecraft.core.util.helper.UUIDHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;

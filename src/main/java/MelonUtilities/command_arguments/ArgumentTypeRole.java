@@ -1,7 +1,7 @@
 package MelonUtilities.command_arguments;
 
 import MelonUtilities.config.Data;
-import MelonUtilities.config.custom.classes.Role;
+import MelonUtilities.config.datatypes.data.Role;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -43,7 +43,7 @@ public class ArgumentTypeRole implements ArgumentType<Role>{
 	}
 
 	public Collection<Role> roles() {
-		return new ArrayList<>(Data.Roles.roleHashMap.values());
+		return new ArrayList<>(Data.Roles.roleDataHashMap.values());
 	}
 
 	public Collection<String> getExamples() {

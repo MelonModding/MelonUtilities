@@ -2,21 +2,20 @@ package MelonUtilities.commands;
 
 import MelonUtilities.commands.role.CommandRole;
 import MelonUtilities.config.Data;
-import MelonUtilities.config.custom.classes.Role;
-import MelonUtilities.config.datatypes.ConfigData;
-import MelonUtilities.config.datatypes.KitData;
-import MelonUtilities.config.datatypes.PlayerData;
+import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandler;
 import MelonUtilities.utility.builders.RoleBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.command.helpers.EntitySelector;
+import net.minecraft.core.util.helper.UUIDHelper;
+
+import java.util.UUID;
 
 import static net.minecraft.server.util.helper.PlayerList.updateList;
 
@@ -48,16 +47,16 @@ public class ExecuteMethods {
 		FeedbackHandler.success(context, "Reloading MelonUtilities...");
 
 		FeedbackHandler.destructive(context, "Reloading Player Data...");
-		Data.playerData.loadAll(PlayerData.class);
-		FeedbackHandler.success(context, "Reloaded " + Data.playerData.dataHashMap.size() + " Player(s)!");
+		Data.Users.reload();
+		FeedbackHandler.success(context, "Reloaded " + Data.Users.userDataHashMap.size() + " Player(s)!");
 
 		//TODO FeedbackHandler.destructive(source, "Building Helper Syntax...");
 		//TODO HelperCommand.buildHelperSyntax();
 		//TODO FeedbackHandler.success(source, "Helper Syntax Built!");
 
 		FeedbackHandler.destructive(context, "Reloading Kit Data...");
-		Data.kits.loadAll(KitData.class);
-		FeedbackHandler.success(context, "Reloaded " + Data.kits.dataHashMap.size() + " Kit(s)!");
+		Data.Kits.reload();
+		FeedbackHandler.success(context, "Reloaded " + Data.Kits.kitDataHashMap.size() + " Kit(s)!");
 
 		//TODO FeedbackHandler.destructive(source, "Building Kit Syntax...");
 		//TODO KitCommand.buildKitSyntax();
@@ -65,7 +64,7 @@ public class ExecuteMethods {
 
 		FeedbackHandler.destructive(context, "Reloading Role Data...");
 		Data.Roles.reload();
-		FeedbackHandler.success(context, "Reloaded " + Data.Roles.roleHashMap.size() + " Role(s)!");
+		FeedbackHandler.success(context, "Reloaded " + Data.Roles.roleDataHashMap.size() + " Role(s)!");
 
 		FeedbackHandler.destructive(context, "Building Role Syntax...");
 		CommandRole.buildRoleSyntax();
@@ -76,7 +75,7 @@ public class ExecuteMethods {
 		//TODO FeedbackHandler.success(source, "Rollback Syntax Built!");
 
 		FeedbackHandler.destructive(context, "Reloading General Configs...");
-		Data.configs.loadAll(ConfigData.class);
+		Data.MainConfig.reload();
 		FeedbackHandler.success(context, "Reloaded Configs!");
 
 		FeedbackHandler.destructive(context, "Updating Player List...");
@@ -87,10 +86,10 @@ public class ExecuteMethods {
 
 	public static int role_reload(CommandContext<CommandSource> context) {
 		Data.Roles.reload();
-		FeedbackHandler.success(context, "Reloaded %" + Data.Roles.roleHashMap.size() + "% Role(s)!");
+		FeedbackHandler.success(context, "Reloaded %" + Data.Roles.roleDataHashMap.size() + "% Role(s)!");
 		CommandRole.buildRoleSyntax();
 		FeedbackHandler.success(context, "Built Role Syntax!");
-		Data.configs.loadAll(ConfigData.class);
+		Data.MainConfig.reload();
 		FeedbackHandler.success(context, "Reloaded Config!");
 		return Command.SINGLE_SUCCESS;
 	}
@@ -98,7 +97,7 @@ public class ExecuteMethods {
 	public static int role_list(CommandContext<CommandSource> context) {
 		CommandSource source = context.getSource();
 
-		if (Data.Roles.roleHashMap.isEmpty()) {
+		if (Data.Roles.roleDataHashMap.isEmpty()) {
 			source.sendMessage(TextFormatting.GRAY + "< " + TextFormatting.LIGHT_GRAY + "Roles: " + TextFormatting.GRAY + " >");
 			source.sendMessage(TextFormatting.GRAY + "  -No Roles Created-");
 			return Command.SINGLE_SUCCESS;
@@ -106,7 +105,7 @@ public class ExecuteMethods {
 
 		source.sendMessage(TextFormatting.GRAY + "< " + TextFormatting.LIGHT_GRAY + "Roles: " + TextFormatting.GRAY + " >");
 
-		for (Role role : Data.Roles.roleHashMap.values()) {
+		for (Role role : Data.Roles.roleDataHashMap.values()) {
 			source.sendMessage(TextFormatting.GRAY + "  > " + TextFormatting.LIGHT_GRAY + "Role ID: " + TextFormatting.GRAY + "[" + TextFormatting.LIGHT_GRAY + role.roleID + TextFormatting.GRAY + "]" + TextFormatting.LIGHT_GRAY + " - Priority: " + TextFormatting.GRAY + "[" + TextFormatting.LIGHT_GRAY + role.priority + TextFormatting.GRAY + "]");
 			source.sendMessage(TextFormatting.GRAY + "    > " + RoleBuilder.buildRoleDisplay(role)
 				+ RoleBuilder.buildRoleUsername(role, source.getSender().getDisplayName())
@@ -127,9 +126,9 @@ public class ExecuteMethods {
 		if (role.playersGrantedRole.contains(target)) {
 			role.playersGrantedRole.remove(target);
 			role.save();
-			FeedbackHandler.destructive(context, "Revoked Role %" + role.displayName + "% from Player %" + target);
+			FeedbackHandler.destructive(context, "Revoked Role %" + role.roleID + "% from Player %" + target);
 		} else {
-			FeedbackHandler.error(context, "Failed to Revoke Role %" + role.displayName + "% from Player %" + target);
+			FeedbackHandler.error(context, "Failed to Revoke Role %" + role.roleID + "% from Player %" + target);
 			FeedbackHandler.error(context, "(Player does not have Role!)");
 		}
 
@@ -143,12 +142,12 @@ public class ExecuteMethods {
 		EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
 		String target = ((Player)entitySelector.get(source).get(0)).username;
 
-		if (!role.playersGrantedRole.contains(target)){
-			role.playersGrantedRole.add(target);
+		if (!role.playersGrantedRole.contains(UUIDHelper.getUUIDFromName(target))){
+			role.playersGrantedRole.add(UUIDHelper.getUUIDFromName(target));
 			role.save();
-			FeedbackHandler.success(context, "Granted Role %" + role.displayName + "% to Player %" + target);
+			FeedbackHandler.success(context, "Granted Role %" + role.roleID + "% to Player %" + target);
 		} else {
-			FeedbackHandler.error(context, "Failed to Grant Role %" + role.displayName + "% to Player %" + target);
+			FeedbackHandler.error(context, "Failed to Grant Role %" + role.roleID + "% to Player %" + target);
 			FeedbackHandler.error(context, "(Player already has Role!)");
 		}
 		return Command.SINGLE_SUCCESS;
@@ -158,7 +157,7 @@ public class ExecuteMethods {
 		String roleID = context.getArgument("roleID", String.class);
 		int rolePriority = context.getArgument("priorityValue", Integer.class);
 
-		if (Data.Roles.roleHashMap.containsKey(roleID)) {
+		if (Data.Roles.roleDataHashMap.containsKey(roleID)) {
 			FeedbackHandler.error(context, "Failed to Create Role with RoleID %" + roleID + "% (Role Already Exists)");
 			return Command.SINGLE_SUCCESS;
 		}
@@ -168,14 +167,14 @@ public class ExecuteMethods {
 		role.priority = rolePriority;
 		role.save();
 
-		FeedbackHandler.success(context, "Created Role %" + role.displayName + "% with Priority %" + role.priority);
+		FeedbackHandler.success(context, "Created Role %" + role.roleID + "% with Priority %" + role.priority);
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_delete(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		Role role = context.getArgument("role", Role.class);
 
-		FeedbackHandler.destructive(context, "Deleted Role %" + role.displayName);
+		FeedbackHandler.destructive(context, "Deleted Role %" + role.roleID);
 		role.delete();
 		return Command.SINGLE_SUCCESS;
 	}
@@ -183,34 +182,30 @@ public class ExecuteMethods {
 	public static int role_set_defaultrole_ROLEID(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		Role role = context.getArgument("role", Role.class);
 
-		Data.configs.loadAll(ConfigData.class);
-		Data.configs.getOrCreate("config", ConfigData.class).defaultRole = role.roleID;
-		Data.configs.saveAll();
-		FeedbackHandler.success(context, "Set Default Role to %" + role.displayName);
+		Data.MainConfig.config.defaultRole = role.roleID;
+		Data.MainConfig.save();
+		FeedbackHandler.success(context, "Set Default Role to %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 
 	}
 
 	public static int role_set_defaultrole_none(CommandContext<CommandSource> context) {
-		Data.configs.loadAll(ConfigData.class);
-		Data.configs.getOrCreate("config", ConfigData.class).defaultRole = null;
-		Data.configs.saveAll();
+		Data.MainConfig.config.defaultRole = null;
+		Data.MainConfig.save();
 		FeedbackHandler.destructive(context, "Removed Default Role");
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_set_displaymode_single(CommandContext<CommandSource> context) {
-		Data.configs.loadAll(ConfigData.class);
-		Data.configs.getOrCreate("config", ConfigData.class).displayMode = "single";
-		Data.configs.saveAll();
+		Data.MainConfig.config.displayMode = "single";
+		Data.MainConfig.save();
 		FeedbackHandler.success(context, "Set Display Mode to %single%");
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int role_set_displaymode_multi(CommandContext<CommandSource> context) {
-		Data.configs.loadAll(ConfigData.class);
-		Data.configs.getOrCreate("config", ConfigData.class).displayMode = "multi";
-		Data.configs.saveAll();
+		Data.MainConfig.config.displayMode = "multi";
+		Data.MainConfig.save();
 		FeedbackHandler.success(context, "Set Display Mode to %multi%");
 		return Command.SINGLE_SUCCESS;
 	}
@@ -221,7 +216,7 @@ public class ExecuteMethods {
 
 		role.priority = priorityValue;
 		role.save();
-		FeedbackHandler.success(context, "Set Priority for Role %" + role.displayName + "% to %" + priorityValue);
+		FeedbackHandler.success(context, "Set Priority for Role %" + role.roleID + "% to %" + priorityValue);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -229,7 +224,7 @@ public class ExecuteMethods {
 		Role role = context.getArgument("role", Role.class);
 		String displayName = context.getArgument("displayName", String.class);
 
-		FeedbackHandler.success(context, "Set Display Name for Role %" + role.displayName + "% to %" + displayName);
+		FeedbackHandler.success(context, "Set Display Name for Role %" + role.roleID + "% to %" + displayName);
 		role.displayName = displayName;
 		role.save();
 		return Command.SINGLE_SUCCESS;
@@ -241,7 +236,7 @@ public class ExecuteMethods {
 
 		role.displayColor = color;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Color for Role %" + role.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
+		FeedbackHandler.success(context, "Set Display Color for Role %" + role.roleID + "% to %" + MUtil.colorSectionMap.get(color) + color);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -251,7 +246,7 @@ public class ExecuteMethods {
 
 		role.displayColor = hex;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Color for Role %" + role.displayName + "% to %§<" + hex + ">" + hex);
+		FeedbackHandler.success(context, "Set Display Color for Role %" + role.roleID + "% to %§<" + hex + ">" + hex);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -261,7 +256,7 @@ public class ExecuteMethods {
 
 		role.isDisplayUnderlined = value;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Underline for Role %" + role.displayName + "% to %" + value);
+		FeedbackHandler.success(context, "Set Display Underline for Role %" + role.roleID + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -271,7 +266,7 @@ public class ExecuteMethods {
 
 		role.isDisplayBold = value;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Bold for Role %" + role.displayName + "% to %" + value);
+		FeedbackHandler.success(context, "Set Display Bold for Role %" + role.roleID + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -281,7 +276,7 @@ public class ExecuteMethods {
 
 		role.isDisplayItalics = value;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Italics for Role %" + role.displayName + "% to %" + value);
+		FeedbackHandler.success(context, "Set Display Italics for Role %" + role.roleID + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -291,7 +286,7 @@ public class ExecuteMethods {
 
 		role.displayBorderColor = color;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Border Color for Role %" + role.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
+		FeedbackHandler.success(context, "Set Display Border Color for Role %" + role.roleID + "% to %" + MUtil.colorSectionMap.get(color) + color);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -301,7 +296,7 @@ public class ExecuteMethods {
 
 		role.displayBorderColor = hex;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Border Color for Role %" + role.displayName + "% to %§<" + hex + ">" + hex);
+		FeedbackHandler.success(context, "Set Display Border Color for Role %" + role.roleID + "% to %§<" + hex + ">" + hex);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -314,7 +309,7 @@ public class ExecuteMethods {
 		role.isUsernameBorderCurly = false;
 		role.isUsernameBorderCustom = false;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Border to % □None□ % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Display Border to % □None□ % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -327,7 +322,7 @@ public class ExecuteMethods {
 		role.isDisplayBorderCurly = false;
 		role.isDisplayBorderCustom = false;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Border to % [Bracket] % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Display Border to % [Bracket] % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -340,7 +335,7 @@ public class ExecuteMethods {
 		role.isDisplayBorderCurly = true;
 		role.isDisplayBorderCustom = false;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Border to % {Curly} % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Display Border to % {Curly} % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -353,7 +348,7 @@ public class ExecuteMethods {
 		role.isDisplayBorderCurly = false;
 		role.isDisplayBorderCustom = false;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Border to % <Caret> % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Display Border to % <Caret> % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -368,7 +363,7 @@ public class ExecuteMethods {
 		role.isDisplayBorderCustom = true;
 		role.customDisplayBorderPrefix = customAffix;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Border Prefix to % " + customAffix + " % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Display Border Prefix to % " + customAffix + " % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -383,7 +378,7 @@ public class ExecuteMethods {
 		role.isDisplayBorderCustom = true;
 		role.customDisplayBorderSuffix = customAffix;
 		role.save();
-		FeedbackHandler.success(context, "Set Display Border Suffix to % " + customAffix + " % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Display Border Suffix to % " + customAffix + " % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -393,7 +388,7 @@ public class ExecuteMethods {
 
 		role.usernameBorderColor = color;
 		role.save();
-		FeedbackHandler.success(context, "Set Username Border Color for Role %" + role.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
+		FeedbackHandler.success(context, "Set Username Border Color for Role %" + role.roleID + "% to %" + MUtil.colorSectionMap.get(color) + color);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -403,7 +398,7 @@ public class ExecuteMethods {
 
 		role.usernameBorderColor = hex;
 		role.save();
-		FeedbackHandler.success(context, "Set Username Border Color for Role %" + role.displayName + "% to %§<" + hex + ">" + hex);
+		FeedbackHandler.success(context, "Set Username Border Color for Role %" + role.roleID + "% to %§<" + hex + ">" + hex);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -416,7 +411,7 @@ public class ExecuteMethods {
 		role.isUsernameBorderCurly = false;
 		role.isUsernameBorderCustom = false;
 		role.save();
-		FeedbackHandler.success(context, "Set Username Border to % □None□ % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Username Border to % □None□ % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -429,7 +424,7 @@ public class ExecuteMethods {
 		role.isUsernameBorderCurly = false;
 		role.isUsernameBorderCustom = false;
 		role.save();
-		FeedbackHandler.success(context, "Set Username Border to % [Bracket] % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Username Border to % [Bracket] % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -442,7 +437,7 @@ public class ExecuteMethods {
 		role.isUsernameBorderCurly = true;
 		role.isUsernameBorderCustom = false;
 		role.save();
-		FeedbackHandler.success(context, "Set Username Border to % {Curly} % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Username Border to % {Curly} % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -455,7 +450,7 @@ public class ExecuteMethods {
 		role.isUsernameBorderCurly = false;
 		role.isUsernameBorderCustom = false;
 		role.save();
-		FeedbackHandler.success(context, "Set Username Border to % <Caret> % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Username Border to % <Caret> % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -470,7 +465,7 @@ public class ExecuteMethods {
 		role.isUsernameBorderCustom = true;
 		role.customUsernameBorderPrefix = customAffix;
 		role.save();
-		FeedbackHandler.success(context, "Set Username Border Prefix to % " + customAffix + " % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Username Border Prefix to % " + customAffix + " % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -485,7 +480,7 @@ public class ExecuteMethods {
 		role.isUsernameBorderCustom = true;
 		role.customUsernameBorderSuffix = customAffix;
 		role.save();
-		FeedbackHandler.success(context, "Set Username Border Suffix to % " + customAffix + " % for Role %" + role.displayName);
+		FeedbackHandler.success(context, "Set Username Border Suffix to % " + customAffix + " % for Role %" + role.roleID);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -495,7 +490,7 @@ public class ExecuteMethods {
 
 		role.textColor = color;
 		role.save();
-		FeedbackHandler.success(context, "Set Text Color for Role %" + role.displayName + "% to %" + MUtil.colorSectionMap.get(color) + color);
+		FeedbackHandler.success(context, "Set Text Color for Role %" + role.roleID + "% to %" + MUtil.colorSectionMap.get(color) + color);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -505,7 +500,7 @@ public class ExecuteMethods {
 
 		role.textColor = hex;
 		role.save();
-		FeedbackHandler.success(context, "Set Text Color for Role %" + role.displayName + "% to %§<" + hex + ">" + hex);
+		FeedbackHandler.success(context, "Set Text Color for Role %" + role.roleID + "% to %§<" + hex + ">" + hex);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -515,7 +510,7 @@ public class ExecuteMethods {
 
 		role.isTextUnderlined = value;
 		role.save();
-		FeedbackHandler.success(context, "Set Text Underline for Role %" + role.displayName + "% to %" + value);
+		FeedbackHandler.success(context, "Set Text Underline for Role %" + role.roleID + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -525,7 +520,7 @@ public class ExecuteMethods {
 
 		role.isTextBold = value;
 		role.save();
-		FeedbackHandler.success(context, "Set Text Bold for Role %" + role.displayName + "% to %" + value);
+		FeedbackHandler.success(context, "Set Text Bold for Role %" + role.roleID + "% to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -535,7 +530,111 @@ public class ExecuteMethods {
 
 		role.isTextItalics = value;
 		role.save();
-		FeedbackHandler.success(context, "Set Text Italics for Role %" + role.displayName + "% to %" + value);
+		FeedbackHandler.success(context, "Set Text Italics for Role %" + role.roleID + "% to %" + value);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_onblockplaced(CommandContext<CommandSource> context){
+		CommandSource source = context.getSource();
+		boolean value = context.getArgument("value", Boolean.class);
+		UUID senderUUID = UUIDHelper.getUUIDFromName(source.getSender().username);
+
+		if(value) {
+			if(!Data.Users.get(senderUUID).lockOnBlockPlaced){
+				Data.Users.get(senderUUID).lockOnBlockPlaced = true;
+				Data.Users.save(senderUUID);
+				FeedbackHandler.success(context, "Locking on Block Placed set to %" + true);
+				return Command.SINGLE_SUCCESS;
+			}
+			FeedbackHandler.error(context, "Failed to set Locking on Block Placed.. (Already %true%)");
+		}
+		else {
+			if(Data.Users.get(senderUUID).lockOnBlockPlaced) {
+				Data.Users.get(senderUUID).lockOnBlockPlaced = false;
+				Data.Users.save(senderUUID);
+				FeedbackHandler.success(context, "Locking on Block Placed set to %" + false);
+				return Command.SINGLE_SUCCESS;
+			}
+			FeedbackHandler.error(context, "Failed to set Locking on Block Placed.. (Already %false%)");
+		}
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_onblockpunched(CommandContext<CommandSource> context){
+		CommandSource source = context.getSource();
+		boolean value = context.getArgument("value", Boolean.class);
+		UUID senderUUID = UUIDHelper.getUUIDFromName(source.getSender().username);
+
+		if(value) {
+			if(!Data.Users.get(senderUUID).lockOnBlockPunched){
+				Data.Users.get(senderUUID).lockOnBlockPunched = true;
+				Data.Users.save(senderUUID);
+				FeedbackHandler.success(context, "Locking on Block Punched set to %" + true);
+				return Command.SINGLE_SUCCESS;
+			}
+			FeedbackHandler.error(context, "Failed to set Locking on Block Punched.. (Already %true%)");
+		}
+		else {
+			if(Data.Users.get(senderUUID).lockOnBlockPunched) {
+				Data.Users.get(senderUUID).lockOnBlockPunched = false;
+				Data.Users.save(senderUUID);
+				FeedbackHandler.success(context, "Locking on Block Punched set to %" + false);
+				return Command.SINGLE_SUCCESS;
+			}
+			FeedbackHandler.error(context, "Failed to set Locking on Block Punched.. (Already %false%)");
+		}
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_trust_TARGET(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_trust_USERNAME(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_trustall_TARGET(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_trustall_USERNAME(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_trustcommunity_TARGET(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_trustcommunity_USERNAME(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_untrust_TARGET(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_untrust_USERNAME(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_untrustall_TARGET(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_untrustall_USERNAME(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_untrustcommunity_TARGET(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_untrustcommunity_USERNAME(CommandContext<CommandSource> context){
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int lock_bypass(CommandContext<CommandSource> context){
 		return Command.SINGLE_SUCCESS;
 	}
 

@@ -1,14 +1,13 @@
 package MelonUtilities.mixins.tile_entities.trommel;
 
-import MelonUtilities.config.Data;
-import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
-import MelonUtilities.utility.helpers.UUIDHelper;
+import MelonUtilities.utility.MUtil;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
 import net.minecraft.core.block.entity.TileEntityTrommel;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.util.helper.UUIDHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -67,17 +66,8 @@ public class TileEntityTrommelMixin implements TileEntityContainerInterface {
 
 	@Inject(at = @At("HEAD"), method = "stillValid", cancellable = true)
 	public void canInteractWithInject(Player entityplayer, CallbackInfoReturnable<Boolean> cir) {
-		if(isLocked){
-			if(lockOwner != null) {
-				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !trustedPlayers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !Data.playerData.getOrCreate(lockOwner.toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !isCommunityContainer
-					&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(entityplayer.username).toString(), PlayerData.class).lockBypass){
-					cir.setReturnValue(false);
-					return;
-				}
-			}
+		if(!MUtil.canInteractWithLock(isLocked, isCommunityContainer, lockOwner, trustedPlayers, entityplayer)){
+			cir.setReturnValue(false);
 		}
 	}
 

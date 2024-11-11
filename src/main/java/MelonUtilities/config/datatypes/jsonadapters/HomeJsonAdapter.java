@@ -1,6 +1,6 @@
-package MelonUtilities.config.custom.jsonadapters;
+package MelonUtilities.config.datatypes.jsonadapters;
 
-import MelonUtilities.config.custom.classes.Home;
+import MelonUtilities.config.datatypes.data.Home;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;

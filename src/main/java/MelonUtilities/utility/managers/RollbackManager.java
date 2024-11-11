@@ -2,7 +2,7 @@ package MelonUtilities.utility.managers;
 
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
-import MelonUtilities.config.datatypes.ConfigData;
+import MelonUtilities.config.datatypes.data.Config;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.NbtIo;
@@ -382,32 +382,32 @@ public class RollbackManager {
 	static int configLoadCounter = 0;
 
 	public static void tick() {
-		ConfigData config = Data.configs.getOrCreate("config", ConfigData.class);
+		Config config = Data.MainConfig.config;
 
 		double systemTime = System.currentTimeMillis();
 		double difference = (systemTime - config.lastSnapshot);
 		if(!lock && config.snapshotsEnabled && difference >= config.timeBetweenSnapshots * 1000){
 			takeSnapshot();
 			config.lastSnapshot = System.currentTimeMillis();
-			Data.configs.saveAll();
+			Data.MainConfig.save();
 		}
 
 		if(!lock && config.backupsEnabled && System.currentTimeMillis() - config.lastBackup >= config.timeBetweenBackups * 60 * 60 * 1000){
 			takeBackup();
 			config.lastBackup = System.currentTimeMillis();
-			Data.configs.saveAll();
+			Data.MainConfig.save();
 		}
 
 		if(!lock && config.backupsEnabled && System.currentTimeMillis() - config.lastBackupPrune >= config.timeBetweenBackupPruning * 60 * 60 * 1000){
 			pruneBackups();
 			config.lastBackupPrune = System.currentTimeMillis();
-			Data.configs.saveAll();
+			Data.MainConfig.save();
 		}
 
 		if(!lock && config.snapshotsEnabled && System.currentTimeMillis() - config.lastSnapshotPrune >= config.timeBetweenSnapshotPruning * 60 * 60 * 1000){
 			pruneSnapshots();
 			config.lastSnapshotPrune = System.currentTimeMillis();
-			Data.configs.saveAll();
+			Data.MainConfig.save();
 		}
 
 

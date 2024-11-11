@@ -41,8 +41,8 @@ public class LockCommandOld extends Command {
 
 	private boolean onBlockPlaced(CommandHandler handler, CommandSource source, String[] args){
 		if(args[1].equals("true")) {
-			if(!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPlaced){
-				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPlaced = true;
+			if(!Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPlaced){
+				Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPlaced = true;
 				FeedbackHandler.success(source, "Lock-On-Block-Placed is now On!");
 				return true;
 			}
@@ -50,8 +50,8 @@ public class LockCommandOld extends Command {
 			return false;
 		}
 		if(args[1].equals("false")) {
-			if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPlaced) {
-				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPlaced = false;
+			if(Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPlaced) {
+				Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPlaced = false;
 				FeedbackHandler.success(source, "Lock on Block Placed is now Off!");
 				return true;
 			}
@@ -64,8 +64,8 @@ public class LockCommandOld extends Command {
 
 	private boolean onBlockPunched(CommandHandler handler, CommandSource source, String[] args){
 		if(args[1].equals("true")) {
-			if(!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPunched){
-				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPunched = true;
+			if(!Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPunched){
+				Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPunched = true;
 				FeedbackHandler.success(source, "Lock-On-Block-Punched is now On!");
 				return true;
 			}
@@ -73,8 +73,8 @@ public class LockCommandOld extends Command {
 			return true;
 		}
 		if(args[1].equals("false")) {
-			if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPunched) {
-				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPunched = false;
+			if(Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPunched) {
+				Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockOnBlockPunched = false;
 				FeedbackHandler.success(source, "Lock-On-Block-Punched is now Off!");
 				return true;
 			}
@@ -153,10 +153,10 @@ public class LockCommandOld extends Command {
 
 	private boolean trustAll(CommandHandler handler, CommandSource source, String[] args){
 		if(UUIDHelper.getUUIDFromName(args[1]) != null) {
-			if(!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(args[1]))){
-				Data.playerData.loadAll(PlayerData.class);
-				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).playersTrustedToAllContainers.add(UUIDHelper.getUUIDFromName(args[1]));
-				Data.playerData.saveAll();
+			if(!Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(args[1]))){
+				Data.user.loadAll(PlayerData.class);
+				Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).playersTrustedToAllContainers.add(UUIDHelper.getUUIDFromName(args[1]));
+				Data.user.saveAll();
 				FeedbackHandler.success(source, "Trusted " + TextFormatting.GRAY + args[1] + TextFormatting.LIME + " to all Containers!");
 				return true;
 			}
@@ -289,10 +289,10 @@ public class LockCommandOld extends Command {
 
 	private boolean untrustAll(CommandHandler handler, CommandSource source, String[] args){
 		if(UUIDHelper.getUUIDFromName(args[1]) != null) {
-			if(Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(args[1]))){
-				Data.playerData.loadAll(PlayerData.class);
-				Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).playersTrustedToAllContainers.remove(UUIDHelper.getUUIDFromName(args[1]));
-				Data.playerData.saveAll();
+			if(Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(args[1]))){
+				Data.user.loadAll(PlayerData.class);
+				Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).playersTrustedToAllContainers.remove(UUIDHelper.getUUIDFromName(args[1]));
+				Data.user.saveAll();
 				FeedbackHandler.destructive(source, "Untrusted " + TextFormatting.GRAY + args[1] + TextFormatting.ORANGE + " from all Containers!");
 				return true;
 			}
@@ -361,8 +361,8 @@ public class LockCommandOld extends Command {
 	private boolean bypass(CommandHandler handler, CommandSource source, String[] args) {
 		if(source.hasAdmin()) {
 			if (args[1].equals("true")) {
-				if (!Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockBypass) {
-					Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockBypass = true;
+				if (!Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockBypass) {
+					Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockBypass = true;
 					FeedbackHandler.success(source, "Lock-Bypass is now On!");
 					return true;
 				}
@@ -370,8 +370,8 @@ public class LockCommandOld extends Command {
 				return true;
 			}
 			if (args[1].equals("false")) {
-				if (Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockBypass) {
-					Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockBypass = false;
+				if (Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockBypass) {
+					Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).lockBypass = false;
 					FeedbackHandler.success(source, "Lock-Bypass is now Off!");
 					return true;
 				}

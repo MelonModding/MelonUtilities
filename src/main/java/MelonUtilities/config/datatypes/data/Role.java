@@ -1,11 +1,10 @@
-package MelonUtilities.config.custom.classes;
+package MelonUtilities.config.datatypes.data;
 
 import MelonUtilities.config.Data;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Role {
 
@@ -50,7 +49,7 @@ public class Role {
 
 	//Role General Values
 	public int priority = 0;
-	public List<String> playersGrantedRole = new ArrayList<>();
+	public List<UUID> playersGrantedRole = new ArrayList<>();
 
 	public final String roleID;
 

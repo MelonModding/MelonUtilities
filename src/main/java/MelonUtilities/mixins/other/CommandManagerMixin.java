@@ -1,5 +1,6 @@
 package MelonUtilities.mixins.other;
 
+import MelonUtilities.commands.lock.CommandLock;
 import MelonUtilities.commands.role.CommandRole;
 import MelonUtilities.commands.utility.CommandMelonUtilities;
 import net.fabricmc.api.EnvType;
@@ -27,7 +28,7 @@ public class CommandManagerMixin {
 			//TODO CommandManager.registerCommand(new KittenCommand());
 
 			// Lock
-			//TODO CommandManager.registerCommand(new LockCommand());
+			CommandManager.registerCommand(new CommandLock());
 
 			// Misc
 			//TODO CommandManager.registerCommand(new WhereAmICommand());

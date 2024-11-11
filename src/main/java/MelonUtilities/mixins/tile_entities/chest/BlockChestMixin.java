@@ -1,16 +1,13 @@
 package MelonUtilities.mixins.tile_entities.chest;
 
-import MelonUtilities.config.Data;
-import MelonUtilities.config.datatypes.PlayerData;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
-import MelonUtilities.utility.helpers.UUIDHelper;
+import MelonUtilities.utility.feedback.FeedbackHandler;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.block.BlockChest;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,19 +22,9 @@ public class BlockChestMixin {
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
 		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(x, y, z);
-
-		if(iContainer.getIsLocked()){
-			if(iContainer.getLockOwner() != null) {
-				if (!iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(player.username))
-					&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(player.username))
-					&& !Data.playerData.getOrCreate(iContainer.getLockOwner().toString(), PlayerData.class).playersTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
-					&& !iContainer.getIsCommunityContainer()
-					&& !Data.playerData.getOrCreate(UUIDHelper.getUUIDFromName(player.username).toString(), PlayerData.class).lockBypass){
-					player.sendMessage(TextFormatting.RED + "Chest is Locked!");
-					cir.setReturnValue(false);
-					return;
-				}
-			}
+		if(!MUtil.canInteractWithLock(iContainer.getIsLocked(), iContainer.getIsCommunityContainer(), iContainer.getLockOwner(), iContainer.getTrustedPlayers(), player)){
+			FeedbackHandler.error(player, "Chest is Locked!");
+			cir.setReturnValue(false);
 		}
 	}
 

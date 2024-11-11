@@ -1,20 +1,22 @@
-package MelonUtilities.config.custom.jsonadapters;
+package MelonUtilities.config.datatypes.jsonadapters;
 
-import MelonUtilities.config.custom.classes.Role;
+import MelonUtilities.config.datatypes.data.Role;
 import com.google.gson.*;
+import net.minecraft.core.util.helper.UUIDHelper;
 
 import java.lang.reflect.Type;
+import java.util.UUID;
 
 public class RoleJsonAdapter implements JsonDeserializer<Role>, JsonSerializer<Role> {
 	@Override
 	public Role deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		JsonObject obj = json.getAsJsonObject();
-		JsonObject display = obj.getAsJsonObject("Display:");
-		JsonObject displayBorder = obj.getAsJsonObject("Display Border:");
-		JsonObject username = obj.getAsJsonObject("Username:");
-		JsonObject usernameBorder = obj.getAsJsonObject("Username Border:");
-		JsonObject text = obj.getAsJsonObject("Text:");
-		JsonObject generalValues = obj.getAsJsonObject("General Values:");
+		JsonObject display = obj.getAsJsonObject("Display");
+		JsonObject displayBorder = obj.getAsJsonObject("Display Border");
+		JsonObject username = obj.getAsJsonObject("Username");
+		JsonObject usernameBorder = obj.getAsJsonObject("Username Border");
+		JsonObject text = obj.getAsJsonObject("Text");
+		JsonObject generalValues = obj.getAsJsonObject("General Values");
 
 		Role role = new Role(generalValues.get("roleID").getAsString());
 
@@ -56,7 +58,13 @@ public class RoleJsonAdapter implements JsonDeserializer<Role>, JsonSerializer<R
 
 		JsonArray playersGrantedRole = generalValues.getAsJsonArray("playersGrantedRole");
 		for(JsonElement element : playersGrantedRole){
-			role.playersGrantedRole.add(element.getAsString());
+			if(!UUIDHelper.isUUID(element.getAsString())){
+				if(UUIDHelper.getUUIDFromName(element.getAsString()) != null) {
+					UUIDHelper.runConversionAction(element.getAsString(), uUID -> role.playersGrantedRole.add(uUID), null);
+				}
+				continue;
+			}
+			role.playersGrantedRole.add(UUID.fromString(element.getAsString()));
 		}
 
 		return role;
@@ -78,7 +86,7 @@ public class RoleJsonAdapter implements JsonDeserializer<Role>, JsonSerializer<R
 		display.addProperty("isDisplayBold", src.isDisplayBold);
 		display.addProperty("isDisplayItalics", src.isDisplayItalics);
 
-		obj.add("Display:", display);
+		obj.add("Display", display);
 
 		displayBorder.addProperty("displayBorderColor", src.displayBorderColor);
 		displayBorder.addProperty("isDisplayBorderNone", src.isDisplayBorderNone);
@@ -89,14 +97,14 @@ public class RoleJsonAdapter implements JsonDeserializer<Role>, JsonSerializer<R
 		displayBorder.addProperty("customDisplayBorderPrefix", src.customDisplayBorderPrefix);
 		displayBorder.addProperty("customDisplayBorderSuffix", src.customDisplayBorderSuffix);
 
-		obj.add("Display Border:", displayBorder);
+		obj.add("Display Border", displayBorder);
 
 		username.addProperty("usernameColor", src.usernameColor);
 		username.addProperty("isUsernameUnderlined", src.isUsernameUnderlined);
 		username.addProperty("isUsernameBold", src.isUsernameBold);
 		username.addProperty("isUsernameItalics", src.isUsernameItalics);
 
-		obj.add("Username:", username);
+		obj.add("Username", username);
 
 		usernameBorder.addProperty("usernameBorderColor", src.usernameBorderColor);
 		usernameBorder.addProperty("isUsernameBorderNone", src.isUsernameBorderNone);
@@ -107,24 +115,24 @@ public class RoleJsonAdapter implements JsonDeserializer<Role>, JsonSerializer<R
 		usernameBorder.addProperty("customUsernameBorderPrefix", src.customUsernameBorderPrefix);
 		usernameBorder.addProperty("customUsernameBorderSuffix", src.customUsernameBorderSuffix);
 
-		obj.add("Username Border:", usernameBorder);
+		obj.add("Username Border", usernameBorder);
 
 		text.addProperty("textColor", src.textColor);
 		text.addProperty("isTextUnderlined", src.isTextUnderlined);
 		text.addProperty("isTextBold", src.isTextBold);
 		text.addProperty("isTextItalics", src.isTextItalics);
 
-		obj.add("Text:", text);
+		obj.add("Text", text);
 
 		generalValues.addProperty("roleID", src.roleID);
 		generalValues.addProperty("priority", src.priority);
 		JsonArray playersGrantedRole = new JsonArray();
-		for(String player : src.playersGrantedRole){
-			playersGrantedRole.add(player);
+		for(UUID uuid : src.playersGrantedRole){
+			playersGrantedRole.add(String.valueOf(uuid));
 		}
 		generalValues.add("playersGrantedRole", playersGrantedRole);
 
-		obj.add("General Values:", generalValues);
+		obj.add("General Values", generalValues);
 
 		return obj;
 	}

@@ -3,7 +3,7 @@ package MelonUtilities.commands.role;
 import MelonUtilities.command_arguments.ArgumentTypeColor;
 import MelonUtilities.command_arguments.ArgumentTypeRole;
 import MelonUtilities.commands.ExecuteMethods;
-import MelonUtilities.config.custom.classes.Role;
+import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;

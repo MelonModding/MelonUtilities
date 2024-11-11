@@ -1,16 +1,23 @@
 package MelonUtilities.utility;
 
+import MelonUtilities.config.Data;
 import MelonUtilities.utility.managers.RollbackManager;
+import com.b100.json.JsonParser;
+import com.b100.json.element.JsonObject;
+import com.b100.utils.StringUtils;
 import net.minecraft.core.block.BlockChest;
 import net.minecraft.core.block.entity.TileEntityChest;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
+import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.util.phys.HitResult;
 import net.minecraft.core.util.phys.Vec3;
 import net.minecraft.core.world.World;
 import net.minecraft.server.entity.player.PlayerServer;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
@@ -90,6 +97,56 @@ public class MUtil {
 			}
 		}
 		return String.valueOf(hex);
+	}
+
+	public static boolean canInteractWithLock(boolean isLocked, boolean isCommunityContainer, UUID lockOwner, List<UUID> trustedPlayers, Player player){
+		if(!isLocked) {
+			return true;
+		}
+		if(lockOwner == null) {
+			return true;
+		}
+
+		return lockOwner.equals(UUIDHelper.getUUIDFromName(player.username))
+			|| trustedPlayers.contains(UUIDHelper.getUUIDFromName(player.username))
+			|| Data.Users.get(lockOwner).uuidsTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
+			|| isCommunityContainer
+			|| Data.Users.get(UUIDHelper.getUUIDFromName(player.username)).lockBypass;
+	}
+
+	private static final String url = "https://sessionserver.mojang.com/session/minecraft/profile/";
+	private static final JsonParser jsonParser = new JsonParser();
+	private static final Map<UUID, String> UUIDtoNameMap = new HashMap<>();
+
+	public static @Nullable String getNameFromUUID(UUID uuid){
+		if(UUIDtoNameMap.containsKey(uuid)){
+			return UUIDtoNameMap.get(uuid);
+		}
+
+		String string;
+		try{
+			string = StringUtils.getWebsiteContentAsString(url + uuid);
+		}catch (Exception e) {
+			System.err.println("Can't connect to Mojang API.");
+			e.printStackTrace();
+			return null;
+		}
+		if(string.isEmpty()) {
+			System.err.println("UUID [" + uuid + "] doesn't exist!");
+			return null;
+		}
+		String username;
+		try {
+			JsonObject contentParsed = jsonParser.parse(string);
+			username = contentParsed.getString("name");
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		if (uuid == null) return null;
+
+		UUIDtoNameMap.put(uuid, username);
+		return username;
 	}
 
 	public static HitResult rayCastFromPlayer(CommandSource source) {
