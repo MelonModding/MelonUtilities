@@ -140,14 +140,15 @@ public class ExecuteMethods {
 		Role role = context.getArgument("role", Role.class);
 
 		EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
-		String target = ((Player)entitySelector.get(source).get(0)).username;
+		Player target = ((Player)entitySelector.get(source).get(0));
+		String targetUsername = ((Player)entitySelector.get(source).get(0)).username;
 
-		if (!role.playersGrantedRole.contains(UUIDHelper.getUUIDFromName(target))){
-			role.playersGrantedRole.add(UUIDHelper.getUUIDFromName(target));
+		if (!role.playersGrantedRole.contains(target.uuid)){
+			role.playersGrantedRole.add(target.uuid);
 			role.save();
-			FeedbackHandler.success(context, "Granted Role %" + role.roleID + "% to Player %" + target);
+			FeedbackHandler.success(context, "Granted Role %" + role.roleID + "% to Player %" + targetUsername);
 		} else {
-			FeedbackHandler.error(context, "Failed to Grant Role %" + role.roleID + "% to Player %" + target);
+			FeedbackHandler.error(context, "Failed to Grant Role %" + role.roleID + "% to Player %" + targetUsername);
 			FeedbackHandler.error(context, "(Player already has Role!)");
 		}
 		return Command.SINGLE_SUCCESS;
@@ -171,7 +172,7 @@ public class ExecuteMethods {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_delete(CommandContext<CommandSource> context) throws CommandSyntaxException {
+	public static int role_delete(CommandContext<CommandSource> context) {
 		Role role = context.getArgument("role", Role.class);
 
 		FeedbackHandler.destructive(context, "Deleted Role %" + role.roleID);
@@ -179,7 +180,7 @@ public class ExecuteMethods {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_set_defaultrole_ROLEID(CommandContext<CommandSource> context) throws CommandSyntaxException {
+	public static int role_set_defaultrole_ROLEID(CommandContext<CommandSource> context) {
 		Role role = context.getArgument("role", Role.class);
 
 		Data.MainConfig.config.defaultRole = role.roleID;
@@ -537,7 +538,7 @@ public class ExecuteMethods {
 	public static int lock_onblockplaced(CommandContext<CommandSource> context){
 		CommandSource source = context.getSource();
 		boolean value = context.getArgument("value", Boolean.class);
-		UUID senderUUID = UUIDHelper.getUUIDFromName(source.getSender().username);
+		UUID senderUUID = source.getSender().uuid;
 
 		if(value) {
 			if(!Data.Users.get(senderUUID).lockOnBlockPlaced){
@@ -563,7 +564,7 @@ public class ExecuteMethods {
 	public static int lock_onblockpunched(CommandContext<CommandSource> context){
 		CommandSource source = context.getSource();
 		boolean value = context.getArgument("value", Boolean.class);
-		UUID senderUUID = UUIDHelper.getUUIDFromName(source.getSender().username);
+		UUID senderUUID = source.getSender().uuid;
 
 		if(value) {
 			if(!Data.Users.get(senderUUID).lockOnBlockPunched){

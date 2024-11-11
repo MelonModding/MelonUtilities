@@ -56,6 +56,7 @@ public class Data {
 			if (files != null) {
 				for (File child : files) {
 					try {
+						RoleJsonAdapter.fileName = child.getName().replace(".json", "");
 						Role role = gson.fromJson(new JsonReader(new FileReader(child)), Role.class);
 						roleDataHashMap.put(role.roleID, role);
 					} catch (FileNotFoundException e) {
@@ -85,6 +86,7 @@ public class Data {
 			roleDataHashMap.remove(roleID);
 			File child = new File(roleDir, roleID + ".json");
 			try {
+				RoleJsonAdapter.fileName = child.getName().replace(".json", "");
 				Role role = gson.fromJson(new JsonReader(new FileReader(child)), Role.class);
 				roleDataHashMap.put(role.roleID, role);
 			} catch (FileNotFoundException e) {

@@ -130,7 +130,7 @@ public class RoleBuilder {
 
 		boolean hasBeenGrantedRole = false;
 		for (Role role : Data.Roles.roleDataHashMap.values()) {
-			if (role.playersGrantedRole.contains(UUIDHelper.getUUIDFromName(player.username))) {
+			if (role.playersGrantedRole.contains(player.uuid)) {
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
 			}

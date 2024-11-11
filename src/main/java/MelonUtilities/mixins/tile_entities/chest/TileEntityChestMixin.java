@@ -98,11 +98,6 @@ public class TileEntityChestMixin implements TileEntityContainerInterface {
 	}
 
 	@Override
-	public void setLockOwner(String username) {
-		lockOwner = UUIDHelper.getUUIDFromName(username);
-	}
-
-	@Override
 	public void setLockOwner(UUID owner) {
 		lockOwner = owner;
 	}
@@ -119,18 +114,8 @@ public class TileEntityChestMixin implements TileEntityContainerInterface {
 	}
 
 	@Override
-	public void addTrustedPlayer(String username) {
-		trustedPlayers.add(UUIDHelper.getUUIDFromName(username));
-	}
-
-	@Override
 	public void addTrustedPlayer(UUID uuid) {
 		trustedPlayers.add(uuid);
-	}
-
-	@Override
-	public void removeTrustedPlayer(String username) {
-		trustedPlayers.remove(UUIDHelper.getUUIDFromName(username));
 	}
 
 	@Override

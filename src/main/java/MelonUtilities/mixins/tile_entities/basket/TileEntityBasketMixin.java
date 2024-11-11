@@ -68,11 +68,11 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 	public void givePlayerAllItemsInject(World world, Player entityplayer, CallbackInfo ci) {
 		if(isLocked){
 			if(lockOwner != null) {
-				if (!lockOwner.equals(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !trustedPlayers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
-					&& !Data.Users.get(lockOwner).uuidsTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(entityplayer.username))
+				if (!lockOwner.equals(entityplayer.uuid)
+					&& !trustedPlayers.contains(entityplayer.uuid)
+					&& !Data.Users.get(lockOwner).uuidsTrustedToAllContainers.contains(entityplayer.uuid)
 					&& !isCommunityContainer
-					&& !Data.Users.get(UUIDHelper.getUUIDFromName(entityplayer.username)).lockBypass){
+					&& !Data.Users.get(entityplayer.uuid).lockBypass){
 					ci.cancel();
 					return;
 				}
@@ -106,11 +106,6 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 	}
 
 	@Override
-	public void setLockOwner(String username) {
-		lockOwner = UUIDHelper.getUUIDFromName(username);
-	}
-
-	@Override
 	public void setLockOwner(UUID owner) {
 		lockOwner = owner;
 	}
@@ -127,18 +122,8 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 	}
 
 	@Override
-	public void addTrustedPlayer(String username) {
-		trustedPlayers.add(UUIDHelper.getUUIDFromName(username));
-	}
-
-	@Override
 	public void addTrustedPlayer(UUID uuid) {
 		trustedPlayers.add(uuid);
-	}
-
-	@Override
-	public void removeTrustedPlayer(String username) {
-		trustedPlayers.remove(UUIDHelper.getUUIDFromName(username));
 	}
 
 	@Override

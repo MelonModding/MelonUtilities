@@ -74,7 +74,7 @@ public abstract class PacketHandlerServerMixin {
 
 		boolean hasBeenGrantedRole = false;
 		for(Role role : Data.Roles.roleDataHashMap.values()){
-			if(role.playersGrantedRole.contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))){
+			if(role.playersGrantedRole.contains(this.playerEntity.uuid)){
 				rolesGranted.add(role.priority, role);
 				hasBeenGrantedRole = true;
 			}
@@ -194,21 +194,21 @@ public abstract class PacketHandlerServerMixin {
 		if(container instanceof TileEntityContainerInterface) {
 			TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 			if (iContainer.getLockOwner() != null
-				&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username))
-				&& !iContainer.getTrustedPlayers().contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))
-				&& !Data.Users.get(iContainer.getLockOwner()).uuidsTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(this.playerEntity.username))
-				&& !Data.Users.get(UUIDHelper.getUUIDFromName(this.playerEntity.username)).lockBypass){
+				&& !iContainer.getLockOwner().equals(this.playerEntity.uuid)
+				&& !iContainer.getTrustedPlayers().contains(this.playerEntity.uuid)
+				&& !Data.Users.get(iContainer.getLockOwner()).uuidsTrustedToAllContainers.contains(this.playerEntity.uuid)
+				&& !Data.Users.get(this.playerEntity.uuid).lockBypass){
 				ci.cancel();
 				sendPacket(new BlockUpdatePacket(packet.xPosition, packet.yPosition, packet.zPosition, world));
 			}
-			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.Users.get(UUIDHelper.getUUIDFromName(this.playerEntity.username)).lockOnBlockPunched && !iContainer.getIsLocked()){
+			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.Users.get(this.playerEntity.uuid).lockOnBlockPunched && !iContainer.getIsLocked()){
 				if (container instanceof TileEntityChest) {
 					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) MUtil.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
 						iContainer.setIsLocked(true);
 						iOtherContainer.setIsLocked(true);
-						iContainer.setLockOwner(this.playerEntity.username);
-						iOtherContainer.setLockOwner(this.playerEntity.username);
+						iContainer.setLockOwner(playerEntity.uuid);
+						iOtherContainer.setLockOwner(playerEntity.uuid);
 						this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Double Chest!");
 						ci.cancel();
 					} else {
@@ -229,23 +229,23 @@ public abstract class PacketHandlerServerMixin {
 				}
 
 				iContainer.setIsLocked(true);
-				iContainer.setLockOwner(this.playerEntity.username);
+				iContainer.setLockOwner(playerEntity.uuid);
 				ci.cancel();
 			}
 
 			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
-			&& Data.Users.get(UUIDHelper.getUUIDFromName(this.playerEntity.username)).lockOnBlockPunched
+			&& Data.Users.get(this.playerEntity.uuid).lockOnBlockPunched
 			&& iContainer.getIsLocked()
-			&& !iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username)))
+			&& !iContainer.getLockOwner().equals(this.playerEntity.uuid))
 			{
 				this.playerEntity.sendMessage(TextFormatting.RED + "Failed to Lock Container! (Not Owned By You)");
 				ci.cancel();
 			}
 
 			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
-			&& Data.Users.get(UUIDHelper.getUUIDFromName(this.playerEntity.username)).lockOnBlockPunched
+			&& Data.Users.get(this.playerEntity.uuid).lockOnBlockPunched
 			&& iContainer.getIsLocked()
-			&& iContainer.getLockOwner().equals(UUIDHelper.getUUIDFromName(this.playerEntity.username)))
+			&& iContainer.getLockOwner().equals(this.playerEntity.uuid))
 			{
 				this.playerEntity.sendMessage(TextFormatting.RED + "Failed to Lock Container! (Already Locked)");
 				ci.cancel();

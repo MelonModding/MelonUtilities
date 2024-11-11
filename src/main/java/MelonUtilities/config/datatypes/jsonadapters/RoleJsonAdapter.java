@@ -8,9 +8,63 @@ import java.lang.reflect.Type;
 import java.util.UUID;
 
 public class RoleJsonAdapter implements JsonDeserializer<Role>, JsonSerializer<Role> {
+
+	public static String fileName;
+
+	private Role legacyDeserialize(JsonObject obj){
+
+		Role role = new Role(fileName);
+
+		role.displayColor = obj.get("Role Display Color:").getAsString();
+		role.displayName = obj.get("Role Display Name:").getAsString();
+		role.isDisplayUnderlined = obj.get("Role Display Underlined:").getAsBoolean();
+		role.isDisplayBold = obj.get("Role Display Bold:").getAsBoolean();
+		role.isDisplayItalics = obj.get("Role Display Italics:").getAsBoolean();
+
+		role.displayBorderColor = obj.get("Display Border Color:").getAsString();
+		role.isDisplayBorderNone = obj.get("No Display Border:").getAsBoolean();
+		role.isDisplayBorderBracket = obj.get("Bracket Display Border:").getAsBoolean();
+		role.isDisplayBorderCurly = obj.get("Curly Bracket Display Border:").getAsBoolean();
+		role.isDisplayBorderCaret = obj.get("Caret Display Border:").getAsBoolean();
+		role.isDisplayBorderCustom = obj.get("Custom Display Border:").getAsBoolean();
+		role.customDisplayBorderPrefix = obj.get("Custom Display Border Prefix:").getAsString();
+		role.customDisplayBorderSuffix = obj.get("Custom Display Border Suffix:").getAsString();
+
+		role.usernameColor = obj.get("Role Username Color:").getAsString();
+		role.isUsernameUnderlined = obj.get("Role Username Underlined:").getAsBoolean();
+		role.isUsernameBold = obj.get("Role Username Bold:").getAsBoolean();
+		role.isUsernameItalics = obj.get("Role Username Italics:").getAsBoolean();
+
+		role.usernameBorderColor = obj.get("Username Border Color:").getAsString();
+		role.isUsernameBorderNone = obj.get("No Username Border:").getAsBoolean();
+		role.isUsernameBorderBracket = obj.get("Bracket Username Border:").getAsBoolean();
+		role.isUsernameBorderCurly = obj.get("Curly Bracket Username Border:").getAsBoolean();
+		role.isUsernameBorderCaret = obj.get("Caret Username Border:").getAsBoolean();
+		role.isUsernameBorderCustom = obj.get("Custom Username Border:").getAsBoolean();
+		role.customUsernameBorderPrefix = obj.get("Custom Username Border Prefix:").getAsString();
+		role.customUsernameBorderSuffix = obj.get("Custom Username Border Suffix:").getAsString();
+
+		role.textColor = obj.get("Role Text Color:").getAsString();
+		role.isTextUnderlined = obj.get("Role Text Underlined:").getAsBoolean();
+		role.isTextBold = obj.get("Role Text Bold:").getAsBoolean();
+		role.isTextItalics = obj.get("Role Text Italics:").getAsBoolean();
+
+		role.priority = obj.get("Role Priority: (Highest - 0..1..2.. - Lowest)").getAsInt();
+
+		JsonArray playersGrantedRole = obj.getAsJsonArray("Players Granted Role:");
+		for(JsonElement element : playersGrantedRole){
+			UUIDHelper.runConversionAction(element.getAsString(), uUID -> role.playersGrantedRole.add(uUID), null);
+		}
+
+		return role;
+	}
+
 	@Override
 	public Role deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		JsonObject obj = json.getAsJsonObject();
+		if(obj.has("Role Display Color:")){
+			return legacyDeserialize(obj);
+		}
 		JsonObject display = obj.getAsJsonObject("Display");
 		JsonObject displayBorder = obj.getAsJsonObject("Display Border");
 		JsonObject username = obj.getAsJsonObject("Username");
@@ -59,9 +113,7 @@ public class RoleJsonAdapter implements JsonDeserializer<Role>, JsonSerializer<R
 		JsonArray playersGrantedRole = generalValues.getAsJsonArray("playersGrantedRole");
 		for(JsonElement element : playersGrantedRole){
 			if(!UUIDHelper.isUUID(element.getAsString())){
-				if(UUIDHelper.getUUIDFromName(element.getAsString()) != null) {
-					UUIDHelper.runConversionAction(element.getAsString(), uUID -> role.playersGrantedRole.add(uUID), null);
-				}
+				UUIDHelper.runConversionAction(element.getAsString(), uUID -> role.playersGrantedRole.add(uUID), null);
 				continue;
 			}
 			role.playersGrantedRole.add(UUID.fromString(element.getAsString()));

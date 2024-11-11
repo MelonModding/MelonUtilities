@@ -107,11 +107,11 @@ public class MUtil {
 			return true;
 		}
 
-		return lockOwner.equals(UUIDHelper.getUUIDFromName(player.username))
-			|| trustedPlayers.contains(UUIDHelper.getUUIDFromName(player.username))
-			|| Data.Users.get(lockOwner).uuidsTrustedToAllContainers.contains(UUIDHelper.getUUIDFromName(player.username))
+		return lockOwner.equals(player.uuid)
+			|| trustedPlayers.contains(player.uuid)
+			|| Data.Users.get(lockOwner).uuidsTrustedToAllContainers.contains(player.uuid)
 			|| isCommunityContainer
-			|| Data.Users.get(UUIDHelper.getUUIDFromName(player.username)).lockBypass;
+			|| Data.Users.get(player.uuid).lockBypass;
 	}
 
 	private static final String url = "https://sessionserver.mojang.com/session/minecraft/profile/";
