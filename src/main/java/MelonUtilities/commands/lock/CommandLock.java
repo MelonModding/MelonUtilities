@@ -1,5 +1,6 @@
 package MelonUtilities.commands.lock;
 
+import MelonUtilities.command_arguments.ArgumentTypeUsername;
 import MelonUtilities.commands.ExecuteMethods;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
@@ -8,14 +9,11 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
-import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.command.arguments.ArgumentTypeEntity;
 import net.minecraft.core.net.command.helpers.EntitySelector;
-
-import static com.mojang.brigadier.builder.RequiredArgumentBuilder.argument;
 
 public class CommandLock implements CommandManager.CommandRegistry{
 	public static SyntaxBuilder syntax = new SyntaxBuilder();
@@ -61,14 +59,9 @@ public class CommandLock implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockTrust(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("trust")
-			.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
+			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", ArgumentTypeUsername.string())
 				.executes(
-					ExecuteMethods::lock_trust_TARGET
-				)
-			)
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", StringArgumentType.string())
-				.executes(
-					ExecuteMethods::lock_trust_USERNAME
+					ExecuteMethods::lock_trust
 				)
 			)
 		);
@@ -77,14 +70,9 @@ public class CommandLock implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockTrustAll(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("trustall")
-			.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
+			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", ArgumentTypeUsername.string())
 				.executes(
-					ExecuteMethods::lock_trustall_TARGET
-				)
-			)
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", StringArgumentType.string())
-				.executes(
-					ExecuteMethods::lock_trustall_USERNAME
+					ExecuteMethods::lock_trustall
 				)
 			)
 		);
@@ -93,15 +81,8 @@ public class CommandLock implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockTrustCommunity(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("trustcommunity")
-			.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
-				.executes(
-					ExecuteMethods::lock_trustcommunity_TARGET
-				)
-			)
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", StringArgumentType.string())
-				.executes(
-					ExecuteMethods::lock_trustcommunity_USERNAME
-				)
+			.executes(
+				ExecuteMethods::lock_trustcommunity
 			)
 		);
 		return builder;
@@ -109,14 +90,9 @@ public class CommandLock implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockUntrust(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("untrust")
-			.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
+			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", ArgumentTypeUsername.string())
 				.executes(
-					ExecuteMethods::lock_untrust_TARGET
-				)
-			)
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", StringArgumentType.string())
-				.executes(
-					ExecuteMethods::lock_untrust_USERNAME
+					ExecuteMethods::lock_untrust
 				)
 			)
 		);
@@ -125,14 +101,9 @@ public class CommandLock implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockUntrustAll(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("untrustall")
-			.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
+			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", ArgumentTypeUsername.string())
 				.executes(
-					ExecuteMethods::lock_untrustall_TARGET
-				)
-			)
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", StringArgumentType.string())
-				.executes(
-					ExecuteMethods::lock_untrustall_USERNAME
+					ExecuteMethods::lock_untrustall
 				)
 			)
 		);
@@ -141,15 +112,8 @@ public class CommandLock implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockUntrustCommunity(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("untrustcommunity")
-			.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
-				.executes(
-					ExecuteMethods::lock_untrustcommunity_TARGET
-				)
-			)
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", StringArgumentType.string())
-				.executes(
-					ExecuteMethods::lock_untrustcommunity_USERNAME
-				)
+			.executes(
+				ExecuteMethods::lock_untrustcommunity
 			)
 		);
 		return builder;
@@ -166,11 +130,19 @@ public class CommandLock implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
+	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lock(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
+		builder.executes(
+			ExecuteMethods::lock
+		);
+		return builder;
+	}
+
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
 		LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.<CommandSource>literal("lock");
 
+		lock(builder);
 		lockOnBlockPlaced(builder);
 		lockOnBlockPunched(builder);
 		lockTrust(builder);

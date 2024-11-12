@@ -8,6 +8,7 @@ import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.config.datatypes.jsonadapters.ConfigJsonAdapter;
 import MelonUtilities.config.datatypes.jsonadapters.KitJsonAdapter;
 import MelonUtilities.config.datatypes.jsonadapters.RoleJsonAdapter;
+import MelonUtilities.config.datatypes.jsonadapters.UserJsonAdapter;
 import com.b100.utils.FileUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,6 +30,7 @@ public class Data {
 		.registerTypeAdapter(Config.class, new ConfigJsonAdapter())
 		.registerTypeAdapter(Kit.class, new KitJsonAdapter())
 		.registerTypeAdapter(ItemStack.class, new ItemStackJsonAdapter())
+		.registerTypeAdapter(User.class, new UserJsonAdapter())
 		.setPrettyPrinting().create();
 
 	public static class Roles {
@@ -233,7 +235,7 @@ public class Data {
 		public static void save(UUID uuid){
 			File file = FileUtils.createNewFile(new File(userDir, uuid + ".json"));
 			try (FileWriter writer = new FileWriter(file)) {
-				gson.toJson(get(uuid), User.class, writer);
+				gson.toJson(getOrCreate(uuid), User.class, writer);
 				PlayerList.updateList();
 			} catch (IOException e) {
 				MelonUtilities.LOGGER.error("User {} failed to save!", uuid);
@@ -249,15 +251,16 @@ public class Data {
 				MelonUtilities.LOGGER.error("Could not reload User {}!", child);
 			}
 		}
-		public static User get(UUID uuid){
-			return userDataHashMap.get(uuid);
-		}
-
-		public static User getOrCreate(UUID uuid) {
+		public static User getOrCreate(UUID uuid){
 			if(!userDataHashMap.containsKey(uuid)){
 				create(uuid);
 			}
 			return get(uuid);
+
+		}
+
+		public static User get(UUID uuid) {
+			return userDataHashMap.get(uuid);
 		}
 	}
 }

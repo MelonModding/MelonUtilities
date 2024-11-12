@@ -70,9 +70,9 @@ public class TileEntityBasketMixin implements TileEntityContainerInterface {
 			if(lockOwner != null) {
 				if (!lockOwner.equals(entityplayer.uuid)
 					&& !trustedPlayers.contains(entityplayer.uuid)
-					&& !Data.Users.get(lockOwner).uuidsTrustedToAllContainers.contains(entityplayer.uuid)
+					&& !Data.Users.getOrCreate(lockOwner).uuidsTrustedToAllContainers.contains(entityplayer.uuid)
 					&& !isCommunityContainer
-					&& !Data.Users.get(entityplayer.uuid).lockBypass){
+					&& !Data.Users.getOrCreate(entityplayer.uuid).lockBypass){
 					ci.cancel();
 					return;
 				}

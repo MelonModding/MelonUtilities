@@ -5,6 +5,7 @@ import MelonUtilities.utility.managers.RollbackManager;
 import com.b100.json.JsonParser;
 import com.b100.json.element.JsonObject;
 import com.b100.utils.StringUtils;
+import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.core.block.BlockChest;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.player.Player;
@@ -12,7 +13,6 @@ import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
-import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.util.phys.HitResult;
 import net.minecraft.core.util.phys.Vec3;
 import net.minecraft.core.world.World;
@@ -109,9 +109,9 @@ public class MUtil {
 
 		return lockOwner.equals(player.uuid)
 			|| trustedPlayers.contains(player.uuid)
-			|| Data.Users.get(lockOwner).uuidsTrustedToAllContainers.contains(player.uuid)
+			|| Data.Users.getOrCreate(lockOwner).uuidsTrustedToAllContainers.contains(player.uuid)
 			|| isCommunityContainer
-			|| Data.Users.get(player.uuid).lockBypass;
+			|| Data.Users.getOrCreate(player.uuid).lockBypass;
 	}
 
 	private static final String url = "https://sessionserver.mojang.com/session/minecraft/profile/";
@@ -149,14 +149,17 @@ public class MUtil {
 		return username;
 	}
 
-	public static HitResult rayCastFromPlayer(CommandSource source) {
+	public static HitResult rayCastFromPlayer(CommandContext<CommandSource> context) {
+		CommandSource source = context.getSource();
+		Player sender = source.getSender();
+
 		float f = 1.0f;
-		float f1 = source.getSender().xRotO + (source.getSender().xRot - source.getSender().xRotO) * f;
-		float f2 = source.getSender().yRotO + (source.getSender().yRot - source.getSender().yRotO) * f;
-		double posX = source.getSender().xo + (source.getSender().x - source.getSender().xo) * (double) f;
-		float yOff = source.getSender() instanceof PlayerServer ? source.getSender().getHeightOffset() : 0.0f;
-		double posY = source.getSender().yo + (source.getSender().y - source.getSender().yo) + (double) yOff;
-		double posZ = source.getSender().zo + (source.getSender().z - source.getSender().zo) * (double) f;
+		float f1 = sender.xRotO + (sender.xRot - sender.xRotO) * f;
+		float f2 = sender.yRotO + (sender.yRot - sender.yRotO) * f;
+		double posX = sender.xo + (sender.x - sender.xo) * (double) f;
+		float yOff = sender instanceof PlayerServer ? sender.getHeightOffset() : 0.0f;
+		double posY = sender.yo + (sender.y - sender.yo) + (double) yOff;
+		double posZ = sender.zo + (sender.z - sender.zo) * (double) f;
 		Vec3 vec3 = Vec3.getTempVec3(posX, posY, posZ);
 		float f3 = MathHelper.cos(-f2 * 0.01745329f - (float) Math.PI);
 		float f4 = MathHelper.sin(-f2 * 0.01745329f - (float) Math.PI);
@@ -165,7 +168,7 @@ public class MUtil {
 		float f7 = f4 * f5;
 		float f8 = f6;
 		float f9 = f3 * f5;
-		double reachDistance = source.getSender().getGamemode().getBlockReachDistance();
+		double reachDistance = sender.getGamemode().getBlockReachDistance();
 		Vec3 vec3_1 = vec3.add((double) f7 * reachDistance, (double) f8 * reachDistance, (double) f9 * reachDistance);
 		return source.getWorld().checkBlockCollisionBetweenPoints(vec3, vec3_1, false);
 	}

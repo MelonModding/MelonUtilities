@@ -5,15 +5,16 @@ import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.feedback.FeedbackHandler;
 import com.llamalad7.mixinextras.sugar.Local;
 import MelonUtilities.utility.builders.RoleBuilder;
 import net.minecraft.core.block.entity.*;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.*;
 import net.minecraft.core.net.packet.BlockUpdatePacket;
 import net.minecraft.core.net.packet.ChatPacket;
 import net.minecraft.core.net.packet.Packet;
 import net.minecraft.core.net.packet.PlayerActionPacket;
-import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
 import net.minecraft.server.net.handler.PacketHandlerServer;
@@ -189,65 +190,66 @@ public abstract class PacketHandlerServerMixin {
 		method = "handleBlockDig",
 		cancellable = true)
 	private void handleBlockDigInject(PlayerActionPacket packet, CallbackInfo ci){
-		WorldServer world = this.mcServer.getDimensionWorld(this.playerEntity.dimension);
+		Player player = this.playerEntity;
+		WorldServer world = this.mcServer.getDimensionWorld(player.dimension);
 		TileEntity container = world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 		if(container instanceof TileEntityContainerInterface) {
 			TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 			if (iContainer.getLockOwner() != null
-				&& !iContainer.getLockOwner().equals(this.playerEntity.uuid)
-				&& !iContainer.getTrustedPlayers().contains(this.playerEntity.uuid)
-				&& !Data.Users.get(iContainer.getLockOwner()).uuidsTrustedToAllContainers.contains(this.playerEntity.uuid)
-				&& !Data.Users.get(this.playerEntity.uuid).lockBypass){
+				&& !iContainer.getLockOwner().equals(player.uuid)
+				&& !iContainer.getTrustedPlayers().contains(player.uuid)
+				&& !Data.Users.getOrCreate(iContainer.getLockOwner()).uuidsTrustedToAllContainers.contains(player.uuid)
+				&& !Data.Users.getOrCreate(player.uuid).lockBypass){
 				ci.cancel();
 				sendPacket(new BlockUpdatePacket(packet.xPosition, packet.yPosition, packet.zPosition, world));
 			}
-			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.Users.get(this.playerEntity.uuid).lockOnBlockPunched && !iContainer.getIsLocked()){
+			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.Users.getOrCreate(player.uuid).lockOnBlockPunched && !iContainer.getIsLocked()){
 				if (container instanceof TileEntityChest) {
 					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) MUtil.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
 						iContainer.setIsLocked(true);
 						iOtherContainer.setIsLocked(true);
-						iContainer.setLockOwner(playerEntity.uuid);
-						iOtherContainer.setLockOwner(playerEntity.uuid);
-						this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Double Chest!");
+						iContainer.setLockOwner(player.uuid);
+						iOtherContainer.setLockOwner(player.uuid);
+						FeedbackHandler.success(player, "Locked Double Chest!");
 						ci.cancel();
 					} else {
-						this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Chest!");
+						FeedbackHandler.success(player, "Locked Chest!");
 					}
 				} else if (container instanceof TileEntityFurnaceBlastFurnace) {
-					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Blast Furnace!");
+					FeedbackHandler.success(player, "Locked Blast Furnace!");
 				} else if (container instanceof TileEntityFurnace) {
-					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Furnace!");
+					FeedbackHandler.success(player, "Locked Furnace!");
 				} else if (container instanceof TileEntityDispenser) {
-					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Dispenser!");
+					FeedbackHandler.success(player, "Locked Dispenser!");
 				} else if (container instanceof TileEntityMeshGold) {
-					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Golden Mesh!");
+					FeedbackHandler.success(player, "Locked Golden Mesh!");
 				} else if (container instanceof TileEntityTrommel) {
-					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Trommel!");
+					FeedbackHandler.success(player, "Locked Trommel!");
 				} else if (container instanceof TileEntityBasket) {
-					this.playerEntity.sendMessage(TextFormatting.LIME + "Locked Basket!");
+					FeedbackHandler.success(player, "Locked Basket!");
 				}
 
 				iContainer.setIsLocked(true);
-				iContainer.setLockOwner(playerEntity.uuid);
+				iContainer.setLockOwner(player.uuid);
 				ci.cancel();
 			}
 
 			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
-			&& Data.Users.get(this.playerEntity.uuid).lockOnBlockPunched
+			&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
 			&& iContainer.getIsLocked()
-			&& !iContainer.getLockOwner().equals(this.playerEntity.uuid))
+			&& !iContainer.getLockOwner().equals(player.uuid))
 			{
-				this.playerEntity.sendMessage(TextFormatting.RED + "Failed to Lock Container! (Not Owned By You)");
+				FeedbackHandler.error(player, "Failed to Lock Container! (Not Owned By You)");
 				ci.cancel();
 			}
 
 			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
-			&& Data.Users.get(this.playerEntity.uuid).lockOnBlockPunched
+			&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
 			&& iContainer.getIsLocked()
-			&& iContainer.getLockOwner().equals(this.playerEntity.uuid))
+			&& iContainer.getLockOwner().equals(player.uuid))
 			{
-				this.playerEntity.sendMessage(TextFormatting.RED + "Failed to Lock Container! (Already Locked)");
+				FeedbackHandler.error(player, "Failed to Lock Container! (Already Locked)");
 				ci.cancel();
 			}
 		}
