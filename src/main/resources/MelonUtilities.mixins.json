@@ -8,9 +8,7 @@
     "other.PacketHandlerServerMixin",
     "tile_entities.basket.BlockLogicBasketMixin",
     "tile_entities.basket.TileEntityBasketMixin",
-    "tile_entities.blast_furnace.TileEntityFurnaceBlastFurnaceMixin",
     "tile_entities.blast_furnace.TileEntityFurnaceBlastMixin",
-    "tile_entities.chest.BlockChestMixin",
     "tile_entities.chest.BlockLogicChestMixin",
     "tile_entities.chest.TileEntityChestMixin",
     "tile_entities.dispenser.BlockLogicDispenserMixin",
@@ -25,20 +23,13 @@
   "client": [
   ],
   "server": [
-    "gamerules.EntityLightningBoltMixin",
-    "gamerules.FireTickMixin",
-    "gamerules.LoginPacketHandlerMixin",
+    "gamerules.PacketLoginHandlerMixin",
     "other.ExplosionMixin",
     "other.MinecraftServerMixin",
     "other.PlayerListMixin",
     "rollback.ChunkMixin",
     "rollback.ChunkProviderServerMixin",
-    "tile_entities.basket.BlockBasketMixin",
-    "tile_entities.blast_furnace.BlockLogicFurnaceBlastMixin",
-    "tile_entities.dispenser.BlockDispenserMixin",
-    "tile_entities.furnace.BlockFurnaceMixin",
-    "tile_entities.golden_mesh.BlockMeshGoldMixin",
-    "tile_entities.trommel.BlockTrommelMixin"
+    "tile_entities.blast_furnace.BlockLogicFurnaceBlastMixin"
   ],
   "injectors": {
     "defaultRequire": 1
