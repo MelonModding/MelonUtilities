@@ -1,6 +1,6 @@
 package MelonUtilities.commands.utility;
 
-import MelonUtilities.commands.ExecuteMethods;
+import MelonUtilities.commands.role.RoleLogic;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
@@ -14,7 +14,7 @@ public class CommandMelonUtilities implements CommandManager.CommandRegistry{
 			.register((LiteralArgumentBuilder.<CommandSource>literal("melonutilities").requires(CommandSource::hasAdmin))
 				.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
 					.executes(
-						ExecuteMethods::melonutilities_reload
+						RoleLogic::melonutilities_reload
 					)
 				)
 			);

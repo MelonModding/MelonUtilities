@@ -2,6 +2,7 @@ package MelonUtilities.mixins.other;
 
 import MelonUtilities.commands.lock.CommandLock;
 import MelonUtilities.commands.role.CommandRole;
+import MelonUtilities.commands.rollback.CommandRollback;
 import MelonUtilities.commands.utility.CommandMelonUtilities;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
@@ -37,7 +38,7 @@ public class CommandManagerMixin {
 			CommandManager.registerCommand(new CommandRole());
 
 			// Rollback
-			//TODO CommandManager.registerCommand(new RollbackCommand());
+			CommandManager.registerCommand(new CommandRollback());
 
 			// Tpa
 			//TODO CommandManager.registerCommand(new TPACommand());

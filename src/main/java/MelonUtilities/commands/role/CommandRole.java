@@ -2,7 +2,6 @@ package MelonUtilities.commands.role;
 
 import MelonUtilities.command_arguments.ArgumentTypeColor;
 import MelonUtilities.command_arguments.ArgumentTypeRole;
-import MelonUtilities.commands.ExecuteMethods;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
@@ -70,7 +69,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", StringArgumentType.string())
 				.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 4096))
 					.executes(
-						ExecuteMethods::role_create
+						RoleLogic::role_create
 					)
 				)
 			)
@@ -82,7 +81,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("delete")
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.executes(
-					ExecuteMethods::role_delete
+					RoleLogic::role_delete
 				)
 			)
 		);
@@ -95,7 +94,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 				.then(LiteralArgumentBuilder.<CommandSource>literal("priority")
 					.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 4096))
 						.executes(
-							ExecuteMethods::role_edit_priority
+							RoleLogic::role_edit_priority
 						)
 					)
 				)
@@ -103,40 +102,40 @@ public class CommandRole implements CommandManager.CommandRegistry{
 					.then(LiteralArgumentBuilder.<CommandSource>literal("name")
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("displayName", StringArgumentType.greedyString())
 							.executes(
-								ExecuteMethods::role_edit_display_name
+								RoleLogic::role_edit_display_name
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("color")
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 							.executes(
-								ExecuteMethods::role_edit_display_color_COLOR
+								RoleLogic::role_edit_display_color_COLOR
 							)
 						)
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
 							.executes(
-								ExecuteMethods::role_edit_display_color_HEX
+								RoleLogic::role_edit_display_color_HEX
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("underline")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(
-								ExecuteMethods::role_edit_display_underline
+								RoleLogic::role_edit_display_underline
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("bold")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(
-								ExecuteMethods::role_edit_display_bold
+								RoleLogic::role_edit_display_bold
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("italics")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(
-								ExecuteMethods::role_edit_display_italics
+								RoleLogic::role_edit_display_italics
 							)
 						)
 					)
@@ -144,48 +143,48 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(LiteralArgumentBuilder.<CommandSource>literal("color")
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 								.executes(
-									ExecuteMethods::role_edit_display_border_color_COLOR
+									RoleLogic::role_edit_display_border_color_COLOR
 								)
 							)
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
 								.executes(
-									ExecuteMethods::role_edit_display_border_color_HEX
+									RoleLogic::role_edit_display_border_color_HEX
 								)
 							)
 						)
 						.then(LiteralArgumentBuilder.<CommandSource>literal("style")
 							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
 								.executes(
-									ExecuteMethods::role_edit_display_border_style_none
+									RoleLogic::role_edit_display_border_style_none
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
 								.executes(
-									ExecuteMethods::role_edit_display_border_style_bracket
+									RoleLogic::role_edit_display_border_style_bracket
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("curly")
 								.executes(
-									ExecuteMethods::role_edit_display_border_style_curly
+									RoleLogic::role_edit_display_border_style_curly
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("caret")
 								.executes(
-									ExecuteMethods::role_edit_display_border_style_caret
+									RoleLogic::role_edit_display_border_style_caret
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("custom")
 								.then(LiteralArgumentBuilder.<CommandSource>literal("prefix")
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
 										.executes(
-											ExecuteMethods::role_edit_display_border_style_custom_prefix
+											RoleLogic::role_edit_display_border_style_custom_prefix
 										)
 									)
 								)
 								.then(LiteralArgumentBuilder.<CommandSource>literal("suffix")
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
 										.executes(
-											ExecuteMethods::role_edit_display_border_style_custom_suffix
+											RoleLogic::role_edit_display_border_style_custom_suffix
 										)
 									)
 								)
@@ -198,48 +197,48 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(LiteralArgumentBuilder.<CommandSource>literal("color")
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 								.executes(
-									ExecuteMethods::role_edit_username_border_color_COLOR
+									RoleLogic::role_edit_username_border_color_COLOR
 								)
 							)
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
 								.executes(
-									ExecuteMethods::role_edit_username_border_color_HEX
+									RoleLogic::role_edit_username_border_color_HEX
 								)
 							)
 						)
 						.then(LiteralArgumentBuilder.<CommandSource>literal("style")
 							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
 								.executes(
-									ExecuteMethods::role_edit_username_border_style_none
+									RoleLogic::role_edit_username_border_style_none
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
 								.executes(
-									ExecuteMethods::role_edit_username_border_style_bracket
+									RoleLogic::role_edit_username_border_style_bracket
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("curly")
 								.executes(
-									ExecuteMethods::role_edit_username_border_style_curly
+									RoleLogic::role_edit_username_border_style_curly
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("caret")
 								.executes(
-									ExecuteMethods::role_edit_username_border_style_caret
+									RoleLogic::role_edit_username_border_style_caret
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("custom")
 								.then(LiteralArgumentBuilder.<CommandSource>literal("prefix")
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
 										.executes(
-											ExecuteMethods::role_edit_username_border_style_custom_prefix
+											RoleLogic::role_edit_username_border_style_custom_prefix
 										)
 									)
 								)
 								.then(LiteralArgumentBuilder.<CommandSource>literal("suffix")
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
 										.executes(
-											ExecuteMethods::role_edit_username_border_style_custom_suffix
+											RoleLogic::role_edit_username_border_style_custom_suffix
 										)
 									)
 								)
@@ -251,33 +250,33 @@ public class CommandRole implements CommandManager.CommandRegistry{
 					.then(LiteralArgumentBuilder.<CommandSource>literal("color")
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 							.executes(
-								ExecuteMethods::role_edit_text_color_COLOR
+								RoleLogic::role_edit_text_color_COLOR
 							)
 						)
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
 							.executes(
-								ExecuteMethods::role_edit_text_color_HEX
+								RoleLogic::role_edit_text_color_HEX
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("underline")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(
-								ExecuteMethods::role_edit_text_underline
+								RoleLogic::role_edit_text_underline
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("bold")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(
-								ExecuteMethods::role_edit_text_bold
+								RoleLogic::role_edit_text_bold
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("italics")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(
-								ExecuteMethods::role_edit_text_italics
+								RoleLogic::role_edit_text_italics
 							)
 						)
 					)
@@ -292,7 +291,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
 					.executes(
-						ExecuteMethods::role_grant
+						RoleLogic::role_grant
 					)
 				)
 			)
@@ -305,7 +304,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
 					.executes(
-						ExecuteMethods::role_revoke
+						RoleLogic::role_revoke
 					)
 				)
 			)
@@ -318,24 +317,24 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.then(LiteralArgumentBuilder.<CommandSource>literal("defaultrole")
 				.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 					.executes(
-						ExecuteMethods::role_set_defaultrole_ROLEID
+						RoleLogic::role_set_defaultrole_ROLEID
 					)
 				)
 				.then(LiteralArgumentBuilder.<CommandSource>literal("none")
 					.executes(
-						ExecuteMethods::role_set_defaultrole_none
+						RoleLogic::role_set_defaultrole_none
 					)
 				)
 			)
 			.then(LiteralArgumentBuilder.<CommandSource>literal("displaymode")
 				.then(LiteralArgumentBuilder.<CommandSource>literal("single")
 					.executes(
-						ExecuteMethods::role_set_displaymode_single
+						RoleLogic::role_set_displaymode_single
 					)
 				)
 				.then(LiteralArgumentBuilder.<CommandSource>literal("multi")
 					.executes(
-						ExecuteMethods::role_set_displaymode_multi
+						RoleLogic::role_set_displaymode_multi
 					)
 				)
 			)
@@ -346,7 +345,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleList(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("list")
 			.executes(
-				ExecuteMethods::role_list
+				RoleLogic::role_list
 			)
 		);
 		return builder;
@@ -355,7 +354,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleReload(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
 			.executes(
-				ExecuteMethods::role_reload
+				RoleLogic::role_reload
 			)
 		);
 		return builder;

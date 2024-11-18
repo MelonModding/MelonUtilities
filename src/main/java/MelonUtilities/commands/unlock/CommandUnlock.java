@@ -1,4 +1,4 @@
-package MelonUtilities.commands.lock;
+package MelonUtilities.commands.unlock;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.core.net.command.CommandManager;

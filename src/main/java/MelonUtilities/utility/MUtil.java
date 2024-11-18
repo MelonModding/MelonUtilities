@@ -1,26 +1,38 @@
 package MelonUtilities.utility;
 
+import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.utility.managers.RollbackManager;
 import com.b100.json.JsonParser;
 import com.b100.json.element.JsonObject;
 import com.b100.utils.StringUtils;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.nbt.CompoundTag;
+import com.mojang.nbt.NbtIo;
 import net.minecraft.core.block.BlockLogicChest;
 import net.minecraft.core.block.entity.TileEntityChest;
+import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.net.packet.PacketBlockRegionUpdate;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.phys.HitResult;
 import net.minecraft.core.util.phys.Vec3;
 import net.minecraft.core.world.World;
+import net.minecraft.core.world.chunk.Chunk;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
+
+import static MelonUtilities.utility.managers.RollbackManager.*;
+import static MelonUtilities.utility.managers.RollbackManager.rollbackChunkFromBackup;
 
 public class MUtil {
 
@@ -273,5 +285,168 @@ public class MUtil {
 		}
 		//return's null if chest is a single chest
 		return  null;
+	}
+
+	public static int[] parseCoordsFromChunkDir(File chunkDir) {
+		int xIndex = chunkDir.getName().indexOf('x');
+		int zIndex = chunkDir.getName().indexOf('z');
+
+		StringBuilder xStringBuilder = new StringBuilder();
+		StringBuilder zStringBuilder = new StringBuilder();
+
+		String s = chunkDir.getName();
+
+		boolean firstMinus = true;
+		for (int i = xIndex + 2; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (Character.isDigit(c) || (c == '-' && firstMinus)) {
+				xStringBuilder.append(c);
+				firstMinus = false;
+			} else {
+				break;
+			}
+		}
+
+		firstMinus = true;
+		for (int i = zIndex + 2; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (Character.isDigit(c) || (c == '-' && firstMinus)) {
+				zStringBuilder.append(c);
+				firstMinus = false;
+			} else {
+				break;
+			}
+		}
+
+		String xString = xStringBuilder.toString();
+		String zString = zStringBuilder.toString();
+
+		int x = Integer.parseInt(xString);
+		int z = Integer.parseInt(zString);
+		return new int[]{x, z};
+	}
+
+	public static HashMap<Long, File> getSortedCaptures(CommandSource source, File chunkDir){
+		int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
+
+		HashMap<Long, File> capturesHashmap = new HashMap<>();
+
+		//Add Snapshots To Hashmap
+		File[] snapshots = chunkDir.listFiles();
+		if(snapshots != null) {
+			for (File snapshot : snapshots) {
+				if (snapshot.isFile()) {
+					capturesHashmap.putIfAbsent(Long.parseLong(snapshot.getName().split(" ")[0]), snapshot);
+				}
+			}
+		}
+
+		//Add Backups To Hashmap
+		File[] backups = backupsDir.listFiles();
+		if(backups != null){
+			for (File backup : backups) {
+				if (backup.isDirectory()) {
+					capturesHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(source.getWorld().dimension.id)), chunkCoords[0], chunkCoords[1]));
+				}
+			}
+		}
+
+		//Return Sorted Hashmap of all Captures (Both Backups and Snapshots)
+		return MUtil.sortByKey(capturesHashmap);
+	}
+
+	public HashMap<Long, File> getSortedBackups(CommandSource source, File chunkDir){
+		int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
+
+		HashMap<Long, File> backupsHashmap = new HashMap<>();
+
+		//Add Backups To Hashmap
+		File[] backups = backupsDir.listFiles();
+		if(backups != null){
+			for (File backup : backups) {
+				if (backup.isDirectory()) {
+					backupsHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(source.getWorld().dimension.id)), chunkCoords[0], chunkCoords[1]));
+				}
+			}
+		}
+
+		return MUtil.sortByKey(backupsHashmap);
+	}
+
+	public HashMap<Long, File> getSortedSnapshots(File chunkDir){
+
+		HashMap<Long, File> snapshotsHashmap = new HashMap<>();
+
+		File[] snapshots = chunkDir.listFiles();
+		if(snapshots != null) {
+			for (File snapshot : snapshots) {
+				if (snapshot.isFile()) {
+					snapshotsHashmap.putIfAbsent(Long.parseLong(snapshot.getName().split(" ")[0]), snapshot);
+				}
+			}
+		}
+
+		return MUtil.sortByKey(snapshotsHashmap);
+	}
+
+	public static void rollbackChunkArea(CommandSource source, List<File> chunkGrid, Map.Entry<Long, File> primaryCapture){
+		for(File chunkDir : chunkGrid) {
+			int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
+
+			HashMap<Long, File> captures = getSortedCaptures(source, chunkDir);
+
+
+			long timeOfPrimaryCapture = primaryCapture.getKey();
+			long lowestDifference = Long.MAX_VALUE;
+			Map.Entry<Long, File> oldestClosestCapture = null;
+
+			for(Map.Entry<Long, File> capture : captures.entrySet()){
+				long timeOfCapture = capture.getKey();
+				if(timeOfCapture <= timeOfPrimaryCapture){
+					long difference = Math.abs(timeOfPrimaryCapture - timeOfCapture);
+					if(difference < lowestDifference){
+						lowestDifference = difference;
+						oldestClosestCapture = capture;
+					}
+
+				}
+			}
+
+			if(oldestClosestCapture == null) {
+				((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+				return;
+			}
+
+			if (oldestClosestCapture.getValue().getName().contains(".dat")) {
+				for (Entity entity : source.getWorld().loadedEntityList) {
+					if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
+						if (!(entity instanceof Player)) {
+							entity.remove();
+						}
+					}
+				}
+				try {
+					Chunk chunk = source.getWorld().getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]);
+					CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(oldestClosestCapture.getValue().toPath()));
+					rollbackChunk(chunk, tag);
+					MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+				} catch (IOException e) {
+					MelonUtilities.LOGGER.error("IOException occurred trying to read compressed data from Chunk File: {}", oldestClosestCapture.getValue());
+				}
+			}
+
+			if (oldestClosestCapture.getValue().getName().contains(".mcr")) {
+				for (Entity entity : source.getWorld().loadedEntityList) {
+					if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
+						if (!(entity instanceof Player)) {
+							entity.remove();
+						}
+					}
+				}
+				File backupDir = oldestClosestCapture.getValue().getParentFile().getParentFile().getParentFile();
+				rollbackChunkFromBackup(source.getWorld().getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]), backupDir);
+				MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+			}
+		}
 	}
 }

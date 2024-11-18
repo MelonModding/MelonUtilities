@@ -2,6 +2,7 @@ package MelonUtilities;
 
 import MelonUtilities.commands.lock.CommandLock;
 import MelonUtilities.commands.role.CommandRole;
+import MelonUtilities.commands.rollback.CommandRollback;
 import MelonUtilities.config.*;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.config.datatypes.data.Crew;
@@ -11,6 +12,7 @@ import MelonUtilities.config.datatypes.jsonadapters.HomeJsonAdapter;
 import MelonUtilities.listeners.DebugInfoListener;
 import MelonUtilities.listeners.GuiTestListener;
 import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.managers.RollbackManager;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -76,7 +78,7 @@ public class MelonUtilities implements ModInitializer {
 	}
 
 	public void updateKits(){
-		//TODO Data.configs.loadAll(ConfigData.class);
+		Data.MainConfig.reload();
 		//TODO Data.kits.loadAll(KitData.class);
 		//TODO KitCommand.buildKitSyntax();
 	}
@@ -106,8 +108,8 @@ public class MelonUtilities implements ModInitializer {
 		CommandRole.buildRoleSyntax();
 
 		// Rollback
-		//TODO RollbackCommand.buildSyntax();
-		//TODO RollbackManager.onInit();
+		CommandRollback.buildSyntax();
+		RollbackManager.onInit();
 
 		// Tpa
 		// Utility
@@ -116,8 +118,8 @@ public class MelonUtilities implements ModInitializer {
 
 		// In order for methods inside your listeners to be recognized by ServerLibe you must
 		// register them into ServerLibe like such
-		ServerLibe.registerListener(new GuiTestListener()); // Example Listener
-		ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
+		//ServerLibe.registerListener(new GuiTestListener()); // Example Listener
+		//ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
 
 		// Anything Else
 
