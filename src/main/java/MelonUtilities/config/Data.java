@@ -16,7 +16,7 @@ import com.google.gson.stream.JsonReader;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
-import net.minecraft.server.util.helper.PlayerList;
+import net.minecraft.server.player.PlayerListBox;
 
 import java.io.*;
 import java.util.HashMap;
@@ -74,7 +74,7 @@ public class Data {
 			File file = FileUtils.createNewFile(new File(roleDir, roleID + ".json"));
 			try (FileWriter writer = new FileWriter(file)) {
 				gson.toJson(get(roleID), Role.class, writer);
-				PlayerList.updateList();
+				PlayerListBox.updateList();
 			} catch (IOException e) {
 				MelonUtilities.LOGGER.error("Role {} failed to save!", roleID);
 			}
@@ -147,7 +147,7 @@ public class Data {
 			File file = FileUtils.createNewFile(new File(kitDir, kitID + ".json"));
 			try (FileWriter writer = new FileWriter(file)) {
 				gson.toJson(get(kitID), Kit.class, writer);
-				PlayerList.updateList();
+				PlayerListBox.updateList();
 			} catch (IOException e) {
 				MelonUtilities.LOGGER.error("Kit {} failed to save!", kitID);
 			}
@@ -182,7 +182,7 @@ public class Data {
 			File file = FileUtils.createNewFile(new File(configDir, "config.json"));
 			try (FileWriter writer = new FileWriter(file)) {
 				gson.toJson(config, Config.class, writer);
-				PlayerList.updateList();
+				PlayerListBox.updateList();
 			} catch (IOException e) {
 				MelonUtilities.LOGGER.error("Config failed to save!");
 			}
@@ -236,7 +236,7 @@ public class Data {
 			File file = FileUtils.createNewFile(new File(userDir, uuid + ".json"));
 			try (FileWriter writer = new FileWriter(file)) {
 				gson.toJson(getOrCreate(uuid), User.class, writer);
-				PlayerList.updateList();
+				PlayerListBox.updateList();
 			} catch (IOException e) {
 				MelonUtilities.LOGGER.error("User {} failed to save!", uuid);
 			}
