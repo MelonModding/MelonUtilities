@@ -8,6 +8,8 @@ import MelonUtilities.config.datatypes.data.Crew;
 import MelonUtilities.config.datatypes.data.Home;
 import MelonUtilities.config.datatypes.jsonadapters.CrewJsonAdapter;
 import MelonUtilities.config.datatypes.jsonadapters.HomeJsonAdapter;
+import MelonUtilities.listeners.DebugInfoListener;
+import MelonUtilities.listeners.GuiTestListener;
 import MelonUtilities.utility.MUtil;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -19,6 +21,7 @@ import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.useless.serverlibe.ServerLibe;
 
 import static net.minecraft.server.util.helper.PlayerList.updateList;
 
@@ -113,8 +116,8 @@ public class MelonUtilities implements ModInitializer {
 
 		// In order for methods inside your listeners to be recognized by ServerLibe you must
 		// register them into ServerLibe like such
-		//ServerLibe.registerListener(new GuiTestListener()); // Example Listener
-		//ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
+		ServerLibe.registerListener(new GuiTestListener()); // Example Listener
+		ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
 
 		// Anything Else
 

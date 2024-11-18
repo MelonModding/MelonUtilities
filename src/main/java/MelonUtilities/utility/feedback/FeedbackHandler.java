@@ -27,10 +27,7 @@ public class FeedbackHandler {
 	private static final char variableOpener = '[';
 	private static final char variableCloser = ']';
 
-	private static void info(@NotNull CommandContext<CommandSource> context, @NotNull FeedbackType feedbackType, @NotNull String msg) {
-
-		CommandSource source = context.getSource();
-
+	private static @NotNull String buildFeedback(@NotNull FeedbackType feedbackType, @NotNull String msg) {
 		StringBuilder tempmsg = new StringBuilder();
 		for (int i = 0; i < msg.length(); i++){
 			char c = msg.charAt(i);
@@ -58,10 +55,19 @@ public class FeedbackHandler {
 				}
 			}
 		}
+		return String.valueOf(tempmsg);
+	}
 
-		msg = String.valueOf(tempmsg);
+	private static void info(@NotNull CommandContext<CommandSource> context, @NotNull FeedbackType feedbackType, @NotNull String msg, boolean log) {
+
+		CommandSource source = context.getSource();
+		msg = buildFeedback(feedbackType, msg);
+
 		source.sendMessage(feedbackType.getColorFormat() + msg);
-		MelonUtilities.LOGGER.info("{} used command '{}' ", source.getName(), context.getInput());
+
+		if(log){
+			MelonUtilities.LOGGER.info("{} used command '{}' ", source.getName(), context.getInput());
+		}
 
 		if(!feedbackType.getSoundPath().equals("NO_SOUND")){
 			Player player = source.getSender();
@@ -74,35 +80,8 @@ public class FeedbackHandler {
 
 	private static void info(@NotNull Player player, @NotNull FeedbackType feedbackType, @NotNull String msg) {
 
-		StringBuilder tempmsg = new StringBuilder();
-		for (int i = 0; i < msg.length(); i++){
-			char c = msg.charAt(i);
-			if(c != variableStarter){
-				tempmsg.append(c);
-			} else{
-				tempmsg.append(MUtil.SECTION_GRAY);
-				tempmsg.append(variableOpener);
-				tempmsg.append(MUtil.SECTION_LIGHT_GRAY);
-				for(int j = i+1; j < msg.length(); j++){
-					i = j;
-					c = msg.charAt(j);
-					if(c == variableEnder){
-						tempmsg.append(MUtil.SECTION_GRAY);
-						tempmsg.append(variableCloser);
-						tempmsg.append(feedbackType.getColorSection());
-						break;
-					} else {
-						tempmsg.append(c);
-						if(msg.length()-1 == j){
-							tempmsg.append(MUtil.SECTION_GRAY);
-							tempmsg.append(variableCloser);
-						}
-					}
-				}
-			}
-		}
+		msg = buildFeedback(feedbackType, msg);
 
-		msg = String.valueOf(tempmsg);
 		player.sendMessage(feedbackType.getColorFormat() + msg);
 
 		if(!feedbackType.getSoundPath().equals("NO_SOUND")){
@@ -116,31 +95,47 @@ public class FeedbackHandler {
 		info(player, success, msg);
 	}
 
+	public static void success(@NotNull CommandContext<CommandSource> context, @NotNull String msg, boolean log) {
+		info(context, success, msg, log);
+	}
+
 	public static void success(@NotNull CommandContext<CommandSource> context, @NotNull String msg) {
-		info(context, success, msg);
+		info(context, success, msg, false);
 	}
 
 	public static void error(@NotNull Player player,  @NotNull String msg) {
 		info(player, error, msg);
 	}
 
+	public static void error(@NotNull CommandContext<CommandSource> context, @NotNull String msg, boolean log) {
+		info(context, error, msg, log);
+	}
+
 	public static void error(@NotNull CommandContext<CommandSource> context, @NotNull String msg) {
-		info(context, error, msg);
+		info(context, error, msg, false);
 	}
 
 	public static void destructive(@NotNull Player player,  @NotNull String msg) {
 		info(player, destructive, msg);
 	}
 
+	public static void destructive(@NotNull CommandContext<CommandSource> context, @NotNull String msg, boolean log) {
+		info(context, destructive, msg, log);
+	}
+
 	public static void destructive(@NotNull CommandContext<CommandSource> context, @NotNull String msg) {
-		info(context, destructive, msg);
+		info(context, destructive, msg, false);
 	}
 
 	public static void syntax(@NotNull Player player,  @NotNull String msg) {
 		info(player, syntax, msg);
 	}
 
+	public static void syntax(@NotNull CommandContext<CommandSource> context, @NotNull String msg, boolean log) {
+		info(context, syntax, msg, log);
+	}
+
 	public static void syntax(@NotNull CommandContext<CommandSource> context, @NotNull String msg) {
-		info(context, syntax, msg);
+		info(context, syntax, msg, false);
 	}
 }

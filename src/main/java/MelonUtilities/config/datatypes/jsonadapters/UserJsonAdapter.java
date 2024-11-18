@@ -5,6 +5,7 @@ import MelonUtilities.config.datatypes.data.User;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 import java.util.UUID;
 
 public class UserJsonAdapter implements JsonDeserializer<User>, JsonSerializer<User> {
@@ -16,26 +17,26 @@ public class UserJsonAdapter implements JsonDeserializer<User>, JsonSerializer<U
 		JsonObject lockDataObj = obj.getAsJsonObject("Lock Data");
 		JsonObject userDataObj = obj.getAsJsonObject("User Data");
 
-		User user = new User(UUID.fromString(userDataObj.get("playerUUID").getAsString()));
+		User userData = new User(UUID.fromString(userDataObj.get("userUUID").getAsString()));
 
-		JsonArray homes = homeDataObj.getAsJsonArray("homeData");
+		JsonArray homes = homeDataObj.getAsJsonArray("homes");
 		for(JsonElement element : homes){
-			user.homeData.add(context.deserialize(element, Home.class));
+			userData.homeData.add(context.deserialize(element, Home.class));
 		}
 
-		user.isHelper = helperDataObj.get("isHelper").getAsBoolean();
+		userData.isHelper = helperDataObj.get("isHelper").getAsBoolean();
 
-		user.lockOnBlockPlaced = lockDataObj.get("lockOnBlockPlaced").getAsBoolean();
-		user.lockOnBlockPunched = lockDataObj.get("lockOnBlockPunched").getAsBoolean();
-		user.lockBypass = lockDataObj.get("lockBypass").getAsBoolean();
-		JsonArray playersTrustedToAllContainers = lockDataObj.getAsJsonArray("playersTrustedToAllContainers");
-		for(JsonElement element : playersTrustedToAllContainers){
-			user.uuidsTrustedToAllContainers.add(UUID.fromString(element.getAsString()));
+		userData.lockOnBlockPlaced = lockDataObj.get("lockOnBlockPlaced").getAsBoolean();
+		userData.lockOnBlockPunched = lockDataObj.get("lockOnBlockPunched").getAsBoolean();
+		userData.lockBypass = lockDataObj.get("lockBypass").getAsBoolean();
+		JsonObject usersTrustedToAllContainers = lockDataObj.getAsJsonObject("usersTrustedToAllContainers");
+		for(Map.Entry<String, JsonElement> user : usersTrustedToAllContainers.entrySet()){
+			userData.usersTrustedToAllContainers.put(UUID.fromString(user.getKey()), user.getValue().getAsString());
 		}
 
-		user.uuid = UUID.fromString(userDataObj.get("playerUUID").getAsString());
+		userData.uuid = UUID.fromString(userDataObj.get("userUUID").getAsString());
 
-		return user;
+		return userData;
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class UserJsonAdapter implements JsonDeserializer<User>, JsonSerializer<U
 		for(Home home : src.homeData){
 			homes.add(context.serialize(home));
 		}
-		homeData.add("kitArmorStacks", homes);
+		homeData.add("homes", homes);
 		obj.add("Home Data", homeData);
 
 		JsonObject helperData = new JsonObject();
@@ -58,16 +59,16 @@ public class UserJsonAdapter implements JsonDeserializer<User>, JsonSerializer<U
 		lockData.addProperty("lockOnBlockPlaced", src.lockOnBlockPlaced);
 		lockData.addProperty("lockOnBlockPunched", src.lockOnBlockPunched);
 		lockData.addProperty("lockBypass", src.lockBypass);
-		JsonArray playersTrustedToAllContainers = new JsonArray();
-		for(UUID uuid : src.uuidsTrustedToAllContainers){
-			playersTrustedToAllContainers.add(uuid.toString());
+		JsonObject usersTrustedToAllContainers = new JsonObject();
+		for(Map.Entry<UUID, String> user : src.usersTrustedToAllContainers.entrySet()){
+			usersTrustedToAllContainers.addProperty(user.getKey().toString(), user.getValue());
 		}
-		lockData.add("playersTrustedToAllContainers", playersTrustedToAllContainers);
+		lockData.add("usersTrustedToAllContainers", usersTrustedToAllContainers);
 		obj.add("Lock Data", lockData);
 
-		JsonObject playerData = new JsonObject();
-		playerData.addProperty("playerUUID", String.valueOf(src.uuid));
-		obj.add("Player Data", playerData);
+		JsonObject userData = new JsonObject();
+		userData.addProperty("userUUID", String.valueOf(src.uuid));
+		obj.add("User Data", userData);
 
 		return obj;
 	}

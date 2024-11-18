@@ -1,8 +1,6 @@
 package MelonUtilities.config.datatypes.data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class User {
 	public List<Home> homeData = new ArrayList<>();
@@ -11,7 +9,7 @@ public class User {
 	public boolean lockOnBlockPunched = false;
 	public boolean lockBypass = false;
 	public UUID uuid;
-	public List<UUID> uuidsTrustedToAllContainers = new ArrayList<>();
+	public Map<UUID, String> usersTrustedToAllContainers = new HashMap<>();
 
 	public User(UUID uuid) {
 		this.uuid = uuid;

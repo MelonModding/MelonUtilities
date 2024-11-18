@@ -109,7 +109,7 @@ public class MUtil {
 
 		return lockOwner.equals(player.uuid)
 			|| trustedPlayers.contains(player.uuid)
-			|| Data.Users.getOrCreate(lockOwner).uuidsTrustedToAllContainers.contains(player.uuid)
+			|| Data.Users.getOrCreate(lockOwner).usersTrustedToAllContainers.containsKey(player.uuid)
 			|| isCommunityContainer
 			|| Data.Users.getOrCreate(player.uuid).lockBypass;
 	}

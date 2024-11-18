@@ -651,7 +651,7 @@ public class ExecuteMethods {
 		CommandSource source = context.getSource();
 		Player sender = source.getSender();
 
-		String targetUsername = context.getArgument("username", String.class);
+		String targetUsername = context.getArgument("username", String.class).toLowerCase();
 		PlayerServer target = MinecraftServer.getInstance().playerList.getPlayerEntity(targetUsername);
 		UUID targetUUID;
 		String targetDisplayName;
@@ -729,35 +729,38 @@ public class ExecuteMethods {
 		CommandSource source = context.getSource();
 		Player sender = source.getSender();
 
-		String targetUsername = context.getArgument("username", String.class);
+		String targetUsername = context.getArgument("username", String.class).toLowerCase();
 		PlayerServer target = MinecraftServer.getInstance().playerList.getPlayerEntity(targetUsername);
 		UUID targetUUID;
-		String targetDisplayName;
 
 		if(target != null){
 			targetUUID = target.uuid;
-			targetDisplayName = target.getDisplayName();
-		} else {
-			targetUUID = UUIDHelper.getUUIDFromName(targetUsername);
-			if(targetUUID == null){
-				FeedbackHandler.error(context, "Failed to Trust %" + targetUsername + "% to all Containers! (%" + targetUsername + "% Does not Exist)");
-				return 0;
+			String targetDisplayName = target.getDisplayName();
+			if(!Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.containsKey(targetUUID)){
+
+				Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.put(targetUUID, targetUsername);
+				Data.Users.save(sender.uuid);
+				FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to all Containers!");
+				return Command.SINGLE_SUCCESS;
 			}
-			targetDisplayName = targetUsername;
-		}
-
-		if(!Data.Users.getOrCreate(sender.uuid).uuidsTrustedToAllContainers.contains(targetUUID)){
-
-			Data.Users.getOrCreate(sender.uuid).uuidsTrustedToAllContainers.add(targetUUID);
-			Data.Users.save(sender.uuid);
-			FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to all Containers!");
+			FeedbackHandler.error(context, "Failed to Trust %" + targetDisplayName + "% to all Containers! (Player is Already Trusted)");
 			return Command.SINGLE_SUCCESS;
+		} else {
+			UUIDHelper.runConversionAction(targetUsername, targetuuid -> {
+				if(!Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.containsKey(targetuuid)){
+
+					Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.put(targetuuid, targetUsername);
+					Data.Users.save(sender.uuid);
+					FeedbackHandler.success(context, "Trusted %" + targetUsername + "% to all Containers!");
+					return;
+				}
+				FeedbackHandler.error(context, "Failed to Trust %" + targetUsername + "% to all Containers! (Player is Already Trusted)");
+			}, username -> FeedbackHandler.error(context, "Failed to Trust %" + targetUsername + "% to all Containers! (%" + targetUsername + "% Does not Exist)"));
 		}
-		FeedbackHandler.error(context, "Failed to Trust %" + targetDisplayName + "% to all Containers! (Player is Already Trusted)");
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_trustcommunity(CommandContext<CommandSource> context) throws CommandSyntaxException {
+	public static int lock_trustcommunity(CommandContext<CommandSource> context) {
 		CommandSource source = context.getSource();
 		Player sender = source.getSender();
 
@@ -821,7 +824,7 @@ public class ExecuteMethods {
 		CommandSource source = context.getSource();
 		Player sender = source.getSender();
 
-		String targetUsername = context.getArgument("username", String.class);
+		String targetUsername = context.getArgument("username", String.class).toLowerCase();
 		PlayerServer target = MinecraftServer.getInstance().playerList.getPlayerEntity(targetUsername);
 		UUID targetUUID;
 		String targetDisplayName;
@@ -898,30 +901,33 @@ public class ExecuteMethods {
 		CommandSource source = context.getSource();
 		Player sender = source.getSender();
 
-		String targetUsername = context.getArgument("username", String.class);
+		String targetUsername = context.getArgument("username", String.class).toLowerCase();
 		PlayerServer target = MinecraftServer.getInstance().playerList.getPlayerEntity(targetUsername);
 		UUID targetUUID;
-		String targetDisplayName;
 
 		if(target != null){
 			targetUUID = target.uuid;
-			targetDisplayName = target.getDisplayName();
-		} else {
-			targetUUID = UUIDHelper.getUUIDFromName(targetUsername);
-			if(targetUUID == null){
-				FeedbackHandler.error(context, "Failed to Untrust %" + targetUsername + "% from all Containers! (%" + targetUsername + "% Does not Exist)");
-				return 0;
+			String targetDisplayName = target.getDisplayName();
+			if(Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.containsKey(targetUUID)){
+				Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.remove(targetUUID);
+				Data.Users.save(sender.uuid);
+				FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from all Containers!");
+				return Command.SINGLE_SUCCESS;
 			}
-			targetDisplayName = targetUsername;
-		}
-
-		if(Data.Users.getOrCreate(sender.uuid).uuidsTrustedToAllContainers.contains(targetUUID)){
-			Data.Users.getOrCreate(sender.uuid).uuidsTrustedToAllContainers.remove(targetUUID);
-			Data.Users.save(sender.uuid);
-			FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from all Containers!");
+			FeedbackHandler.error(context, "Failed to Untrust %" + targetDisplayName + "% from all Containers! (Player is Not Trusted)");
 			return Command.SINGLE_SUCCESS;
+		} else {
+			UUIDHelper.runConversionAction(targetUsername, targetuuid -> {
+				if(Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.containsKey(targetuuid)){
+
+					Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.remove(targetuuid, targetUsername);
+					Data.Users.save(sender.uuid);
+					FeedbackHandler.destructive(context, "Untrusted %" + targetUsername + "% from all Containers!");
+					return;
+				}
+				FeedbackHandler.error(context, "Failed to Untrust %" + targetUsername + "% from all Containers! (Player is Not Trusted)");
+			}, username -> FeedbackHandler.error(context, "Failed to Untrust %" + targetUsername + "% from all Containers! (%" + targetUsername + "% Does not Exist)"));
 		}
-		FeedbackHandler.error(context, "Failed to Untrust %" + targetDisplayName + "% from all Containers! (Player is Not Trusted)");
 		return Command.SINGLE_SUCCESS;
 	}
 

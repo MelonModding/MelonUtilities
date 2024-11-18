@@ -198,7 +198,7 @@ public abstract class PacketHandlerServerMixin {
 			if (iContainer.getLockOwner() != null
 				&& !iContainer.getLockOwner().equals(player.uuid)
 				&& !iContainer.getTrustedPlayers().contains(player.uuid)
-				&& !Data.Users.getOrCreate(iContainer.getLockOwner()).uuidsTrustedToAllContainers.contains(player.uuid)
+				&& !Data.Users.getOrCreate(iContainer.getLockOwner()).usersTrustedToAllContainers.containsKey(player.uuid)
 				&& !Data.Users.getOrCreate(player.uuid).lockBypass){
 				ci.cancel();
 				sendPacket(new BlockUpdatePacket(packet.xPosition, packet.yPosition, packet.zPosition, world));
