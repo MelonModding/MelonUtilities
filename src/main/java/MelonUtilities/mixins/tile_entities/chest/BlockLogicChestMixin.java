@@ -4,7 +4,7 @@ import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandler;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.core.block.BlockChest;
+import net.minecraft.core.block.BlockLogicChest;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
@@ -16,8 +16,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = BlockChest.class, remap = false)
-public class BlockChestMixin {
+@Mixin(value = BlockLogicChest.class, remap = false)
+public class BlockLogicChestMixin {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
@@ -29,7 +29,7 @@ public class BlockChestMixin {
 	}
 
 	@Inject(at = @At("TAIL"), method = "onBlockPlacedByMob", cancellable = true)
-	public void onBlockPlacedInject(World world, int x, int y, int z, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") BlockChest.Type type) {
+	public void onBlockPlacedInject(World world, int x, int y, int z, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") BlockLogicChest.Type type) {
 		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getBlockEntity(x, y, z));
 		TileEntityChest placedChest = (TileEntityChest) world.getBlockEntity(x, y, z);
 

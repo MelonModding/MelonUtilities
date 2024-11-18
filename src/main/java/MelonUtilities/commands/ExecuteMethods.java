@@ -22,7 +22,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 
 import java.util.UUID;
 
-import static net.minecraft.server.util.helper.PlayerList.updateList;
+import static net.minecraft.server.player.PlayerListBox.updateList;
 
 @SuppressWarnings("SameReturnValue")
 public class ExecuteMethods {
@@ -565,7 +565,7 @@ public class ExecuteMethods {
 							return Command.SINGLE_SUCCESS;
 						}
 						FeedbackHandler.success(context, "Locked Chest!");
-					} else if (container instanceof TileEntityFurnaceBlastFurnace) {
+					} else if (container instanceof TileEntityFurnaceBlast) {
 						FeedbackHandler.success(context, "Locked Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
 						FeedbackHandler.success(context, "Locked Furnace!");
@@ -701,7 +701,7 @@ public class ExecuteMethods {
 							return Command.SINGLE_SUCCESS;
 						}
 						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Chest!");
-					} else if (container instanceof TileEntityFurnaceBlastFurnace) {
+					} else if (container instanceof TileEntityFurnaceBlast) {
 						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
 						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Furnace!");
@@ -796,7 +796,7 @@ public class ExecuteMethods {
 							return Command.SINGLE_SUCCESS;
 						}
 						FeedbackHandler.success(context, "Trusted Community to this Chest!");
-					} else if (container instanceof TileEntityFurnaceBlastFurnace) {
+					} else if (container instanceof TileEntityFurnaceBlast) {
 						FeedbackHandler.success(context, "Trusted Community to this Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
 						FeedbackHandler.success(context, "Trusted Community to this Furnace!");
@@ -873,7 +873,7 @@ public class ExecuteMethods {
 							return Command.SINGLE_SUCCESS;
 						}
 						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Chest!");
-					} else if (container instanceof TileEntityFurnaceBlastFurnace) {
+					} else if (container instanceof TileEntityFurnaceBlast) {
 						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
 						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Furnace!");
@@ -967,7 +967,7 @@ public class ExecuteMethods {
 							return Command.SINGLE_SUCCESS;
 						}
 						FeedbackHandler.destructive(context, "Untrusted Community from this Chest!");
-					} else if (container instanceof TileEntityFurnaceBlastFurnace) {
+					} else if (container instanceof TileEntityFurnaceBlast) {
 						FeedbackHandler.destructive(context, "Untrusted Community from this Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
 						FeedbackHandler.destructive(context, "Untrusted Community from this Furnace!");

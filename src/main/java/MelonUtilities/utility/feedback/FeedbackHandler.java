@@ -5,8 +5,7 @@ import MelonUtilities.utility.MUtil;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
-import net.minecraft.core.net.packet.PlaySoundEffectDirectPacket;
-import net.minecraft.core.net.packet.PlaySoundEffectPacket;
+import net.minecraft.core.net.packet.PacketPlaySoundEffectDirect;
 import net.minecraft.core.sound.SoundCategory;
 import net.minecraft.core.sound.SoundTypes;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -73,7 +72,7 @@ public class FeedbackHandler {
 			Player player = source.getSender();
 			if (player == null) return;
 			if(player instanceof PlayerServer){
-				((PlayerServer) player).playerNetServerHandler.sendPacket(new PlaySoundEffectDirectPacket(SoundTypes.getSoundId(feedbackType.getSoundPath()), SoundCategory.GUI_SOUNDS, player.x, player.y, player.z, 1f, 1f));
+				((PlayerServer) player).playerNetServerHandler.sendPacket(new PacketPlaySoundEffectDirect(SoundTypes.getSoundId(feedbackType.getSoundPath()), SoundCategory.GUI_SOUNDS, player.x, player.y, player.z, 1f, 1f));
 			}
 		}
 	}
@@ -86,7 +85,7 @@ public class FeedbackHandler {
 
 		if(!feedbackType.getSoundPath().equals("NO_SOUND")){
 			if(player instanceof PlayerServer){
-				((PlayerServer) player).playerNetServerHandler.sendPacket(new PlaySoundEffectDirectPacket(SoundTypes.getSoundId(feedbackType.getSoundPath()), SoundCategory.GUI_SOUNDS, player.x, player.y, player.z, 1f, 1f));
+				((PlayerServer) player).playerNetServerHandler.sendPacket(new PacketPlaySoundEffectDirect(SoundTypes.getSoundId(feedbackType.getSoundPath()), SoundCategory.GUI_SOUNDS, player.x, player.y, player.z, 1f, 1f));
 			}
 		}
 	}

@@ -1,9 +1,9 @@
-package MelonUtilities.mixins.tile_entities.dispenser;
+package MelonUtilities.mixins.tile_entities.basket;
 
 import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandler;
-import net.minecraft.core.block.BlockDispenser;
+import net.minecraft.core.block.BlockLogicBasket;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
@@ -12,14 +12,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = BlockDispenser.class, remap = false)
-public class BlockDispenserMixin {
+@Mixin(value = BlockLogicBasket.class, remap = false)
+public class BlockLogicBasketMixin {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
 		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(x, y, z);
 		if(!MUtil.canInteractWithLock(iContainer.getIsLocked(), iContainer.getIsCommunityContainer(), iContainer.getLockOwner(), iContainer.getTrustedPlayers(), player)){
-			FeedbackHandler.error(player, "Dispenser is Locked!");
+			FeedbackHandler.error(player, "Basket is Locked!");
 			cir.setReturnValue(false);
 		}
 	}

@@ -1,14 +1,14 @@
 package MelonUtilities.mixins.other;
 
 import MelonUtilities.utility.builders.RoleBuilder;
-import net.minecraft.core.net.packet.PlayerListPacket;
+import net.minecraft.core.net.packet.PacketPlayerList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
-import net.minecraft.server.util.helper.PlayerList;
+import net.minecraft.server.player.PlayerListBox;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-@Mixin(value = PlayerList.class, remap = false)
+@Mixin(value = PlayerListBox.class, remap = false)
 public class PlayerListMixin {
 
 	//TODO Redirect player.getDisplayName(); with a method that returns RoleBuilder.buildPlayerRoleDisplay(player) + player.getDisplayName();
@@ -29,6 +29,6 @@ public class PlayerListMixin {
 			players[i] = RoleBuilder.buildPlayerRoleDisplay(player) + player.getDisplayName();
 			scores[i] = String.valueOf(player.getScore());
 		}
-		server.playerList.sendPacketToAllPlayers(new PlayerListPacket(playerCount, players, scores));
+		server.playerList.sendPacketToAllPlayers(new PacketPlayerList(playerCount, players, scores));
 	}
 }

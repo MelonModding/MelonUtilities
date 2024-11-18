@@ -1,7 +1,7 @@
 package MelonUtilities.utility.managers;
 
 import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.core.net.packet.ChatPacket;
+import net.minecraft.core.net.packet.PacketChat;
 import net.minecraft.core.util.helper.AES;
 import net.minecraft.core.util.helper.DyeColor;
 import net.minecraft.server.MinecraftServer;
@@ -24,7 +24,7 @@ public class TpaManager {
     }
 
 	static void messagePlayer(PlayerServer player, String message) {
-		MinecraftServer.getInstance().playerList.sendPacketToPlayer(player.username, new ChatPacket(message, AES.keyChain.get(player.username)));
+		MinecraftServer.getInstance().playerList.sendPacketToPlayer(player.username, new PacketChat(message, AES.keyChain.get(player.username)));
 	}
     static void killRequest(TpaRequest tpr, String reason) {
     	messagePlayer(tpr.player, TextFormatting.RED + "> Your tpa request to " + tpr.target.username + " expired! (" + reason + ")");

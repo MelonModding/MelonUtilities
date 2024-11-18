@@ -4,7 +4,7 @@ import MelonUtilities.interfaces.TileEntityContainerInterface;
 import com.mojang.nbt.CompoundTag;
 import com.mojang.nbt.ListTag;
 import com.mojang.nbt.Tag;
-import net.minecraft.core.block.entity.TileEntityFurnaceBlastFurnace;
+import net.minecraft.core.block.entity.TileEntityFurnaceBlast;
 import net.minecraft.core.util.helper.UUIDHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Mixin(value = TileEntityFurnaceBlastFurnace.class, remap = false)
-public class TileEntityFurnaceBlastFurnaceMixin implements TileEntityContainerInterface {
+@Mixin(value = TileEntityFurnaceBlast.class, remap = false)
+public class TileEntityFurnaceBlastMixin implements TileEntityContainerInterface {
 	@Unique
 	private boolean isLocked;
 

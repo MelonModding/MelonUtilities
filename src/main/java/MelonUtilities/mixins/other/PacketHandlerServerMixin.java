@@ -11,10 +11,11 @@ import MelonUtilities.utility.builders.RoleBuilder;
 import net.minecraft.core.block.entity.*;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.*;
-import net.minecraft.core.net.packet.BlockUpdatePacket;
-import net.minecraft.core.net.packet.ChatPacket;
+import net.minecraft.core.net.packet.PacketBlockUpdate;
+import net.minecraft.core.net.packet.PacketChat;
 import net.minecraft.core.net.packet.Packet;
-import net.minecraft.core.net.packet.PlayerActionPacket;
+import net.minecraft.core.net.packet.PacketPlayerAction;
+import net.minecraft.core.net.packet.PacketPlayerAction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
 import net.minecraft.server.net.handler.PacketHandlerServer;
@@ -48,7 +49,7 @@ public abstract class PacketHandlerServerMixin {
 	public static Logger LOGGER;
 
 	@Inject(at = @At(shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleChat", cancellable = true)
-	public void handleChat(ChatPacket packet, CallbackInfo ci, @Local String message) {
+	public void handleChat(PacketChat packet, CallbackInfo ci, @Local String message) {
 
 		String defaultRoleDisplay;
 		String defaultRoleUsername;
@@ -189,7 +190,7 @@ public abstract class PacketHandlerServerMixin {
 		at = @At("HEAD"),
 		method = "handleBlockDig",
 		cancellable = true)
-	private void handleBlockDigInject(PlayerActionPacket packet, CallbackInfo ci){
+	private void handleBlockDigInject(PacketPlayerAction packet, CallbackInfo ci){
 		Player player = this.playerEntity;
 		WorldServer world = this.mcServer.getDimensionWorld(player.dimension);
 		TileEntity container = world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
@@ -201,9 +202,9 @@ public abstract class PacketHandlerServerMixin {
 				&& !Data.Users.getOrCreate(iContainer.getLockOwner()).usersTrustedToAllContainers.containsKey(player.uuid)
 				&& !Data.Users.getOrCreate(player.uuid).lockBypass){
 				ci.cancel();
-				sendPacket(new BlockUpdatePacket(packet.xPosition, packet.yPosition, packet.zPosition, world));
+				sendPacket(new PacketBlockUpdate(packet.xPosition, packet.yPosition, packet.zPosition, world));
 			}
-			if(packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED && Data.Users.getOrCreate(player.uuid).lockOnBlockPunched && !iContainer.getIsLocked()){
+			if(packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED && Data.Users.getOrCreate(player.uuid).lockOnBlockPunched && !iContainer.getIsLocked()){
 				if (container instanceof TileEntityChest) {
 					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) MUtil.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
@@ -216,7 +217,7 @@ public abstract class PacketHandlerServerMixin {
 					} else {
 						FeedbackHandler.success(player, "Locked Chest!");
 					}
-				} else if (container instanceof TileEntityFurnaceBlastFurnace) {
+				} else if (container instanceof TileEntityFurnaceBlast) {
 					FeedbackHandler.success(player, "Locked Blast Furnace!");
 				} else if (container instanceof TileEntityFurnace) {
 					FeedbackHandler.success(player, "Locked Furnace!");
@@ -235,7 +236,7 @@ public abstract class PacketHandlerServerMixin {
 				ci.cancel();
 			}
 
-			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
+			else if (packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED
 			&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
 			&& iContainer.getIsLocked()
 			&& !iContainer.getLockOwner().equals(player.uuid))
@@ -244,7 +245,7 @@ public abstract class PacketHandlerServerMixin {
 				ci.cancel();
 			}
 
-			else if (packet.action == PlayerActionPacket.ACTION_DIG_CONTINUED
+			else if (packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED
 			&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
 			&& iContainer.getIsLocked()
 			&& iContainer.getLockOwner().equals(player.uuid))

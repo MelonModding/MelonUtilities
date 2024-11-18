@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.useless.serverlibe.ServerLibe;
 
-import static net.minecraft.server.util.helper.PlayerList.updateList;
+import static net.minecraft.server.player.PlayerListBox.updateList;
 
 
 public class MelonUtilities implements ModInitializer {

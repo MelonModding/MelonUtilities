@@ -6,7 +6,7 @@ import com.b100.json.JsonParser;
 import com.b100.json.element.JsonObject;
 import com.b100.utils.StringUtils;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.core.block.BlockChest;
+import net.minecraft.core.block.BlockLogicChest;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
@@ -232,40 +232,40 @@ public class MUtil {
 
 	public static TileEntityChest getOtherChest(World world, TileEntityChest chest){
 		int meta = world.getBlockMetadata(chest.x, chest.y, chest.z);
-		BlockChest.Type type = BlockChest.getTypeFromMeta(meta);
-		if (type != BlockChest.Type.SINGLE) {
-			Direction direction = BlockChest.getDirectionFromMeta(meta);
+		BlockLogicChest.Type type = BlockLogicChest.getTypeFromMeta(meta);
+		if (type != BlockLogicChest.Type.SINGLE) {
+			Direction direction = BlockLogicChest.getDirectionFromMeta(meta);
 			int otherChestX = chest.x;
 			int otherChestZ = chest.z;
 			if (direction == Direction.NORTH) {
-				if (type == BlockChest.Type.LEFT) {
+				if (type == BlockLogicChest.Type.LEFT) {
 					--otherChestX;
 				}
-				if (type == BlockChest.Type.RIGHT) {
+				if (type == BlockLogicChest.Type.RIGHT) {
 					++otherChestX;
 				}
 			}
 			if (direction == Direction.EAST) {
-				if (type == BlockChest.Type.LEFT) {
+				if (type == BlockLogicChest.Type.LEFT) {
 					--otherChestZ;
 				}
-				if (type == BlockChest.Type.RIGHT) {
+				if (type == BlockLogicChest.Type.RIGHT) {
 					++otherChestZ;
 				}
 			}
 			if (direction == Direction.SOUTH) {
-				if (type == BlockChest.Type.LEFT) {
+				if (type == BlockLogicChest.Type.LEFT) {
 					++otherChestX;
 				}
-				if (type == BlockChest.Type.RIGHT) {
+				if (type == BlockLogicChest.Type.RIGHT) {
 					--otherChestX;
 				}
 			}
 			if (direction == Direction.WEST) {
-				if (type == BlockChest.Type.LEFT) {
+				if (type == BlockLogicChest.Type.LEFT) {
 					++otherChestZ;
 				}
-				if (type == BlockChest.Type.RIGHT) {
+				if (type == BlockLogicChest.Type.RIGHT) {
 					--otherChestZ;
 				}
 			}
