@@ -2,9 +2,9 @@ package MelonUtilities.mixins.tile_entities.basket;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
-import com.mojang.nbt.CompoundTag;
-import com.mojang.nbt.ListTag;
-import com.mojang.nbt.Tag;
+import com.mojang.nbt.tags.CompoundTag;
+import com.mojang.nbt.tags.ListTag;
+import com.mojang.nbt.tags.Tag;
 import net.minecraft.core.block.entity.TileEntityBasket;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.util.helper.UUIDHelper;

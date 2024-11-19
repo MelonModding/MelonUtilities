@@ -2,9 +2,9 @@ package MelonUtilities.mixins.tile_entities.furnace;
 
 import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
-import com.mojang.nbt.CompoundTag;
-import com.mojang.nbt.ListTag;
-import com.mojang.nbt.Tag;
+import com.mojang.nbt.tags.CompoundTag;
+import com.mojang.nbt.tags.ListTag;
+import com.mojang.nbt.tags.Tag;
 import net.minecraft.core.block.entity.TileEntityFurnace;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.util.helper.UUIDHelper;

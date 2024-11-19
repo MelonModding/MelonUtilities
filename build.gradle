@@ -67,7 +67,7 @@ repositories {
 		metadataSources { artifact() }
 	}
 	ivy {
-		url = "https://github.com/MelonModding"
+		url = "https://github.com/UselessSolutions"
 		patternLayout {
 			artifact "[organisation]/releases/download/[revision]/[module]-[revision].jar"
 			m2compatible = true

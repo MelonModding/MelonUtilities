@@ -3,10 +3,11 @@ package MelonUtilities.commands.rollback;
 import MelonUtilities.config.Data;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandler;
+import MelonUtilities.utility.managers.RollbackManager;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.nbt.CompoundTag;
+import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.NbtIo;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
@@ -71,7 +72,7 @@ public class RollbackLogic {
 			return 0;
 		}
 
-		HashMap<Long, File> captures = MUtil.getSortedCaptures(source, chunkDir);
+		HashMap<Long, File> captures = RollbackManager.getSortedCaptures(source, chunkDir);
 
 		ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
 		rollbackGui.setSize((int)Math.ceil((captures.size() + 1) / 9.0F));
@@ -162,7 +163,7 @@ public class RollbackLogic {
 		int maxZ = Math.max(z1, z2);
 		for (int _x = minX; _x <= maxX; _x++) {
 			for (int _z = minZ; _z <= maxZ; _z++) {
-				HashMap<Long, File> _captures = MUtil.getSortedCaptures(source, new File("./rollbackdata/snapshots/" + source.getWorld().dimension.id + "/c[x." + _x + "-z." + _z + "]"));
+				HashMap<Long, File> _captures = RollbackManager.getSortedCaptures(source, new File("./rollbackdata/snapshots/" + source.getWorld().dimension.id + "/c[x." + _x + "-z." + _z + "]"));
 				if (captures == null || captures.size() < _captures.size()) {
 					captures = _captures;
 				}
@@ -180,7 +181,7 @@ public class RollbackLogic {
 					SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
 					snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]");
 					snapshotIcon.setCustomColor((byte) TextFormatting.LIME.id);
-					return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> MUtil.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture));
+					return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> RollbackManager.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture));
 				}));
 			} else if(capture.getValue().getName().contains(".mcr")){
 				rollbackGui.setContainerSlot(i, (inventory ->
@@ -189,7 +190,7 @@ public class RollbackLogic {
 					SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
 					backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]");
 					backupIcon.setCustomColor((byte) TextFormatting.GREEN.id);
-					return new ServerSlotButton(backupIcon, inventory, finalI, () -> MUtil.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture));
+					return new ServerSlotButton(backupIcon, inventory, finalI, () -> RollbackManager.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture));
 				}));
 			}
 			i++;
