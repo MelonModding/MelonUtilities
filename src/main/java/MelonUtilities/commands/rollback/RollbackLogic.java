@@ -98,6 +98,7 @@ public class RollbackLogic {
 							CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(capture.getValue().toPath()));
 							rollbackChunk(source.getWorld().getChunkFromChunkCoords(x1, z1), tag);
 							MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(x1 * 16, 0, z1 * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+							FeedbackHandler.success(context, "%" + x1 + "," + z1 + "%  Rolled Back to %" + sdf.format(capture.getKey()) + "%");
 							((PlayerServer) source.getSender()).usePersonalCraftingInventory();
 						} catch (IOException e) {
 							throw new RuntimeException(e);
@@ -123,6 +124,7 @@ public class RollbackLogic {
 						Chunk chunk1 = source.getWorld().getChunkFromChunkCoords(x1, z1);
 						rollbackChunkFromBackup(chunk1, backupDir);
 						MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunk1.xPosition * 16, 0, chunk1.zPosition * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+						FeedbackHandler.success(context, "%" + x1 + "," + z1 + "%  Rolled Back to %" + sdf.format(capture.getKey()) + "%");
 						((PlayerServer) source.getSender()).usePersonalCraftingInventory();
 					});
 				}));
@@ -181,7 +183,10 @@ public class RollbackLogic {
 					SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
 					snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]");
 					snapshotIcon.setCustomColor((byte) TextFormatting.LIME.id);
-					return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> RollbackManager.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture));
+					return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
+						RollbackManager.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture);
+						FeedbackHandler.success(context, "%" + x1 + "," + z1 + "% "+ TextFormatting.ORANGE + "- %" + x2 + "," + z2 + "% Rolled Back to " + TextFormatting.ORANGE + "~%" + sdf.format(capture.getKey()) + "%");
+					});
 				}));
 			} else if(capture.getValue().getName().contains(".mcr")){
 				rollbackGui.setContainerSlot(i, (inventory ->
@@ -190,7 +195,10 @@ public class RollbackLogic {
 					SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
 					backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]");
 					backupIcon.setCustomColor((byte) TextFormatting.GREEN.id);
-					return new ServerSlotButton(backupIcon, inventory, finalI, () -> RollbackManager.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture));
+					return new ServerSlotButton(backupIcon, inventory, finalI, () -> {
+						RollbackManager.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture);
+						FeedbackHandler.success(context, "%" + x1 + "," + z1 + "% "+ TextFormatting.ORANGE + "- %" + x2 + "," + z2 + "% Rolled Back to " + TextFormatting.ORANGE + "~%" + sdf.format(capture.getKey()) + "%");
+					});
 				}));
 			}
 			i++;
@@ -228,7 +236,7 @@ public class RollbackLogic {
 		if(Data.MainConfig.config.snapshotsEnabled){
 			Data.MainConfig.config.snapshotsEnabled = false;
 			Data.MainConfig.save();
-			FeedbackHandler.destructive(context, "Automatic Snapshots Disabled.");
+			FeedbackHandler.destructive(context, "Automatic Snapshots Disabled");
 		} else {
 			Data.MainConfig.config.snapshotsEnabled = true;
 			Data.MainConfig.save();
@@ -241,7 +249,7 @@ public class RollbackLogic {
 		if(Data.MainConfig.config.backupsEnabled){
 			Data.MainConfig.config.backupsEnabled = false;
 			Data.MainConfig.save();
-			FeedbackHandler.destructive(context, "Automatic Backups Disabled.");
+			FeedbackHandler.destructive(context, "Automatic Backups Disabled");
 		} else {
 			Data.MainConfig.config.backupsEnabled = true;
 			Data.MainConfig.save();
