@@ -66,14 +66,6 @@ repositories {
 		}
 		metadataSources { artifact() }
 	}
-	ivy {
-		url = "https://github.com/UselessSolutions"
-		patternLayout {
-			artifact "[organisation]/releases/download/[revision]/[module]-[revision].jar"
-			m2compatible = true
-		}
-		metadataSources { artifact() }
-	}
 }
 
 dependencies {
@@ -91,6 +83,8 @@ dependencies {
 	//modImplementation "com.github.Turnip-Labs:bta-halplibe:${project.halplibe_version}"
 
 	//modImplementation "ModMenu:ModMenu:2.0.6"
+
+	modImplementation "com.github.UselessSolutions:serverlibe:${project.serverlibe_version}"
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.16.0"
@@ -120,7 +114,6 @@ dependencies {
 	implementation "org.lwjgl:lwjgl-opengl::$lwjglNatives"
 	implementation "org.lwjgl:lwjgl-stb::$lwjglNatives"
 
-	implementation "serverlibe:serverlibe:${project.serverlibe_version}"
 }
 
 java {
