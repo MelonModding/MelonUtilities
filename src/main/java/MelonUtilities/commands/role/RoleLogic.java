@@ -2,6 +2,7 @@ package MelonUtilities.commands.role;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
+import MelonUtilities.interfaces.PlayerCustomInputFunctionInterface;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.classes.Icon;
 import MelonUtilities.utility.feedback.FeedbackHandler;
@@ -14,6 +15,7 @@ import net.minecraft.core.item.Items;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.command.helpers.EntitySelector;
+import net.minecraft.core.util.collection.Pair;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
 import org.useless.serverlibe.api.gui.GuiHelper;
@@ -21,6 +23,7 @@ import org.useless.serverlibe.api.gui.ServerGuiBuilder;
 import org.useless.serverlibe.api.gui.slot.ServerSlotButton;
 
 import java.util.List;
+import java.util.UUID;
 
 @SuppressWarnings("SameReturnValue")
 public class RoleLogic {
@@ -46,13 +49,13 @@ public class RoleLogic {
 	 PS. Arguments inside the method name should match their registered name/literal in the ArgumentBuilder for their respective command
 	*/
 
-	public static int role(CommandContext<CommandSource> context) {
-		CommandSource source = context.getSource();
 
+	static Icon inputUsernameIcon = new Icon("[Input Username]", (byte) TextFormatting.WHITE.id, Items.LABEL.getDefaultStack());
+	public static int role(PlayerServer sender) {
 		ServerGuiBuilder roleGui = new ServerGuiBuilder();
 
 		roleGui.setSize(0);
-
+		//-------------------------------------
 		roleGui.setContainerSlot(2, (roleGuiInventory -> new ServerSlotButton(roleGrantIcon.icon, roleGuiInventory, 2, () -> {
 			ServerGuiBuilder roleGrantGui = new ServerGuiBuilder();
 			roleGrantGui.setSize((int)Math.floor((Data.Roles.roleDataHashMap.size() + 1) / 9.0F));
@@ -60,47 +63,60 @@ public class RoleLogic {
 			for(Role role : Data.Roles.roleDataHashMap.values()){
 				int finalI = i;
 				Icon roleIcon = new Icon(role.roleID, (byte) TextFormatting.WHITE.id, Items.LABEL.getDefaultStack());
+				//-------------------------------------
 				roleGrantGui.setContainerSlot(i, (roleGrantGuiInventory -> new ServerSlotButton(roleIcon.icon, roleGrantGuiInventory, finalI, () -> {
 					ServerGuiBuilder roleGrantToGui = new ServerGuiBuilder();
 					List<PlayerServer> onlinePlayers = MinecraftServer.getInstance().playerList.playerEntities;
-					roleGrantToGui.setSize((int)Math.floor((onlinePlayers.size() + 1) / 9.0F));
+					roleGrantToGui.setSize((int)Math.floor((onlinePlayers.size() + 2) / 9.0F));
 					int j = 0;
-					for(PlayerServer player : onlinePlayers){
+					for(PlayerServer target : onlinePlayers){
 						int finalJ = j;
-						Icon playerIcon = new Icon(player.username, (byte) TextFormatting.WHITE.id, Items.ARMOR_CHESTPLATE_IRON.getDefaultStack());
+						Icon playerIcon = new Icon(target.username, (byte) TextFormatting.WHITE.id, Items.ARMOR_CHESTPLATE_IRON.getDefaultStack());
+						//-------------------------------------
 						roleGrantToGui.setContainerSlot(j, (roleGrantToGuiInventory -> new ServerSlotButton(playerIcon.icon, roleGrantToGuiInventory, finalJ, () -> {
-							role_grant(context, role, player);
-							((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+							role_grant(role, target, sender);
+							sender.usePersonalCraftingInventory();
 						})));
+						//-------------------------------------
 						j++;
 					}
-					GuiHelper.openCustomServerGui((PlayerServer) source.getSender(), roleGrantToGui.build(source.getSender(), "To Player: "));
+					int finalJ1 = j;
+					roleGrantToGui.setContainerSlot(j+1, (roleGrantToGuiInventory -> new ServerSlotButton(inputUsernameIcon.icon, roleGrantToGuiInventory, finalJ1+1, () -> {
+						sender.usePersonalCraftingInventory();
+						((PlayerCustomInputFunctionInterface) sender).melonutilities$setCustomInputFunction(new PlayerCustomInputFunctionInterface.CustomInput() {
+							@Override
+							public void apply(String customInput) {
+								role_grant(role, customInput, sender);
+							}
+						});
+					})));
+					GuiHelper.openCustomServerGui(sender, roleGrantToGui.build(sender, "To Player: "));
 				})));
+				//-------------------------------------
 				i++;
 			}
-			GuiHelper.openCustomServerGui((PlayerServer) source.getSender(), roleGrantGui.build(source.getSender(), "Grant Role: "));
-
+			GuiHelper.openCustomServerGui(sender, roleGrantGui.build(sender, "Grant Role: "));
 		})));
-
+		//-------------------------------------
 		roleGui.setContainerSlot(3, (inventory -> new ServerSlotButton(roleReloadIcon.icon, inventory, 3, () -> {
-			role_reload(context);
-			((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+			//role_reload(context);
+			sender.usePersonalCraftingInventory();
 		})));
-
+		//-------------------------------------
 		roleGui.setContainerSlot(5, (inventory -> new ServerSlotButton(roleListIcon.icon, inventory, 5, () -> {
-			role_list(context);
-			((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+			//role_list(context);
+			sender.usePersonalCraftingInventory();
 		})));
-
+		//-------------------------------------
 		roleGui.setContainerSlot(6, (inventory -> new ServerSlotButton(roleRevokeIcon.icon, inventory, 6, () -> {
 			ServerGuiBuilder roleRevokeGui = new ServerGuiBuilder();
 			roleRevokeGui.setSize(0);
 
 		})));
+		//-------------------------------------
+		GuiHelper.openCustomServerGui(sender, roleGui.build(sender, "Role Command:"));
 
-		GuiHelper.openCustomServerGui((PlayerServer) source.getSender(), roleGui.build(source.getSender(), "Role Command:"));
-
-		FeedbackHandler.success(context, "Opened Role GUI!");
+		//FeedbackHandler.success(context, "Opened Role GUI!");
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -160,32 +176,37 @@ public class RoleLogic {
 	}
 
 	static Icon roleGrantIcon = new Icon("[Grant]", (byte) TextFormatting.LIME.id, Items.OLIVINE.getDefaultStack());
-	public static int role_grant(CommandContext<CommandSource> context, Role role, PlayerServer target) {
-		if (!role.playersGrantedRole.contains(target.uuid)){
-			role.playersGrantedRole.add(target.uuid);
-			role.save();
-			FeedbackHandler.success(context, "Granted Role %" + role.roleID + "% to Player %" + target.getDisplayName());
-		} else {
-			FeedbackHandler.error(context, "Failed to Grant Role %" + role.roleID + "% to Player %" + target.getDisplayName());
-			FeedbackHandler.error(context, "(Player already has Role!)");
+	public static void role_grant(Role role, String targetUsername, Player sender){
+		Pair<UUID, String> profile;
+		try {
+			profile = MUtil.getProfileFromUsername(targetUsername);
+		} catch (NullPointerException e) {
+			FeedbackHandler.error(sender, "Failed to Trust %" + targetUsername + "% to Container! (%" + targetUsername + "% Does not Exist)");
+			return;
 		}
-		return Command.SINGLE_SUCCESS;
+
+		String targetUsernameOrDisplayName = profile.getRight();
+		UUID targetUUID = profile.getLeft();
+
+		if (!role.playersGrantedRole.contains(targetUUID)){
+			role.playersGrantedRole.add(targetUUID);
+			role.save();
+			FeedbackHandler.success(sender, "Granted Role %" + role.roleID + "% to Player %" + targetUsernameOrDisplayName);
+		} else {
+			FeedbackHandler.error(sender, "Failed to Grant Role %" + role.roleID + "% to Player %" + targetUsernameOrDisplayName);
+			FeedbackHandler.error(sender, "(Player already has Role!)");
+		}
 	}
 
-	public static int role_grant(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		CommandSource source = context.getSource();
-
-		Role role = context.getArgument("role", Role.class);
-		EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
-		Player target = ((Player)entitySelector.get(source).get(0));
-
+	public static int role_grant(Role role, Player target, Player sender){
 		if (!role.playersGrantedRole.contains(target.uuid)){
 			role.playersGrantedRole.add(target.uuid);
 			role.save();
-			FeedbackHandler.success(context, "Granted Role %" + role.roleID + "% to Player %" + target.getDisplayName());
+			FeedbackHandler.success(sender, "Granted Role %" + role.roleID + "% to Player %" + target.getDisplayName());
 		} else {
-			FeedbackHandler.error(context, "Failed to Grant Role %" + role.roleID + "% to Player %" + target.getDisplayName());
-			FeedbackHandler.error(context, "(Player already has Role!)");
+			FeedbackHandler.error(sender, "Failed to Grant Role %" + role.roleID + "% to Player %" + target.getDisplayName());
+			FeedbackHandler.error(sender, "(Player already has Role!)");
+			return 0;
 		}
 		return Command.SINGLE_SUCCESS;
 	}

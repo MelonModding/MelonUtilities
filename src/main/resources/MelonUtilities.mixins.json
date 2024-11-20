@@ -6,6 +6,7 @@
   "mixins": [
     "other.CommandManagerMixin",
     "other.PacketHandlerServerMixin",
+    "other.PlayerMixin",
     "tile_entities.basket.BlockLogicBasketMixin",
     "tile_entities.basket.TileEntityBasketMixin",
     "tile_entities.blast_furnace.TileEntityFurnaceBlastMixin",

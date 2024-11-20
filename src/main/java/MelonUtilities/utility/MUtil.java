@@ -2,6 +2,7 @@ package MelonUtilities.utility;
 
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
+import MelonUtilities.utility.feedback.FeedbackHandler;
 import MelonUtilities.utility.managers.RollbackManager;
 import com.b100.json.JsonParser;
 import com.b100.json.element.JsonObject;
@@ -16,8 +17,10 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.PacketBlockRegionUpdate;
+import net.minecraft.core.util.collection.Pair;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
+import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.util.phys.HitResult;
 import net.minecraft.core.util.phys.Vec3;
 import net.minecraft.core.world.World;
@@ -98,6 +101,25 @@ public class MUtil {
 		colorFormattingMap.put("light_gray", TextFormatting.LIGHT_GRAY);
 		colorFormattingMap.put("cyan", TextFormatting.CYAN);
 		colorFormattingMap.put("white", TextFormatting.WHITE);
+	}
+
+	public static Pair<UUID, String> getProfileFromUsername(String username) throws NullPointerException {
+		UUID uuid;
+		String usernameOrDisplayName;
+
+		Player target = MinecraftServer.getInstance().playerList.getPlayerEntity(username);
+
+		if(target != null){
+			uuid = target.uuid;
+			usernameOrDisplayName = target.getDisplayName();
+		} else {
+			uuid = UUIDHelper.getUUIDFromName(username);
+			if(uuid == null){
+				throw new NullPointerException();
+			}
+			usernameOrDisplayName = username;
+		}
+		return Pair.of(uuid, usernameOrDisplayName);
 	}
 
 	public static String breakDownHex(String dirtyHex){

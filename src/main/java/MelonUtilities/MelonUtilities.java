@@ -9,6 +9,7 @@ import MelonUtilities.config.datatypes.data.Crew;
 import MelonUtilities.config.datatypes.data.Home;
 import MelonUtilities.config.datatypes.jsonadapters.CrewJsonAdapter;
 import MelonUtilities.config.datatypes.jsonadapters.HomeJsonAdapter;
+import MelonUtilities.listeners.ChatInputListener;
 import MelonUtilities.listeners.DebugInfoListener;
 import MelonUtilities.listeners.GuiTestListener;
 import MelonUtilities.utility.MUtil;
@@ -21,6 +22,7 @@ import net.minecraft.core.data.gamerule.GameRuleBoolean;
 import net.minecraft.core.data.gamerule.GameRules;
 import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
 import net.minecraft.core.item.ItemStack;
+import org.apache.logging.log4j.core.jmx.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.useless.serverlibe.ServerLibe;
@@ -120,7 +122,7 @@ public class MelonUtilities implements ModInitializer {
 		// register them into ServerLibe like such
 		//ServerLibe.registerListener(new GuiTestListener()); // Example Listener
 		//ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
-
+		ServerLibe.registerListener(new ChatInputListener());
 		// Anything Else
 
 

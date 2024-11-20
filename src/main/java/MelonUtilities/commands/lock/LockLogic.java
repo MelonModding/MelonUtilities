@@ -9,6 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.core.block.entity.*;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
+import net.minecraft.core.util.collection.Pair;
 import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.util.phys.HitResult;
 import net.minecraft.server.MinecraftServer;
@@ -149,28 +150,24 @@ public class LockLogic {
 	public static int lock_trust(CommandContext<CommandSource> context){
 		CommandSource source = context.getSource();
 		Player sender = source.getSender();
-
 		String targetUsername = context.getArgument("username", String.class).toLowerCase();
-		PlayerServer target = MinecraftServer.getInstance().playerList.getPlayerEntity(targetUsername);
-		UUID targetUUID;
-		String targetDisplayName;
 
-		if(target != null){
-			targetUUID = target.uuid;
-			targetDisplayName = target.getDisplayName();
-		} else {
-			targetUUID = UUIDHelper.getUUIDFromName(targetUsername);
-			if(targetUUID == null){
-				FeedbackHandler.error(context, "Failed to Trust %" + targetUsername + "% to Container! (%" + targetUsername + "% Does not Exist)");
-				return 0;
-			}
-			targetDisplayName = targetUsername;
+		//TODO Make all other UUID and DisplayName get -> getProfileFromUsername
+
+		Pair<UUID, String> profile;
+		try {
+			profile = MUtil.getProfileFromUsername(targetUsername);
+		} catch (NullPointerException e) {
+			FeedbackHandler.error(sender, "Failed to Trust %" + targetUsername + "% to Container! (%" + targetUsername + "% Does not Exist)");
+			return 0;
 		}
 
+		String targetUsernameOrDisplayName = profile.getRight();
+		UUID targetUUID = profile.getLeft();
 
 		HitResult rayCastResult = MUtil.rayCastFromPlayer(context);
 		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
-			FeedbackHandler.error(context, "Failed to Trust %" + targetDisplayName + "% to Container! (Not Looking at Container)");
+			FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
@@ -182,12 +179,12 @@ public class LockLogic {
 				if (containerInterface.getIsLocked()) {
 
 					if (!containerInterface.getLockOwner().equals(sender.uuid)) {
-						FeedbackHandler.error(context, "Failed to Trust %" + targetDisplayName + "% to Container! (Not Owned By You)");
+						FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Not Owned By You)");
 						return Command.SINGLE_SUCCESS;
 					}
 
 					if (containerInterface.getTrustedPlayers().contains(targetUUID)) {
-						FeedbackHandler.error(context, "Failed to Trust %" + targetDisplayName + "% to Container! (Player already Trusted)");
+						FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Player already Trusted)");
 						return Command.SINGLE_SUCCESS;
 					}
 
@@ -196,31 +193,31 @@ public class LockLogic {
 						if (otherContainerInterface != null) {
 							containerInterface.addTrustedPlayer(targetUUID);
 							otherContainerInterface.addTrustedPlayer(targetUUID);
-							FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Double Chest!");
+							FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Double Chest!");
 							return Command.SINGLE_SUCCESS;
 						}
-						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Chest!");
+						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Chest!");
 					} else if (container instanceof TileEntityFurnaceBlast) {
-						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Blast Furnace!");
+						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
-						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Furnace!");
+						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Furnace!");
 					} else if (container instanceof TileEntityDispenser) {
-						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Dispenser!");
+						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Dispenser!");
 					} else if (container instanceof TileEntityMeshGold) {
-						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Golden Mesh!");
+						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Golden Mesh!");
 					} else if (container instanceof TileEntityTrommel) {
-						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Trommel!");
+						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Trommel!");
 					} else if (container instanceof TileEntityBasket) {
-						FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to this Basket!");
+						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Basket!");
 					}
 					containerInterface.addTrustedPlayer(targetUUID);
 				} else {
-					FeedbackHandler.error(context, "Failed to Trust %" + targetDisplayName + "% to Container! (Container not Locked)");
+					FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Container not Locked)");
 				}
 				return Command.SINGLE_SUCCESS;
 			}
 		}
-		FeedbackHandler.error(context, "Failed to Trust %" + targetDisplayName + "% to Container! (Not Looking at Container)");
+		FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Not Looking at Container)");
 		return Command.SINGLE_SUCCESS;
 	}
 

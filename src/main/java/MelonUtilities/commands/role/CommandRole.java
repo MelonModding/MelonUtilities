@@ -11,11 +11,13 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.command.arguments.ArgumentTypeEntity;
 import net.minecraft.core.net.command.helpers.EntitySelector;
+import net.minecraft.server.entity.player.PlayerServer;
 
 @SuppressWarnings("UnusedReturnValue")
 public class CommandRole implements CommandManager.CommandRegistry{
@@ -291,7 +293,12 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
 					.executes(
-						RoleLogic::role_grant
+						context -> {
+							Role role = context.getArgument("role", Role.class);
+							EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
+							Player target = ((Player)entitySelector.get(context.getSource()).get(0));
+							return RoleLogic.role_grant(role, target, context.getSource().getSender());
+						}
 					)
 				)
 			)
@@ -362,7 +369,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> role(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.executes(
-			RoleLogic::role
+			context -> RoleLogic.role((PlayerServer) context.getSource().getSender())
 		);
 		return builder;
 	}
