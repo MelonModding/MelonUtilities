@@ -10,13 +10,12 @@ import net.minecraft.core.net.command.CommandSource;
 public class CommandMelonUtilities implements CommandManager.CommandRegistry{
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		CommandNode<CommandSource> command = dispatcher
-			.register((LiteralArgumentBuilder.<CommandSource>literal("melonutilities").requires(CommandSource::hasAdmin))
-				.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
-					.executes(
-						RoleLogic::melonutilities_reload
-					)
+		CommandNode<CommandSource> command = dispatcher.register((LiteralArgumentBuilder.<CommandSource>literal("melonutilities").requires(CommandSource::hasAdmin))
+			.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
+				.executes(
+					MelonUtilitiesLogic::melonutilities_reload
 				)
-			);
+			)
+		);
 	}
 }

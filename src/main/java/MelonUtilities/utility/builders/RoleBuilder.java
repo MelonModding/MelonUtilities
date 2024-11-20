@@ -124,7 +124,7 @@ public class RoleBuilder {
 
 		StringBuilder roleDisplays = new StringBuilder();
 		ArrayList<Role> rolesGranted = new ArrayList<>();
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 99; i++) {
 			rolesGranted.add(null);
 		}
 

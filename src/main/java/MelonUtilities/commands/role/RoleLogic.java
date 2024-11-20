@@ -3,17 +3,24 @@ package MelonUtilities.commands.role;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.classes.Icon;
 import MelonUtilities.utility.feedback.FeedbackHandler;
 import MelonUtilities.utility.builders.RoleBuilder;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.item.Items;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.command.helpers.EntitySelector;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.entity.player.PlayerServer;
+import org.useless.serverlibe.api.gui.GuiHelper;
+import org.useless.serverlibe.api.gui.ServerGuiBuilder;
+import org.useless.serverlibe.api.gui.slot.ServerSlotButton;
 
-import static net.minecraft.server.player.PlayerListBox.updateList;
+import java.util.List;
 
 @SuppressWarnings("SameReturnValue")
 public class RoleLogic {
@@ -39,47 +46,65 @@ public class RoleLogic {
 	 PS. Arguments inside the method name should match their registered name/literal in the ArgumentBuilder for their respective command
 	*/
 
-	public static int melonutilities_reload(CommandContext<CommandSource> context){
-		FeedbackHandler.success(context, "Reloading MelonUtilities...");
+	public static int role(CommandContext<CommandSource> context) {
+		CommandSource source = context.getSource();
 
-		FeedbackHandler.destructive(context, "Reloading Player Data...");
-		Data.Users.reload();
-		FeedbackHandler.success(context, "Reloaded " + Data.Users.userDataHashMap.size() + " Player(s)!");
+		ServerGuiBuilder roleGui = new ServerGuiBuilder();
 
-		//TODO FeedbackHandler.destructive(source, "Building Helper Syntax...");
-		//TODO HelperCommand.buildHelperSyntax();
-		//TODO FeedbackHandler.success(source, "Helper Syntax Built!");
+		roleGui.setSize(0);
 
-		FeedbackHandler.destructive(context, "Reloading Kit Data...");
-		Data.Kits.reload();
-		FeedbackHandler.success(context, "Reloaded " + Data.Kits.kitDataHashMap.size() + " Kit(s)!");
+		roleGui.setContainerSlot(2, (roleGuiInventory -> new ServerSlotButton(roleGrantIcon.icon, roleGuiInventory, 2, () -> {
+			ServerGuiBuilder roleGrantGui = new ServerGuiBuilder();
+			roleGrantGui.setSize((int)Math.floor((Data.Roles.roleDataHashMap.size() + 1) / 9.0F));
+			int i = 0;
+			for(Role role : Data.Roles.roleDataHashMap.values()){
+				int finalI = i;
+				Icon roleIcon = new Icon(role.roleID, (byte) TextFormatting.WHITE.id, Items.LABEL.getDefaultStack());
+				roleGrantGui.setContainerSlot(i, (roleGrantGuiInventory -> new ServerSlotButton(roleIcon.icon, roleGrantGuiInventory, finalI, () -> {
+					ServerGuiBuilder roleGrantToGui = new ServerGuiBuilder();
+					List<PlayerServer> onlinePlayers = MinecraftServer.getInstance().playerList.playerEntities;
+					roleGrantToGui.setSize((int)Math.floor((onlinePlayers.size() + 1) / 9.0F));
+					int j = 0;
+					for(PlayerServer player : onlinePlayers){
+						int finalJ = j;
+						Icon playerIcon = new Icon(player.username, (byte) TextFormatting.WHITE.id, Items.ARMOR_CHESTPLATE_IRON.getDefaultStack());
+						roleGrantToGui.setContainerSlot(j, (roleGrantToGuiInventory -> new ServerSlotButton(playerIcon.icon, roleGrantToGuiInventory, finalJ, () -> {
+							role_grant(context, role, player);
+							((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+						})));
+						j++;
+					}
+					GuiHelper.openCustomServerGui((PlayerServer) source.getSender(), roleGrantToGui.build(source.getSender(), "To Player: "));
+				})));
+				i++;
+			}
+			GuiHelper.openCustomServerGui((PlayerServer) source.getSender(), roleGrantGui.build(source.getSender(), "Grant Role: "));
 
-		//TODO FeedbackHandler.destructive(source, "Building Kit Syntax...");
-		//TODO KitCommand.buildKitSyntax();
-		//TODO FeedbackHandler.success(source, "Kit Syntax Built!");
+		})));
 
-		FeedbackHandler.destructive(context, "Reloading Role Data...");
-		Data.Roles.reload();
-		FeedbackHandler.success(context, "Reloaded " + Data.Roles.roleDataHashMap.size() + " Role(s)!");
+		roleGui.setContainerSlot(3, (inventory -> new ServerSlotButton(roleReloadIcon.icon, inventory, 3, () -> {
+			role_reload(context);
+			((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+		})));
 
-		FeedbackHandler.destructive(context, "Building Role Syntax...");
-		CommandRole.buildRoleSyntax();
-		FeedbackHandler.success(context, "Role Syntax Built!");
+		roleGui.setContainerSlot(5, (inventory -> new ServerSlotButton(roleListIcon.icon, inventory, 5, () -> {
+			role_list(context);
+			((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+		})));
 
-		//TODO FeedbackHandler.destructive(source, "Building Rollback Syntax...");
-		//TODO RollbackCommand.buildSyntax();
-		//TODO FeedbackHandler.success(source, "Rollback Syntax Built!");
+		roleGui.setContainerSlot(6, (inventory -> new ServerSlotButton(roleRevokeIcon.icon, inventory, 6, () -> {
+			ServerGuiBuilder roleRevokeGui = new ServerGuiBuilder();
+			roleRevokeGui.setSize(0);
 
-		FeedbackHandler.destructive(context, "Reloading General Configs...");
-		Data.MainConfig.reload();
-		FeedbackHandler.success(context, "Reloaded Configs!");
+		})));
 
-		FeedbackHandler.destructive(context, "Updating Player List...");
-		updateList();
-		FeedbackHandler.success(context, "Updated List!");
+		GuiHelper.openCustomServerGui((PlayerServer) source.getSender(), roleGui.build(source.getSender(), "Role Command:"));
+
+		FeedbackHandler.success(context, "Opened Role GUI!");
 		return Command.SINGLE_SUCCESS;
 	}
 
+	static Icon roleReloadIcon = new Icon("[Reload]", (byte) TextFormatting.ORANGE.id, Items.REPEATER.getDefaultStack());
 	public static int role_reload(CommandContext<CommandSource> context) {
 		Data.Roles.reload();
 		FeedbackHandler.success(context, "Reloaded %" + Data.Roles.roleDataHashMap.size() + "% Role(s)!");
@@ -90,6 +115,7 @@ public class RoleLogic {
 		return Command.SINGLE_SUCCESS;
 	}
 
+	static Icon roleListIcon = new Icon("[List]", (byte) TextFormatting.LIGHT_GRAY.id, Items.PAPER.getDefaultStack());
 	public static int role_list(CommandContext<CommandSource> context) {
 		CommandSource source = context.getSource();
 
@@ -109,9 +135,11 @@ public class RoleLogic {
 			);
 		}
 
+		FeedbackHandler.success(context, TextFormatting.GRAY + "<>");
 		return Command.SINGLE_SUCCESS;
 	}
 
+	static Icon roleRevokeIcon = new Icon("[Revoke]", (byte) TextFormatting.RED.id, Items.DUST_REDSTONE.getDefaultStack());
 	public static int role_revoke(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		CommandSource source = context.getSource();
 		Role role = context.getArgument("role", Role.class);
@@ -131,10 +159,23 @@ public class RoleLogic {
 		return Command.SINGLE_SUCCESS;
 	}
 
+	static Icon roleGrantIcon = new Icon("[Grant]", (byte) TextFormatting.LIME.id, Items.OLIVINE.getDefaultStack());
+	public static int role_grant(CommandContext<CommandSource> context, Role role, PlayerServer target) {
+		if (!role.playersGrantedRole.contains(target.uuid)){
+			role.playersGrantedRole.add(target.uuid);
+			role.save();
+			FeedbackHandler.success(context, "Granted Role %" + role.roleID + "% to Player %" + target.getDisplayName());
+		} else {
+			FeedbackHandler.error(context, "Failed to Grant Role %" + role.roleID + "% to Player %" + target.getDisplayName());
+			FeedbackHandler.error(context, "(Player already has Role!)");
+		}
+		return Command.SINGLE_SUCCESS;
+	}
+
 	public static int role_grant(CommandContext<CommandSource> context) throws CommandSyntaxException {
 		CommandSource source = context.getSource();
-		Role role = context.getArgument("role", Role.class);
 
+		Role role = context.getArgument("role", Role.class);
 		EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
 		Player target = ((Player)entitySelector.get(source).get(0));
 

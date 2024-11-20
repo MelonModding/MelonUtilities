@@ -67,7 +67,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleCreate(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("create")
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", StringArgumentType.string())
-				.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 4096))
+				.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 99))
 					.executes(
 						RoleLogic::role_create
 					)
@@ -360,10 +360,18 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
+	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> role(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
+		builder.executes(
+			RoleLogic::role
+		);
+		return builder;
+	}
+
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
 		LiteralArgumentBuilder<CommandSource> commandBuilder = LiteralArgumentBuilder.<CommandSource>literal("role").requires(CommandSource::hasAdmin);
 
+		role(commandBuilder);
 		roleCreate(commandBuilder);
 		roleDelete(commandBuilder);
 		roleGrant(commandBuilder);
