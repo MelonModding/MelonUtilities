@@ -82,13 +82,8 @@ public class RoleLogic {
 					}
 					int finalJ1 = j;
 					roleGrantToGui.setContainerSlot(j+1, (roleGrantToGuiInventory -> new ServerSlotButton(inputUsernameIcon.icon, roleGrantToGuiInventory, finalJ1+1, () -> {
+						((PlayerCustomInputFunctionInterface) sender).melonutilities$setCustomInputFunction(customInput -> role_grant(role, customInput, sender));
 						sender.usePersonalCraftingInventory();
-						((PlayerCustomInputFunctionInterface) sender).melonutilities$setCustomInputFunction(new PlayerCustomInputFunctionInterface.CustomInput() {
-							@Override
-							public void apply(String customInput) {
-								role_grant(role, customInput, sender);
-							}
-						});
 					})));
 					GuiHelper.openCustomServerGui(sender, roleGrantToGui.build(sender, "To Player: "));
 				})));

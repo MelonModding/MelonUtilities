@@ -8,7 +8,7 @@ public interface PlayerCustomInputFunctionInterface {
 
 	@FunctionalInterface
 	public static interface CustomInput{
-		void apply(String customInput);
+		void apply(String chatMessage);
 	}
 
 }

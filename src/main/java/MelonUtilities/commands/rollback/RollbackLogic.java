@@ -75,7 +75,7 @@ public class RollbackLogic {
 		HashMap<Long, File> captures = RollbackManager.getSortedCaptures(source, chunkDir);
 
 		ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
-		rollbackGui.setSize((int)Math.ceil((captures.size() + 1) / 9.0F));
+		rollbackGui.setSize((int)Math.floor((captures.size() + 1) / 9.0F));
 		int i = 0;
 		for(Map.Entry<Long, File> capture : captures.entrySet()){
 			int finalI = i;
@@ -98,7 +98,7 @@ public class RollbackLogic {
 							CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(capture.getValue().toPath()));
 							rollbackChunk(source.getWorld().getChunkFromChunkCoords(x1, z1), tag);
 							MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(x1 * 16, 0, z1 * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
-							FeedbackHandler.success(context, "%" + x1 + "," + z1 + "%  Rolled Back to %" + sdf.format(capture.getKey()) + "%");
+							FeedbackHandler.success(context, "%" + x1 + "," + z1 + "% Rolled Back to %" + sdf.format(capture.getKey()) + "%");
 							((PlayerServer) source.getSender()).usePersonalCraftingInventory();
 						} catch (IOException e) {
 							throw new RuntimeException(e);
@@ -124,7 +124,7 @@ public class RollbackLogic {
 						Chunk chunk1 = source.getWorld().getChunkFromChunkCoords(x1, z1);
 						rollbackChunkFromBackup(chunk1, backupDir);
 						MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunk1.xPosition * 16, 0, chunk1.zPosition * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
-						FeedbackHandler.success(context, "%" + x1 + "," + z1 + "%  Rolled Back to %" + sdf.format(capture.getKey()) + "%");
+						FeedbackHandler.success(context, "%" + x1 + "," + z1 + "% Rolled Back to %" + sdf.format(capture.getKey()) + "%");
 						((PlayerServer) source.getSender()).usePersonalCraftingInventory();
 					});
 				}));
