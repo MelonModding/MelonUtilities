@@ -1,22 +1,13 @@
 package MelonUtilities.utility;
 
-import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
-import MelonUtilities.utility.feedback.FeedbackHandler;
 import MelonUtilities.utility.managers.RollbackManager;
 import com.b100.json.JsonParser;
 import com.b100.json.element.JsonObject;
 import com.b100.utils.StringUtils;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.nbt.tags.CompoundTag;
-import com.mojang.nbt.NbtIo;
 import net.minecraft.core.block.BlockLogicChest;
 import net.minecraft.core.block.entity.TileEntityChest;
-import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.net.command.CommandSource;
-import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.core.net.packet.PacketBlockRegionUpdate;
 import net.minecraft.core.util.collection.Pair;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
@@ -24,84 +15,16 @@ import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.util.phys.HitResult;
 import net.minecraft.core.util.phys.Vec3;
 import net.minecraft.core.world.World;
-import net.minecraft.core.world.chunk.Chunk;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.*;
-
-import static MelonUtilities.utility.managers.RollbackManager.*;
-import static MelonUtilities.utility.managers.RollbackManager.rollbackChunkFromBackup;
 
 public class MUtil {
 
-/*	public static float timeOnInit = 0;
-	public static final String SECTION_PURPLE = "§a";
-	public static final String SECTION_BLUE = "§b";
-	public static final String SECTION_BROWN = "§c";
-	public static final String SECTION_GREEN = "§d";
-	public static final String SECTION_RED = "§e";
-	public static final String SECTION_BLACK = "§f";
-	public static final String SECTION_ORANGE = "§1";
-	public static final String SECTION_MAGENTA = "§2";
-	public static final String SECTION_LIGHT_BLUE = "§3";
-	public static final String SECTION_YELLOW = "§4";
-	public static final String SECTION_LIME = "§5";
-	public static final String SECTION_PINK = "§6";
-	public static final String SECTION_GREY = "§7";
-	public static final String SECTION_GRAY = "§7";
-	public static final String SECTION_LIGHT_GREY = "§8";
-	public static final String SECTION_LIGHT_GRAY = "§8";
-	public static final String SECTION_CYAN = "§9";
-	public static final String SECTION_WHITE = "§0";
-
-	public static final HashMap<String, String> colorSectionMap = new HashMap<>();
-	static{
-		colorSectionMap.put("purple", "§a");
-		colorSectionMap.put("blue", "§b");
-		colorSectionMap.put("brown", "§c");
-		colorSectionMap.put("green", "§d");
-		colorSectionMap.put("red", "§e");
-		colorSectionMap.put("black", "§f");
-		colorSectionMap.put("orange", "§1");
-		colorSectionMap.put("magenta", "§2");
-		colorSectionMap.put("light_blue", "§3");
-		colorSectionMap.put("yellow", "§4");
-		colorSectionMap.put("lime", "§5");
-		colorSectionMap.put("pink", "§6");
-		colorSectionMap.put("grey", "§7");
-		colorSectionMap.put("gray", "§7");
-		colorSectionMap.put("light_grey", "§8");
-		colorSectionMap.put("light_gray", "§8");
-		colorSectionMap.put("cyan", "§9");
-		colorSectionMap.put("white", "§0");
-	}
-
-	public static final HashMap<String, TextFormatting> colorFormattingMap = new HashMap<>();
-	static{
-		colorFormattingMap.put("purple", TextFormatting.PURPLE);
-		colorFormattingMap.put("blue", TextFormatting.BLUE);
-		colorFormattingMap.put("brown", TextFormatting.BROWN);
-		colorFormattingMap.put("green", TextFormatting.GREEN);
-		colorFormattingMap.put("red", TextFormatting.RED);
-		colorFormattingMap.put("black", TextFormatting.BLACK);
-		colorFormattingMap.put("orange", TextFormatting.ORANGE);
-		colorFormattingMap.put("magenta", TextFormatting.MAGENTA);
-		colorFormattingMap.put("light_blue", TextFormatting.LIGHT_BLUE);
-		colorFormattingMap.put("yellow", TextFormatting.YELLOW);
-		colorFormattingMap.put("lime", TextFormatting.LIME);
-		colorFormattingMap.put("pink", TextFormatting.PINK);
-		colorFormattingMap.put("grey", TextFormatting.GRAY);
-		colorFormattingMap.put("gray", TextFormatting.GRAY);
-		colorFormattingMap.put("light_grey", TextFormatting.LIGHT_GRAY);
-		colorFormattingMap.put("light_gray", TextFormatting.LIGHT_GRAY);
-		colorFormattingMap.put("cyan", TextFormatting.CYAN);
-		colorFormattingMap.put("white", TextFormatting.WHITE);
-	}*/
+	public static float timeOnInit = 0;
 
 	public static Pair<UUID, String> getProfileFromUsername(String username) throws NullPointerException {
 		UUID uuid;

@@ -1,8 +1,6 @@
 package MelonUtilities.listeners;
 
-import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
-import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.player.gamemode.Gamemode;
