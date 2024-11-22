@@ -32,6 +32,8 @@ public class MelonUtilities implements ModInitializer {
 	public static final String MOD_ID = "melonutilities";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+
+
 	public static final Gson GSON = (new GsonBuilder()).setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(ItemStack.class, new ItemStackJsonAdapter()).registerTypeAdapter(Home.class, new HomeJsonAdapter()).registerTypeAdapter(Crew.class, new CrewJsonAdapter()).create();
 
 	public static GameRuleBoolean FIRE_TICKS = GameRules.register(new GameRuleBoolean("doFireTick", true));

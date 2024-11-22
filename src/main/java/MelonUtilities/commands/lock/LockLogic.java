@@ -90,56 +90,37 @@ public class LockLogic {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_onblockplaced(Player sender, boolean value){
+	public static int lock_onblockplaced(Player sender){
 		UUID senderUUID = sender.uuid;
 
-		if(value) {
-			if(!Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced){
-				Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced = true;
-				Data.Users.save(senderUUID);
-				FeedbackHandler.success(sender, "Locking on Block Placed set to %" + true);
-				return Command.SINGLE_SUCCESS;
-			}
-			FeedbackHandler.error(sender, "Failed to set Locking on Block Placed.. (Already %true%)");
-		}
-		else {
-			if(Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced) {
-				Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced = false;
-				Data.Users.save(senderUUID);
-				FeedbackHandler.success(sender, "Locking on Block Placed set to %" + false);
-				return Command.SINGLE_SUCCESS;
-			}
-			FeedbackHandler.error(sender, "Failed to set Locking on Block Placed.. (Already %false%)");
+		if(Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced){
+			Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced = false;
+			Data.Users.save(senderUUID);
+			FeedbackHandler.destructive(sender, "Locking on Block Placed Disabled");
+		} else {
+			Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced = true;
+			Data.Users.save(senderUUID);
+			FeedbackHandler.success(sender, "Locking on Block Placed Enabled!");
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_onblockpunched(Player sender, boolean value){
+	public static int lock_onblockpunched(Player sender){
 		UUID senderUUID = sender.uuid;
 
-		if(value) {
-			if(!Data.Users.getOrCreate(senderUUID).lockOnBlockPunched){
-				Data.Users.getOrCreate(senderUUID).lockOnBlockPunched = true;
-				Data.Users.save(senderUUID);
-				FeedbackHandler.success(sender, "Locking on Block Punched set to %" + true);
-				return Command.SINGLE_SUCCESS;
-			}
-			FeedbackHandler.error(sender, "Failed to set Locking on Block Punched.. (Already %true%)");
-		}
-		else {
-			if(Data.Users.getOrCreate(senderUUID).lockOnBlockPunched) {
-				Data.Users.getOrCreate(senderUUID).lockOnBlockPunched = false;
-				Data.Users.save(senderUUID);
-				FeedbackHandler.success(sender, "Locking on Block Punched set to %" + false);
-				return Command.SINGLE_SUCCESS;
-			}
-			FeedbackHandler.error(sender, "Failed to set Locking on Block Punched.. (Already %false%)");
+		if(Data.Users.getOrCreate(senderUUID).lockOnBlockPunched){
+			Data.Users.getOrCreate(senderUUID).lockOnBlockPunched = false;
+			Data.Users.save(senderUUID);
+			FeedbackHandler.destructive(sender, "Locking on Block Punched Disabled");
+		} else {
+			Data.Users.getOrCreate(senderUUID).lockOnBlockPunched = true;
+			Data.Users.save(senderUUID);
+			FeedbackHandler.success(sender, "Locking on Block Punched Enabled!");
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int lock_trust(Player sender, String targetUsername){
-		//TODO Make all other UUID and DisplayName get -> getProfileFromUsername
 
 		Pair<UUID, String> profile;
 		try {
@@ -460,14 +441,18 @@ public class LockLogic {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_bypass(Player sender, boolean value){
-		if(Data.Users.getOrCreate(sender.uuid).lockBypass == value){
-			FeedbackHandler.error(sender, "Failed to set Lock Bypass to %" + value + "% (Already %" + value + "%)");
-			return Command.SINGLE_SUCCESS;
-		}
+	public static int lock_bypass(Player sender){
+		UUID senderUUID = sender.uuid;
 
-		Data.Users.getOrCreate(sender.uuid).lockBypass = value;
-		FeedbackHandler.success(sender, "Lock Bypass set to %" + value);
+		if(Data.Users.getOrCreate(senderUUID).lockBypass){
+			Data.Users.getOrCreate(senderUUID).lockBypass = false;
+			Data.Users.save(senderUUID);
+			FeedbackHandler.destructive(sender, "Lock Bypass Disabled");
+		} else {
+			Data.Users.getOrCreate(senderUUID).lockBypass = true;
+			Data.Users.save(senderUUID);
+			FeedbackHandler.success(sender, "Lock Bypass Enabled!");
+		}
 		return Command.SINGLE_SUCCESS;
 	}
 }

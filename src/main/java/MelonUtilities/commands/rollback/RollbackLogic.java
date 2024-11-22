@@ -211,7 +211,7 @@ public class RollbackLogic {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollback_toggle_auto_snapshots(Player sender) {
+	public static int rollback_auto_snapshots(Player sender) {
 		if(Data.MainConfig.config.snapshotsEnabled){
 			Data.MainConfig.config.snapshotsEnabled = false;
 			Data.MainConfig.save();
@@ -224,7 +224,7 @@ public class RollbackLogic {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollback_toggle_auto_backups(Player sender) {
+	public static int rollback_auto_backups(Player sender) {
 		if(Data.MainConfig.config.backupsEnabled){
 			Data.MainConfig.config.backupsEnabled = false;
 			Data.MainConfig.save();

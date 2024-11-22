@@ -73,7 +73,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 				.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 99))
 					.executes(context ->
 						{
-							Player sender = context.getSource().getSender();
+							Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 							String roleID = context.getArgument("roleID", String.class);
 							int rolePriority = context.getArgument("priorityValue", Integer.class);
 							return RoleLogic.role_create(sender, roleID, rolePriority);
@@ -90,7 +90,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.executes(context ->
 					{
-						Player sender = context.getSource().getSender();
+						Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 						Role role = context.getArgument("role", Role.class);
 						return RoleLogic.role_delete(sender, role);
 					}
@@ -107,7 +107,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 					.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 4096))
 						.executes(context ->
 							{
-								Player sender = context.getSource().getSender();
+								Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 								Role role = context.getArgument("role", Role.class);
 								int priorityValue = context.getArgument("priorityValue", Integer.class);
 								return RoleLogic.role_edit_priority(sender, role, priorityValue);
@@ -120,7 +120,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("displayName", StringArgumentType.greedyString())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String displayName = context.getArgument("displayName", String.class);
 									return RoleLogic.role_edit_display_name(sender, role, displayName);
@@ -132,7 +132,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String color = context.getArgument("color", String.class);
 									return RoleLogic.role_edit_display_color_COLOR(sender, role, color);
@@ -142,7 +142,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 									return RoleLogic.role_edit_display_color_HEX(sender, role, hex);
@@ -154,7 +154,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
 									return RoleLogic.role_edit_display_underline(sender, role, value);
@@ -166,7 +166,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
 									return RoleLogic.role_edit_display_bold(sender, role, value);
@@ -178,7 +178,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
 									return RoleLogic.role_edit_display_italics(sender, role, value);
@@ -191,7 +191,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										String color = context.getArgument("color", String.class);
 										return RoleLogic.role_edit_display_border_color_COLOR(sender, role, color);
@@ -201,7 +201,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 										return RoleLogic.role_edit_display_border_color_HEX(sender, role, hex);
@@ -213,7 +213,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										return RoleLogic.role_edit_display_border_style_none(sender, role);
 									}
@@ -222,7 +222,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										return RoleLogic.role_edit_display_border_style_bracket(sender, role);
 									}
@@ -231,7 +231,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(LiteralArgumentBuilder.<CommandSource>literal("curly")
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										return RoleLogic.role_edit_display_border_style_curly(sender, role);
 									}
@@ -240,7 +240,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(LiteralArgumentBuilder.<CommandSource>literal("caret")
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										return RoleLogic.role_edit_display_border_style_caret(sender, role);
 									}
@@ -251,7 +251,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
 										.executes(context ->
 											{
-												Player sender = context.getSource().getSender();
+												Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
 												String customAffix = context.getArgument("customAffix", String.class);
 												return RoleLogic.role_edit_display_border_style_custom_prefix(sender, role, customAffix);
@@ -263,7 +263,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
 										.executes(context ->
 											{
-												Player sender = context.getSource().getSender();
+												Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
 												String customAffix = context.getArgument("customAffix", String.class);
 												return RoleLogic.role_edit_display_border_style_custom_suffix(sender, role, customAffix);
@@ -281,7 +281,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										String color = context.getArgument("color", String.class);
 										return RoleLogic.role_edit_username_border_color_COLOR(sender, role, color);
@@ -291,7 +291,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 										return RoleLogic.role_edit_username_border_color_HEX(sender, role, hex);
@@ -303,7 +303,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										return RoleLogic.role_edit_username_border_style_none(sender, role);
 									}
@@ -312,7 +312,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										return RoleLogic.role_edit_username_border_style_bracket(sender, role);
 									}
@@ -321,7 +321,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(LiteralArgumentBuilder.<CommandSource>literal("curly")
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										return RoleLogic.role_edit_username_border_style_curly(sender, role);
 									}
@@ -330,7 +330,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							.then(LiteralArgumentBuilder.<CommandSource>literal("caret")
 								.executes(context ->
 									{
-										Player sender = context.getSource().getSender();
+										Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										return RoleLogic.role_edit_username_border_style_caret(sender, role);
 									}
@@ -341,7 +341,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
 										.executes(context ->
 											{
-												Player sender = context.getSource().getSender();
+												Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
 												String customAffix = context.getArgument("customAffix", String.class);
 												return RoleLogic.role_edit_username_border_style_custom_prefix(sender, role, customAffix);
@@ -353,7 +353,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
 										.executes(context ->
 											{
-												Player sender = context.getSource().getSender();
+												Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
 												String customAffix = context.getArgument("customAffix", String.class);
 												return RoleLogic.role_edit_username_border_style_custom_suffix(sender, role, customAffix);
@@ -370,7 +370,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String color = context.getArgument("color", String.class);
 									return RoleLogic.role_edit_text_color_COLOR(sender, role, color);
@@ -380,7 +380,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
 									return RoleLogic.role_edit_text_color_HEX(sender, role, hex);
@@ -392,7 +392,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
 									return RoleLogic.role_edit_text_underline(sender, role, value);
@@ -404,7 +404,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
 									return RoleLogic.role_edit_text_bold(sender, role, value);
@@ -416,7 +416,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
 							.executes(context ->
 								{
-									Player sender = context.getSource().getSender();
+									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
 									return RoleLogic.role_edit_text_italics(sender, role, value);
@@ -439,7 +439,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						{
 							Role role = context.getArgument("role", Role.class);
 							Player target = (Player)context.getArgument("target", EntitySelector.class).get(context.getSource()).get(0);
-							Player sender = context.getSource().getSender();
+							Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 							return RoleLogic.role_grant(sender, target, role);
 						}
 					)
@@ -457,7 +457,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						{
 							Role role = context.getArgument("role", Role.class);
 							Player target = (Player)context.getArgument("target", EntitySelector.class).get(context.getSource()).get(0);
-							Player sender = context.getSource().getSender();
+							Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 							return RoleLogic.role_revoke(sender, target, role);
 						}
 					)
@@ -473,7 +473,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 				.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 					.executes(context ->
 						{
-							Player sender = context.getSource().getSender();
+							Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 							Role role = context.getArgument("role", Role.class);
 							return RoleLogic.role_set_defaultrole_ROLEID(sender, role);
 						}
@@ -482,7 +482,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 				.then(LiteralArgumentBuilder.<CommandSource>literal("none")
 					.executes(context ->
 						{
-							Player sender = context.getSource().getSender();
+							Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 							return RoleLogic.role_set_defaultrole_none(sender);
 						}
 					)
@@ -492,7 +492,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 				.then(LiteralArgumentBuilder.<CommandSource>literal("single")
 					.executes(context ->
 						{
-							Player sender = context.getSource().getSender();
+							Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 							return RoleLogic.role_set_displaymode_single(sender);
 						}
 					)
@@ -500,7 +500,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 				.then(LiteralArgumentBuilder.<CommandSource>literal("multi")
 					.executes(context ->
 						{
-							Player sender = context.getSource().getSender();
+							Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 							return RoleLogic.role_set_displaymode_multi(sender);
 						}
 					)
@@ -514,7 +514,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("list")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 					return RoleLogic.role_list(sender);
 				}
 			)
@@ -526,7 +526,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 					return RoleLogic.role_reload(sender);
 				}
 			)

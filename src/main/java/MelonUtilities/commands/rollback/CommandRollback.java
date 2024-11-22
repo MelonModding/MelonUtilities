@@ -32,7 +32,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollback(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.executes(context ->
 			{
-				Player sender = context.getSource().getSender();
+				Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 				return RollbackLogic.rollback(sender);
 			}
 		);
@@ -67,7 +67,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("takesnapshot")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 					return RollbackLogic.rollback_take_snapshot(sender);
 				}
 			)
@@ -79,7 +79,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("takebackup")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 					return RollbackLogic.rollback_take_backup(sender);
 				}
 			)
@@ -91,7 +91,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("prunesnapshots")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 					return RollbackLogic.rollback_prune_snapshots(sender);
 				}
 			)
@@ -103,7 +103,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("prunebackups")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 					return RollbackLogic.rollback_prune_backups(sender);
 				}
 			)
@@ -111,24 +111,24 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackToggleAutoSnapshots(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("toggleautosnapshots")
+	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackAutoSnapshots(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
+		builder.then(LiteralArgumentBuilder.<CommandSource>literal("autosnapshots")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
-					return RollbackLogic.rollback_toggle_auto_snapshots(sender);
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
+					return RollbackLogic.rollback_auto_snapshots(sender);
 				}
 			)
 		);
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackToggleAutoBackups(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("toggleautobackups")
+	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackAutoBackups(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
+		builder.then(LiteralArgumentBuilder.<CommandSource>literal("autobackups")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
-					return RollbackLogic.rollback_toggle_auto_backups(sender);
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
+					return RollbackLogic.rollback_auto_backups(sender);
 				}
 			)
 		);
@@ -138,7 +138,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.<CommandSource>literal("rollback");
+		LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.literal("rollback");
 
 		rollback(builder);
 		rollbackArea(builder);
@@ -146,8 +146,8 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 		rollbackTakeBackup(builder);
 		rollbackPruneSnapshots(builder);
 		rollbackPruneBackups(builder);
-		rollbackToggleAutoSnapshots(builder);
-		rollbackToggleAutoBackups(builder);
+		rollbackAutoSnapshots(builder);
+		rollbackAutoBackups(builder);
 
 		dispatcher.register(builder);
 	}

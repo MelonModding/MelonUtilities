@@ -3,7 +3,6 @@ package MelonUtilities.commands.lock;
 import MelonUtilities.commands.command_arguments.ArgumentTypeUsername;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
@@ -35,14 +34,11 @@ public class CommandLock implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockOnBlockPlaced(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("onblockplaced")
-			.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
-				.executes(context ->
-					{
-						Player sender = context.getSource().getSender();
-						boolean value = context.getArgument("value", Boolean.class);
-						return LockLogic.lock_onblockplaced(sender, value);
-					}
-				)
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
+					return LockLogic.lock_onblockplaced(sender);
+				}
 			)
 		);
 		return builder;
@@ -50,14 +46,11 @@ public class CommandLock implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockOnBlockPunched(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("onblockpunched")
-			.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
-				.executes(context ->
-					{
-						Player sender = context.getSource().getSender();
-						boolean value = context.getArgument("value", Boolean.class);
-						return LockLogic.lock_onblockpunched(sender, value);
-					}
-				)
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
+					return LockLogic.lock_onblockpunched(sender);
+				}
 			)
 		);
 		return builder;
@@ -68,7 +61,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", ArgumentTypeUsername.string())
 				.executes(context ->
 					{
-						Player sender = context.getSource().getSender();
+						Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 						String targetUsername = context.getArgument("username", String.class).toLowerCase();
 						return LockLogic.lock_trust(sender, targetUsername);
 					}
@@ -83,7 +76,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", ArgumentTypeUsername.string())
 				.executes(context ->
 					{
-						Player sender = context.getSource().getSender();
+						Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 						String targetUsername = context.getArgument("username", String.class).toLowerCase();
 						return LockLogic.lock_trustall(sender, targetUsername);
 					}
@@ -97,7 +90,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("trustcommunity")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 					return LockLogic.lock_trustcommunity(sender);
 				}
 			)
@@ -110,7 +103,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", ArgumentTypeUsername.string())
 				.executes(context ->
 					{
-						Player sender = context.getSource().getSender();
+						Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 						String targetUsername = context.getArgument("username", String.class).toLowerCase();
 						return LockLogic.lock_untrust(sender, targetUsername);
 					}
@@ -125,7 +118,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("username", ArgumentTypeUsername.string())
 				.executes(context ->
 					{
-						Player sender = context.getSource().getSender();
+						Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 						String targetUsername = context.getArgument("username", String.class).toLowerCase();
 						return LockLogic.lock_untrustall(sender, targetUsername);
 					}
@@ -139,7 +132,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("untrustcommunity")
 			.executes(context ->
 				{
-					Player sender = context.getSource().getSender();
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 					return LockLogic.lock_untrustcommunity(sender);
 				}
 			)
@@ -147,16 +140,13 @@ public class CommandLock implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockBypass(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
+	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> LockBypass(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("bypass").requires(CommandSource::hasAdmin)
-			.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
-				.executes(context ->
-					{
-						Player sender = context.getSource().getSender();
-						boolean value = context.getArgument("value", Boolean.class);
-						return LockLogic.lock_bypass(sender, value);
-					}
-				)
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
+					return LockLogic.lock_bypass(sender);
+				}
 			)
 		);
 		return builder;
@@ -165,7 +155,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lock(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.executes(context ->
 			{
-				Player sender = context.getSource().getSender();
+				Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 				return LockLogic.lock(sender);
 			}
 		);
@@ -186,7 +176,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 		lockUntrust(builder);
 		lockUntrustAll(builder);
 		lockUntrustCommunity(builder);
-		lockBypass(builder);
+		LockBypass(builder);
 
 		dispatcher.register(builder);
 	}
