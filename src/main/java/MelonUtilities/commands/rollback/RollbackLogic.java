@@ -127,7 +127,7 @@ public class RollbackLogic {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackArea(Player sender, int x1, int z1, int x2, int z2) {
+	public static int rollback_area(Player sender, int x1, int z1, int x2, int z2) {
 		File chunkDir = new File("./rollbackdata/snapshots/" + sender.world.dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
 		chunkDir.mkdirs();
 
@@ -187,31 +187,31 @@ public class RollbackLogic {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackTakeSnapshot(Player sender) {
+	public static int rollback_take_snapshot(Player sender) {
 		FeedbackHandler.success(sender, "Taking a Snapshot!");
 		takeSnapshot();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackTakeBackup(Player sender) {
+	public static int rollback_take_backup(Player sender) {
 		FeedbackHandler.success(sender, "Taking a Backup!");
 		takeBackup();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackPruneSnapshots(Player sender) {
+	public static int rollback_prune_snapshots(Player sender) {
 		FeedbackHandler.destructive(sender, "Pruning Snapshots..");
 		pruneSnapshots();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackPruneBackups(Player sender) {
+	public static int rollback_prune_backups(Player sender) {
 		FeedbackHandler.destructive(sender, "Pruning Backups..");
 		pruneBackups();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackToggleAutoSnapshots(Player sender) {
+	public static int rollback_toggle_auto_snapshots(Player sender) {
 		if(Data.MainConfig.config.snapshotsEnabled){
 			Data.MainConfig.config.snapshotsEnabled = false;
 			Data.MainConfig.save();
@@ -224,7 +224,7 @@ public class RollbackLogic {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackToggleAutoBackups(Player sender) {
+	public static int rollback_toggle_auto_backups(Player sender) {
 		if(Data.MainConfig.config.backupsEnabled){
 			Data.MainConfig.config.backupsEnabled = false;
 			Data.MainConfig.save();

@@ -54,7 +54,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 							int z1 = chunk1.getZ(source);
 							int x2 = chunk2.getX(source);
 							int z2 = chunk2.getZ(source);
-							return RollbackLogic.rollbackArea(sender, x1, z1, x2, z2);
+							return RollbackLogic.rollback_area(sender, x1, z1, x2, z2);
 						}
 					)
 				)
@@ -68,7 +68,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender();
-					return RollbackLogic.rollbackTakeSnapshot(sender);
+					return RollbackLogic.rollback_take_snapshot(sender);
 				}
 			)
 		);
@@ -80,7 +80,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender();
-					return RollbackLogic.rollbackTakeBackup(sender);
+					return RollbackLogic.rollback_take_backup(sender);
 				}
 			)
 		);
@@ -92,7 +92,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender();
-					return RollbackLogic.rollbackPruneSnapshots(sender);
+					return RollbackLogic.rollback_prune_snapshots(sender);
 				}
 			)
 		);
@@ -104,7 +104,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender();
-					return RollbackLogic.rollbackPruneBackups(sender);
+					return RollbackLogic.rollback_prune_backups(sender);
 				}
 			)
 		);
@@ -116,7 +116,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender();
-					return RollbackLogic.rollbackToggleAutoSnapshots(sender);
+					return RollbackLogic.rollback_toggle_auto_snapshots(sender);
 				}
 			)
 		);
@@ -128,7 +128,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender();
-					return RollbackLogic.rollbackToggleAutoBackups(sender);
+					return RollbackLogic.rollback_toggle_auto_backups(sender);
 				}
 			)
 		);
