@@ -5,10 +5,8 @@ import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandler;
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.core.block.entity.*;
 import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.util.collection.Pair;
 import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.util.phys.HitResult;
@@ -39,44 +37,41 @@ public class LockLogic {
 	 PS. Arguments inside the method name should match their registered name/literal in the ArgumentBuilder for their respective command
 	*/
 
-	public static int lock(CommandContext<CommandSource> context){
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-
-		HitResult rayCastResult = MUtil.rayCastFromPlayer(context);
+	public static int lock(Player sender){
+		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
 		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
-			FeedbackHandler.error(context, "Failed to Lock Container! (Not Looking at Container)");
+			FeedbackHandler.error(sender, "Failed to Lock Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = source.getWorld().getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 		if(container != null){
 			if (container instanceof TileEntityContainerInterface) {
 				TileEntityContainerInterface containerInterface = ((TileEntityContainerInterface) container);
 				if (!containerInterface.getIsLocked()) {
 					if (container instanceof TileEntityChest) {
-						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(source.getWorld(), (TileEntityChest) container);
+						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(sender.world, (TileEntityChest) container);
 						if (otherContainerInterface != null) {
 							containerInterface.setIsLocked(true);
 							otherContainerInterface.setIsLocked(true);
 							containerInterface.setLockOwner(sender.uuid);
 							otherContainerInterface.setLockOwner(sender.uuid);
-							FeedbackHandler.success(context, "Locked Double Chest!");
+							FeedbackHandler.success(sender, "Locked Double Chest!");
 							return Command.SINGLE_SUCCESS;
 						}
-						FeedbackHandler.success(context, "Locked Chest!");
+						FeedbackHandler.success(sender, "Locked Chest!");
 					} else if (container instanceof TileEntityFurnaceBlast) {
-						FeedbackHandler.success(context, "Locked Blast Furnace!");
+						FeedbackHandler.success(sender, "Locked Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
-						FeedbackHandler.success(context, "Locked Furnace!");
+						FeedbackHandler.success(sender, "Locked Furnace!");
 					} else if (container instanceof TileEntityDispenser) {
-						FeedbackHandler.success(context, "Locked Dispenser!");
+						FeedbackHandler.success(sender, "Locked Dispenser!");
 					} else if (container instanceof TileEntityMeshGold) {
-						FeedbackHandler.success(context, "Locked Golden Mesh!");
+						FeedbackHandler.success(sender, "Locked Golden Mesh!");
 					} else if (container instanceof TileEntityTrommel) {
-						FeedbackHandler.success(context, "Locked Trommel!");
+						FeedbackHandler.success(sender, "Locked Trommel!");
 					} else if (container instanceof TileEntityBasket) {
-						FeedbackHandler.success(context, "Locked Basket!");
+						FeedbackHandler.success(sender, "Locked Basket!");
 					}
 
 					containerInterface.setIsLocked(true);
@@ -84,74 +79,66 @@ public class LockLogic {
 					return Command.SINGLE_SUCCESS;
 
 				} else if (containerInterface.getIsLocked() && !containerInterface.getLockOwner().equals(sender.uuid)) {
-					FeedbackHandler.error(context, "Failed to Lock Container! (Not Owned By You)");
+					FeedbackHandler.error(sender, "Failed to Lock Container! (Not Owned By You)");
 					return Command.SINGLE_SUCCESS;
 				}
-				FeedbackHandler.error(context, "Failed to Lock Container! (Already Locked)");
+				FeedbackHandler.error(sender, "Failed to Lock Container! (Already Locked)");
 				return Command.SINGLE_SUCCESS;
 			}
 		}
-		FeedbackHandler.error(context, "Failed to Lock Container! (Not Looking at Container)");
+		FeedbackHandler.error(sender, "Failed to Lock Container! (Not Looking at Container)");
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_onblockplaced(CommandContext<CommandSource> context){
-		CommandSource source = context.getSource();
-		boolean value = context.getArgument("value", Boolean.class);
-		UUID senderUUID = source.getSender().uuid;
+	public static int lock_onblockplaced(Player sender, boolean value){
+		UUID senderUUID = sender.uuid;
 
 		if(value) {
 			if(!Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced){
 				Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced = true;
 				Data.Users.save(senderUUID);
-				FeedbackHandler.success(context, "Locking on Block Placed set to %" + true);
+				FeedbackHandler.success(sender, "Locking on Block Placed set to %" + true);
 				return Command.SINGLE_SUCCESS;
 			}
-			FeedbackHandler.error(context, "Failed to set Locking on Block Placed.. (Already %true%)");
+			FeedbackHandler.error(sender, "Failed to set Locking on Block Placed.. (Already %true%)");
 		}
 		else {
 			if(Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced) {
 				Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced = false;
 				Data.Users.save(senderUUID);
-				FeedbackHandler.success(context, "Locking on Block Placed set to %" + false);
+				FeedbackHandler.success(sender, "Locking on Block Placed set to %" + false);
 				return Command.SINGLE_SUCCESS;
 			}
-			FeedbackHandler.error(context, "Failed to set Locking on Block Placed.. (Already %false%)");
+			FeedbackHandler.error(sender, "Failed to set Locking on Block Placed.. (Already %false%)");
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_onblockpunched(CommandContext<CommandSource> context){
-		CommandSource source = context.getSource();
-		boolean value = context.getArgument("value", Boolean.class);
-		UUID senderUUID = source.getSender().uuid;
+	public static int lock_onblockpunched(Player sender, boolean value){
+		UUID senderUUID = sender.uuid;
 
 		if(value) {
 			if(!Data.Users.getOrCreate(senderUUID).lockOnBlockPunched){
 				Data.Users.getOrCreate(senderUUID).lockOnBlockPunched = true;
 				Data.Users.save(senderUUID);
-				FeedbackHandler.success(context, "Locking on Block Punched set to %" + true);
+				FeedbackHandler.success(sender, "Locking on Block Punched set to %" + true);
 				return Command.SINGLE_SUCCESS;
 			}
-			FeedbackHandler.error(context, "Failed to set Locking on Block Punched.. (Already %true%)");
+			FeedbackHandler.error(sender, "Failed to set Locking on Block Punched.. (Already %true%)");
 		}
 		else {
 			if(Data.Users.getOrCreate(senderUUID).lockOnBlockPunched) {
 				Data.Users.getOrCreate(senderUUID).lockOnBlockPunched = false;
 				Data.Users.save(senderUUID);
-				FeedbackHandler.success(context, "Locking on Block Punched set to %" + false);
+				FeedbackHandler.success(sender, "Locking on Block Punched set to %" + false);
 				return Command.SINGLE_SUCCESS;
 			}
-			FeedbackHandler.error(context, "Failed to set Locking on Block Punched.. (Already %false%)");
+			FeedbackHandler.error(sender, "Failed to set Locking on Block Punched.. (Already %false%)");
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_trust(CommandContext<CommandSource> context){
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-		String targetUsername = context.getArgument("username", String.class).toLowerCase();
-
+	public static int lock_trust(Player sender, String targetUsername){
 		//TODO Make all other UUID and DisplayName get -> getProfileFromUsername
 
 		Pair<UUID, String> profile;
@@ -161,17 +148,16 @@ public class LockLogic {
 			FeedbackHandler.error(sender, "Failed to Trust %" + targetUsername + "% to Container! (%" + targetUsername + "% Does not Exist)");
 			return 0;
 		}
-
 		String targetUsernameOrDisplayName = profile.getRight();
 		UUID targetUUID = profile.getLeft();
 
-		HitResult rayCastResult = MUtil.rayCastFromPlayer(context);
+		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
 		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
-			FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Not Looking at Container)");
+			FeedbackHandler.error(sender, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = source.getWorld().getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 
 		if(container != null) {
 			if (container instanceof TileEntityContainerInterface) {
@@ -179,53 +165,49 @@ public class LockLogic {
 				if (containerInterface.getIsLocked()) {
 
 					if (!containerInterface.getLockOwner().equals(sender.uuid)) {
-						FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Not Owned By You)");
+						FeedbackHandler.error(sender, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Not Owned By You)");
 						return Command.SINGLE_SUCCESS;
 					}
 
 					if (containerInterface.getTrustedPlayers().contains(targetUUID)) {
-						FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Player already Trusted)");
+						FeedbackHandler.error(sender, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Player already Trusted)");
 						return Command.SINGLE_SUCCESS;
 					}
 
 					if (container instanceof TileEntityChest) {
-						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(source.getWorld(), (TileEntityChest) container);
+						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(sender.world, (TileEntityChest) container);
 						if (otherContainerInterface != null) {
 							containerInterface.addTrustedPlayer(targetUUID);
 							otherContainerInterface.addTrustedPlayer(targetUUID);
-							FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Double Chest!");
+							FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Double Chest!");
 							return Command.SINGLE_SUCCESS;
 						}
-						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Chest!");
+						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Chest!");
 					} else if (container instanceof TileEntityFurnaceBlast) {
-						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Blast Furnace!");
+						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
-						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Furnace!");
+						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Furnace!");
 					} else if (container instanceof TileEntityDispenser) {
-						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Dispenser!");
+						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Dispenser!");
 					} else if (container instanceof TileEntityMeshGold) {
-						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Golden Mesh!");
+						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Golden Mesh!");
 					} else if (container instanceof TileEntityTrommel) {
-						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Trommel!");
+						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Trommel!");
 					} else if (container instanceof TileEntityBasket) {
-						FeedbackHandler.success(context, "Trusted %" + targetUsernameOrDisplayName + "% to this Basket!");
+						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Basket!");
 					}
 					containerInterface.addTrustedPlayer(targetUUID);
 				} else {
-					FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Container not Locked)");
+					FeedbackHandler.error(sender, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Container not Locked)");
 				}
 				return Command.SINGLE_SUCCESS;
 			}
 		}
-		FeedbackHandler.error(context, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Not Looking at Container)");
+		FeedbackHandler.error(sender, "Failed to Trust %" + targetUsernameOrDisplayName + "% to Container! (Not Looking at Container)");
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_trustall(CommandContext<CommandSource> context){
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-
-		String targetUsername = context.getArgument("username", String.class).toLowerCase();
+	public static int lock_trustall(Player sender, String targetUsername){
 		PlayerServer target = MinecraftServer.getInstance().playerList.getPlayerEntity(targetUsername);
 		UUID targetUUID;
 
@@ -236,37 +218,37 @@ public class LockLogic {
 
 				Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.put(targetUUID, targetUsername);
 				Data.Users.save(sender.uuid);
-				FeedbackHandler.success(context, "Trusted %" + targetDisplayName + "% to all Containers!");
+				FeedbackHandler.success(sender, "Trusted %" + targetDisplayName + "% to all Containers!");
 				return Command.SINGLE_SUCCESS;
 			}
-			FeedbackHandler.error(context, "Failed to Trust %" + targetDisplayName + "% to all Containers! (Player is Already Trusted)");
+			FeedbackHandler.error(sender, "Failed to Trust %" + targetDisplayName + "% to all Containers! (Player is Already Trusted)");
 			return Command.SINGLE_SUCCESS;
 		} else {
-			UUIDHelper.runConversionAction(targetUsername, targetuuid -> {
-				if(!Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.containsKey(targetuuid)){
+			UUIDHelper.runConversionAction(targetUsername, targetuuid ->
+				{
+					if(!Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.containsKey(targetuuid)){
 
-					Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.put(targetuuid, targetUsername);
-					Data.Users.save(sender.uuid);
-					FeedbackHandler.success(context, "Trusted %" + targetUsername + "% to all Containers!");
-					return;
-				}
-				FeedbackHandler.error(context, "Failed to Trust %" + targetUsername + "% to all Containers! (Player is Already Trusted)");
-			}, username -> FeedbackHandler.error(context, "Failed to Trust %" + targetUsername + "% to all Containers! (%" + targetUsername + "% Does not Exist)"));
+						Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.put(targetuuid, targetUsername);
+						Data.Users.save(sender.uuid);
+						FeedbackHandler.success(sender, "Trusted %" + targetUsername + "% to all Containers!");
+						return;
+					}
+					FeedbackHandler.error(sender, "Failed to Trust %" + targetUsername + "% to all Containers! (Player is Already Trusted)");
+				},
+				username -> FeedbackHandler.error(sender, "Failed to Trust %" + targetUsername + "% to all Containers! (%" + targetUsername + "% Does not Exist)")
+			);
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_trustcommunity(CommandContext<CommandSource> context) {
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-
-		HitResult rayCastResult = MUtil.rayCastFromPlayer(context);
+	public static int lock_trustcommunity(Player sender) {
+		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
 		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
-			FeedbackHandler.error(context, "Failed to Trust Community to Container! (Not Looking at Container)");
+			FeedbackHandler.error(sender, "Failed to Trust Community to Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = source.getWorld().getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 
 		if(container != null) {
 			if (container instanceof TileEntityContainerInterface) {
@@ -274,53 +256,49 @@ public class LockLogic {
 				if (containerInterface.getIsLocked()) {
 
 					if (!containerInterface.getLockOwner().equals(sender.uuid)) {
-						FeedbackHandler.error(context, "Failed to Trust Community to Container! (Not Owned By You)");
+						FeedbackHandler.error(sender, "Failed to Trust Community to Container! (Not Owned By You)");
 						return Command.SINGLE_SUCCESS;
 					}
 
 					if (containerInterface.getIsCommunityContainer()){
-						FeedbackHandler.error(context, "Failed to Trust Community to Container! (Community already Trusted)");
+						FeedbackHandler.error(sender, "Failed to Trust Community to Container! (Community already Trusted)");
 						return Command.SINGLE_SUCCESS;
 					}
 
 					if (container instanceof TileEntityChest) {
-						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(source.getWorld(), (TileEntityChest) container);
+						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(sender.world, (TileEntityChest) container);
 						if (otherContainerInterface != null) {
 							containerInterface.setIsCommunityContainer(true);
 							otherContainerInterface.setIsCommunityContainer(true);
-							FeedbackHandler.success(context, "Trusted Community to this Double Chest!");
+							FeedbackHandler.success(sender, "Trusted Community to this Double Chest!");
 							return Command.SINGLE_SUCCESS;
 						}
-						FeedbackHandler.success(context, "Trusted Community to this Chest!");
+						FeedbackHandler.success(sender, "Trusted Community to this Chest!");
 					} else if (container instanceof TileEntityFurnaceBlast) {
-						FeedbackHandler.success(context, "Trusted Community to this Blast Furnace!");
+						FeedbackHandler.success(sender, "Trusted Community to this Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
-						FeedbackHandler.success(context, "Trusted Community to this Furnace!");
+						FeedbackHandler.success(sender, "Trusted Community to this Furnace!");
 					} else if (container instanceof TileEntityDispenser) {
-						FeedbackHandler.success(context, "Trusted Community to this Dispenser!");
+						FeedbackHandler.success(sender, "Trusted Community to this Dispenser!");
 					} else if (container instanceof TileEntityMeshGold) {
-						FeedbackHandler.success(context, "Trusted Community to this Golden Mesh!");
+						FeedbackHandler.success(sender, "Trusted Community to this Golden Mesh!");
 					} else if (container instanceof TileEntityTrommel) {
-						FeedbackHandler.success(context, "Trusted Community to this Trommel!");
+						FeedbackHandler.success(sender, "Trusted Community to this Trommel!");
 					} else if (container instanceof TileEntityBasket) {
-						FeedbackHandler.success(context, "Trusted Community to this Basket!");
+						FeedbackHandler.success(sender, "Trusted Community to this Basket!");
 					}
 					containerInterface.setIsCommunityContainer(true);
 				} else {
-					FeedbackHandler.error(context, "Failed to Trust Community to Container! (Container not Locked)");
+					FeedbackHandler.error(sender, "Failed to Trust Community to Container! (Container not Locked)");
 				}
 				return Command.SINGLE_SUCCESS;
 			}
 		}
-		FeedbackHandler.error(context, "Failed to Trust Community to Container! (Not Looking at Container)");
+		FeedbackHandler.error(sender, "Failed to Trust Community to Container! (Not Looking at Container)");
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_untrust(CommandContext<CommandSource> context){
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-
-		String targetUsername = context.getArgument("username", String.class).toLowerCase();
+	public static int lock_untrust(Player sender, String targetUsername){
 		PlayerServer target = MinecraftServer.getInstance().playerList.getPlayerEntity(targetUsername);
 		UUID targetUUID;
 		String targetDisplayName;
@@ -331,19 +309,19 @@ public class LockLogic {
 		} else {
 			targetUUID = UUIDHelper.getUUIDFromName(targetUsername);
 			if(targetUUID == null){
-				FeedbackHandler.error(context, "Failed to Untrust %" + targetUsername + "% from Container! (%" + targetUsername + "% Does not Exist)");
+				FeedbackHandler.error(sender, "Failed to Untrust %" + targetUsername + "% from Container! (%" + targetUsername + "% Does not Exist)");
 				return 0;
 			}
 			targetDisplayName = targetUsername;
 		}
 
-		HitResult rayCastResult = MUtil.rayCastFromPlayer(context);
+		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
 		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
-			FeedbackHandler.error(context, "Failed to Untrust %" + targetDisplayName + "% from Container! (Not Looking at Container)");
+			FeedbackHandler.error(sender, "Failed to Untrust %" + targetDisplayName + "% from Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = source.getWorld().getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 
 		if(container != null) {
 			if (container instanceof TileEntityContainerInterface) {
@@ -351,53 +329,49 @@ public class LockLogic {
 				if (containerInterface.getIsLocked()) {
 
 					if (!containerInterface.getLockOwner().equals(sender.uuid)) {
-						FeedbackHandler.error(context, "Failed to Untrust %" + targetDisplayName + "% from Container! (Not Owned By You)");
+						FeedbackHandler.error(sender, "Failed to Untrust %" + targetDisplayName + "% from Container! (Not Owned By You)");
 						return Command.SINGLE_SUCCESS;
 					}
 
 					if (!containerInterface.getTrustedPlayers().contains(targetUUID)) {
-						FeedbackHandler.error(context, "Failed to Untrust %" + targetDisplayName + "% from Container! (Player not Trusted)");
+						FeedbackHandler.error(sender, "Failed to Untrust %" + targetDisplayName + "% from Container! (Player not Trusted)");
 						return Command.SINGLE_SUCCESS;
 					}
 
 					if (container instanceof TileEntityChest) {
-						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(source.getWorld(), (TileEntityChest) container);
+						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(sender.world, (TileEntityChest) container);
 						if (otherContainerInterface != null) {
 							containerInterface.removeTrustedPlayer(targetUUID);
 							otherContainerInterface.removeTrustedPlayer(targetUUID);
-							FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Double Chest!");
+							FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Double Chest!");
 							return Command.SINGLE_SUCCESS;
 						}
-						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Chest!");
+						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Chest!");
 					} else if (container instanceof TileEntityFurnaceBlast) {
-						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Blast Furnace!");
+						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
-						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Furnace!");
+						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Furnace!");
 					} else if (container instanceof TileEntityDispenser) {
-						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Dispenser!");
+						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Dispenser!");
 					} else if (container instanceof TileEntityMeshGold) {
-						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Golden Mesh!");
+						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Golden Mesh!");
 					} else if (container instanceof TileEntityTrommel) {
-						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Trommel!");
+						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Trommel!");
 					} else if (container instanceof TileEntityBasket) {
-						FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from this Basket!");
+						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Basket!");
 					}
 					containerInterface.removeTrustedPlayer(targetUUID);
 				} else {
-					FeedbackHandler.error(context, "Failed to Untrust %" + targetDisplayName + "% from Container! (Container not Locked)");
+					FeedbackHandler.error(sender, "Failed to Untrust %" + targetDisplayName + "% from Container! (Container not Locked)");
 				}
 				return Command.SINGLE_SUCCESS;
 			}
 		}
-		FeedbackHandler.error(context, "Failed to Untrust %" + targetDisplayName + "% from Container! (Not Looking at Container)");
+		FeedbackHandler.error(sender, "Failed to Untrust %" + targetDisplayName + "% from Container! (Not Looking at Container)");
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_untrustall(CommandContext<CommandSource> context){
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-
-		String targetUsername = context.getArgument("username", String.class).toLowerCase();
+	public static int lock_untrustall(Player sender, String targetUsername){
 		PlayerServer target = MinecraftServer.getInstance().playerList.getPlayerEntity(targetUsername);
 		UUID targetUUID;
 
@@ -407,10 +381,10 @@ public class LockLogic {
 			if(Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.containsKey(targetUUID)){
 				Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.remove(targetUUID);
 				Data.Users.save(sender.uuid);
-				FeedbackHandler.destructive(context, "Untrusted %" + targetDisplayName + "% from all Containers!");
+				FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from all Containers!");
 				return Command.SINGLE_SUCCESS;
 			}
-			FeedbackHandler.error(context, "Failed to Untrust %" + targetDisplayName + "% from all Containers! (Player is Not Trusted)");
+			FeedbackHandler.error(sender, "Failed to Untrust %" + targetDisplayName + "% from all Containers! (Player is Not Trusted)");
 			return Command.SINGLE_SUCCESS;
 		} else {
 			UUIDHelper.runConversionAction(targetUsername, targetuuid -> {
@@ -418,26 +392,23 @@ public class LockLogic {
 
 					Data.Users.getOrCreate(sender.uuid).usersTrustedToAllContainers.remove(targetuuid, targetUsername);
 					Data.Users.save(sender.uuid);
-					FeedbackHandler.destructive(context, "Untrusted %" + targetUsername + "% from all Containers!");
+					FeedbackHandler.destructive(sender, "Untrusted %" + targetUsername + "% from all Containers!");
 					return;
 				}
-				FeedbackHandler.error(context, "Failed to Untrust %" + targetUsername + "% from all Containers! (Player is Not Trusted)");
-			}, username -> FeedbackHandler.error(context, "Failed to Untrust %" + targetUsername + "% from all Containers! (%" + targetUsername + "% Does not Exist)"));
+				FeedbackHandler.error(sender, "Failed to Untrust %" + targetUsername + "% from all Containers! (Player is Not Trusted)");
+			}, username -> FeedbackHandler.error(sender, "Failed to Untrust %" + targetUsername + "% from all Containers! (%" + targetUsername + "% Does not Exist)"));
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_untrustcommunity(CommandContext<CommandSource> context){
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-
-		HitResult rayCastResult = MUtil.rayCastFromPlayer(context);
+	public static int lock_untrustcommunity(Player sender){
+		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
 		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
-			FeedbackHandler.error(context, "Failed to Untrust Community from Container! (Not Looking at Container)");
+			FeedbackHandler.error(sender, "Failed to Untrust Community from Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = source.getWorld().getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 
 		if(container != null) {
 			if (container instanceof TileEntityContainerInterface) {
@@ -445,62 +416,58 @@ public class LockLogic {
 				if (containerInterface.getIsLocked()) {
 
 					if (!containerInterface.getLockOwner().equals(sender.uuid)) {
-						FeedbackHandler.error(context, "Failed to Untrust Community from Container! (Not Owned By You)");
+						FeedbackHandler.error(sender, "Failed to Untrust Community from Container! (Not Owned By You)");
 						return Command.SINGLE_SUCCESS;
 					}
 
 					if (!containerInterface.getIsCommunityContainer()){
-						FeedbackHandler.error(context, "Failed to Untrust Community from Container! (Community not Trusted)");
+						FeedbackHandler.error(sender, "Failed to Untrust Community from Container! (Community not Trusted)");
 						return Command.SINGLE_SUCCESS;
 					}
 
 					if (container instanceof TileEntityChest) {
-						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(source.getWorld(), (TileEntityChest) container);
+						TileEntityContainerInterface otherContainerInterface = (TileEntityContainerInterface) MUtil.getOtherChest(sender.world, (TileEntityChest) container);
 						if (otherContainerInterface != null) {
 							containerInterface.setIsCommunityContainer(false);
 							otherContainerInterface.setIsCommunityContainer(false);
-							FeedbackHandler.destructive(context, "Untrusted Community from this Double Chest!");
+							FeedbackHandler.destructive(sender, "Untrusted Community from this Double Chest!");
 							return Command.SINGLE_SUCCESS;
 						}
-						FeedbackHandler.destructive(context, "Untrusted Community from this Chest!");
+						FeedbackHandler.destructive(sender, "Untrusted Community from this Chest!");
 					} else if (container instanceof TileEntityFurnaceBlast) {
-						FeedbackHandler.destructive(context, "Untrusted Community from this Blast Furnace!");
+						FeedbackHandler.destructive(sender, "Untrusted Community from this Blast Furnace!");
 					} else if (container instanceof TileEntityFurnace) {
-						FeedbackHandler.destructive(context, "Untrusted Community from this Furnace!");
+						FeedbackHandler.destructive(sender, "Untrusted Community from this Furnace!");
 					} else if (container instanceof TileEntityDispenser) {
-						FeedbackHandler.destructive(context, "Untrusted Community from this Dispenser!");
+						FeedbackHandler.destructive(sender, "Untrusted Community from this Dispenser!");
 					} else if (container instanceof TileEntityMeshGold) {
-						FeedbackHandler.destructive(context, "Untrusted Community from this Golden Mesh!");
+						FeedbackHandler.destructive(sender, "Untrusted Community from this Golden Mesh!");
 					} else if (container instanceof TileEntityTrommel) {
-						FeedbackHandler.destructive(context, "Untrusted Community from this Trommel!");
+						FeedbackHandler.destructive(sender, "Untrusted Community from this Trommel!");
 					} else if (container instanceof TileEntityBasket) {
-						FeedbackHandler.destructive(context, "Untrusted Community from this Basket!");
+						FeedbackHandler.destructive(sender, "Untrusted Community from this Basket!");
 					}
 					containerInterface.setIsCommunityContainer(false);
 				} else {
-					FeedbackHandler.error(context, "Failed to Untrust Community from Container!");
-					FeedbackHandler.error(context, "(Container not Locked)");
+					FeedbackHandler.error(sender, "Failed to Untrust Community from Container!");
+					FeedbackHandler.error(sender, "(Container not Locked)");
 				}
 				return Command.SINGLE_SUCCESS;
 			}
 		}
-		FeedbackHandler.error(context, "Failed to Untrust Community from Container!");
-		FeedbackHandler.error(context, "(Not Looking at Container)");
+		FeedbackHandler.error(sender, "Failed to Untrust Community from Container!");
+		FeedbackHandler.error(sender, "(Not Looking at Container)");
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lock_bypass(CommandContext<CommandSource> context){
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-		boolean value = context.getArgument("value", Boolean.class);
-
+	public static int lock_bypass(Player sender, boolean value){
 		if(Data.Users.getOrCreate(sender.uuid).lockBypass == value){
-			FeedbackHandler.error(context, "Failed to set Lock Bypass to %" + value + "% (Already %" + value + "%)");
+			FeedbackHandler.error(sender, "Failed to set Lock Bypass to %" + value + "% (Already %" + value + "%)");
 			return Command.SINGLE_SUCCESS;
 		}
 
 		Data.Users.getOrCreate(sender.uuid).lockBypass = value;
-		FeedbackHandler.success(context, "Lock Bypass set to %" + value);
+		FeedbackHandler.success(sender, "Lock Bypass set to %" + value);
 		return Command.SINGLE_SUCCESS;
 	}
 }

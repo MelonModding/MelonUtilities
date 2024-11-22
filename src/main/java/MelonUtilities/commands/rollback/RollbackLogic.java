@@ -56,23 +56,19 @@ public class RollbackLogic {
 	 PS. Arguments inside the method name should match their registered name/literal in the ArgumentBuilder for their respective command
 	*/
 
-	public static int rollback(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-		if (sender == null) return 0;
-
+	public static int rollback(Player sender) {
 		int x1 = sender.chunkCoordX;
 		int z1 = sender.chunkCoordZ;
 
-		File chunkDir = new File("./rollbackdata/snapshots/" + source.getWorld().dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
+		File chunkDir = new File("./rollbackdata/snapshots/" + sender.world.dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
 		chunkDir.mkdirs();
 
 		if (!chunkDir.isDirectory()){
-			FeedbackHandler.error(context, "Chunk has never been Modified!");
+			FeedbackHandler.error(sender, "Chunk has never been Modified!");
 			return 0;
 		}
 
-		HashMap<Long, File> captures = RollbackManager.getSortedCaptures(source, chunkDir);
+		HashMap<Long, File> captures = RollbackManager.getSortedCaptures(sender.world, chunkDir);
 
 		ServerGuiBuilder rollbackGui = new ServerGuiBuilder();
 		rollbackGui.setSize((int)Math.floor((captures.size() + 1) / 9.0F));
@@ -87,7 +83,7 @@ public class RollbackLogic {
 					snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]");
 					snapshotIcon.setCustomColor((byte) TextFormatting.LIGHT_BLUE.id);
 					return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
-						for(Entity entity : source.getWorld().loadedEntityList){
+						for(Entity entity : sender.world.loadedEntityList){
 							if(entity.chunkCoordX == x1 && entity.chunkCoordZ == z1){
 								if(!(entity instanceof Player)){
 									entity.remove();
@@ -96,10 +92,10 @@ public class RollbackLogic {
 						}
 						try {
 							CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(capture.getValue().toPath()));
-							rollbackChunk(source.getWorld().getChunkFromChunkCoords(x1, z1), tag);
-							MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(x1 * 16, 0, z1 * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
-							FeedbackHandler.success(context, "%" + x1 + "," + z1 + "% Rolled Back to %" + sdf.format(capture.getKey()) + "%");
-							((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+							rollbackChunk(sender.world.getChunkFromChunkCoords(x1, z1), tag);
+							MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(x1 * 16, 0, z1 * 16, 16, 256, 16, sender.world), sender.world.dimension.id);
+							FeedbackHandler.success(sender, "%" + x1 + "," + z1 + "% Rolled Back to %" + sdf.format(capture.getKey()) + "%");
+							((PlayerServer) sender).usePersonalCraftingInventory();
 						} catch (IOException e) {
 							throw new RuntimeException(e);
 						}
@@ -113,7 +109,7 @@ public class RollbackLogic {
 					backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]");
 					backupIcon.setCustomColor((byte) TextFormatting.CYAN.id);
 					return new ServerSlotButton(backupIcon, inventory, finalI, () -> {
-						for(Entity entity : source.getWorld().loadedEntityList){
+						for(Entity entity : sender.world.loadedEntityList){
 							if(entity.chunkCoordX == x1 && entity.chunkCoordZ == z1){
 								if(!(entity instanceof Player)){
 									entity.remove();
@@ -121,39 +117,27 @@ public class RollbackLogic {
 							}
 						}
 						File backupDir = capture.getValue().getParentFile().getParentFile().getParentFile();
-						Chunk chunk1 = source.getWorld().getChunkFromChunkCoords(x1, z1);
+						Chunk chunk1 = sender.world.getChunkFromChunkCoords(x1, z1);
 						rollbackChunkFromBackup(chunk1, backupDir);
-						MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunk1.xPosition * 16, 0, chunk1.zPosition * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
-						FeedbackHandler.success(context, "%" + x1 + "," + z1 + "% Rolled Back to %" + sdf.format(capture.getKey()) + "%");
-						((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+						MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunk1.xPosition * 16, 0, chunk1.zPosition * 16, 16, 256, 16, sender.world), sender.world.dimension.id);
+						FeedbackHandler.success(sender, "%" + x1 + "," + z1 + "% Rolled Back to %" + sdf.format(capture.getKey()) + "%");
+						((PlayerServer) sender).usePersonalCraftingInventory();
 					});
 				}));
 			}
 			i++;
 		}
-		GuiHelper.openCustomServerGui((PlayerServer) source.getSender(), rollbackGui.build(source.getSender(), "Captures:"));
-		FeedbackHandler.success(context, "Opened Rollback GUI!");
+		GuiHelper.openCustomServerGui((PlayerServer) sender, rollbackGui.build(sender, "Captures:"));
+		FeedbackHandler.success(sender, "Opened Rollback GUI!");
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackArea(CommandContext<CommandSource> context) throws CommandSyntaxException {
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-		if (sender == null) return 0;
-		Coordinates2D chunk1 = context.getArgument("x1 z1", Coordinates2D.class);
-		Coordinates2D chunk2 = context.getArgument("x2 z2", Coordinates2D.class);
-
-		int x1 = chunk1.getX(source);
-		int z1 = chunk1.getZ(source);
-		int x2 = chunk2.getX(source);
-		int z2 = chunk2.getZ(source);
-
-
-		File chunkDir = new File("./rollbackdata/snapshots/" + source.getWorld().dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
+	public static int rollbackArea(Player sender, int x1, int z1, int x2, int z2) {
+		File chunkDir = new File("./rollbackdata/snapshots/" + sender.world.dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
 		chunkDir.mkdirs();
 
 		if (!chunkDir.isDirectory()){
-			FeedbackHandler.error(context, "Chunk has never been Modified!");
+			FeedbackHandler.error(sender, "Chunk has never been Modified!");
 			return 0;
 		}
 
@@ -165,7 +149,7 @@ public class RollbackLogic {
 		int maxZ = Math.max(z1, z2);
 		for (int _x = minX; _x <= maxX; _x++) {
 			for (int _z = minZ; _z <= maxZ; _z++) {
-				HashMap<Long, File> _captures = RollbackManager.getSortedCaptures(source, new File("./rollbackdata/snapshots/" + source.getWorld().dimension.id + "/c[x." + _x + "-z." + _z + "]"));
+				HashMap<Long, File> _captures = RollbackManager.getSortedCaptures(sender.world, new File("./rollbackdata/snapshots/" + sender.world.dimension.id + "/c[x." + _x + "-z." + _z + "]"));
 				if (captures == null || captures.size() < _captures.size()) {
 					captures = _captures;
 				}
@@ -184,8 +168,8 @@ public class RollbackLogic {
 					snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]");
 					snapshotIcon.setCustomColor((byte) TextFormatting.LIME.id);
 					return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
-						RollbackManager.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture);
-						FeedbackHandler.success(context, "%" + x1 + "," + z1 + "% "+ TextFormatting.ORANGE + "- %" + x2 + "," + z2 + "% Rolled Back to " + TextFormatting.ORANGE + "~%" + sdf.format(capture.getKey()) + "%");
+						RollbackManager.rollbackChunkArea(sender, MUtil.getChunkGridFromCorners(sender.world, x1, z1, x2, z2), capture);
+						FeedbackHandler.success(sender, "%" + x1 + "," + z1 + "% "+ TextFormatting.ORANGE + "- %" + x2 + "," + z2 + "% Rolled Back to " + TextFormatting.ORANGE + "~%" + sdf.format(capture.getKey()) + "%");
 					});
 				}));
 			} else if(capture.getValue().getName().contains(".mcr")){
@@ -196,64 +180,64 @@ public class RollbackLogic {
 					backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]");
 					backupIcon.setCustomColor((byte) TextFormatting.GREEN.id);
 					return new ServerSlotButton(backupIcon, inventory, finalI, () -> {
-						RollbackManager.rollbackChunkArea(source, MUtil.getChunkGridFromCorners(source, x1, z1, x2, z2), capture);
-						FeedbackHandler.success(context, "%" + x1 + "," + z1 + "% "+ TextFormatting.ORANGE + "- %" + x2 + "," + z2 + "% Rolled Back to " + TextFormatting.ORANGE + "~%" + sdf.format(capture.getKey()) + "%");
+						RollbackManager.rollbackChunkArea(sender, MUtil.getChunkGridFromCorners(sender.world, x1, z1, x2, z2), capture);
+						FeedbackHandler.success(sender, "%" + x1 + "," + z1 + "% "+ TextFormatting.ORANGE + "- %" + x2 + "," + z2 + "% Rolled Back to " + TextFormatting.ORANGE + "~%" + sdf.format(capture.getKey()) + "%");
 					});
 				}));
 			}
 			i++;
 		}
-		GuiHelper.openCustomServerGui((PlayerServer) source.getSender(), rollbackGui.build((Player) source.getSender(), "Captures:"));
-		FeedbackHandler.success(context, "Opened Rollback GUI!");
+		GuiHelper.openCustomServerGui((PlayerServer) sender, rollbackGui.build(sender, "Captures:"));
+		FeedbackHandler.success(sender, "Opened Rollback GUI!");
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackTakeSnapshot(CommandContext<CommandSource> context) {
-		FeedbackHandler.success(context, "Taking a Snapshot!");
+	public static int rollbackTakeSnapshot(Player sender) {
+		FeedbackHandler.success(sender, "Taking a Snapshot!");
 		takeSnapshot();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackTakeBackup(CommandContext<CommandSource> context) {
-		FeedbackHandler.success(context, "Taking a Backup!");
+	public static int rollbackTakeBackup(Player sender) {
+		FeedbackHandler.success(sender, "Taking a Backup!");
 		takeBackup();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackPruneSnapshots(CommandContext<CommandSource> context) {
-		FeedbackHandler.destructive(context, "Pruning Snapshots..");
+	public static int rollbackPruneSnapshots(Player sender) {
+		FeedbackHandler.destructive(sender, "Pruning Snapshots..");
 		pruneSnapshots();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackPruneBackups(CommandContext<CommandSource> context) {
-		FeedbackHandler.destructive(context, "Pruning Backups..");
+	public static int rollbackPruneBackups(Player sender) {
+		FeedbackHandler.destructive(sender, "Pruning Backups..");
 		pruneBackups();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackToggleAutoSnapshots(CommandContext<CommandSource> context) {
+	public static int rollbackToggleAutoSnapshots(Player sender) {
 		if(Data.MainConfig.config.snapshotsEnabled){
 			Data.MainConfig.config.snapshotsEnabled = false;
 			Data.MainConfig.save();
-			FeedbackHandler.destructive(context, "Automatic Snapshots Disabled");
+			FeedbackHandler.destructive(sender, "Automatic Snapshots Disabled");
 		} else {
 			Data.MainConfig.config.snapshotsEnabled = true;
 			Data.MainConfig.save();
-			FeedbackHandler.success(context, "Automatic Snapshots Enabled!");
+			FeedbackHandler.success(sender, "Automatic Snapshots Enabled!");
 		}
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackToggleAutoBackups(CommandContext<CommandSource> context) {
+	public static int rollbackToggleAutoBackups(Player sender) {
 		if(Data.MainConfig.config.backupsEnabled){
 			Data.MainConfig.config.backupsEnabled = false;
 			Data.MainConfig.save();
-			FeedbackHandler.destructive(context, "Automatic Backups Disabled");
+			FeedbackHandler.destructive(sender, "Automatic Backups Disabled");
 		} else {
 			Data.MainConfig.config.backupsEnabled = true;
 			Data.MainConfig.save();
-			FeedbackHandler.success(context, "Automatic Backups Enabled!");
+			FeedbackHandler.success(sender, "Automatic Backups Enabled!");
 		}
 		return Command.SINGLE_SUCCESS;
 	}

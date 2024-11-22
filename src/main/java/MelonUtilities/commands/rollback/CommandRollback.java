@@ -5,12 +5,14 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.command.arguments.ArgumentTypeChunkCoordinates;
 import net.minecraft.core.net.command.helpers.Coordinates2D;
 
+@SuppressWarnings("UnusedReturnValue")
 public class CommandRollback implements CommandManager.CommandRegistry{
 	static SyntaxBuilder syntax = new SyntaxBuilder();
 	public static void buildSyntax(){
@@ -28,8 +30,11 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 	}
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollback(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.executes(
-			RollbackLogic::rollback
+		builder.executes(context ->
+			{
+				Player sender = context.getSource().getSender();
+				return RollbackLogic.rollback(sender);
+			}
 		);
 		return builder;
 	}
@@ -38,8 +43,19 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("area")
 			.then(RequiredArgumentBuilder.<CommandSource, Coordinates2D>argument("x1 z1", ArgumentTypeChunkCoordinates.chunkCoordinates())
 				.then(RequiredArgumentBuilder.<CommandSource, Coordinates2D>argument("x2 z2", ArgumentTypeChunkCoordinates.chunkCoordinates())
-					.executes(
-						RollbackLogic::rollbackArea
+					.executes(context ->
+						{
+							CommandSource source = context.getSource();
+							Player sender = source.getSender();
+							if (sender == null) return 0;
+							Coordinates2D chunk1 = context.getArgument("x1 z1", Coordinates2D.class);
+							Coordinates2D chunk2 = context.getArgument("x2 z2", Coordinates2D.class);
+							int x1 = chunk1.getX(source);
+							int z1 = chunk1.getZ(source);
+							int x2 = chunk2.getX(source);
+							int z2 = chunk2.getZ(source);
+							return RollbackLogic.rollbackArea(sender, x1, z1, x2, z2);
+						}
 					)
 				)
 			)
@@ -49,8 +65,11 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackTakeSnapshot(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("takesnapshot")
-			.executes(
-				RollbackLogic::rollbackTakeSnapshot
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender();
+					return RollbackLogic.rollbackTakeSnapshot(sender);
+				}
 			)
 		);
 		return builder;
@@ -58,8 +77,11 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackTakeBackup(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("takebackup")
-			.executes(
-				RollbackLogic::rollbackTakeBackup
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender();
+					return RollbackLogic.rollbackTakeBackup(sender);
+				}
 			)
 		);
 		return builder;
@@ -67,8 +89,11 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackPruneSnapshots(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("prunesnapshots")
-			.executes(
-				RollbackLogic::rollbackPruneSnapshots
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender();
+					return RollbackLogic.rollbackPruneSnapshots(sender);
+				}
 			)
 		);
 		return builder;
@@ -76,8 +101,11 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackPruneBackups(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("prunebackups")
-			.executes(
-				RollbackLogic::rollbackPruneBackups
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender();
+					return RollbackLogic.rollbackPruneBackups(sender);
+				}
 			)
 		);
 		return builder;
@@ -85,8 +113,11 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackToggleAutoSnapshots(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("toggleautosnapshots")
-			.executes(
-				RollbackLogic::rollbackToggleAutoSnapshots
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender();
+					return RollbackLogic.rollbackToggleAutoSnapshots(sender);
+				}
 			)
 		);
 		return builder;
@@ -94,8 +125,11 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollbackToggleAutoBackups(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("toggleautobackups")
-			.executes(
-				RollbackLogic::rollbackToggleAutoBackups
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender();
+					return RollbackLogic.rollbackToggleAutoBackups(sender);
+				}
 			)
 		);
 		return builder;

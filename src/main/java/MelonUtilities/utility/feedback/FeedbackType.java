@@ -30,11 +30,11 @@ public class FeedbackType {
 	}
 
 	public String getColorSection() {
-		return MUtil.colorSectionMap.get(color);
+		return TextFormatting.getColorFormatting(color).toString();
 	}
 
 	public TextFormatting getColorFormat() {
-		return MUtil.colorFormattingMap.get(color);
+		return TextFormatting.getColorFormatting(color);
 	}
 
 	public String getSoundPath() {

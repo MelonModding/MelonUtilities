@@ -4,16 +4,20 @@ import MelonUtilities.commands.role.RoleLogic;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.CommandNode;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 
 public class CommandMelonUtilities implements CommandManager.CommandRegistry{
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		CommandNode<CommandSource> command = dispatcher.register((LiteralArgumentBuilder.<CommandSource>literal("melonutilities").requires(CommandSource::hasAdmin))
+		dispatcher.register((LiteralArgumentBuilder.<CommandSource>literal("melonutilities").requires(CommandSource::hasAdmin))
 			.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
-				.executes(
-					MelonUtilitiesLogic::melonutilities_reload
+				.executes(context ->
+					{
+						Player sender = context.getSource().getSender();
+						return MelonUtilitiesLogic.melonutilities_reload(sender);
+					}
 				)
 			)
 		);

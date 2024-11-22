@@ -13,8 +13,8 @@ public class RoleBuilder {
 
 	public static String getCodeOrHex(String string){
 		string = string.toLowerCase();
-		if (MUtil.colorSectionMap.containsKey(string)){
-			string = MUtil.colorSectionMap.get(string);
+		if (TextFormatting.getColorFormatting(string) != null){
+			string = TextFormatting.getColorFormatting(string).toString();
 		} else{
 			string = "§<" + string + ">";
 		}

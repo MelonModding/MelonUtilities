@@ -418,7 +418,7 @@ public class RollbackManager {
 		return new int[]{x, z};
 	}
 
-	public static HashMap<Long, File> getSortedCaptures(CommandSource source, File chunkDir){
+	public static HashMap<Long, File> getSortedCaptures(World world, File chunkDir){
 		int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
 
 		HashMap<Long, File> capturesHashmap = new HashMap<>();
@@ -438,7 +438,7 @@ public class RollbackManager {
 		if(backups != null){
 			for (File backup : backups) {
 				if (backup.isDirectory()) {
-					capturesHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(source.getWorld().dimension.id)), chunkCoords[0], chunkCoords[1]));
+					capturesHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(world.dimension.id)), chunkCoords[0], chunkCoords[1]));
 				}
 			}
 		}
@@ -447,7 +447,7 @@ public class RollbackManager {
 		return MUtil.sortByKey(capturesHashmap);
 	}
 
-	public HashMap<Long, File> getSortedBackups(CommandSource source, File chunkDir){
+	public HashMap<Long, File> getSortedBackups(World world, File chunkDir){
 		int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
 
 		HashMap<Long, File> backupsHashmap = new HashMap<>();
@@ -457,7 +457,7 @@ public class RollbackManager {
 		if(backups != null){
 			for (File backup : backups) {
 				if (backup.isDirectory()) {
-					backupsHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(source.getWorld().dimension.id)), chunkCoords[0], chunkCoords[1]));
+					backupsHashmap.putIfAbsent(Long.parseLong(backup.getName().split(" ")[0]), getRegionFileFromCoords(new File(backup.getPath(), String.valueOf(world.dimension.id)), chunkCoords[0], chunkCoords[1]));
 				}
 			}
 		}
@@ -481,15 +481,15 @@ public class RollbackManager {
 		return MUtil.sortByKey(snapshotsHashmap);
 	}
 
-	public static void rollbackChunkArea(CommandSource source, List<File> chunkGrid, Map.Entry<Long, File> primaryCapture){
+	public static void rollbackChunkArea(Player sender, List<File> chunkGrid, Map.Entry<Long, File> primaryCapture){
 		for(File chunkDir : chunkGrid) {
 			int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
 
-			HashMap<Long, File> captures = getSortedCaptures(source, chunkDir);
+			HashMap<Long, File> captures = getSortedCaptures(sender.world, chunkDir);
 			Map.Entry<Long, File> closestCapture = getClosestCapture(primaryCapture, captures);
 
 			if (closestCapture.getValue().getName().contains(".dat")) {
-				for (Entity entity : source.getWorld().loadedEntityList) {
+				for (Entity entity : sender.world.loadedEntityList) {
 					if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
 						if (!(entity instanceof Player)) {
 							entity.remove();
@@ -497,17 +497,17 @@ public class RollbackManager {
 					}
 				}
 				try {
-					Chunk chunk = source.getWorld().getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]);
+					Chunk chunk = sender.world.getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]);
 					CompoundTag tag = NbtIo.readCompressed(Files.newInputStream(closestCapture.getValue().toPath()));
 					rollbackChunk(chunk, tag);
-					MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+					MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, sender.world), sender.world.dimension.id);
 				} catch (IOException e) {
 					MelonUtilities.LOGGER.error("IOException occurred trying to read compressed data from Chunk File: {}", closestCapture.getValue());
 				}
 			}
 
 			if (closestCapture.getValue().getName().contains(".mcr")) {
-				for (Entity entity : source.getWorld().loadedEntityList) {
+				for (Entity entity : sender.world.loadedEntityList) {
 					if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
 						if (!(entity instanceof Player)) {
 							entity.remove();
@@ -515,11 +515,11 @@ public class RollbackManager {
 					}
 				}
 				File backupDir = closestCapture.getValue().getParentFile().getParentFile().getParentFile();
-				rollbackChunkFromBackup(source.getWorld().getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]), backupDir);
-				MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, source.getWorld()), source.getWorld().dimension.id);
+				rollbackChunkFromBackup(sender.world.getChunkFromChunkCoords(chunkCoords[0], chunkCoords[1]), backupDir);
+				MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, sender.world), sender.world.dimension.id);
 			}
 		}
-		((PlayerServer) source.getSender()).usePersonalCraftingInventory();
+		((PlayerServer) sender).usePersonalCraftingInventory();
 	}
 
 	private static Map.@Nullable Entry<Long, File> getClosestCapture(Map.Entry<Long, File> primaryCapture, HashMap<Long, File> captures) {

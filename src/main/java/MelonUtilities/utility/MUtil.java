@@ -39,7 +39,7 @@ import static MelonUtilities.utility.managers.RollbackManager.rollbackChunkFromB
 
 public class MUtil {
 
-	public static float timeOnInit = 0;
+/*	public static float timeOnInit = 0;
 	public static final String SECTION_PURPLE = "§a";
 	public static final String SECTION_BLUE = "§b";
 	public static final String SECTION_BROWN = "§c";
@@ -101,7 +101,7 @@ public class MUtil {
 		colorFormattingMap.put("light_gray", TextFormatting.LIGHT_GRAY);
 		colorFormattingMap.put("cyan", TextFormatting.CYAN);
 		colorFormattingMap.put("white", TextFormatting.WHITE);
-	}
+	}*/
 
 	public static Pair<UUID, String> getProfileFromUsername(String username) throws NullPointerException {
 		UUID uuid;
@@ -183,10 +183,7 @@ public class MUtil {
 		return username;
 	}
 
-	public static HitResult rayCastFromPlayer(CommandContext<CommandSource> context) {
-		CommandSource source = context.getSource();
-		Player sender = source.getSender();
-
+	public static HitResult rayCastFromPlayer(Player sender) {
 		float f = 1.0f;
 		float f1 = sender.xRotO + (sender.xRot - sender.xRotO) * f;
 		float f2 = sender.yRotO + (sender.yRot - sender.yRotO) * f;
@@ -204,11 +201,11 @@ public class MUtil {
 		float f9 = f3 * f5;
 		double reachDistance = sender.getGamemode().getBlockReachDistance();
 		Vec3 vec3_1 = vec3.add((double) f7 * reachDistance, (double) f8 * reachDistance, (double) f9 * reachDistance);
-		return source.getWorld().checkBlockCollisionBetweenPoints(vec3, vec3_1, false);
+		return sender.world.checkBlockCollisionBetweenPoints(vec3, vec3_1, false);
 	}
 
-	public static File getChunkFileFromCoords(CommandSource source, int x, int z){
-		return new File(RollbackManager.snapshotsDir, source.getWorld().dimension.id + "/c[x." + x + "-z." + z + "]");
+	public static File getChunkFileFromCoords(World world, int x, int z){
+		return new File(RollbackManager.snapshotsDir, world.dimension.id + "/c[x." + x + "-z." + z + "]");
 	}
 
 
@@ -224,7 +221,7 @@ public class MUtil {
 		return true;
 	}
 
-	public static List<File> getChunkGridFromCorners(CommandSource source, int x1, int z1, int x2, int z2){
+	public static List<File> getChunkGridFromCorners(World world, int x1, int z1, int x2, int z2){
 		int temp;
 		if (x1 > x2) {
 			temp = x1;
@@ -240,7 +237,7 @@ public class MUtil {
 		List<File> chunksInArea = new ArrayList<>();
 		for (int x = x1; x <= x2; ++x) {
 			for (int z = z1; z <= z2; ++z) {
-				chunksInArea.add(getChunkFileFromCoords(source, x, z));
+				chunksInArea.add(getChunkFileFromCoords(world, x, z));
 			}
 		}
 		return chunksInArea;

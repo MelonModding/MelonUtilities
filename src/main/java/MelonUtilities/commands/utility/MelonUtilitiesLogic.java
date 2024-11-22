@@ -5,6 +5,7 @@ import MelonUtilities.config.Data;
 import MelonUtilities.utility.feedback.FeedbackHandler;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandSource;
 
 import static net.minecraft.server.player.PlayerListBox.updateList;
@@ -32,44 +33,44 @@ public class MelonUtilitiesLogic {
 	 PS. Arguments inside the method name should match their registered name/literal in the ArgumentBuilder for their respective command
 	*/
 
-	public static int melonutilities_reload(CommandContext<CommandSource> context){
-		FeedbackHandler.success(context, "Reloading MelonUtilities...");
+	public static int melonutilities_reload(Player sender){
+		FeedbackHandler.success(sender, "Reloading MelonUtilities...");
 
-		FeedbackHandler.destructive(context, "Reloading Player Data...");
+		FeedbackHandler.destructive(sender, "Reloading Player Data...");
 		Data.Users.reload();
-		FeedbackHandler.success(context, "Reloaded " + Data.Users.userDataHashMap.size() + " Player(s)!");
+		FeedbackHandler.success(sender, "Reloaded " + Data.Users.userDataHashMap.size() + " Player(s)!");
 
 		//TODO FeedbackHandler.destructive(source, "Building Helper Syntax...");
 		//TODO HelperCommand.buildHelperSyntax();
 		//TODO FeedbackHandler.success(source, "Helper Syntax Built!");
 
-		FeedbackHandler.destructive(context, "Reloading Kit Data...");
+		FeedbackHandler.destructive(sender, "Reloading Kit Data...");
 		Data.Kits.reload();
-		FeedbackHandler.success(context, "Reloaded " + Data.Kits.kitDataHashMap.size() + " Kit(s)!");
+		FeedbackHandler.success(sender, "Reloaded " + Data.Kits.kitDataHashMap.size() + " Kit(s)!");
 
 		//TODO FeedbackHandler.destructive(source, "Building Kit Syntax...");
 		//TODO KitCommand.buildKitSyntax();
 		//TODO FeedbackHandler.success(source, "Kit Syntax Built!");
 
-		FeedbackHandler.destructive(context, "Reloading Role Data...");
+		FeedbackHandler.destructive(sender, "Reloading Role Data...");
 		Data.Roles.reload();
-		FeedbackHandler.success(context, "Reloaded " + Data.Roles.roleDataHashMap.size() + " Role(s)!");
+		FeedbackHandler.success(sender, "Reloaded " + Data.Roles.roleDataHashMap.size() + " Role(s)!");
 
-		FeedbackHandler.destructive(context, "Building Role Syntax...");
+		FeedbackHandler.destructive(sender, "Building Role Syntax...");
 		CommandRole.buildRoleSyntax();
-		FeedbackHandler.success(context, "Role Syntax Built!");
+		FeedbackHandler.success(sender, "Role Syntax Built!");
 
 		//TODO FeedbackHandler.destructive(source, "Building Rollback Syntax...");
 		//TODO RollbackCommand.buildSyntax();
 		//TODO FeedbackHandler.success(source, "Rollback Syntax Built!");
 
-		FeedbackHandler.destructive(context, "Reloading General Configs...");
+		FeedbackHandler.destructive(sender, "Reloading General Configs...");
 		Data.MainConfig.reload();
-		FeedbackHandler.success(context, "Reloaded Configs!");
+		FeedbackHandler.success(sender, "Reloaded Configs!");
 
-		FeedbackHandler.destructive(context, "Updating Player List...");
+		FeedbackHandler.destructive(sender, "Updating Player List...");
 		updateList();
-		FeedbackHandler.success(context, "Updated List!");
+		FeedbackHandler.success(sender, "Updated List!");
 		return Command.SINGLE_SUCCESS;
 	}
 }

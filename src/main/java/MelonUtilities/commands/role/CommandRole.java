@@ -3,6 +3,7 @@ package MelonUtilities.commands.role;
 import MelonUtilities.command_arguments.ArgumentTypeColor;
 import MelonUtilities.command_arguments.ArgumentTypeRole;
 import MelonUtilities.config.datatypes.data.Role;
+import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -70,8 +71,13 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("create")
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", StringArgumentType.string())
 				.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 99))
-					.executes(
-						RoleLogic::role_create
+					.executes(context ->
+						{
+							Player sender = context.getSource().getSender();
+							String roleID = context.getArgument("roleID", String.class);
+							int rolePriority = context.getArgument("priorityValue", Integer.class);
+							return RoleLogic.role_create(sender, roleID, rolePriority);
+						}
 					)
 				)
 			)
@@ -82,8 +88,12 @@ public class CommandRole implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleDelete(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("delete")
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
-				.executes(
-					RoleLogic::role_delete
+				.executes(context ->
+					{
+						Player sender = context.getSource().getSender();
+						Role role = context.getArgument("role", Role.class);
+						return RoleLogic.role_delete(sender, role);
+					}
 				)
 			)
 		);
@@ -95,98 +105,169 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(LiteralArgumentBuilder.<CommandSource>literal("priority")
 					.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 4096))
-						.executes(
-							RoleLogic::role_edit_priority
+						.executes(context ->
+							{
+								Player sender = context.getSource().getSender();
+								Role role = context.getArgument("role", Role.class);
+								int priorityValue = context.getArgument("priorityValue", Integer.class);
+								return RoleLogic.role_edit_priority(sender, role, priorityValue);
+							}
 						)
 					)
 				)
 				.then(LiteralArgumentBuilder.<CommandSource>literal("display")
 					.then(LiteralArgumentBuilder.<CommandSource>literal("name")
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("displayName", StringArgumentType.greedyString())
-							.executes(
-								RoleLogic::role_edit_display_name
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									String displayName = context.getArgument("displayName", String.class);
+									return RoleLogic.role_edit_display_name(sender, role, displayName);
+								}
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("color")
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
-							.executes(
-								RoleLogic::role_edit_display_color_COLOR
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									String color = context.getArgument("color", String.class);
+									return RoleLogic.role_edit_display_color_COLOR(sender, role, color);
+								}
 							)
 						)
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
-							.executes(
-								RoleLogic::role_edit_display_color_HEX
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
+									return RoleLogic.role_edit_display_color_HEX(sender, role, hex);
+								}
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("underline")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
-							.executes(
-								RoleLogic::role_edit_display_underline
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									boolean value = context.getArgument("value", Boolean.class);
+									return RoleLogic.role_edit_display_underline(sender, role, value);
+								}
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("bold")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
-							.executes(
-								RoleLogic::role_edit_display_bold
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									boolean value = context.getArgument("value", Boolean.class);
+									return RoleLogic.role_edit_display_bold(sender, role, value);
+								}
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("italics")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
-							.executes(
-								RoleLogic::role_edit_display_italics
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									boolean value = context.getArgument("value", Boolean.class);
+									return RoleLogic.role_edit_display_italics(sender, role, value);
+								}
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("border")
 						.then(LiteralArgumentBuilder.<CommandSource>literal("color")
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
-								.executes(
-									RoleLogic::role_edit_display_border_color_COLOR
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										String color = context.getArgument("color", String.class);
+										return RoleLogic.role_edit_display_border_color_COLOR(sender, role, color);
+									}
 								)
 							)
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
-								.executes(
-									RoleLogic::role_edit_display_border_color_HEX
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
+										return RoleLogic.role_edit_display_border_color_HEX(sender, role, hex);
+									}
 								)
 							)
 						)
 						.then(LiteralArgumentBuilder.<CommandSource>literal("style")
 							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
-								.executes(
-									RoleLogic::role_edit_display_border_style_none
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										return RoleLogic.role_edit_display_border_style_none(sender, role);
+									}
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
-								.executes(
-									RoleLogic::role_edit_display_border_style_bracket
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										return RoleLogic.role_edit_display_border_style_bracket(sender, role);
+									}
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("curly")
-								.executes(
-									RoleLogic::role_edit_display_border_style_curly
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										return RoleLogic.role_edit_display_border_style_curly(sender, role);
+									}
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("caret")
-								.executes(
-									RoleLogic::role_edit_display_border_style_caret
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										return RoleLogic.role_edit_display_border_style_caret(sender, role);
+									}
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("custom")
 								.then(LiteralArgumentBuilder.<CommandSource>literal("prefix")
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
-										.executes(
-											RoleLogic::role_edit_display_border_style_custom_prefix
+										.executes(context ->
+											{
+												Player sender = context.getSource().getSender();
+												Role role = context.getArgument("role", Role.class);
+												String customAffix = context.getArgument("customAffix", String.class);
+												return RoleLogic.role_edit_display_border_style_custom_prefix(sender, role, customAffix);
+											}
 										)
 									)
 								)
 								.then(LiteralArgumentBuilder.<CommandSource>literal("suffix")
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
-										.executes(
-											RoleLogic::role_edit_display_border_style_custom_suffix
+										.executes(context ->
+											{
+												Player sender = context.getSource().getSender();
+												Role role = context.getArgument("role", Role.class);
+												String customAffix = context.getArgument("customAffix", String.class);
+												return RoleLogic.role_edit_display_border_style_custom_suffix(sender, role, customAffix);
+											}
 										)
 									)
 								)
@@ -198,49 +279,85 @@ public class CommandRole implements CommandManager.CommandRegistry{
 					.then(LiteralArgumentBuilder.<CommandSource>literal("border")
 						.then(LiteralArgumentBuilder.<CommandSource>literal("color")
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
-								.executes(
-									RoleLogic::role_edit_username_border_color_COLOR
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										String color = context.getArgument("color", String.class);
+										return RoleLogic.role_edit_username_border_color_COLOR(sender, role, color);
+									}
 								)
 							)
 							.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
-								.executes(
-									RoleLogic::role_edit_username_border_color_HEX
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
+										return RoleLogic.role_edit_username_border_color_HEX(sender, role, hex);
+									}
 								)
 							)
 						)
 						.then(LiteralArgumentBuilder.<CommandSource>literal("style")
 							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
-								.executes(
-									RoleLogic::role_edit_username_border_style_none
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										return RoleLogic.role_edit_username_border_style_none(sender, role);
+									}
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
-								.executes(
-									RoleLogic::role_edit_username_border_style_bracket
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										return RoleLogic.role_edit_username_border_style_bracket(sender, role);
+									}
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("curly")
-								.executes(
-									RoleLogic::role_edit_username_border_style_curly
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										return RoleLogic.role_edit_username_border_style_curly(sender, role);
+									}
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("caret")
-								.executes(
-									RoleLogic::role_edit_username_border_style_caret
+								.executes(context ->
+									{
+										Player sender = context.getSource().getSender();
+										Role role = context.getArgument("role", Role.class);
+										return RoleLogic.role_edit_username_border_style_caret(sender, role);
+									}
 								)
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("custom")
 								.then(LiteralArgumentBuilder.<CommandSource>literal("prefix")
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
-										.executes(
-											RoleLogic::role_edit_username_border_style_custom_prefix
+										.executes(context ->
+											{
+												Player sender = context.getSource().getSender();
+												Role role = context.getArgument("role", Role.class);
+												String customAffix = context.getArgument("customAffix", String.class);
+												return RoleLogic.role_edit_username_border_style_custom_prefix(sender, role, customAffix);
+											}
 										)
 									)
 								)
 								.then(LiteralArgumentBuilder.<CommandSource>literal("suffix")
 									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
-										.executes(
-											RoleLogic::role_edit_username_border_style_custom_suffix
+										.executes(context ->
+											{
+												Player sender = context.getSource().getSender();
+												Role role = context.getArgument("role", Role.class);
+												String customAffix = context.getArgument("customAffix", String.class);
+												return RoleLogic.role_edit_username_border_style_custom_suffix(sender, role, customAffix);
+											}
 										)
 									)
 								)
@@ -251,34 +368,59 @@ public class CommandRole implements CommandManager.CommandRegistry{
 				.then(LiteralArgumentBuilder.<CommandSource>literal("text")
 					.then(LiteralArgumentBuilder.<CommandSource>literal("color")
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
-							.executes(
-								RoleLogic::role_edit_text_color_COLOR
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									String color = context.getArgument("color", String.class);
+									return RoleLogic.role_edit_text_color_COLOR(sender, role, color);
+								}
 							)
 						)
 						.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
-							.executes(
-								RoleLogic::role_edit_text_color_HEX
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
+									return RoleLogic.role_edit_text_color_HEX(sender, role, hex);
+								}
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("underline")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
-							.executes(
-								RoleLogic::role_edit_text_underline
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									boolean value = context.getArgument("value", Boolean.class);
+									return RoleLogic.role_edit_text_underline(sender, role, value);
+								}
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("bold")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
-							.executes(
-								RoleLogic::role_edit_text_bold
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									boolean value = context.getArgument("value", Boolean.class);
+									return RoleLogic.role_edit_text_bold(sender, role, value);
+								}
 							)
 						)
 					)
 					.then(LiteralArgumentBuilder.<CommandSource>literal("italics")
 						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
-							.executes(
-								RoleLogic::role_edit_text_italics
+							.executes(context ->
+								{
+									Player sender = context.getSource().getSender();
+									Role role = context.getArgument("role", Role.class);
+									boolean value = context.getArgument("value", Boolean.class);
+									return RoleLogic.role_edit_text_italics(sender, role, value);
+								}
 							)
 						)
 					)
@@ -293,11 +435,12 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
 					.executes(
-						context -> {
+						context ->
+						{
 							Role role = context.getArgument("role", Role.class);
-							EntitySelector entitySelector = context.getArgument("target", EntitySelector.class);
-							Player target = ((Player)entitySelector.get(context.getSource()).get(0));
-							return RoleLogic.role_grant(role, target, context.getSource().getSender());
+							Player target = (Player)context.getArgument("target", EntitySelector.class).get(context.getSource()).get(0);
+							Player sender = context.getSource().getSender();
+							return RoleLogic.role_grant(sender, target, role);
 						}
 					)
 				)
@@ -310,8 +453,13 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("revoke")
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
-					.executes(
-						RoleLogic::role_revoke
+					.executes(context ->
+						{
+							Role role = context.getArgument("role", Role.class);
+							Player target = (Player)context.getArgument("target", EntitySelector.class).get(context.getSource()).get(0);
+							Player sender = context.getSource().getSender();
+							return RoleLogic.role_revoke(sender, target, role);
+						}
 					)
 				)
 			)
@@ -323,25 +471,38 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("set")
 			.then(LiteralArgumentBuilder.<CommandSource>literal("defaultrole")
 				.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
-					.executes(
-						RoleLogic::role_set_defaultrole_ROLEID
+					.executes(context ->
+						{
+							Player sender = context.getSource().getSender();
+							Role role = context.getArgument("role", Role.class);
+							return RoleLogic.role_set_defaultrole_ROLEID(sender, role);
+						}
 					)
 				)
 				.then(LiteralArgumentBuilder.<CommandSource>literal("none")
-					.executes(
-						RoleLogic::role_set_defaultrole_none
+					.executes(context ->
+						{
+							Player sender = context.getSource().getSender();
+							return RoleLogic.role_set_defaultrole_none(sender);
+						}
 					)
 				)
 			)
 			.then(LiteralArgumentBuilder.<CommandSource>literal("displaymode")
 				.then(LiteralArgumentBuilder.<CommandSource>literal("single")
-					.executes(
-						RoleLogic::role_set_displaymode_single
+					.executes(context ->
+						{
+							Player sender = context.getSource().getSender();
+							return RoleLogic.role_set_displaymode_single(sender);
+						}
 					)
 				)
 				.then(LiteralArgumentBuilder.<CommandSource>literal("multi")
-					.executes(
-						RoleLogic::role_set_displaymode_multi
+					.executes(context ->
+						{
+							Player sender = context.getSource().getSender();
+							return RoleLogic.role_set_displaymode_multi(sender);
+						}
 					)
 				)
 			)
@@ -351,8 +512,11 @@ public class CommandRole implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleList(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("list")
-			.executes(
-				RoleLogic::role_list
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender();
+					return RoleLogic.role_list(sender);
+				}
 			)
 		);
 		return builder;
@@ -360,8 +524,11 @@ public class CommandRole implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleReload(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
-			.executes(
-				RoleLogic::role_reload
+			.executes(context ->
+				{
+					Player sender = context.getSource().getSender();
+					return RoleLogic.role_reload(sender);
+				}
 			)
 		);
 		return builder;
