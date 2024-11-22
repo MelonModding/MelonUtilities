@@ -1,4 +1,4 @@
-package MelonUtilities.command_arguments;
+package MelonUtilities.commands.command_arguments;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;

@@ -26,6 +26,28 @@ public class MUtil {
 
 	public static float timeOnInit = 0;
 
+	public static final HashMap<String, String> colorSectionMap = new HashMap<>();
+	static{
+		colorSectionMap.put("purple", "§a");
+		colorSectionMap.put("blue", "§b");
+		colorSectionMap.put("brown", "§c");
+		colorSectionMap.put("green", "§d");
+		colorSectionMap.put("red", "§e");
+		colorSectionMap.put("black", "§f");
+		colorSectionMap.put("orange", "§1");
+		colorSectionMap.put("magenta", "§2");
+		colorSectionMap.put("light_blue", "§3");
+		colorSectionMap.put("yellow", "§4");
+		colorSectionMap.put("lime", "§5");
+		colorSectionMap.put("pink", "§6");
+		colorSectionMap.put("grey", "§7");
+		colorSectionMap.put("gray", "§7");
+		colorSectionMap.put("light_grey", "§8");
+		colorSectionMap.put("light_gray", "§8");
+		colorSectionMap.put("cyan", "§9");
+		colorSectionMap.put("white", "§0");
+	}
+
 	public static Pair<UUID, String> getProfileFromUsername(String username) throws NullPointerException {
 		UUID uuid;
 		String usernameOrDisplayName;

@@ -1,6 +1,6 @@
 package MelonUtilities.commands.lock;
 
-import MelonUtilities.command_arguments.ArgumentTypeUsername;
+import MelonUtilities.commands.command_arguments.ArgumentTypeUsername;
 import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;

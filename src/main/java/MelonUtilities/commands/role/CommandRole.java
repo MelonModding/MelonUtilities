@@ -1,7 +1,7 @@
 package MelonUtilities.commands.role;
 
-import MelonUtilities.command_arguments.ArgumentTypeColor;
-import MelonUtilities.command_arguments.ArgumentTypeRole;
+import MelonUtilities.commands.command_arguments.ArgumentTypeColor;
+import MelonUtilities.commands.command_arguments.ArgumentTypeRole;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.syntax.SyntaxBuilder;

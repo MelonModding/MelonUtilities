@@ -1,4 +1,4 @@
-package MelonUtilities.command_arguments;
+package MelonUtilities.commands.command_arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
