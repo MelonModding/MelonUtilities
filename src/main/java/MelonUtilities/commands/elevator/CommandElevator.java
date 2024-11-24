@@ -43,6 +43,7 @@ public class CommandElevator implements CommandManager.CommandRegistry{
 		LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.<CommandSource>literal("elevator");
 
 		elevatorAllowObstructions(builder);
+		elevatorCooldown(builder);
 
 		dispatcher.register(builder);
 	}
