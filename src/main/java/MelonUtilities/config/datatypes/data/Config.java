@@ -17,5 +17,5 @@ public class Config {
 	public double lastSnapshotPrune = 0;
 
 	public boolean allowObstructions = true;
-	public int elevatorCooldown = 8;
+	public int elevatorCooldown = 6;
 }

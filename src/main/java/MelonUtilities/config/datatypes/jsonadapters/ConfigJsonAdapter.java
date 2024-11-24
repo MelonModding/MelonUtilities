@@ -65,7 +65,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		elevatorConfig.addProperty("allowObstructions", src.allowObstructions);
 		elevatorConfig.addProperty("elevatorCooldown", src.elevatorCooldown);
 
-		obj.add("Elevator Config", rollbackConfig);
+		obj.add("Elevator Config", elevatorConfig);
 
 		return obj;
 	}

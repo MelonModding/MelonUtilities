@@ -27,8 +27,10 @@
   "server": [
     "ChunkMixin",
     "ChunkProviderServerMixin",
+    "EntityTrackerEntryImplMixin",
     "ExplosionMixin",
     "MinecraftServerMixin",
+    "PacketAddPlayerMixin",
     "PacketLoginHandlerMixin",
     "PlayerListMixin",
     "tile_entities.blast_furnace.BlockLogicFurnaceBlastMixin"
