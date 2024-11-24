@@ -25,7 +25,7 @@ public class CommandElevator implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> elevatorCooldown(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("cooldown")
-			.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("cooldownvalue", IntegerArgumentType.integer(0, 99))
+			.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("cooldownvalue", IntegerArgumentType.integer(0, 256))
 				.executes(context ->
 					{
 						Player sender = context.getSource().getSender(); if(sender == null){return 0;}
