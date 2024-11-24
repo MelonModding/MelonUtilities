@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class ArgumentTypeRole implements ArgumentType<Role>{
-	private static final List<String> EXAMPLES = Arrays.asList("starter", "pvp1", "saplings");
+	private static final List<String> EXAMPLES = Arrays.asList("owner", "noob", "supporter");
 
 	public ArgumentTypeRole() {
 	}
@@ -34,7 +34,7 @@ public class ArgumentTypeRole implements ArgumentType<Role>{
 
 	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
 		for(Role role : roles()){
-			if (role.roleID.startsWith(builder.getRemainingLowerCase())) {
+			if (role.roleID.startsWith(builder.getRemaining())) {
 				builder.suggest(role.roleID);
 			}
 		}
