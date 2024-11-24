@@ -4,7 +4,6 @@
   "package": "MelonUtilities.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BlocksMixin",
     "CommandManagerMixin",
     "PacketHandlerServerMixin",
     "PlayerMixinElevator",
