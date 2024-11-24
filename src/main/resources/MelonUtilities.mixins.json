@@ -4,9 +4,11 @@
   "package": "MelonUtilities.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "other.CommandManagerMixin",
-    "other.PacketHandlerServerMixin",
-    "other.PlayerMixin",
+    "BlocksMixin",
+    "CommandManagerMixin",
+    "PacketHandlerServerMixin",
+    "PlayerMixinElevator",
+    "PlayerMixinInputInterface",
     "tile_entities.basket.BlockLogicBasketMixin",
     "tile_entities.basket.TileEntityBasketMixin",
     "tile_entities.blast_furnace.TileEntityFurnaceBlastMixin",
@@ -24,12 +26,12 @@
   "client": [
   ],
   "server": [
-    "gamerules.PacketLoginHandlerMixin",
-    "other.ExplosionMixin",
-    "other.MinecraftServerMixin",
-    "other.PlayerListMixin",
-    "rollback.ChunkMixin",
-    "rollback.ChunkProviderServerMixin",
+    "ChunkMixin",
+    "ChunkProviderServerMixin",
+    "ExplosionMixin",
+    "MinecraftServerMixin",
+    "PacketLoginHandlerMixin",
+    "PlayerListMixin",
     "tile_entities.blast_furnace.BlockLogicFurnaceBlastMixin"
   ],
   "injectors": {

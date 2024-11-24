@@ -15,7 +15,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 
 import java.util.UUID;
 
-public class LockLogic {
+public class CommandLogicLock {
 	/*
 	 Naming Scheme for methods in this class is:
 

@@ -8,7 +8,7 @@ import net.minecraft.core.entity.player.Player;
 
 import static net.minecraft.server.player.PlayerListBox.updateList;
 
-public class MelonUtilitiesLogic {
+public class CommandLogicMelonUtilities {
 
 		/*
 	 Naming Scheme for methods in this class is:
@@ -55,7 +55,7 @@ public class MelonUtilitiesLogic {
 		FeedbackHandler.success(sender, "Reloaded " + Data.Roles.roleDataHashMap.size() + " Role(s)!");
 
 		FeedbackHandler.destructive(sender, "Building Role Syntax...");
-		CommandRole.buildRoleSyntax();
+		CommandRole.buildSyntax();
 		FeedbackHandler.success(sender, "Role Syntax Built!");
 
 		//TODO FeedbackHandler.destructive(source, "Building Rollback Syntax...");

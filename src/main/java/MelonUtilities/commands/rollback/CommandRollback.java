@@ -33,7 +33,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 		builder.executes(context ->
 			{
 				Player sender = context.getSource().getSender(); if(sender == null){return 0;}
-				return RollbackLogic.rollback(sender);
+				return CommandLogicRollback.rollback(sender);
 			}
 		);
 		return builder;
@@ -54,7 +54,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 							int z1 = chunk1.getZ(source);
 							int x2 = chunk2.getX(source);
 							int z2 = chunk2.getZ(source);
-							return RollbackLogic.rollback_area(sender, x1, z1, x2, z2);
+							return CommandLogicRollback.rollback_area(sender, x1, z1, x2, z2);
 						}
 					)
 				)
@@ -68,7 +68,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
-					return RollbackLogic.rollback_take_snapshot(sender);
+					return CommandLogicRollback.rollback_take_snapshot(sender);
 				}
 			)
 		);
@@ -80,7 +80,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
-					return RollbackLogic.rollback_take_backup(sender);
+					return CommandLogicRollback.rollback_take_backup(sender);
 				}
 			)
 		);
@@ -92,7 +92,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
-					return RollbackLogic.rollback_prune_snapshots(sender);
+					return CommandLogicRollback.rollback_prune_snapshots(sender);
 				}
 			)
 		);
@@ -104,7 +104,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
-					return RollbackLogic.rollback_prune_backups(sender);
+					return CommandLogicRollback.rollback_prune_backups(sender);
 				}
 			)
 		);
@@ -116,7 +116,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
-					return RollbackLogic.rollback_auto_snapshots(sender);
+					return CommandLogicRollback.rollback_auto_snapshots(sender);
 				}
 			)
 		);
@@ -128,7 +128,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
-					return RollbackLogic.rollback_auto_backups(sender);
+					return CommandLogicRollback.rollback_auto_backups(sender);
 				}
 			)
 		);

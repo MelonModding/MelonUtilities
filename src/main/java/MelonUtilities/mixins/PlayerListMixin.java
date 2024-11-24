@@ -1,4 +1,4 @@
-package MelonUtilities.mixins.other;
+package MelonUtilities.mixins;
 
 import MelonUtilities.utility.builders.RoleBuilder;
 import net.minecraft.core.net.packet.PacketPlayerList;

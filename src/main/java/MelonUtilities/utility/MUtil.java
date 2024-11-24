@@ -5,7 +5,9 @@ import MelonUtilities.utility.managers.RollbackManager;
 import com.b100.json.JsonParser;
 import com.b100.json.element.JsonObject;
 import com.b100.utils.StringUtils;
+import net.minecraft.client.entity.player.PlayerLocal;
 import net.minecraft.core.block.BlockLogicChest;
+import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.util.collection.Pair;
@@ -250,4 +252,60 @@ public class MUtil {
 		//return's null if chest is a single chest
 		return  null;
 	}
+
+	// returns true if we teleported
+	public static boolean jump(World world, int x, int y, int z, Player player){
+		int counter = 2;
+		for(int y2 = y+1; y2 < 255; y2++){
+			if(counter > 0){
+				counter--;
+				if (world.getBlockId(x, y2, z) == Blocks.BLOCK_STEEL.id()){
+					break;
+				}
+			}
+			if(world.getBlock(x, y2, z) == Blocks.BLOCK_STEEL){
+				teleport(x+0.5, y2+1, z+0.5, player);
+				return true;
+			}
+			else if (world.getBlockId(x, y2, z) != 0 && !Data.MainConfig.config.allowObstructions) {
+				break;
+			}
+		}
+		return false;
+	}
+
+	// returns true if we teleported
+	public static boolean sneak(World world, int x, int y, int z, Player player){
+		int counter = 2;
+		for(int y2 = y-1; y2 > 0; y2--){
+			if(counter > 0){
+				counter--;
+				if (world.getBlockId(x, y2, z) == Blocks.BLOCK_STEEL.id()){
+					break;
+				}
+			}
+			if(world.getBlock(x, y2, z) == Blocks.BLOCK_STEEL){
+				teleport(x+0.5, y2+1, z+0.5, player);
+				return true;
+			}
+			else if (world.getBlockId(x, y2, z) != 0 && !Data.MainConfig.config.allowObstructions) {
+				break;
+			}
+		}
+		return false;
+	}
+
+	public static void teleport(double x, double y, double z, Player player){
+		if (player.world.isClientSide)
+			return;
+		if (player instanceof PlayerServer){
+			PlayerServer playerMP = (PlayerServer)player;
+			playerMP.playerNetServerHandler.teleport(x, y, z);
+		} else if (player instanceof PlayerLocal) {
+			PlayerLocal playerSP = (PlayerLocal)player;
+			playerSP.setPos(x, y + playerSP.bbHeight, z);
+		}
+		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 100f);
+	}
+
 }

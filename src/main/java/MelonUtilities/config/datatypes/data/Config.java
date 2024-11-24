@@ -16,4 +16,6 @@ public class Config {
 	public int timeBetweenSnapshotPruning = 12;
 	public double lastSnapshotPrune = 0;
 
+	public boolean allowObstructions = true;
+	public int elevatorCooldown = 8;
 }

@@ -29,7 +29,7 @@ import java.util.Map;
 
 import static MelonUtilities.utility.managers.RollbackManager.*;
 
-public class RollbackLogic {
+public class CommandLogicRollback {
 	/*
 	 Naming Scheme for methods in this class is:
 

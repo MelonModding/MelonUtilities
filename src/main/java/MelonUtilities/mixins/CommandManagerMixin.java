@@ -1,4 +1,4 @@
-package MelonUtilities.mixins.other;
+package MelonUtilities.mixins;
 
 import MelonUtilities.commands.lock.CommandLock;
 import MelonUtilities.commands.role.CommandRole;

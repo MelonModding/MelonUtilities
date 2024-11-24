@@ -11,6 +11,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject obj = json.getAsJsonObject();
 		JsonObject roleConfig = obj.getAsJsonObject("Role Config");
 		JsonObject rollbackConfig = obj.getAsJsonObject("Rollback Config");
+		JsonObject elevatorConfig = obj.getAsJsonObject("Elevator Config");
 
 		Config config = new Config();
 
@@ -30,6 +31,9 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		config.timeBetweenSnapshotPruning = rollbackConfig.get("timeBetweenSnapshotPruning").getAsInt();
 		config.lastSnapshotPrune = rollbackConfig.get("lastSnapshotPrune").getAsDouble();
 
+		config.allowObstructions = elevatorConfig.get("allowObstructions").getAsBoolean();
+		config.elevatorCooldown = elevatorConfig.get("elevatorCooldown").getAsInt();
+
 		return config;
 	}
 
@@ -38,6 +42,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject obj = new JsonObject();
 		JsonObject roleConfig = new JsonObject();
 		JsonObject rollbackConfig = new JsonObject();
+		JsonObject elevatorConfig = new JsonObject();
 
 		roleConfig.addProperty("defaultRole", src.defaultRole);
 		roleConfig.addProperty("displayMode", src.displayMode);
@@ -56,6 +61,11 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		rollbackConfig.addProperty("lastSnapshotPrune", src.lastSnapshotPrune);
 
 		obj.add("Rollback Config", rollbackConfig);
+
+		elevatorConfig.addProperty("allowObstructions", src.allowObstructions);
+		elevatorConfig.addProperty("elevatorCooldown", src.elevatorCooldown);
+
+		obj.add("Elevator Config", rollbackConfig);
 
 		return obj;
 	}

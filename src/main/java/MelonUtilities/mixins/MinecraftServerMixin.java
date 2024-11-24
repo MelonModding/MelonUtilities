@@ -1,4 +1,4 @@
-package MelonUtilities.mixins.other;
+package MelonUtilities.mixins;
 
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.utility.managers.RollbackManager;

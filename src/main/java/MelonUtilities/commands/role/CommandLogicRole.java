@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @SuppressWarnings("SameReturnValue")
-public class RoleLogic {
+public class CommandLogicRole {
 
 	/*
 	 Naming Scheme for methods in this class is:
@@ -115,7 +115,7 @@ public class RoleLogic {
 	public static int role_reload(Player sender) {
 		Data.Roles.reload();
 		FeedbackHandler.success(sender, "Reloaded %" + Data.Roles.roleDataHashMap.size() + "% Role(s)!");
-		CommandRole.buildRoleSyntax();
+		CommandRole.buildSyntax();
 		FeedbackHandler.success(sender, "Built Role Syntax!");
 		Data.MainConfig.reload();
 		FeedbackHandler.success(sender, "Reloaded Config!");

@@ -3,28 +3,14 @@ package MelonUtilities;
 import MelonUtilities.commands.lock.CommandLock;
 import MelonUtilities.commands.role.CommandRole;
 import MelonUtilities.commands.rollback.CommandRollback;
-import MelonUtilities.config.*;
+import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
-import MelonUtilities.config.datatypes.data.Crew;
-import MelonUtilities.config.datatypes.data.Home;
-import MelonUtilities.config.datatypes.jsonadapters.CrewJsonAdapter;
-import MelonUtilities.config.datatypes.jsonadapters.HomeJsonAdapter;
 import MelonUtilities.listeners.ChatInputListener;
 import MelonUtilities.utility.MUtil;
-import MelonUtilities.utility.managers.RollbackManager;
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.core.data.gamerule.GameRuleBoolean;
-import net.minecraft.core.data.gamerule.GameRules;
-import net.minecraft.core.data.registry.recipe.adapter.ItemStackJsonAdapter;
-import net.minecraft.core.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.useless.serverlibe.ServerLibe;
-
-import static net.minecraft.server.player.PlayerListBox.updateList;
 
 
 public class MelonUtilities implements ModInitializer {
@@ -32,99 +18,32 @@ public class MelonUtilities implements ModInitializer {
 	public static final String MOD_ID = "melonutilities";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-
-
-	public static final Gson GSON = (new GsonBuilder()).setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().excludeFieldsWithoutExposeAnnotation().registerTypeAdapter(ItemStack.class, new ItemStackJsonAdapter()).registerTypeAdapter(Home.class, new HomeJsonAdapter()).registerTypeAdapter(Crew.class, new CrewJsonAdapter()).create();
-
-	public static GameRuleBoolean FIRE_TICKS = GameRules.register(new GameRuleBoolean("doFireTick", true));
-
-
-	public static void updateAll() {
-		// Crew
-		// Helper
-		//TODO HelperCommand.buildHelperSyntax();
-
-		// Home
-
-		// Kit
-		//TODO Data.kits.loadAll(KitData.class);
-		//TODO KitCommand.buildKitSyntax();
-
-		// Lock
-
-		// Misc
-
-		// Role
-		Data.Roles.reload();
-		CommandRole.buildRoleSyntax();
-
-		// Tpa
-
-		// Utility
-
-		// Warp
-
-		// Anything Else
+	public static void reloadAndBuildAll() {
+		Data.Kits.reload();
 		Data.MainConfig.reload();
 		Data.Users.reload();
-		updateList();
-
-	}
-
-	public void updateRoles(){
-		Data.MainConfig.reload();
 		Data.Roles.reload();
-		CommandRole.buildRoleSyntax();
-		updateList();
+
+		//CommandKit.buildKitSyntax();
+		CommandRollback.buildSyntax();
+		CommandRole.buildSyntax();
+		CommandLock.buildSyntax();
 	}
 
-	public void updateKits(){
-		Data.MainConfig.reload();
-		//TODO Data.kits.loadAll(KitData.class);
-		//TODO KitCommand.buildKitSyntax();
+	public void initializeCommands(){
+		LOGGER.info("Commands initializing!");
+
+		reloadAndBuildAll();
+
+		LOGGER.info("Commands initialized!");
 	}
 
 	@Override
 	public void onInitialize() {
 		LOGGER.info("MelonUtilities initializing!");
-		// Crew
-		// Helper
-		//TODO HelperCommand.buildHelperSyntax();
-
-		// Home
-		//TODO SetHomeCommand.buildSyntax();
-		//TODO DelHomeCommand.buildSyntax();
-		//TODO HomeCommand.buildSyntax();
-
-		// Kit 352246
-		//TODO Data.kits.loadAll(KitData.class);
-		//TODO KitCommand.buildKitSyntax();
-
-		// Lock
-		CommandLock.buildLockSyntax();
-
-		// Misc
-		// Role
-		Data.Roles.reload();
-		CommandRole.buildRoleSyntax();
-
-		// Rollback
-		CommandRollback.buildSyntax();
-		RollbackManager.onInit();
-
-		// Tpa
-		// Utility
-		// Warp
-		// ServerLibe
-
-		// In order for methods inside your listeners to be recognized by ServerLibe you must
-		// register them into ServerLibe like such
-		//ServerLibe.registerListener(new GuiTestListener()); // Example Listener
-		//ServerLibe.registerListener(new DebugInfoListener()); // Prints out debug info to chat on a number of events, disable by default because it's annoying
+		initializeCommands();
+		//Listeners
 		ServerLibe.registerListener(new ChatInputListener());
-		// Anything Else
-
-
 		LOGGER.info("MelonUtilities initialized!");
 	}
 

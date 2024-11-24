@@ -1,4 +1,4 @@
-package MelonUtilities.mixins.rollback;
+package MelonUtilities.mixins;
 
 import MelonUtilities.utility.managers.RollbackManager;
 import net.minecraft.core.world.chunk.Chunk;

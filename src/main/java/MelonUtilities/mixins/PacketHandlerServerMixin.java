@@ -1,4 +1,4 @@
-package MelonUtilities.mixins.other;
+package MelonUtilities.mixins;
 
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
@@ -14,7 +14,6 @@ import net.minecraft.core.net.command.*;
 import net.minecraft.core.net.packet.PacketBlockUpdate;
 import net.minecraft.core.net.packet.PacketChat;
 import net.minecraft.core.net.packet.Packet;
-import net.minecraft.core.net.packet.PacketPlayerAction;
 import net.minecraft.core.net.packet.PacketPlayerAction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;

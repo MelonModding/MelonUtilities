@@ -1,4 +1,4 @@
-package MelonUtilities.mixins.gamerules;
+package MelonUtilities.mixins;
 
 import net.minecraft.core.net.NetworkManager;
 import net.minecraft.core.net.packet.PacketLogin;
