@@ -5,8 +5,6 @@ import MelonUtilities.utility.feedback.FeedbackHandler;
 import com.mojang.brigadier.Command;
 import net.minecraft.core.entity.player.Player;
 
-import java.util.UUID;
-
 public class CommandLogicElevator {
 		/*
 	 Naming Scheme for methods in this class is:
@@ -30,17 +28,22 @@ public class CommandLogicElevator {
 	*/
 
 	public static int elevator_allowobstructions(Player sender){
-		UUID senderUUID = sender.uuid;
-
 		if(Data.MainConfig.config.allowObstructions){
 			Data.MainConfig.config.allowObstructions = false;
-			Data.Users.save(senderUUID);
-			FeedbackHandler.destructive(sender, "Lock Bypass Disabled");
+			Data.MainConfig.save();
+			FeedbackHandler.destructive(sender, "Allow Obstructions Disabled");
 		} else {
 			Data.MainConfig.config.allowObstructions = true;
-			Data.Users.save(senderUUID);
-			FeedbackHandler.success(sender, "Lock Bypass Enabled!");
+			Data.MainConfig.save();
+			FeedbackHandler.success(sender, "Allow Obstructions Enabled!");
 		}
+		return Command.SINGLE_SUCCESS;
+	}
+
+	public static int elevator_cooldown(Player sender, int cooldownValue) {
+		Data.MainConfig.config.elevatorCooldown = cooldownValue;
+		Data.MainConfig.save();
+		FeedbackHandler.success(sender, "Elevator Cooldown Set to %" + cooldownValue);
 		return Command.SINGLE_SUCCESS;
 	}
 }

@@ -1,9 +1,10 @@
 package MelonUtilities.commands.elevator;
 
-import MelonUtilities.commands.lock.CommandLogicLock;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
@@ -15,8 +16,23 @@ public class CommandElevator implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					Player sender = context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicLock.lock_bypass(sender);
+					return CommandLogicElevator.elevator_allowobstructions(sender);
 				}
+			)
+		);
+		return builder;
+	}
+
+	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> elevatorCooldown(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
+		builder.then(LiteralArgumentBuilder.<CommandSource>literal("cooldown")
+			.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("cooldownvalue", IntegerArgumentType.integer(0, 99))
+				.executes(context ->
+					{
+						Player sender = context.getSource().getSender(); if(sender == null){return 0;}
+						int cooldownValue = context.getArgument("cooldownvalue", Integer.class);
+						return CommandLogicElevator.elevator_cooldown(sender, cooldownValue);
+					}
+				)
 			)
 		);
 		return builder;

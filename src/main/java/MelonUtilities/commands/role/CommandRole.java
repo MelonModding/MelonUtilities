@@ -26,12 +26,12 @@ public class CommandRole implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleCreate(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("create")
 			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", StringArgumentType.string())
-				.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 99))
+				.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityvalue", IntegerArgumentType.integer(0, 99))
 					.executes(context ->
 						{
 							Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 							String roleID = context.getArgument("roleID", String.class);
-							int rolePriority = context.getArgument("priorityValue", Integer.class);
+							int rolePriority = context.getArgument("priorityvalue", Integer.class);
 							return CommandLogicRole.role_create(sender, roleID, rolePriority);
 						}
 					)
@@ -60,12 +60,12 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("edit")
 			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.then(LiteralArgumentBuilder.<CommandSource>literal("priority")
-					.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityValue", IntegerArgumentType.integer(0, 4096))
+					.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityvalue", IntegerArgumentType.integer(0, 99))
 						.executes(context ->
 							{
 								Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 								Role role = context.getArgument("role", Role.class);
-								int priorityValue = context.getArgument("priorityValue", Integer.class);
+								int priorityValue = context.getArgument("priorityvalue", Integer.class);
 								return CommandLogicRole.role_edit_priority(sender, role, priorityValue);
 							}
 						)
@@ -73,7 +73,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 				)
 				.then(LiteralArgumentBuilder.<CommandSource>literal("display")
 					.then(LiteralArgumentBuilder.<CommandSource>literal("name")
-						.then(RequiredArgumentBuilder.<CommandSource, String>argument("displayName", StringArgumentType.greedyString())
+						.then(RequiredArgumentBuilder.<CommandSource, String>argument("displayname", StringArgumentType.greedyString())
 							.executes(context ->
 								{
 									Player sender = context.getSource().getSender(); if(sender == null){return 0;}
@@ -204,24 +204,24 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("custom")
 								.then(LiteralArgumentBuilder.<CommandSource>literal("prefix")
-									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
+									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customaffix", StringArgumentType.greedyString())
 										.executes(context ->
 											{
 												Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
-												String customAffix = context.getArgument("customAffix", String.class);
+												String customAffix = context.getArgument("customaffix", String.class);
 												return CommandLogicRole.role_edit_display_border_style_custom_prefix(sender, role, customAffix);
 											}
 										)
 									)
 								)
 								.then(LiteralArgumentBuilder.<CommandSource>literal("suffix")
-									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
+									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customaffix", StringArgumentType.greedyString())
 										.executes(context ->
 											{
 												Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
-												String customAffix = context.getArgument("customAffix", String.class);
+												String customAffix = context.getArgument("customaffix", String.class);
 												return CommandLogicRole.role_edit_display_border_style_custom_suffix(sender, role, customAffix);
 											}
 										)
@@ -294,24 +294,24 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 							.then(LiteralArgumentBuilder.<CommandSource>literal("custom")
 								.then(LiteralArgumentBuilder.<CommandSource>literal("prefix")
-									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
+									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customaffix", StringArgumentType.greedyString())
 										.executes(context ->
 											{
 												Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
-												String customAffix = context.getArgument("customAffix", String.class);
+												String customAffix = context.getArgument("customaffix", String.class);
 												return CommandLogicRole.role_edit_username_border_style_custom_prefix(sender, role, customAffix);
 											}
 										)
 									)
 								)
 								.then(LiteralArgumentBuilder.<CommandSource>literal("suffix")
-									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customAffix", StringArgumentType.greedyString())
+									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customaffix", StringArgumentType.greedyString())
 										.executes(context ->
 											{
 												Player sender = context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
-												String customAffix = context.getArgument("customAffix", String.class);
+												String customAffix = context.getArgument("customaffix", String.class);
 												return CommandLogicRole.role_edit_username_border_style_custom_suffix(sender, role, customAffix);
 											}
 										)

@@ -254,16 +254,9 @@ public class MUtil {
 	}
 
 	// returns true if we teleported
-	public static boolean jump(World world, int x, int y, int z, Player player){
-		int counter = 2;
+	public static boolean jumpOnElevator(World world, int x, int y, int z, Player player){
 		for(int y2 = y+1; y2 < 255; y2++){
-			if(counter > 0){
-				counter--;
-				if (world.getBlockId(x, y2, z) == Blocks.BLOCK_STEEL.id()){
-					break;
-				}
-			}
-			if(world.getBlock(x, y2, z) == Blocks.BLOCK_STEEL){
+			if(world.getBlock(x, y2, z) == Blocks.BLOCK_STEEL && !Blocks.solid[world.getBlockId(x, y2+1, z)] && !Blocks.solid[world.getBlockId(x, y2+2, z)]){
 				teleport(x+0.5, y2+1, z+0.5, player);
 				return true;
 			}
@@ -275,16 +268,9 @@ public class MUtil {
 	}
 
 	// returns true if we teleported
-	public static boolean sneak(World world, int x, int y, int z, Player player){
-		int counter = 2;
+	public static boolean sneakOnElevator(World world, int x, int y, int z, Player player){
 		for(int y2 = y-1; y2 > 0; y2--){
-			if(counter > 0){
-				counter--;
-				if (world.getBlockId(x, y2, z) == Blocks.BLOCK_STEEL.id()){
-					break;
-				}
-			}
-			if(world.getBlock(x, y2, z) == Blocks.BLOCK_STEEL){
+			if(world.getBlock(x, y2, z) == Blocks.BLOCK_STEEL && !Blocks.solid[world.getBlockId(x, y2+1, z)] && !Blocks.solid[world.getBlockId(x, y2+2, z)]){
 				teleport(x+0.5, y2+1, z+0.5, player);
 				return true;
 			}
@@ -299,11 +285,11 @@ public class MUtil {
 		if (player.world.isClientSide)
 			return;
 		if (player instanceof PlayerServer){
-			PlayerServer playerMP = (PlayerServer)player;
-			playerMP.playerNetServerHandler.teleport(x, y, z);
+			PlayerServer playerServer = (PlayerServer)player;
+			playerServer.playerNetServerHandler.teleport(x, y, z);
 		} else if (player instanceof PlayerLocal) {
-			PlayerLocal playerSP = (PlayerLocal)player;
-			playerSP.setPos(x, y + playerSP.bbHeight, z);
+			PlayerLocal playerLocal = (PlayerLocal)player;
+			playerLocal.setPos(x, y + playerLocal.bbHeight, z);
 		}
 		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 100f);
 	}

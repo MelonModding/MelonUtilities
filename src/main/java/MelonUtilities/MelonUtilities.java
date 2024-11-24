@@ -1,13 +1,16 @@
 package MelonUtilities;
 
+import MelonUtilities.commands.elevator.CommandElevator;
 import MelonUtilities.commands.lock.CommandLock;
 import MelonUtilities.commands.role.CommandRole;
 import MelonUtilities.commands.rollback.CommandRollback;
+import MelonUtilities.commands.utility.CommandMelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.listeners.ChatInputListener;
 import MelonUtilities.utility.MUtil;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.core.net.command.CommandManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.useless.serverlibe.ServerLibe;
@@ -28,6 +31,14 @@ public class MelonUtilities implements ModInitializer {
 		CommandRollback.buildSyntax();
 		CommandRole.buildSyntax();
 		CommandLock.buildSyntax();
+	}
+
+	public static void registerCommands(){
+		CommandManager.registerCommand(new CommandLock());
+		CommandManager.registerCommand(new CommandRole());
+		CommandManager.registerCommand(new CommandRollback());
+		CommandManager.registerCommand(new CommandElevator());
+		CommandManager.registerCommand(new CommandMelonUtilities());
 	}
 
 	public void initializeCommands(){

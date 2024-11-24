@@ -75,7 +75,7 @@ public abstract class PlayerMixinElevator extends Mob {
 				}
 
 				if(isSneaking() && cooldown <= 0 && blockUnderFeet == Blocks.BLOCK_STEEL && stoodOnElevator){
-					if (MUtil.sneak(world, blockX, blockY, blockZ, thisAs))
+					if (MUtil.sneakOnElevator(world, blockX, blockY, blockZ, thisAs))
 						cooldown = Data.MainConfig.config.elevatorCooldown;
 					return;
 				}
@@ -84,7 +84,7 @@ public abstract class PlayerMixinElevator extends Mob {
 
 
 		if(dy > 0.109 && cooldown <= 0 && stoodOnElevator && Math.abs(this.x - (elevatorBlockX+0.5f)) < 0.6f && Math.abs(this.z - (elevatorBlockZ+0.5f)) < 0.6f && this.y - elevatorBlockY > 0){
-			if (MUtil.jump(world, elevatorBlockX, elevatorBlockY, elevatorBlockZ, thisAs)) {
+			if (MUtil.jumpOnElevator(world, elevatorBlockX, elevatorBlockY, elevatorBlockZ, thisAs)) {
 				// reset y velocity and cooldown if we teleported
 				cooldown = Data.MainConfig.config.elevatorCooldown;
 				this.yd = 0;
