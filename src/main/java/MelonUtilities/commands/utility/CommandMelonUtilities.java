@@ -18,6 +18,14 @@ public class CommandMelonUtilities implements CommandManager.CommandRegistry{
 					}
 				)
 			)
+			.then(LiteralArgumentBuilder.<CommandSource>literal("print")
+				.executes(context ->
+					{
+						Player sender = context.getSource().getSender();
+						return CommandLogicMelonUtilities.melonutilities_reload(sender);
+					}
+				)
+			)
 		);
 	}
 }

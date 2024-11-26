@@ -8,6 +8,7 @@ import MelonUtilities.commands.utility.CommandMelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.listeners.ChatInputListener;
+import MelonUtilities.listeners.LogEventListener;
 import MelonUtilities.sqlite.DatabaseManager;
 import MelonUtilities.utility.MUtil;
 import net.fabricmc.api.ModInitializer;
@@ -57,6 +58,7 @@ public class MelonUtilities implements ModInitializer {
 		DatabaseManager.onInitilizeTest();
 		//Listeners
 		ServerLibe.registerListener(new ChatInputListener());
+		ServerLibe.registerListener(new LogEventListener());
 		LOGGER.info("MelonUtilities initialized!");
 	}
 

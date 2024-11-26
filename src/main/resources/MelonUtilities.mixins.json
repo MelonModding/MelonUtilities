@@ -33,6 +33,7 @@
     "PacketAddPlayerMixin",
     "PacketLoginHandlerMixin",
     "PlayerListMixin",
+    "ServerPlayerControllerMixin",
     "tile_entities.blast_furnace.BlockLogicFurnaceBlastMixin"
   ],
   "injectors": {

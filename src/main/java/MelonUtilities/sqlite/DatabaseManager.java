@@ -1,20 +1,19 @@
 package MelonUtilities.sqlite;
 
 import MelonUtilities.MelonUtilities;
+import MelonUtilities.interfaces.QuickConnection;
 import MelonUtilities.sqlite.log_events.LogEventBreak;
 import MelonUtilities.sqlite.log_events.LogEventPlace;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DatabaseManager {
 
 
 	public static void onInitilizeTest(){
-		Connection conn = null;
-		try {
-			conn = DriverManager.getConnection("jdbc:sqlite:c:/sqlite/db/chinook.db");
-			MelonUtilities.LOGGER.info("Opened database connection!");
-
+		connect((conn -> {
 			try {
 				LogEventPlace.deleteTable(conn);
 			} catch (Exception ignored){
@@ -37,13 +36,18 @@ public class DatabaseManager {
 			MelonUtilities.LOGGER.info("Displaying database...");
 			LogEventPlace.printAllEvents(conn);
 			LogEventBreak.printAllEvents(conn);
+		}));
+	}
 
-
+	public static void connect(QuickConnection qConn){
+		try(Connection conn = DriverManager.getConnection("jdbc:sqlite:c:/sqlite/db/chinook.db")) {
+			qConn.run(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			MelonUtilities.LOGGER.error("{}: {}", e.getClass().getName(), e.getMessage());
 		}
 	}
+
 }
 
 /*
