@@ -8,6 +8,7 @@ import MelonUtilities.commands.utility.CommandMelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.listeners.ChatInputListener;
+import MelonUtilities.sqlite.DatabaseManager;
 import MelonUtilities.utility.MUtil;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.net.command.CommandManager;
@@ -53,6 +54,7 @@ public class MelonUtilities implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("MelonUtilities initializing!");
 		initializeCommands();
+		DatabaseManager.onInitilizeTest();
 		//Listeners
 		ServerLibe.registerListener(new ChatInputListener());
 		LOGGER.info("MelonUtilities initialized!");
