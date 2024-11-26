@@ -72,6 +72,8 @@ public class CommandLogicLock {
 						FeedbackHandler.success(sender, "Locked Trommel!");
 					} else if (container instanceof TileEntityBasket) {
 						FeedbackHandler.success(sender, "Locked Basket!");
+					} else if (container instanceof TileEntityActivator) {
+						FeedbackHandler.success(sender, "Locked Activator!");
 					}
 
 					containerInterface.setIsLocked(true);
@@ -176,6 +178,8 @@ public class CommandLogicLock {
 						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Trommel!");
 					} else if (container instanceof TileEntityBasket) {
 						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Basket!");
+					} else if (container instanceof TileEntityActivator) {
+						FeedbackHandler.success(sender, "Trusted %" + targetUsernameOrDisplayName + "% to this Activator!");
 					}
 					containerInterface.addTrustedPlayer(targetUUID);
 				} else {
@@ -267,6 +271,8 @@ public class CommandLogicLock {
 						FeedbackHandler.success(sender, "Trusted Community to this Trommel!");
 					} else if (container instanceof TileEntityBasket) {
 						FeedbackHandler.success(sender, "Trusted Community to this Basket!");
+					} else if (container instanceof TileEntityActivator) {
+						FeedbackHandler.success(sender, "Trusted Community to this Activator!");
 					}
 					containerInterface.setIsCommunityContainer(true);
 				} else {
@@ -340,6 +346,8 @@ public class CommandLogicLock {
 						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Trommel!");
 					} else if (container instanceof TileEntityBasket) {
 						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Basket!");
+					} else if (container instanceof TileEntityActivator) {
+						FeedbackHandler.destructive(sender, "Untrusted %" + targetDisplayName + "% from this Activator!");
 					}
 					containerInterface.removeTrustedPlayer(targetUUID);
 				} else {
@@ -427,6 +435,8 @@ public class CommandLogicLock {
 						FeedbackHandler.destructive(sender, "Untrusted Community from this Trommel!");
 					} else if (container instanceof TileEntityBasket) {
 						FeedbackHandler.destructive(sender, "Untrusted Community from this Basket!");
+					} else if (container instanceof TileEntityActivator) {
+						FeedbackHandler.destructive(sender, "Untrusted Community from this Activator!");
 					}
 					containerInterface.setIsCommunityContainer(false);
 				} else {
