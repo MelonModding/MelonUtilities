@@ -1,5 +1,8 @@
 package MelonUtilities.commands.utility;
 
+import MelonUtilities.sqlite.DatabaseManager;
+import MelonUtilities.sqlite.log_events.LogEventBreak;
+import MelonUtilities.sqlite.log_events.LogEventPlace;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.core.entity.player.Player;
@@ -21,8 +24,11 @@ public class CommandMelonUtilities implements CommandManager.CommandRegistry{
 			.then(LiteralArgumentBuilder.<CommandSource>literal("print")
 				.executes(context ->
 					{
-						Player sender = context.getSource().getSender();
-						return CommandLogicMelonUtilities.melonutilities_reload(sender);
+						DatabaseManager.connect((conn) -> {
+							LogEventPlace.printAllEvents(conn);
+							LogEventBreak.printAllEvents(conn);
+						});
+						return 1;
 					}
 				)
 			)
