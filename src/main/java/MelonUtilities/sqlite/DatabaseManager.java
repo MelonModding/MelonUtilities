@@ -35,8 +35,8 @@ public class DatabaseManager {
 			LogEventBreak.insert(conn, "testUUID9807987839123", "block.thingy:0", 10, 120, 12);
 			LogEventBreak.insert(conn, "testUUID1110001110001", "block.biggerthingy:56", 12, 111, 16);
 			MelonUtilities.LOGGER.info("Displaying database...");
-			LogEventPlace.printAllEvents(conn, "PlaceEvents");
-			LogEventBreak.printAllEvents(conn, "BreakEvents");
+			LogEventPlace.printAllEvents(conn);
+			LogEventBreak.printAllEvents(conn);
 
 
 		} catch (SQLException e) {
