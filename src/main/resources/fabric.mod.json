@@ -6,8 +6,7 @@
   "name": "MelonUtilities",
   "description": "An Extensive Utility Mod For BTA Servers.",
   "authors": [
-    "MelonMojito",
-		"UselessBullets"
+    "MelonModding"
   ],
   "contact": {
     "homepage": "",
@@ -28,7 +27,7 @@
   ],
 
   "depends": {
-		"minecraft": "Nightly.2024-11-18",
+		"minecraft": "*",
     "fabricloader": ">=0.15.5"
   },
   "suggests": {

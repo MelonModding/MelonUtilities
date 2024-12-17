@@ -22,6 +22,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.time.Duration;
 import java.util.*;
 
 public class MUtil {
@@ -247,7 +248,7 @@ public class MUtil {
 					--otherChestZ;
 				}
 			}
-			return (TileEntityChest) world.getBlockEntity(otherChestX, chest.y, otherChestZ);
+			return (TileEntityChest) world.getTileEntity(otherChestX, chest.y, otherChestZ);
 		}
 		//return's null if chest is a single chest
 		return  null;
@@ -294,4 +295,14 @@ public class MUtil {
 		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 100f);
 	}
 
+	public static String hmsConversion(long systemTimeMillis) {
+
+		Duration duration = Duration.ofMillis(systemTimeMillis);
+
+		long h = duration.toHours();
+		long m = duration.toMinutes() % 60;
+		long s = duration.getSeconds() % 60;
+
+		return String.format("%02d:%02d:%02d [h:m:s]", h, m, s);
+	}
 }

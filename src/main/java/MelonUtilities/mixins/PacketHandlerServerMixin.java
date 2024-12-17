@@ -192,9 +192,9 @@ public abstract class PacketHandlerServerMixin {
 	private void handleBlockDigInject(PacketPlayerAction packet, CallbackInfo ci){
 		Player player = this.playerEntity;
 		WorldServer world = this.mcServer.getDimensionWorld(player.dimension);
-		TileEntity container = world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+		TileEntity container = world.getTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 		if(container instanceof TileEntityContainerInterface) {
-			TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+			TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 			if (iContainer.getLockOwner() != null
 				&& !iContainer.getLockOwner().equals(player.uuid)
 				&& !iContainer.getTrustedPlayers().contains(player.uuid)

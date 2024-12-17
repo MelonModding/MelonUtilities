@@ -4,16 +4,15 @@ import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.utility.MUtil;
+import com.mojang.nbt.NbtIo;
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
-import com.mojang.nbt.NbtIo;
 import com.mojang.nbt.tags.Tag;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.block.entity.TileEntityDispatcher;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityDispatcher;
 import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.PacketBlockRegionUpdate;
 import net.minecraft.core.world.World;
@@ -29,7 +28,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -160,7 +162,7 @@ public class RollbackManager {
 			for (Tag<?> tileEntityTagBase : tileEntityListTag) {
 				TileEntity tileEntity;
 				if (!(tileEntityTagBase instanceof CompoundTag) || (tileEntity = TileEntityDispatcher.createAndLoadEntity((CompoundTag)tileEntityTagBase)) == null) continue;
-				chunk.addBlockEntity(tileEntity);
+				chunk.addTileEntity(tileEntity);
 			}
 		}
 	}

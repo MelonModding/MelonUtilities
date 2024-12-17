@@ -9,13 +9,14 @@ public class LogEventBreak {
 	public static final String tableName = "BreakEvents";
 
 	public static void insert(Connection conn, String playerUUID, String blockKey, int x, int y, int z) throws SQLException {
-		String insertSQL = "INSERT INTO " + tableName + "(playerUUID, blockKey, x, y, z) VALUES(?,?,?,?,?)";
+		String insertSQL = "INSERT INTO " + tableName + "(time, playerUUID, blockKey, x, y, z) VALUES(?,?,?,?,?,?)";
 		PreparedStatement preparedStatement = conn.prepareStatement(insertSQL);
-		preparedStatement.setString(1, playerUUID);
-		preparedStatement.setString(2, blockKey);
-		preparedStatement.setInt(3, x);
-		preparedStatement.setInt(4, y);
-		preparedStatement.setInt(5, z);
+		preparedStatement.setLong(1, System.currentTimeMillis());
+		preparedStatement.setString(2, playerUUID);
+		preparedStatement.setString(3, blockKey);
+		preparedStatement.setInt(4, x);
+		preparedStatement.setInt(5, y);
+		preparedStatement.setInt(6, z);
 		preparedStatement.executeUpdate();
 	}
 
@@ -23,6 +24,7 @@ public class LogEventBreak {
 		String createTableSQL =
 			"CREATE TABLE  " + tableName + " " +
 				"( " +
+				"time long, " +
 				"playerUUID varchar(255), " +
 				"blockKey varchar(255), " +
 				"x integer, " +
@@ -32,7 +34,6 @@ public class LogEventBreak {
 		Statement statement = conn.createStatement();
 		statement.execute(createTableSQL);
 	}
-
 
 	public static void deleteTable(Connection conn) throws SQLException {
 		String deleteTableSQL = "DROP TABLE " + tableName;
@@ -51,6 +52,7 @@ public class LogEventBreak {
 			MelonUtilities.LOGGER.info
 				(
 					tableName + ": " +
+						resultSet.getLong("time") + ", " +
 						resultSet.getString("playerUUID") + ", " +
 						resultSet.getString("blockKey") + ", " +
 						resultSet.getInt("x") + ", " +

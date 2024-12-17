@@ -12,6 +12,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject roleConfig = obj.getAsJsonObject("Role Config");
 		JsonObject rollbackConfig = obj.getAsJsonObject("Rollback Config");
 		JsonObject elevatorConfig = obj.getAsJsonObject("Elevator Config");
+		JsonObject logConfig = obj.getAsJsonObject("Log Config");
 
 		Config config = new Config();
 
@@ -34,6 +35,8 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		config.allowObstructions = elevatorConfig.get("allowObstructions").getAsBoolean();
 		config.elevatorCooldown = elevatorConfig.get("elevatorCooldown").getAsInt();
 
+		config.JDBCConnectionUrl = logConfig.get("JDBCConnectionUrl").getAsString();
+
 		return config;
 	}
 
@@ -43,6 +46,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject roleConfig = new JsonObject();
 		JsonObject rollbackConfig = new JsonObject();
 		JsonObject elevatorConfig = new JsonObject();
+		JsonObject logConfig = new JsonObject();
 
 		roleConfig.addProperty("defaultRole", src.defaultRole);
 		roleConfig.addProperty("displayMode", src.displayMode);
@@ -66,6 +70,10 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		elevatorConfig.addProperty("elevatorCooldown", src.elevatorCooldown);
 
 		obj.add("Elevator Config", elevatorConfig);
+
+		logConfig.addProperty("JDBCConnectionUrl", src.JDBCConnectionUrl);
+
+		obj.add("Log Config", logConfig);
 
 		return obj;
 	}

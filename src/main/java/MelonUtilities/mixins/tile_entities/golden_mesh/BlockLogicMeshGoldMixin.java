@@ -17,7 +17,7 @@ public class BlockLogicMeshGoldMixin {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(x, y, z);
+		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getTileEntity(x, y, z);
 
 		if(!MUtil.canInteractWithLock(iContainer.getIsLocked(), iContainer.getIsCommunityContainer(), iContainer.getLockOwner(), iContainer.getTrustedPlayers(), player)){
 			FeedbackHandler.error(player, "Golden Mesh is Locked!");

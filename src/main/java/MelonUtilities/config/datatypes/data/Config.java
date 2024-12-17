@@ -18,4 +18,6 @@ public class Config {
 
 	public boolean allowObstructions = true;
 	public int elevatorCooldown = 6;
+
+	public String JDBCConnectionUrl = "";
 }

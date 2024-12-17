@@ -44,7 +44,7 @@ public class CommandLogicLock {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 		if(container != null){
 			if (container instanceof TileEntityContainerInterface) {
 				TileEntityContainerInterface containerInterface = ((TileEntityContainerInterface) container);
@@ -140,7 +140,7 @@ public class CommandLogicLock {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 
 		if(container != null) {
 			if (container instanceof TileEntityContainerInterface) {
@@ -233,7 +233,7 @@ public class CommandLogicLock {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 
 		if(container != null) {
 			if (container instanceof TileEntityContainerInterface) {
@@ -308,7 +308,7 @@ public class CommandLogicLock {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 
 		if(container != null) {
 			if (container instanceof TileEntityContainerInterface) {
@@ -397,7 +397,7 @@ public class CommandLogicLock {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getBlockEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
 
 		if(container != null) {
 			if (container instanceof TileEntityContainerInterface) {

@@ -21,7 +21,7 @@ public class BlockLogicChestMixin {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getBlockEntity(x, y, z);
+		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getTileEntity(x, y, z);
 		if(!MUtil.canInteractWithLock(iContainer.getIsLocked(), iContainer.getIsCommunityContainer(), iContainer.getLockOwner(), iContainer.getTrustedPlayers(), player)){
 			FeedbackHandler.error(player, "Chest is Locked!");
 			cir.setReturnValue(false);
@@ -30,8 +30,8 @@ public class BlockLogicChestMixin {
 
 	@Inject(at = @At("TAIL"), method = "onBlockPlacedByMob", cancellable = true)
 	public void onBlockPlacedInject(World world, int x, int y, int z, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") BlockLogicChest.Type type) {
-		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getBlockEntity(x, y, z));
-		TileEntityChest placedChest = (TileEntityChest) world.getBlockEntity(x, y, z);
+		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getTileEntity(x, y, z));
+		TileEntityChest placedChest = (TileEntityChest) world.getTileEntity(x, y, z);
 
 		TileEntityContainerInterface existingIContainer = (TileEntityContainerInterface) existingChest;
 		TileEntityContainerInterface placedIContainer = (TileEntityContainerInterface) placedChest;

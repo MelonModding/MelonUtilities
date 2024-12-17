@@ -17,8 +17,8 @@ public class ExplosionMixin {
 
 	@Redirect(method = "calculateBlocksToDestroy()V", at = @At(value = "INVOKE", target = "Ljava/util/Set;add(Ljava/lang/Object;)Z"))
 	private boolean preventClaimedDestruction(Set instance, Object e){
-		if (worldObj.getBlockEntity(((ChunkPosition) e).x, ((ChunkPosition) e).y, ((ChunkPosition) e).z) instanceof TileEntityContainerInterface
-			&& ((TileEntityContainerInterface) worldObj.getBlockEntity(((ChunkPosition) e).x, ((ChunkPosition) e).y, ((ChunkPosition) e).z)).getIsLocked()) {
+		if (worldObj.getTileEntity(((ChunkPosition) e).x, ((ChunkPosition) e).y, ((ChunkPosition) e).z) instanceof TileEntityContainerInterface
+			&& ((TileEntityContainerInterface) worldObj.getTileEntity(((ChunkPosition) e).x, ((ChunkPosition) e).y, ((ChunkPosition) e).z)).getIsLocked()) {
 			return false;
 		}
 		instance.add(e);
