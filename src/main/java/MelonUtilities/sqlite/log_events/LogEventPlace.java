@@ -20,9 +20,9 @@ public class LogEventPlace {
 		preparedStatement.executeUpdate();
 	}
 
-	public static void createTable(Connection conn) throws SQLException {
+	public static void createTableIfNotExists(Connection conn) throws SQLException {
 		String createTableSQL =
-			"CREATE TABLE  " + tableName + " " +
+			"CREATE TABLE IF NOT EXISTS " + tableName + " " +
 				"( " +
 				"time long, " +
 				"playerUUID varchar(255), " +
@@ -35,8 +35,8 @@ public class LogEventPlace {
 		statement.execute(createTableSQL);
 	}
 
-	public static void deleteTable(Connection conn) throws SQLException {
-		String deleteTableSQL = "DROP TABLE " + tableName;
+	public static void deleteTableIfExists(Connection conn) throws SQLException {
+		String deleteTableSQL = "DROP TABLE IF EXISTS " + tableName;
 		Statement statement = conn.createStatement();
 		statement.execute(deleteTableSQL);
 	}

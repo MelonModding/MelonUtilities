@@ -1,46 +1,40 @@
 package MelonUtilities.utility.feedback;
 
-import MelonUtilities.utility.MUtil;
 import net.minecraft.core.net.command.TextFormatting;
+import org.jetbrains.annotations.NotNull;
 
 public class FeedbackType {
 
-	private final String type;
-	private final String color;
-	private final String soundPath;
+	public static FeedbackType success = new FeedbackType("success", TextFormatting.LIME, "note.harp");
+	public static FeedbackType error = new FeedbackType("error", TextFormatting.RED, "note.bd");
+	public static FeedbackType destructive = new FeedbackType("destructive", TextFormatting.ORANGE, "note.snare");
+	public static FeedbackType syntax = new FeedbackType("syntax", TextFormatting.LIGHT_GRAY);
 
-	public FeedbackType(String type, String color, String soundPath){
-		this.type = type;
+	private final @NotNull String name;
+	private final @NotNull TextFormatting color;
+	private final @NotNull String soundPath;
+
+	public FeedbackType(@NotNull String name, @NotNull TextFormatting color, @NotNull String soundPath){
+		this.name = name;
 		this.color = color;
 		this.soundPath = soundPath;
 	}
 
-	public FeedbackType(String type, String color){
-		this.type = type;
+	public FeedbackType(@NotNull String name, @NotNull TextFormatting color){
+		this.name = name;
 		this.color = color;
-		this.soundPath = null;
+		this.soundPath = "NO_SOUND_PATH";
 	}
 
-	public String getType() {
-		return type;
+	public @NotNull String getName() {
+		return name;
 	}
 
-	public String getColorString() {
+	public @NotNull TextFormatting getColor() {
 		return color;
 	}
 
-	public String getColorSection() {
-		return TextFormatting.getColorFormatting(color).toString();
-	}
-
-	public TextFormatting getColorFormat() {
-		return TextFormatting.getColorFormatting(color);
-	}
-
-	public String getSoundPath() {
-		if(soundPath != null){
-			return soundPath;
-		}
-		return "NO_SOUND";
+	public @NotNull String getSoundPath() {
+		return soundPath;
 	}
 }

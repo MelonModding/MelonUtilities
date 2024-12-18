@@ -5,15 +5,15 @@ import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.interfaces.TileEntityContainerInterface;
 import MelonUtilities.utility.MUtil;
-import MelonUtilities.utility.feedback.FeedbackHandler;
-import com.llamalad7.mixinextras.sugar.Local;
 import MelonUtilities.utility.builders.RoleBuilder;
+import MelonUtilities.utility.feedback.FeedbackHandlerServer;
+import MelonUtilities.utility.feedback.FeedbackType;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.block.entity.*;
-import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.net.command.*;
+import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.net.packet.Packet;
 import net.minecraft.core.net.packet.PacketBlockUpdate;
 import net.minecraft.core.net.packet.PacketChat;
-import net.minecraft.core.net.packet.Packet;
 import net.minecraft.core.net.packet.PacketPlayerAction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -190,7 +190,7 @@ public abstract class PacketHandlerServerMixin {
 		method = "handleBlockDig",
 		cancellable = true)
 	private void handleBlockDigInject(PacketPlayerAction packet, CallbackInfo ci){
-		Player player = this.playerEntity;
+		PlayerServer player = this.playerEntity;
 		WorldServer world = this.mcServer.getDimensionWorld(player.dimension);
 		TileEntity container = world.getTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 		if(container instanceof TileEntityContainerInterface) {
@@ -211,23 +211,23 @@ public abstract class PacketHandlerServerMixin {
 						iOtherContainer.setIsLocked(true);
 						iContainer.setLockOwner(player.uuid);
 						iOtherContainer.setLockOwner(player.uuid);
-						FeedbackHandler.success(player, "Locked Double Chest!");
+						FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Double Chest!");
 						ci.cancel();
 					} else {
-						FeedbackHandler.success(player, "Locked Chest!");
+						FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Chest!");
 					}
 				} else if (container instanceof TileEntityFurnaceBlast) {
-					FeedbackHandler.success(player, "Locked Blast Furnace!");
+					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Blast Furnace!");
 				} else if (container instanceof TileEntityFurnace) {
-					FeedbackHandler.success(player, "Locked Furnace!");
+					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Furnace!");
 				} else if (container instanceof TileEntityDispenser) {
-					FeedbackHandler.success(player, "Locked Dispenser!");
+					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Dispenser!");
 				} else if (container instanceof TileEntityMeshGold) {
-					FeedbackHandler.success(player, "Locked Golden Mesh!");
+					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Golden Mesh!");
 				} else if (container instanceof TileEntityTrommel) {
-					FeedbackHandler.success(player, "Locked Trommel!");
+					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Trommel!");
 				} else if (container instanceof TileEntityBasket) {
-					FeedbackHandler.success(player, "Locked Basket!");
+					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Basket!");
 				}
 
 				iContainer.setIsLocked(true);
@@ -240,7 +240,7 @@ public abstract class PacketHandlerServerMixin {
 			&& iContainer.getIsLocked()
 			&& !iContainer.getLockOwner().equals(player.uuid))
 			{
-				FeedbackHandler.error(player, "Failed to Lock Container! (Not Owned By You)");
+				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, "Failed to Lock Container! (Not Owned By You)");
 				ci.cancel();
 			}
 
@@ -249,7 +249,7 @@ public abstract class PacketHandlerServerMixin {
 			&& iContainer.getIsLocked()
 			&& iContainer.getLockOwner().equals(player.uuid))
 			{
-				FeedbackHandler.error(player, "Failed to Lock Container! (Already Locked)");
+				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, "Failed to Lock Container! (Already Locked)");
 				ci.cancel();
 			}
 		}

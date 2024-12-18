@@ -1,10 +1,10 @@
 package MelonUtilities;
 
-import MelonUtilities.commands.elevator.CommandElevator;
-import MelonUtilities.commands.lock.CommandLock;
-import MelonUtilities.commands.role.CommandRole;
-import MelonUtilities.commands.rollback.CommandRollback;
-import MelonUtilities.commands.utility.CommandMelonUtilities;
+import MelonUtilities.command.commands.CommandElevator;
+import MelonUtilities.command.commands.CommandLock;
+import MelonUtilities.command.commands.CommandRole;
+import MelonUtilities.command.commands.CommandRollback;
+import MelonUtilities.command.commands.CommandMelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.listeners.ChatInputListener;

@@ -131,7 +131,7 @@ public class MUtil {
 		return username;
 	}
 
-	public static HitResult rayCastFromPlayer(Player sender) {
+	public static HitResult rayCastFromPlayer(PlayerServer sender) {
 		float f = 1.0f;
 		float f1 = sender.xRotO + (sender.xRot - sender.xRotO) * f;
 		float f2 = sender.yRotO + (sender.yRot - sender.yRotO) * f;
@@ -304,5 +304,21 @@ public class MUtil {
 		long s = duration.getSeconds() % 60;
 
 		return String.format("%02d:%02d:%02d [h:m:s]", h, m, s);
+	}
+
+	public static String formatHexString(String dirtyHex){
+		StringBuilder output = new StringBuilder();
+		output.append("§<");
+		char[] charArray = dirtyHex.toCharArray();
+		for (int i = 0; i < charArray.length; i++) {
+			char c = charArray[i];
+			if (i < 6 && Character.isDigit(c)) {
+				output.append(c);
+			} else {
+				break;
+			}
+		}
+		output.append(">");
+		return output.toString();
 	}
 }

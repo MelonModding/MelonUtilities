@@ -14,28 +14,17 @@ public class DatabaseManager {
 
 	public static void onInitilizeTest(){
 		connect((conn -> {
-			try {
-				LogEventPlace.deleteTable(conn);
-			} catch (Exception ignored){
-				// Table Doesn't Exist
-			}
-			LogEventPlace.createTable(conn);
+			LogEventPlace.createTableIfNotExists(conn);
+			LogEventBreak.createTableIfNotExists(conn);
 
-			try {
-				LogEventBreak.deleteTable(conn);
-			} catch (Exception ignored){
-				// Table Doesn't Exist
-			}
-			LogEventBreak.createTable(conn);
-
-			MelonUtilities.LOGGER.info("Inserting data...");
+/*			MelonUtilities.LOGGER.info("Inserting data...");
 			LogEventPlace.insert(conn, "testUUID9807987839123", "block.thingy:0", 10, 120, 12);
 			LogEventPlace.insert(conn, "testUUID1110001110001", "block.biggerthingy:56", 12, 111, 16);
 			LogEventBreak.insert(conn, "testUUID9807987839123", "block.thingy:0", 10, 120, 12);
 			LogEventBreak.insert(conn, "testUUID1110001110001", "block.biggerthingy:56", 12, 111, 16);
 			MelonUtilities.LOGGER.info("Displaying database...");
 			LogEventPlace.printAllEvents(conn);
-			LogEventBreak.printAllEvents(conn);
+			LogEventBreak.printAllEvents(conn);*/
 		}));
 	}
 
@@ -47,6 +36,26 @@ public class DatabaseManager {
 			MelonUtilities.LOGGER.error("{}: {}", e.getClass().getName(), e.getMessage());
 		}
 	}
+
+	private static void deleteAllTables(Connection conn) throws SQLException {
+		LogEventPlace.deleteTableIfExists(conn);
+		LogEventBreak.deleteTableIfExists(conn);
+	}
+
+	private static void createAllTables(Connection conn) throws SQLException {
+		LogEventPlace.createTableIfNotExists(conn);
+		LogEventBreak.createTableIfNotExists(conn);
+	}
+
+	public static void clearAllTables(Connection conn) throws SQLException {
+		deleteAllTables(conn);
+		createAllTables(conn);
+	}
+
+	public static void printAllTables(Connection conn) throws SQLException {
+
+	}
+
 
 }
 

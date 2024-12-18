@@ -483,7 +483,7 @@ public class RollbackManager {
 		return MUtil.sortByKey(snapshotsHashmap);
 	}
 
-	public static void rollbackChunkArea(Player sender, List<File> chunkGrid, Map.Entry<Long, File> primaryCapture){
+	public static void rollbackChunkArea(PlayerServer sender, List<File> chunkGrid, Map.Entry<Long, File> primaryCapture){
 		for(File chunkDir : chunkGrid) {
 			int[] chunkCoords = parseCoordsFromChunkDir(chunkDir);
 
@@ -521,7 +521,7 @@ public class RollbackManager {
 				MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunkCoords[0] * 16, 0, chunkCoords[1] * 16, 16, 256, 16, sender.world), sender.world.dimension.id);
 			}
 		}
-		((PlayerServer) sender).usePersonalCraftingInventory();
+		sender.usePersonalCraftingInventory();
 	}
 
 	private static Map.@Nullable Entry<Long, File> getClosestCapture(Map.Entry<Long, File> primaryCapture, HashMap<Long, File> captures) {

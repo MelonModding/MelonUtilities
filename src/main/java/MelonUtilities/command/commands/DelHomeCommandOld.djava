@@ -1,0 +1,75 @@
+package MelonUtilities.command.home;
+
+import MelonUtilities.config.Data;
+import MelonUtilities.config.datatypes.PlayerData;
+import MelonUtilities.utility.feedback.FeedbackHandlerServer;
+import MelonUtilities.utility.syntax.SyntaxBuilder;
+import MelonUtilities.config.datatypes.data.HomeData;
+import MelonUtilities.utility.helpers.UUIDHelper;
+import net.minecraft.core.net.command.*;
+
+import java.util.Objects;
+
+public class DelHomeCommandOld extends Command {
+
+	public DelHomeCommandOld() {
+		super("delhome");
+	}
+
+	public void deleteHome(String name, CommandSource source){
+		for(int i = 0; i < Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.size(); i++) {
+			if(Objects.equals(Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.get(i).name, name)){
+				Data.user.getOrCreate(UUIDHelper.getUUIDFromName(source.getSender().username).toString(), PlayerData.class).homes.remove(i);
+				Data.user.saveAll();
+				return;
+			}
+		}
+	}
+
+	static SyntaxBuilder syntax = new SyntaxBuilder();
+
+	public static void buildSyntax(){
+		syntax.clear();
+		syntax.append("title",                            TextFormatting.LIGHT_GRAY + "< Command Syntax >");
+		syntax.append("delhome",                          TextFormatting.LIGHT_GRAY + "  > /delhome [<home name>]");
+	}
+
+	@Override
+	public boolean execute(CommandHandler handler, CommandSource source, String[] args) {
+		Home home = HomeCommandOld.getHome("home", source);
+
+		if (args.length == 0 && home != null) {
+			deleteHome("home", source);
+			FeedbackHandler.sendFeedback(FeedbackType.destructive, source, "Deleted Home: <home>");
+			return true;
+		} else if (args.length == 0){
+			FeedbackHandler.error(source, "Failed to Delete Home (Home does not exist!)");
+			syntax.printLayerAndSubLayers("home", source);
+			return true;
+		} else if (args.length == 1) {
+			home = HomeCommandOld.getHome(args[0], source);
+			if (home != null) {
+				deleteHome(args[0], source);
+				FeedbackHandler.sendFeedback(FeedbackType.destructive, source, "Deleted Home: <" + args[0] + ">");
+				return true;
+			}
+			FeedbackHandler.error(source, "Failed to Delete Home (Home does not exist!)");
+			syntax.printLayerAndSubLayers("home", source);
+			return true;
+		}
+
+		FeedbackHandler.error(source, "Failed to Delete Home (Invalid Syntax)");
+		syntax.printLayerAndSubLayers("delhome", source);
+        return true;
+    }
+
+	@Override
+	public boolean opRequired(String[] strings) {
+		return false;
+	}
+
+	@Override
+	public void sendCommandSyntax(CommandHandler handler, CommandSource source) {
+		syntax.printAllLines(source);
+	}
+}
