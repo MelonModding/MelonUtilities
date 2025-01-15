@@ -3,7 +3,7 @@ package MelonUtilities.mixins;
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.interfaces.Lockable;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.builders.RoleBuilder;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
@@ -193,8 +193,8 @@ public abstract class PacketHandlerServerMixin {
 		PlayerServer player = this.playerEntity;
 		WorldServer world = this.mcServer.getDimensionWorld(player.dimension);
 		TileEntity container = world.getTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
-		if(container instanceof TileEntityContainerInterface) {
-			TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+		if(container instanceof Lockable) {
+			Lockable iContainer = (Lockable) world.getTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 			if (iContainer.getLockOwner() != null
 				&& !iContainer.getLockOwner().equals(player.uuid)
 				&& !iContainer.getTrustedPlayers().contains(player.uuid)
@@ -205,7 +205,7 @@ public abstract class PacketHandlerServerMixin {
 			}
 			if(packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED && Data.Users.getOrCreate(player.uuid).lockOnBlockPunched && !iContainer.getIsLocked()){
 				if (container instanceof TileEntityChest) {
-					TileEntityContainerInterface iOtherContainer = (TileEntityContainerInterface) MUtil.getOtherChest(world, (TileEntityChest) container);
+					Lockable iOtherContainer = (Lockable) MUtil.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
 						iContainer.setIsLocked(true);
 						iOtherContainer.setIsLocked(true);

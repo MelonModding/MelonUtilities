@@ -1,6 +1,6 @@
 package MelonUtilities.mixins.tile_entities.chest;
 
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.interfaces.Lockable;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
@@ -23,7 +23,7 @@ public class BlockLogicChestMixin {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getTileEntity(x, y, z);
+		Lockable iContainer = (Lockable) world.getTileEntity(x, y, z);
 		if(!MUtil.canInteractWithLock(iContainer.getIsLocked(), iContainer.getIsCommunityContainer(), iContainer.getLockOwner(), iContainer.getTrustedPlayers(), player)){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Chest is Locked!");
 			cir.setReturnValue(false);
@@ -35,8 +35,8 @@ public class BlockLogicChestMixin {
 		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getTileEntity(x, y, z));
 		TileEntityChest placedChest = (TileEntityChest) world.getTileEntity(x, y, z);
 
-		TileEntityContainerInterface existingIContainer = (TileEntityContainerInterface) existingChest;
-		TileEntityContainerInterface placedIContainer = (TileEntityContainerInterface) placedChest;
+		Lockable existingIContainer = (Lockable) existingChest;
+		Lockable placedIContainer = (Lockable) placedChest;
 
 		if(existingIContainer != null) {
 			placedIContainer.setLockOwner(existingIContainer.getLockOwner());

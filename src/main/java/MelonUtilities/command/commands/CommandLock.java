@@ -38,7 +38,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicLock.lock_onblockplaced(sender);
+					return CommandLogicLock.lockOnBlockPlaced(sender);
 				}
 			)
 		);
@@ -50,7 +50,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicLock.lock_onblockpunched(sender);
+					return CommandLogicLock.lockOnBlockPunched(sender);
 				}
 			)
 		);
@@ -64,7 +64,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 						String targetUsername = context.getArgument("username", String.class).toLowerCase();
-						return CommandLogicLock.lock_trust(sender, targetUsername);
+						return CommandLogicLock.lockTrust(sender, targetUsername);
 					}
 				)
 			)
@@ -79,7 +79,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 						String targetUsername = context.getArgument("username", String.class).toLowerCase();
-						return CommandLogicLock.lock_trustall(sender, targetUsername);
+						return CommandLogicLock.lockTrustAll(sender, targetUsername);
 					}
 				)
 			)
@@ -92,7 +92,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicLock.lock_trustcommunity(sender);
+					return CommandLogicLock.lockTrustCommunity(sender);
 				}
 			)
 		);
@@ -106,7 +106,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 						String targetUsername = context.getArgument("username", String.class).toLowerCase();
-						return CommandLogicLock.lock_untrust(sender, targetUsername);
+						return CommandLogicLock.lockUntrust(sender, targetUsername);
 					}
 				)
 			)
@@ -121,7 +121,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 						String targetUsername = context.getArgument("username", String.class).toLowerCase();
-						return CommandLogicLock.lock_untrustall(sender, targetUsername);
+						return CommandLogicLock.lockUntrustAll(sender, targetUsername);
 					}
 				)
 			)
@@ -134,7 +134,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicLock.lock_untrustcommunity(sender);
+					return CommandLogicLock.lockUntrustCommunity(sender);
 				}
 			)
 		);
@@ -146,7 +146,19 @@ public class CommandLock implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicLock.lock_bypass(sender);
+					return CommandLogicLock.lockBypass(sender);
+				}
+			)
+		);
+		return builder;
+	}
+
+	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockInfo(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
+		builder.then(LiteralArgumentBuilder.<CommandSource>literal("info")
+			.executes(context ->
+				{
+					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
+					return CommandLogicLock.lockInfo(sender);
 				}
 			)
 		);
@@ -178,6 +190,7 @@ public class CommandLock implements CommandManager.CommandRegistry{
 		lockUntrustAll(builder);
 		lockUntrustCommunity(builder);
 		lockBypass(builder);
+		lockInfo(builder);
 
 		dispatcher.register(builder);
 	}

@@ -1,6 +1,9 @@
 package MelonUtilities.utility;
 
 import MelonUtilities.config.Data;
+import MelonUtilities.interfaces.Lockable;
+import MelonUtilities.utility.feedback.FeedbackHandlerServer;
+import MelonUtilities.utility.feedback.FeedbackType;
 import MelonUtilities.utility.managers.RollbackManager;
 import com.b100.json.JsonParser;
 import com.b100.json.element.JsonObject;
@@ -10,6 +13,7 @@ import net.minecraft.core.block.BlockLogicChest;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.collection.Pair;
 import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.MathHelper;
@@ -99,6 +103,51 @@ public class MUtil {
 	private static final String url = "https://sessionserver.mojang.com/session/minecraft/profile/";
 	private static final JsonParser jsonParser = new JsonParser();
 	private static final Map<UUID, String> UUIDtoNameMap = new HashMap<>();
+
+	public static void runUUIDConversionAction(UUID uuid, @Nullable UsernameFunction successAction, @Nullable UUIDFunction failAction) {
+		if (UUIDtoNameMap.containsKey(uuid)) {
+			String username = UUIDtoNameMap.get(uuid);
+			if (username != null) {
+				if (successAction != null) {
+					successAction.run(username);
+				}
+			} else {
+				if (failAction != null) {
+					failAction.run(uuid);
+				}
+			}
+			return;
+		}
+		new Thread(() -> {
+			try {
+				String username = getNameFromUUID(uuid);
+				if (username != null) {
+					if (successAction != null) {
+						successAction.run(username);
+					}
+					UUIDtoNameMap.put(uuid, username);
+				} else {
+					if (failAction != null) {
+						failAction.run(uuid);
+					}
+					UUIDtoNameMap.put(uuid, null);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				if (failAction != null) {
+					failAction.run(uuid);
+				}
+			}
+		}).start();
+	}
+
+	public interface UsernameFunction {
+		void run(String username);
+	}
+
+	public interface UUIDFunction {
+		void run(UUID uuid);
+	}
 
 	public static @Nullable String getNameFromUUID(UUID uuid){
 		if(UUIDtoNameMap.containsKey(uuid)){
@@ -208,6 +257,42 @@ public class MUtil {
 
 		return result;
 	}
+
+	public static void sendContainerLockInfo(PlayerServer player, Lockable lockable, String containerName) {
+		if (!lockable.getIsLocked()) {
+			player.sendMessage(TextFormatting.GRAY + "< " + TextFormatting.LIGHT_GRAY + containerName + ": " + TextFormatting.RED + "Not Locked " + TextFormatting.GRAY + ">");
+			FeedbackHandlerServer.playFeedbackSound(player, FeedbackType.error);
+			return;
+		}
+
+		new Thread(() -> {
+			String owner = getNameFromUUID(lockable.getLockOwner());
+			Map<String, Boolean> trustedPlayers = new HashMap<>();
+			for(Map.Entry<UUID, Boolean> entry : lockable.getAllTrustedPlayers().entrySet()){
+				trustedPlayers.put(getNameFromUUID(entry.getKey()), entry.getValue());
+			}
+			containerLockInfoLogic(player, lockable, containerName, owner, trustedPlayers);
+		}).start();
+	}
+
+	private static void containerLockInfoLogic(PlayerServer player, Lockable lockable, String containerName, String owner, Map<String, Boolean> trustedPlayers){
+		player.sendMessage(TextFormatting.GRAY + "< " + TextFormatting.LIGHT_GRAY + containerName + ": " + TextFormatting.GRAY + ">" + TextFormatting.ORANGE + " * " + TextFormatting.GRAY + "=" + TextFormatting.LIGHT_GRAY + " In " + owner + "'s TrustAll List");
+		player.sendMessage(TextFormatting.GRAY + "  > " + TextFormatting.LIGHT_GRAY + "Owner: " + TextFormatting.GRAY + "[" + TextFormatting.LIGHT_GRAY + owner + TextFormatting.GRAY + "]");
+		player.sendMessage(TextFormatting.GRAY + "  > " + TextFormatting.LIGHT_GRAY + "Community Container: " + TextFormatting.GRAY + "[" + TextFormatting.LIGHT_GRAY + lockable.getIsCommunityContainer() + TextFormatting.GRAY + "]");
+		player.sendMessage(TextFormatting.GRAY + "  > " + TextFormatting.LIGHT_GRAY + "Trusted Players: ");
+		for(Map.Entry<String, Boolean> entry : trustedPlayers.entrySet()){
+			if(entry.getValue()){
+				player.sendMessage(TextFormatting.GRAY + "    > [" + TextFormatting.LIGHT_GRAY + entry.getKey() + TextFormatting.GRAY + "]" + TextFormatting.ORANGE + "*");
+			} else {
+				player.sendMessage(TextFormatting.GRAY + "    > [" + TextFormatting.LIGHT_GRAY + entry.getKey() + TextFormatting.GRAY + "]");
+			}
+		}
+		player.sendMessage(TextFormatting.GRAY + "<>");
+		FeedbackHandlerServer.playFeedbackSound(player, FeedbackType.destructive);
+	}
+
+
+
 
 	public static TileEntityChest getOtherChest(World world, TileEntityChest chest){
 		int meta = world.getBlockMetadata(chest.x, chest.y, chest.z);

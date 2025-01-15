@@ -1,23 +1,29 @@
 package MelonUtilities.mixins.tile_entities.activator;
 
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.config.Data;
+import MelonUtilities.interfaces.Lockable;
+import MelonUtilities.utility.feedback.FeedbackHandlerServer;
+import MelonUtilities.utility.feedback.FeedbackType;
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
 import com.mojang.nbt.tags.Tag;
 import net.minecraft.core.block.entity.TileEntityActivator;
+import net.minecraft.core.entity.Entity;
+import net.minecraft.core.net.packet.PacketSetHeldObject;
 import net.minecraft.core.util.helper.UUIDHelper;
+import net.minecraft.core.world.World;
+import net.minecraft.server.entity.player.PlayerServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Mixin(value = TileEntityActivator.class, remap = false)
-public class TileEntityActivatorMixin implements TileEntityContainerInterface {
+public class TileEntityActivatorMixin implements Lockable {
 	@Unique
 	private boolean isLocked;
 
@@ -61,6 +67,16 @@ public class TileEntityActivatorMixin implements TileEntityContainerInterface {
 		}
 	}
 
+	@Inject(at = @At("HEAD"), method = "canBeCarried", cancellable = true)
+	public void canBeCarriedInject(World world, Entity potentialHolder, CallbackInfoReturnable<Boolean> cir){
+		if(potentialHolder instanceof PlayerServer && isLocked && !lockOwner.equals(((PlayerServer) potentialHolder).uuid) && !getAllTrustedPlayers().containsKey(((PlayerServer) potentialHolder).uuid)){
+			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) potentialHolder, "Failed to Pickup Container! (Not Owner Or Trusted)");
+			((PlayerServer) potentialHolder).playerNetServerHandler.sendPacket(new PacketSetHeldObject(potentialHolder.id, ((PlayerServer) potentialHolder).getHeldObject()));
+			cir.setReturnValue(false);
+			return;
+		}
+	}
+
 	@Override
 	public boolean getIsLocked() {
 		return isLocked;
@@ -94,6 +110,18 @@ public class TileEntityActivatorMixin implements TileEntityContainerInterface {
 	@Override
 	public List<UUID> getTrustedPlayers() {
 		return trustedPlayers;
+	}
+
+	@Override
+	public Map<UUID, Boolean> getAllTrustedPlayers() {
+		Map<UUID, Boolean> tempTrustedPlayers = new HashMap<>(Collections.emptyMap());
+		for(UUID uuid : trustedPlayers){
+			tempTrustedPlayers.put(uuid, false);
+		}
+		for(Map.Entry<UUID, String> entry : Data.Users.getOrCreate(lockOwner).usersTrustedToAllContainers.entrySet()){
+			tempTrustedPlayers.put(entry.getKey(), true);
+		}
+		return tempTrustedPlayers;
 	}
 
 	@Override

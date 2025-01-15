@@ -1,6 +1,7 @@
 package MelonUtilities.mixins.tile_entities.golden_mesh;
 
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.config.Data;
+import MelonUtilities.interfaces.Lockable;
 import MelonUtilities.utility.MUtil;
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
@@ -16,12 +17,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Mixin(value = TileEntityMeshGold.class, remap = false)
-public class TileEntityMeshGoldMixin implements TileEntityContainerInterface {
+public class TileEntityMeshGoldMixin implements Lockable {
 	@Unique
 	private boolean isLocked;
 
@@ -105,6 +104,18 @@ public class TileEntityMeshGoldMixin implements TileEntityContainerInterface {
 	@Override
 	public List<UUID> getTrustedPlayers() {
 		return trustedPlayers;
+	}
+
+	@Override
+	public Map<UUID, Boolean> getAllTrustedPlayers() {
+		Map<UUID, Boolean> tempTrustedPlayers = new HashMap<>(Collections.emptyMap());
+		for(UUID uuid : trustedPlayers){
+			tempTrustedPlayers.put(uuid, false);
+		}
+		for(Map.Entry<UUID, String> entry : Data.Users.getOrCreate(lockOwner).usersTrustedToAllContainers.entrySet()){
+			tempTrustedPlayers.put(entry.getKey(), true);
+		}
+		return tempTrustedPlayers;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package MelonUtilities.mixins.tile_entities.activator;
 
-import MelonUtilities.interfaces.TileEntityContainerInterface;
+import MelonUtilities.interfaces.Lockable;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
@@ -19,7 +19,7 @@ public class BlockLogicActivatorMixin {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		TileEntityContainerInterface iContainer = (TileEntityContainerInterface) world.getTileEntity(x, y, z);
+		Lockable iContainer = (Lockable) world.getTileEntity(x, y, z);
 		if(!MUtil.canInteractWithLock(iContainer.getIsLocked(), iContainer.getIsCommunityContainer(), iContainer.getLockOwner(), iContainer.getTrustedPlayers(), player)){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Activator is Locked!");
 			cir.setReturnValue(false);
