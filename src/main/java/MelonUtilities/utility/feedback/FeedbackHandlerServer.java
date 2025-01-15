@@ -30,7 +30,7 @@ public class FeedbackHandlerServer {
         for(FeedbackArg arg : args){
             String argString = (
 				arg.getBorderColor() + arg.getBorderOpener() +
-                arg.getArgSpecial() +  arg.getArgColor() + arg.getFirstArg() +
+                arg.getArgSpecial() +  arg.getArgColor() + arg.getAllArgs() +
                 TextFormatting.RESET +
 				arg.getBorderColor() + arg.getBorderCloser() +
                 feedbackType.getColor()
@@ -45,7 +45,7 @@ public class FeedbackHandlerServer {
 		for(FeedbackArg arg : args){
 			String argString = (
 				arg.getBorderColor() + arg.getBorderOpener() +
-				arg.getArgSpecial() +  arg.getArgColor() + arg.getFirstArg() +
+				arg.getArgSpecial() +  arg.getArgColor() + arg.getAllArgs() +
 				TextFormatting.RESET +
 				arg.getBorderColor() + arg.getBorderCloser() +
 				feedbackType.getColor()
@@ -60,7 +60,7 @@ public class FeedbackHandlerServer {
         for(FeedbackArg arg : args){
             String argString = (
                 arg.getBorderOpener() +
-                arg.getFirstArg() +
+				arg.getAllArgs() +
                 arg.getBorderCloser()
             );
             argStrings.add(argString);
@@ -73,7 +73,7 @@ public class FeedbackHandlerServer {
 		for(FeedbackArg arg : args){
 			String argString = (
 				arg.getBorderOpener() +
-				arg.getFirstArg() +
+				arg.getAllArgs() +
 				arg.getBorderCloser()
 			);
 			argStrings.add(argString);

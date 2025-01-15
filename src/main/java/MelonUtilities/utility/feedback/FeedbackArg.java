@@ -124,6 +124,17 @@ public class FeedbackArg {
         return arguments.get(0);
     }
 
+	public @NotNull String getAllArgs() {
+		StringBuilder allArgs = new StringBuilder();
+		for (int i = 0; i < arguments.size(); i++) {
+			allArgs.append(arguments.get(i));
+			if(i < arguments.size() - 1){
+				allArgs.append(", ");
+			}
+		}
+		return allArgs.toString();
+	}
+
     public @NotNull List<String> getArgs(){
         return arguments;
     }
