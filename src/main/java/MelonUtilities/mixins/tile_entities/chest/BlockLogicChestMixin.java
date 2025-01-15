@@ -5,8 +5,11 @@ import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
 import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.core.block.Block;
+import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.BlockLogicChest;
 import net.minecraft.core.block.entity.TileEntityChest;
+import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.util.helper.Side;
@@ -19,7 +22,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = BlockLogicChest.class, remap = false)
-public class BlockLogicChestMixin {
+public abstract class BlockLogicChestMixin extends BlockLogic {
+	public BlockLogicChestMixin(Block<?> block, Material material) {
+		super(block, material);
+	}
+
+	@Override
+	public int getPistonPushReaction(World world, int x, int y, int z) {
+		Lockable iContainer = (Lockable) world.getTileEntity(x, y, z);
+		if(iContainer.getIsLocked()){
+			return Material.PISTON_CANT_PUSH;
+		}
+		return super.getPistonPushReaction(world, x, y, z);
+	}
+
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
