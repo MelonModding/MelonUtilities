@@ -37,9 +37,13 @@ public abstract class BlockLogicFurnaceMixin extends BlockLogic {
 
 		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
 
-		if(!MUtil.canInteractWithLockable(lockable, player)){
+		if(!MUtil.canInteractWithLockable(lockable, player) && !player.isSneaking()){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Furnace is Locked!");
 			cir.setReturnValue(false);
+			return;
+		} else if(!MUtil.canInteractWithLockable(lockable, player) && player.isSneaking()){
+			cir.setReturnValue(false);
+			return;
 		}
 
 	}

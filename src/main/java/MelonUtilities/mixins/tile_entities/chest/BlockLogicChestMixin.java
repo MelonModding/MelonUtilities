@@ -40,9 +40,13 @@ public abstract class BlockLogicChestMixin extends BlockLogic {
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
 		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
-		if(!MUtil.canInteractWithLockable(lockable, player)){
+		if(!MUtil.canInteractWithLockable(lockable, player) && !player.isSneaking()){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Chest is Locked!");
 			cir.setReturnValue(false);
+			return;
+		} else if(!MUtil.canInteractWithLockable(lockable, player) && player.isSneaking()){
+			cir.setReturnValue(false);
+			return;
 		}
 	}
 
