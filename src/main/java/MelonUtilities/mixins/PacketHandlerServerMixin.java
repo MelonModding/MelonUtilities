@@ -194,22 +194,22 @@ public abstract class PacketHandlerServerMixin {
 		WorldServer world = this.mcServer.getDimensionWorld(player.dimension);
 		TileEntity container = world.getTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
 		if(container instanceof Lockable) {
-			Lockable iContainer = (Lockable) world.getTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
-			if (iContainer.getLockOwner() != null
-				&& !iContainer.getLockOwner().equals(player.uuid)
-				&& !iContainer.getTrustedPlayers().contains(player.uuid)
-				&& !Data.Users.getOrCreate(iContainer.getLockOwner()).usersTrustedToAllContainers.containsKey(player.uuid)
+			Lockable lockable = (Lockable) world.getTileEntity(packet.xPosition, packet.yPosition, packet.zPosition);
+			if (lockable.getLockOwner() != null
+				&& !lockable.getLockOwner().equals(player.uuid)
+				&& !lockable.getTrustedPlayers().contains(player.uuid)
+				&& !Data.Users.getOrCreate(lockable.getLockOwner()).usersTrustedToAllContainers.containsKey(player.uuid)
 				&& !Data.Users.getOrCreate(player.uuid).lockBypass){
 				ci.cancel();
 				sendPacket(new PacketBlockUpdate(packet.xPosition, packet.yPosition, packet.zPosition, world));
 			}
-			if(packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED && Data.Users.getOrCreate(player.uuid).lockOnBlockPunched && !iContainer.getIsLocked()){
+			if(packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED && Data.Users.getOrCreate(player.uuid).lockOnBlockPunched && !lockable.getIsLocked()){
 				if (container instanceof TileEntityChest) {
 					Lockable iOtherContainer = (Lockable) MUtil.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
-						iContainer.setIsLocked(true);
+						lockable.setIsLocked(true);
 						iOtherContainer.setIsLocked(true);
-						iContainer.setLockOwner(player.uuid);
+						lockable.setLockOwner(player.uuid);
 						iOtherContainer.setLockOwner(player.uuid);
 						FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Double Chest!");
 						ci.cancel();
@@ -230,15 +230,15 @@ public abstract class PacketHandlerServerMixin {
 					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Basket!");
 				}
 
-				iContainer.setIsLocked(true);
-				iContainer.setLockOwner(player.uuid);
+				lockable.setIsLocked(true);
+				lockable.setLockOwner(player.uuid);
 				ci.cancel();
 			}
 
 			else if (packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED
 			&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
-			&& iContainer.getIsLocked()
-			&& !iContainer.getLockOwner().equals(player.uuid))
+			&& lockable.getIsLocked()
+			&& !lockable.getLockOwner().equals(player.uuid))
 			{
 				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, "Failed to Lock Container! (Not Owned By You)");
 				ci.cancel();
@@ -246,8 +246,8 @@ public abstract class PacketHandlerServerMixin {
 
 			else if (packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED
 			&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
-			&& iContainer.getIsLocked()
-			&& iContainer.getLockOwner().equals(player.uuid))
+			&& lockable.getIsLocked()
+			&& lockable.getLockOwner().equals(player.uuid))
 			{
 				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, "Failed to Lock Container! (Already Locked)");
 				ci.cancel();

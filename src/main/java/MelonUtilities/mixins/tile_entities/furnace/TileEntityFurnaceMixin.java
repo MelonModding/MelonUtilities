@@ -71,7 +71,7 @@ public class TileEntityFurnaceMixin implements Lockable {
 
 	@Inject(at = @At("HEAD"), method = "stillValid", cancellable = true)
 	public void canInteractWithInject(Player entityplayer, CallbackInfoReturnable<Boolean> cir) {
-		if(!MUtil.canInteractWithLock(isLocked, isCommunityContainer, lockOwner, trustedPlayers, entityplayer)){
+		if(!MUtil.canInteractWithLockable(this, entityplayer)){
 			cir.setReturnValue(false);
 		}
 	}

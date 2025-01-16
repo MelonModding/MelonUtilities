@@ -85,18 +85,18 @@ public class MUtil {
 		return String.valueOf(hex);
 	}
 
-	public static boolean canInteractWithLock(boolean isLocked, boolean isCommunityContainer, UUID lockOwner, List<UUID> trustedPlayers, Player player){
-		if(!isLocked) {
+	public static boolean canInteractWithLockable(Lockable lockable, Player player){
+		if(!lockable.getIsLocked()) {
 			return true;
 		}
-		if(lockOwner == null) {
+		if(lockable.getLockOwner() == null) {
 			return true;
 		}
 
-		return lockOwner.equals(player.uuid)
-			|| trustedPlayers.contains(player.uuid)
-			|| Data.Users.getOrCreate(lockOwner).usersTrustedToAllContainers.containsKey(player.uuid)
-			|| isCommunityContainer
+		return lockable.getLockOwner().equals(player.uuid)
+			|| lockable.getTrustedPlayers().contains(player.uuid)
+			|| Data.Users.getOrCreate(lockable.getLockOwner()).usersTrustedToAllContainers.containsKey(player.uuid)
+			|| lockable.getIsCommunityContainer()
 			|| Data.Users.getOrCreate(player.uuid).lockBypass;
 	}
 

@@ -66,7 +66,7 @@ public class TileEntityMeshGoldMixin implements Lockable {
 
 	@Inject(at = @At("HEAD"), method = "setFilterItem", cancellable = true)
 	public void setFilterItemInject(Player entityplayer, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-		if(!MUtil.canInteractWithLock(isLocked, isCommunityContainer, lockOwner, trustedPlayers, entityplayer)){
+		if(!MUtil.canInteractWithLockable(this, entityplayer)){
 			cir.setReturnValue(false);
 		}
 	}

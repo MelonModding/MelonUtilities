@@ -25,8 +25,8 @@ public abstract class BlockLogicMeshGoldMixin extends BlockLogic {
 
 	@Override
 	public int getPistonPushReaction(World world, int x, int y, int z) {
-		Lockable iContainer = (Lockable) world.getTileEntity(x, y, z);
-		if(iContainer.getIsLocked()){
+		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
+		if(lockable.getIsLocked()){
 			return Material.PISTON_CANT_PUSH;
 		}
 		return super.getPistonPushReaction(world, x, y, z);
@@ -35,9 +35,9 @@ public abstract class BlockLogicMeshGoldMixin extends BlockLogic {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		Lockable iContainer = (Lockable) world.getTileEntity(x, y, z);
+		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
 
-		if(!MUtil.canInteractWithLock(iContainer.getIsLocked(), iContainer.getIsCommunityContainer(), iContainer.getLockOwner(), iContainer.getTrustedPlayers(), player)){
+		if(!MUtil.canInteractWithLockable(lockable, player)){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Golden Mesh is Locked!");
 			cir.setReturnValue(false);
 		}

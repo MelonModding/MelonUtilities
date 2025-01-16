@@ -29,8 +29,8 @@ public abstract class BlockLogicChestMixin extends BlockLogic {
 
 	@Override
 	public int getPistonPushReaction(World world, int x, int y, int z) {
-		Lockable iContainer = (Lockable) world.getTileEntity(x, y, z);
-		if(iContainer.getIsLocked()){
+		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
+		if(lockable.getIsLocked()){
 			return Material.PISTON_CANT_PUSH;
 		}
 		return super.getPistonPushReaction(world, x, y, z);
@@ -39,8 +39,8 @@ public abstract class BlockLogicChestMixin extends BlockLogic {
 	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		Lockable iContainer = (Lockable) world.getTileEntity(x, y, z);
-		if(!MUtil.canInteractWithLock(iContainer.getIsLocked(), iContainer.getIsCommunityContainer(), iContainer.getLockOwner(), iContainer.getTrustedPlayers(), player)){
+		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
+		if(!MUtil.canInteractWithLockable(lockable, player)){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Chest is Locked!");
 			cir.setReturnValue(false);
 		}
@@ -51,13 +51,13 @@ public abstract class BlockLogicChestMixin extends BlockLogic {
 		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getTileEntity(x, y, z));
 		TileEntityChest placedChest = (TileEntityChest) world.getTileEntity(x, y, z);
 
-		Lockable existingIContainer = (Lockable) existingChest;
-		Lockable placedIContainer = (Lockable) placedChest;
+		Lockable existingLockable = (Lockable) existingChest;
+		Lockable placedLockable = (Lockable) placedChest;
 
-		if(existingIContainer != null) {
-			placedIContainer.setLockOwner(existingIContainer.getLockOwner());
-			placedIContainer.setIsLocked(existingIContainer.getIsLocked());
-			placedIContainer.setTrustedPlayers(existingIContainer.getTrustedPlayers());
+		if(existingLockable != null) {
+			placedLockable.setLockOwner(existingLockable.getLockOwner());
+			placedLockable.setIsLocked(existingLockable.getIsLocked());
+			placedLockable.setTrustedPlayers(existingLockable.getTrustedPlayers());
 		}
 	}
 }
