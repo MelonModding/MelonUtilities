@@ -85,21 +85,6 @@ public class MUtil {
 		return String.valueOf(hex);
 	}
 
-	public static boolean canInteractWithLockable(Lockable lockable, Player player){
-		if(!lockable.getIsLocked()) {
-			return true;
-		}
-		if(lockable.getLockOwner() == null) {
-			return true;
-		}
-
-		return lockable.getLockOwner().equals(player.uuid)
-			|| lockable.getTrustedPlayers().contains(player.uuid)
-			|| Data.Users.getOrCreate(lockable.getLockOwner()).usersTrustedToAllContainers.containsKey(player.uuid)
-			|| lockable.getIsCommunityContainer()
-			|| Data.Users.getOrCreate(player.uuid).lockBypass;
-	}
-
 	private static final String url = "https://sessionserver.mojang.com/session/minecraft/profile/";
 	private static final JsonParser jsonParser = new JsonParser();
 	private static final Map<UUID, String> UUIDtoNameMap = new HashMap<>();

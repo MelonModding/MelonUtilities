@@ -1,9 +1,9 @@
 package MelonUtilities.mixins.tile_entities.blast_furnace;
 
 import MelonUtilities.interfaces.Lockable;
-import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
+import MelonUtilities.utility.managers.LockManager;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.BlockLogic;
 import net.minecraft.core.block.BlockLogicFurnaceBlast;
@@ -36,11 +36,11 @@ public abstract class BlockLogicFurnaceBlastMixin extends BlockLogic {
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
 		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
-		if(!MUtil.canInteractWithLockable(lockable, player) && !player.isSneaking()){
-			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Blast Furnace is Locked!");
+		if(LockManager.determineAuthStatus(lockable, player) <= LockManager.UNTRUSTED && !player.isSneaking()){
+			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Blast Furnace is Locked! (Use /lock info for more information)");
 			cir.setReturnValue(false);
 			return;
-		} else if(!MUtil.canInteractWithLockable(lockable, player) && player.isSneaking()){
+		} else if(LockManager.determineAuthStatus(lockable, player) <= LockManager.UNTRUSTED && player.isSneaking()){
 			cir.setReturnValue(false);
 			return;
 		}

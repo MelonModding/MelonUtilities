@@ -4,6 +4,7 @@ import MelonUtilities.config.Data;
 import MelonUtilities.interfaces.Lockable;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
+import MelonUtilities.utility.managers.LockManager;
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
 import com.mojang.nbt.tags.Tag;
@@ -86,8 +87,8 @@ public class TileEntityBasketMixin implements Lockable {
 
 	@Inject(at = @At("HEAD"), method = "canBeCarried", cancellable = true)
 	public void canBeCarriedInject(World world, Entity potentialHolder, CallbackInfoReturnable<Boolean> cir){
-		if(potentialHolder instanceof PlayerServer && isLocked && !lockOwner.equals(((PlayerServer) potentialHolder).uuid) && !getAllTrustedPlayers().containsKey(((PlayerServer) potentialHolder).uuid)){
-			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) potentialHolder, "Failed to Pickup Container! (Not Owner Or Trusted)");
+		if(potentialHolder instanceof PlayerServer && LockManager.determineAuthStatus(this, (PlayerServer) potentialHolder) >= LockManager.TRUSTED){
+			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) potentialHolder, "Failed to Pickup Container! (Not Authorized)");
 			((PlayerServer) potentialHolder).playerNetServerHandler.sendPacket(new PacketSetHeldObject(potentialHolder.id, ((PlayerServer) potentialHolder).getHeldObject()));
 			cir.setReturnValue(false);
 			return;

@@ -2,7 +2,7 @@ package MelonUtilities.mixins.tile_entities.golden_mesh;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.interfaces.Lockable;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.managers.LockManager;
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
 import com.mojang.nbt.tags.Tag;
@@ -10,6 +10,7 @@ import net.minecraft.core.block.entity.TileEntityMeshGold;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.util.helper.UUIDHelper;
+import net.minecraft.server.entity.player.PlayerServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -66,8 +67,9 @@ public class TileEntityMeshGoldMixin implements Lockable {
 
 	@Inject(at = @At("HEAD"), method = "setFilterItem", cancellable = true)
 	public void setFilterItemInject(Player entityplayer, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
-		if(!MUtil.canInteractWithLockable(this, entityplayer)){
+		if(entityplayer instanceof PlayerServer && LockManager.determineAuthStatus(this, (PlayerServer) entityplayer) <= LockManager.UNTRUSTED){
 			cir.setReturnValue(false);
+			return;
 		}
 	}
 
