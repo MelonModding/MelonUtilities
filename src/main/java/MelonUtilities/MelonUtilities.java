@@ -1,10 +1,6 @@
 package MelonUtilities;
 
-import MelonUtilities.command.commands.CommandElevator;
-import MelonUtilities.command.commands.CommandLock;
-import MelonUtilities.command.commands.CommandRole;
-import MelonUtilities.command.commands.CommandRollback;
-import MelonUtilities.command.commands.CommandMelonUtilities;
+import MelonUtilities.command.commands.*;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.listeners.ChatInputListener;
@@ -37,10 +33,19 @@ public class MelonUtilities implements ModInitializer {
 
 	public static void registerCommands(){
 		CommandManager.registerCommand(new CommandLock());
+
 		CommandManager.registerCommand(new CommandRole());
+
 		CommandManager.registerCommand(new CommandRollback());
+
 		CommandManager.registerCommand(new CommandElevator());
+
 		CommandManager.registerCommand(new CommandMelonUtilities());
+
+		CommandManager.registerCommand(new CommandTPA());
+		CommandManager.registerCommand(new CommandTPAHere());
+		CommandManager.registerCommand(new CommandTPAccept());
+		CommandManager.registerCommand(new CommandTPDeny());
 	}
 
 	public void initializeCommands(){

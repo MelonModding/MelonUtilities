@@ -31,13 +31,13 @@ public class TpaManager {
     	messagePlayer(tpr.target, TextFormatting.RED + "> Your tpa request from " + tpr.player.username + " expired! (" + reason + ")");
     }
 
-	static public void addRequest(PlayerServer player, PlayerServer target, boolean reverse) {
-        TpaRequest tpr = reverse ? tpas.put(target, new TpaRequest(target, player)) : tpas.put(target, new TpaRequest(player, target));
+	static public void addRequest(PlayerServer player, PlayerServer target, boolean here) {
+        TpaRequest tpr = here ? tpas.put(target, new TpaRequest(target, player)) : tpas.put(target, new TpaRequest(player, target));
         if (tpr != null) {
             if (tpr.target == target) return;
             killRequest(tpr, "new request");
 		}
-		if (!reverse) {
+		if (!here) {
 			messagePlayer(target, TextFormatting.ORANGE + "> " + player.username + " would like to teleport to you!");
 			messagePlayer(target, TextFormatting.ORANGE + "> Use /tpaccept or /tpadeny");
 			messagePlayer(player, TextFormatting.ORANGE + "> You requested to teleport to " + target.username);
@@ -48,12 +48,12 @@ public class TpaManager {
 		}
 	}
 
-	static public boolean deny(PlayerServer player) {
+	static public boolean denyRequest(PlayerServer player) {
 		TpaRequest tpr = tpas.remove(player);
 		return tpr != null;
 	}
 
-	static public boolean accept(PlayerServer player) {
+	static public boolean acceptRequest(PlayerServer player) {
 		TpaRequest tpr = tpas.remove(player);
 		if (tpr == null) return false;
 		PlayerServer target = tpr.target;
