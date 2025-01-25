@@ -20,40 +20,43 @@ public class MelonUtilities implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static void reloadAll() {
-		Data.Kits.reload();
-		Data.MainConfig.reload();
+		if(Data.MainConfig.config.enableKits) Data.Kits.reload();
+		if(Data.MainConfig.config.enableRoles) Data.Roles.reload();
 		Data.Users.reload();
-		Data.Roles.reload();
+		Data.MainConfig.reload();
 	}
 
 	public static void registerCommands(){
-		CommandManager.registerCommand(new CommandLock());
-		CommandManager.registerCommand(new CommandRole());
-		CommandManager.registerCommand(new CommandRollback());
-		CommandManager.registerCommand(new CommandElevator());
+		if(Data.MainConfig.config.enableContainerLocking) CommandManager.registerCommand(new CommandLock());
+		if(Data.MainConfig.config.enableRoles) CommandManager.registerCommand(new CommandRole());
+		if(Data.MainConfig.config.enableRollback) CommandManager.registerCommand(new CommandRollback());
+		if(Data.MainConfig.config.enableElevators) CommandManager.registerCommand(new CommandElevator());
+		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPA());
+		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPAHere());
+		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPAccept());
+		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPDeny());
 		CommandManager.registerCommand(new CommandMelonUtilities());
-		CommandManager.registerCommand(new CommandTPA());
-		CommandManager.registerCommand(new CommandTPAHere());
-		CommandManager.registerCommand(new CommandTPAccept());
-		CommandManager.registerCommand(new CommandTPDeny());
 	}
 
-	public void initializeCommands(){
-		LOGGER.info("Commands initializing!");
-
+	public void loadData(){
+		LOGGER.info("Loading Utility Data...");
 		reloadAll();
+		LOGGER.info("Utility Data Loaded!");
+	}
 
-		LOGGER.info("Commands initialized!");
+	public void registerListeners(){
+		LOGGER.info("Registering ServerLibe Listeners...");
+		ServerLibe.registerListener(new ChatInputListener());
+		ServerLibe.registerListener(new LogEventListener());
+		LOGGER.info("ServerLibe Listeners Registered!");
 	}
 
 	@Override
 	public void onInitialize() {
 		LOGGER.info("MelonUtilities initializing!");
-		initializeCommands();
+		loadData();
 		DatabaseManager.onInitilizeTest();
-		//Listeners
-		ServerLibe.registerListener(new ChatInputListener());
-		ServerLibe.registerListener(new LogEventListener());
+		registerListeners();
 		LOGGER.info("MelonUtilities initialized!");
 	}
 
