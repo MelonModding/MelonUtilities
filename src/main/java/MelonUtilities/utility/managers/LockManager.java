@@ -2,8 +2,6 @@ package MelonUtilities.utility.managers;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.interfaces.Lockable;
-import MelonUtilities.utility.feedback.FeedbackHandlerServer;
-import MelonUtilities.utility.feedback.FeedbackType;
 import net.minecraft.server.entity.player.PlayerServer;
 
 public class LockManager {
@@ -23,7 +21,6 @@ public class LockManager {
 		if(lockable.getLockOwner().equals(player.uuid)
 			|| Data.Users.getOrCreate(player.uuid).lockBypass)
 			authStatus = FULL;
-		FeedbackHandlerServer.sendFeedback(FeedbackType.syntax, player, authStatus + "");
 		return authStatus;
 	}
 }
