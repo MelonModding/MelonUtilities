@@ -17,7 +17,6 @@ public class ServerPlayerControllerMixin {
 
 	@Inject(at = @At(ordinal = 1, shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/entity/player/Player;setHeldObject(Lnet/minecraft/core/world/ICarriable;)V"), method = "activateBlockOrUseItem")
 	private void activateBlockOrUseItemInject(Player entityplayer, World world, ItemStack itemstack, int blockX, int blockY, int blockZ, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir){
-		System.out.println("placed block");
 		if (itemstack != null) {
 			DatabaseManager.connect((conn) -> LogEventPlace.insert(conn, entityplayer.uuid.toString(), itemstack.getItemKey(), blockX, blockY, blockZ));
 		}

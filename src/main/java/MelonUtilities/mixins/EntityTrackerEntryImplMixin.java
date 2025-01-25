@@ -1,22 +1,13 @@
 package MelonUtilities.mixins;
 
-import MelonUtilities.utility.builders.RoleBuilder;
-import net.minecraft.core.entity.Entity;
-import net.minecraft.core.entity.Mob;
-import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.net.packet.Packet;
-import net.minecraft.core.net.packet.PacketEntityNickname;
 import net.minecraft.server.entity.EntityTrackerEntryImpl;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 //Player Label Showing Roles. Currently limited by string cap
 
 @Mixin(value = EntityTrackerEntryImpl.class, remap = false)
 public abstract class EntityTrackerEntryImplMixin {
-	@Shadow
+	/*@Shadow
 	public Entity trackedEntity;
 
 	@Shadow
@@ -29,5 +20,5 @@ public abstract class EntityTrackerEntryImplMixin {
 		} else {
 			this.sendPacketToTrackedPlayersAndTrackedEntity(packet);
 		}
-	}
+	}*/
 }

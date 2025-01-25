@@ -228,6 +228,8 @@ public abstract class PacketHandlerServerMixin {
 					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Trommel!");
 				} else if (container instanceof TileEntityBasket) {
 					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Basket!");
+				} else if (container instanceof TileEntityActivator) {
+					FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Activator!");
 				}
 
 				lockable.setIsLocked(true);
