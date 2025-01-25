@@ -1,6 +1,6 @@
 package MelonUtilities.command.commands;
 
-import MelonUtilities.command.commandlogics.CommandLogicMelonUtilities;
+import MelonUtilities.command.commandlogic.CommandLogicMelonUtilities;
 import MelonUtilities.sqlite.DatabaseManager;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

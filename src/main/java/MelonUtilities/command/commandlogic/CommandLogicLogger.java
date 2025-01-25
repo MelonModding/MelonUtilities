@@ -1,4 +1,4 @@
-package MelonUtilities.command.commandlogics;
+package MelonUtilities.command.commandlogic;
 
 public class CommandLogicLogger {
 /*	public static int loggerPrintAllTables(PlayerServer sender){

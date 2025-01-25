@@ -1,4 +1,4 @@
-package MelonUtilities.command.commandlogics;
+package MelonUtilities.command.commandlogic;
 
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;

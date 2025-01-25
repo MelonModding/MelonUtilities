@@ -1,6 +1,6 @@
 package MelonUtilities.command.commands;
 
-import MelonUtilities.command.commandlogics.CommandLogicTPA;
+import MelonUtilities.command.commandlogic.CommandLogicTPA;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

@@ -1,6 +1,6 @@
 package MelonUtilities.command.commands;
 
-import MelonUtilities.command.commandlogics.CommandLogicRollback;
+import MelonUtilities.command.commandlogic.CommandLogicRollback;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

@@ -1,6 +1,6 @@
 package MelonUtilities.command.commands;
 
-import MelonUtilities.command.commandlogics.CommandLogicElevator;
+import MelonUtilities.command.commandlogic.CommandLogicElevator;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;

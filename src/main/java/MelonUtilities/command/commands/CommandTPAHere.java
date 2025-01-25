@@ -1,7 +1,7 @@
 package MelonUtilities.command.commands;
 
 import MelonUtilities.command.arguments.ArgumentTypeUsername;
-import MelonUtilities.command.commandlogics.CommandLogicTPAHere;
+import MelonUtilities.command.commandlogic.CommandLogicTPAHere;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

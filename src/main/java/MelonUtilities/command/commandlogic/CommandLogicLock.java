@@ -1,4 +1,4 @@
-package MelonUtilities.command.commandlogics;
+package MelonUtilities.command.commandlogic;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.interfaces.Lockable;

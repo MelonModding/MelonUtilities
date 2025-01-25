@@ -1,4 +1,4 @@
-package MelonUtilities.command.commandlogics;
+package MelonUtilities.command.commandlogic;
 
 import MelonUtilities.command.commands.CommandRole;
 import MelonUtilities.config.Data;

@@ -2,7 +2,7 @@ package MelonUtilities.command.commands;
 
 import MelonUtilities.command.arguments.ArgumentTypeColor;
 import MelonUtilities.command.arguments.ArgumentTypeRole;
-import MelonUtilities.command.commandlogics.CommandLogicRole;
+import MelonUtilities.command.commandlogic.CommandLogicRole;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.utility.MUtil;
 import com.mojang.brigadier.CommandDispatcher;
