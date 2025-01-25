@@ -17,7 +17,7 @@ public class CommandElevator implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicElevator.elevator_allowobstructions(sender);
+					return CommandLogicElevator.elevatorAllowobstructions(sender);
 				}
 			)
 		);
@@ -31,7 +31,7 @@ public class CommandElevator implements CommandManager.CommandRegistry{
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 						int cooldownValue = context.getArgument("cooldownvalue", Integer.class);
-						return CommandLogicElevator.elevator_cooldown(sender, cooldownValue);
+						return CommandLogicElevator.elevatorCooldown(sender, cooldownValue);
 					}
 				)
 			)

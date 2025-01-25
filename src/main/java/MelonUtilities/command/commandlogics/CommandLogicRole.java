@@ -26,29 +26,6 @@ import java.util.UUID;
 
 @SuppressWarnings("SameReturnValue")
 public class CommandLogicRole {
-
-	/*
-	 Naming Scheme for methods in this class is:
-
-	 (arg = command argument/literal)
-	 Ex: [ arg_arg_arg ]
-
-	 Naming can also include arguments in all caps:
-	 Ex: [ arg.arg.ARG ]
-
-	 !!!Only use capitalized arguments when necessary!!!
-	 Capitalized arguments should only be used for arguments that are NOT literals, and are variable.
-	 Specifically when two methods share the same base command, and need to be differentiated from each-other
-
-	 Ex: [ role_set_defaultrole_ROLEID ]
-	 	 [ role_set_defaultrole_none ]
-
-	 * Note that both methods share the same parent argument (defaultrole), and that none is a literal (so it is not capitalized)
-
-	 PS. Arguments inside the method name should match their registered name/literal in the ArgumentBuilder for their respective command
-	*/
-
-
 	static Icon inputUsernameIcon = new Icon("[Input Username]", (byte) TextFormatting.WHITE.id, Items.LABEL.getDefaultStack());
 	public static int role(PlayerServer sender) {
 		ServerGuiBuilder roleGui = new ServerGuiBuilder();
@@ -73,7 +50,7 @@ public class CommandLogicRole {
 						Icon playerIcon = new Icon(target.username, (byte) TextFormatting.WHITE.id, Items.ARMOR_CHESTPLATE_IRON.getDefaultStack());
 						//-------------------------------------
 						roleGrantToGui.setContainerSlot(j, (roleGrantToGuiInventory -> new ServerSlotButton(playerIcon.icon, roleGrantToGuiInventory, finalJ, () -> {
-							role_grant(sender, target, role);
+							roleGrant(sender, target, role);
 							sender.usePersonalCraftingInventory();
 						})));
 						//-------------------------------------
@@ -81,7 +58,7 @@ public class CommandLogicRole {
 					}
 					int finalJ1 = j;
 					roleGrantToGui.setContainerSlot(j+1, (roleGrantToGuiInventory -> new ServerSlotButton(inputUsernameIcon.icon, roleGrantToGuiInventory, finalJ1+1, () -> {
-						((PlayerCustomInputFunctionInterface) sender).melonutilities$setCustomInputFunction(customInput -> role_grant(sender, customInput, role));
+						((PlayerCustomInputFunctionInterface) sender).melonutilities$setCustomInputFunction(customInput -> roleGrant(sender, customInput, role));
 						sender.usePersonalCraftingInventory();
 					})));
 					GuiHelper.openCustomServerGui(sender, roleGrantToGui.build(sender, "To Player: "));
@@ -93,12 +70,12 @@ public class CommandLogicRole {
 		})));
 		//-------------------------------------
 		roleGui.setContainerSlot(3, (inventory -> new ServerSlotButton(roleReloadIcon.icon, inventory, 3, () -> {
-			role_reload(sender);
+			roleReload(sender);
 			sender.usePersonalCraftingInventory();
 		})));
 		//-------------------------------------
 		roleGui.setContainerSlot(5, (inventory -> new ServerSlotButton(roleListIcon.icon, inventory, 5, () -> {
-			role_list(sender);
+			roleList(sender);
 			sender.usePersonalCraftingInventory();
 		})));
 		//-------------------------------------
@@ -115,7 +92,7 @@ public class CommandLogicRole {
 	}
 
 	static Icon roleReloadIcon = new Icon("[Reload]", (byte) TextFormatting.ORANGE.id, Items.REPEATER.getDefaultStack());
-	public static int role_reload(PlayerServer sender) {
+	public static int roleReload(PlayerServer sender) {
 		Data.Roles.reload();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Reloaded %s Role(s)!", new FeedbackArg(Data.Roles.roleDataHashMap.size()));
 		CommandRole.buildSyntax();
@@ -126,7 +103,7 @@ public class CommandLogicRole {
 	}
 
 	static Icon roleListIcon = new Icon("[List]", (byte) TextFormatting.LIGHT_GRAY.id, Items.PAPER.getDefaultStack());
-	public static int role_list(PlayerServer sender) {
+	public static int roleList(PlayerServer sender) {
 		if (Data.Roles.roleDataHashMap.isEmpty()) {
 			sender.sendMessage(TextFormatting.GRAY + "< " + TextFormatting.LIGHT_GRAY + "Roles: " + TextFormatting.GRAY + " >");
 			sender.sendMessage(TextFormatting.GRAY + "  -No Roles Created-");
@@ -145,7 +122,7 @@ public class CommandLogicRole {
 	}
 
 	static Icon roleRevokeIcon = new Icon("[Revoke]", (byte) TextFormatting.RED.id, Items.DUST_REDSTONE.getDefaultStack());
-	public static int role_revoke(PlayerServer sender, Player target, Role role){
+	public static int roleRevoke(PlayerServer sender, Player target, Role role){
 
 		if (role.playersGrantedRole.contains(target.uuid)) {
 			role.playersGrantedRole.remove(target.uuid);
@@ -160,7 +137,7 @@ public class CommandLogicRole {
 	}
 
 	static Icon roleGrantIcon = new Icon("[Grant]", (byte) TextFormatting.LIME.id, Items.OLIVINE.getDefaultStack());
-	public static void role_grant(PlayerServer sender, String targetUsername, Role role) {
+	public static void roleGrant(PlayerServer sender, String targetUsername, Role role) {
 		Pair<UUID, String> profile;
 		try {
 			profile = MUtil.getProfileFromUsername(targetUsername);
@@ -182,7 +159,7 @@ public class CommandLogicRole {
 		}
 	}
 
-	public static int role_grant(PlayerServer sender, Player target, Role role){
+	public static int roleGrant(PlayerServer sender, Player target, Role role){
 		if (!role.playersGrantedRole.contains(target.uuid)){
 			role.playersGrantedRole.add(target.uuid);
 			role.save();
@@ -195,7 +172,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_create(PlayerServer sender, String roleID, int rolePriority) {
+	public static int roleCreate(PlayerServer sender, String roleID, int rolePriority) {
 		if (Data.Roles.roleDataHashMap.containsKey(roleID)) {
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, sender, "Failed to Create Role with RoleID %s (Role Already Exists)", new FeedbackArg(roleID));
 			return Command.SINGLE_SUCCESS;
@@ -208,13 +185,13 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_delete(PlayerServer sender, Role role) {
+	public static int roleDelete(PlayerServer sender, Role role) {
 		FeedbackHandlerServer.sendFeedback(FeedbackType.destructive, sender, "Deleted Role %s", new FeedbackArg(role.roleID));
 		role.delete();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_set_defaultrole_ROLEID(PlayerServer sender, Role role) {
+	public static int roleSetDefaultroleROLEID(PlayerServer sender, Role role) {
 		Data.MainConfig.config.defaultRole = role.roleID;
 		Data.MainConfig.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Default Role to %s", new FeedbackArg(role.roleID));
@@ -222,91 +199,91 @@ public class CommandLogicRole {
 
 	}
 
-	public static int role_set_defaultrole_none(PlayerServer sender) {
+	public static int roleSetDefaultroleNone(PlayerServer sender) {
 		Data.MainConfig.config.defaultRole = null;
 		Data.MainConfig.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.destructive, sender, "Removed Default Role");
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_set_displaymode_single(PlayerServer sender) {
+	public static int roleSetDisplaymodeSingle(PlayerServer sender) {
 		Data.MainConfig.config.displayMode = "single";
 		Data.MainConfig.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Mode to %s", new FeedbackArg("single"));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_set_displaymode_multi(PlayerServer sender) {
+	public static int roleSetDisplaymodeMulti(PlayerServer sender) {
 		Data.MainConfig.config.displayMode = "multi";
 		Data.MainConfig.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Mode to %s", new FeedbackArg("multi"));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_priority(PlayerServer sender, Role role, int priorityValue){
+	public static int roleEditPriority(PlayerServer sender, Role role, int priorityValue){
 		role.priority = priorityValue;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Priority for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(priorityValue));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_name(PlayerServer sender, Role role, String displayName) {
+	public static int roleEditDisplayName(PlayerServer sender, Role role, String displayName) {
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Name for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(displayName));
 		role.displayName = displayName;
 		role.save();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_color_COLOR(PlayerServer sender, Role role, String color) {
+	public static int roleEditDisplayColorCOLOR(PlayerServer sender, Role role, String color) {
 		role.displayColor = color;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Color for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg().argColor(TextFormatting.getColorFormatting(color)));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_color_HEX(PlayerServer sender, Role role, String hex) {
+	public static int roleEditDisplayColorHEX(PlayerServer sender, Role role, String hex) {
 		role.displayColor = hex;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Color for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg("#" + hex).argColor(hex));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_underline(PlayerServer sender, Role role, boolean value) {
+	public static int roleEditDisplayUnderline(PlayerServer sender, Role role, boolean value) {
 		role.isDisplayUnderlined = value;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Underline for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(value));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_bold(PlayerServer sender, Role role, boolean value) {
+	public static int roleEditDisplayBold(PlayerServer sender, Role role, boolean value) {
 		role.isDisplayBold = value;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Bold for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(value));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_italics(PlayerServer sender, Role role, boolean value) {
+	public static int roleEditDisplayItalics(PlayerServer sender, Role role, boolean value) {
 		role.isDisplayItalics = value;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Italics for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(value));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_border_color_COLOR(PlayerServer sender, Role role, String color) {
+	public static int roleEditDisplayBorderColorCOLOR(PlayerServer sender, Role role, String color) {
 		role.displayBorderColor = color;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Border Color for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(color).argColor(TextFormatting.getColorFormatting(color)));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_border_color_HEX(PlayerServer sender, Role role, String hex) {
+	public static int roleEditDisplayBorderColorHEX(PlayerServer sender, Role role, String hex) {
 		role.displayBorderColor = hex;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Display Border Color for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg("#" + hex).argColor(hex));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_border_style_none(PlayerServer sender, Role role) {
+	public static int roleEditDisplayBorderStyleNone(PlayerServer sender, Role role) {
 		role.isUsernameBorderBracket = false;
 		role.isUsernameBorderNone = true;
 		role.isUsernameBorderCaret = false;
@@ -317,7 +294,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_border_style_bracket(PlayerServer sender, Role role) {
+	public static int roleEditDisplayBorderStyleBracket(PlayerServer sender, Role role) {
 		role.isDisplayBorderBracket = true;
 		role.isDisplayBorderNone = false;
 		role.isDisplayBorderCaret = false;
@@ -328,7 +305,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_border_style_curly(PlayerServer sender, Role role) {
+	public static int roleEditDisplayBorderStyleCurly(PlayerServer sender, Role role) {
 		role.isDisplayBorderBracket = false;
 		role.isDisplayBorderNone = false;
 		role.isDisplayBorderCaret = false;
@@ -339,7 +316,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_border_style_caret(PlayerServer sender, Role role) {
+	public static int roleEditDisplayBorderStyleCaret(PlayerServer sender, Role role) {
 		role.isDisplayBorderBracket = false;
 		role.isDisplayBorderNone = false;
 		role.isDisplayBorderCaret = true;
@@ -350,7 +327,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_border_style_custom_prefix(PlayerServer sender, Role role, String customAffix) {
+	public static int roleEditDisplayBorderStyleCustomPrefix(PlayerServer sender, Role role, String customAffix) {
 		role.isDisplayBorderBracket = false;
 		role.isDisplayBorderNone = false;
 		role.isDisplayBorderCaret = false;
@@ -362,7 +339,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_display_border_style_custom_suffix(PlayerServer sender, Role role, String customAffix) {
+	public static int roleEditDisplayBorderStyleCustomSuffix(PlayerServer sender, Role role, String customAffix) {
 		role.isDisplayBorderBracket = false;
 		role.isDisplayBorderNone = false;
 		role.isDisplayBorderCaret = false;
@@ -374,21 +351,21 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_username_border_color_COLOR(PlayerServer sender, Role role, String color) {
+	public static int roleEditUsernameBorderColorCOLOR(PlayerServer sender, Role role, String color) {
 		role.usernameBorderColor = color;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Username Border Color for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(color).argColor(TextFormatting.getColorFormatting(color)));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_username_border_color_HEX(PlayerServer sender, Role role, String hex) {
+	public static int roleEditUsernameBorderColorHEX(PlayerServer sender, Role role, String hex) {
 		role.usernameBorderColor = hex;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Username Border Color for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg("#" + hex).argColor(hex));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_username_border_style_none(PlayerServer sender, Role role) {
+	public static int roleEditUsernameBorderStyleNone(PlayerServer sender, Role role) {
 		role.isUsernameBorderBracket = false;
 		role.isUsernameBorderNone = true;
 		role.isUsernameBorderCaret = false;
@@ -399,7 +376,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_username_border_style_bracket(PlayerServer sender, Role role) {
+	public static int roleEditUsernameBorderStyleBracket(PlayerServer sender, Role role) {
 		role.isUsernameBorderBracket = true;
 		role.isUsernameBorderNone = false;
 		role.isUsernameBorderCaret = false;
@@ -410,7 +387,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_username_border_style_curly(PlayerServer sender, Role role) {
+	public static int roleEditUsernameBorderStyleCurly(PlayerServer sender, Role role) {
 		role.isUsernameBorderBracket = false;
 		role.isUsernameBorderNone = false;
 		role.isUsernameBorderCaret = false;
@@ -421,7 +398,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_username_border_style_caret(PlayerServer sender, Role role) {
+	public static int roleEditUsernameBorderStyleCaret(PlayerServer sender, Role role) {
 		role.isUsernameBorderBracket = false;
 		role.isUsernameBorderNone = false;
 		role.isUsernameBorderCaret = true;
@@ -432,7 +409,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_username_border_style_custom_prefix(PlayerServer sender, Role role, String customAffix) {
+	public static int roleEditUsernameBorderStyleCustomPrefix(PlayerServer sender, Role role, String customAffix) {
 		role.isUsernameBorderBracket = false;
 		role.isUsernameBorderNone = false;
 		role.isUsernameBorderCaret = false;
@@ -444,7 +421,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_username_border_style_custom_suffix(PlayerServer sender, Role role, String customAffix) {
+	public static int roleEditUsernameBorderStyleCustomSuffix(PlayerServer sender, Role role, String customAffix) {
 		role.isUsernameBorderBracket = false;
 		role.isUsernameBorderNone = false;
 		role.isUsernameBorderCaret = false;
@@ -456,35 +433,35 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_text_color_COLOR(PlayerServer sender, Role role, String color) {
+	public static int roleEditTextColorCOLOR(PlayerServer sender, Role role, String color) {
 		role.textColor = color;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Text Color for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(color).argColor(TextFormatting.getColorFormatting(color)));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_text_color_HEX(PlayerServer sender, Role role, String hex) {
+	public static int roleEditTextColorHEX(PlayerServer sender, Role role, String hex) {
 		role.textColor = hex;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Text Color for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg("#" + hex).argColor(hex));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_text_underline(PlayerServer sender, Role role, boolean value) {
+	public static int roleEditTextUnderline(PlayerServer sender, Role role, boolean value) {
 		role.isTextUnderlined = value;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Text Underline for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(value));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_text_bold(PlayerServer sender, Role role, boolean value) {
+	public static int roleEditTextBold(PlayerServer sender, Role role, boolean value) {
 		role.isTextBold = value;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Text Bold for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(value));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int role_edit_text_italics(PlayerServer sender, Role role, boolean value) {
+	public static int roleEditTextItalics(PlayerServer sender, Role role, boolean value) {
 		role.isTextItalics = value;
 		role.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Set Text Italics for Role %s to %s", new FeedbackArg(role.roleID), new FeedbackArg(value));

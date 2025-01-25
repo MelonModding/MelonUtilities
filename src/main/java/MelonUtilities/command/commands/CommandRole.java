@@ -5,7 +5,6 @@ import MelonUtilities.command.arguments.ArgumentTypeRole;
 import MelonUtilities.command.commandlogics.CommandLogicRole;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.utility.MUtil;
-import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -16,7 +15,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
-import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.command.arguments.ArgumentTypeEntity;
 import net.minecraft.core.net.command.helpers.EntitySelector;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -33,7 +31,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 							String roleID = context.getArgument("roleID", String.class);
 							int rolePriority = context.getArgument("priorityvalue", Integer.class);
-							return CommandLogicRole.role_create(sender, roleID, rolePriority);
+							return CommandLogicRole.roleCreate(sender, roleID, rolePriority);
 						}
 					)
 				)
@@ -49,7 +47,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 						Role role = context.getArgument("role", Role.class);
-						return CommandLogicRole.role_delete(sender, role);
+						return CommandLogicRole.roleDelete(sender, role);
 					}
 				)
 			)
@@ -67,7 +65,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 								PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 								Role role = context.getArgument("role", Role.class);
 								int priorityValue = context.getArgument("priorityvalue", Integer.class);
-								return CommandLogicRole.role_edit_priority(sender, role, priorityValue);
+								return CommandLogicRole.roleEditPriority(sender, role, priorityValue);
 							}
 						)
 					)
@@ -80,7 +78,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String displayName = context.getArgument("displayName", String.class);
-									return CommandLogicRole.role_edit_display_name(sender, role, displayName);
+									return CommandLogicRole.roleEditDisplayName(sender, role, displayName);
 								}
 							)
 						)
@@ -92,7 +90,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String color = context.getArgument("color", String.class);
-									return CommandLogicRole.role_edit_display_color_COLOR(sender, role, color);
+									return CommandLogicRole.roleEditDisplayColorCOLOR(sender, role, color);
 								}
 							)
 						)
@@ -102,7 +100,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
-									return CommandLogicRole.role_edit_display_color_HEX(sender, role, hex);
+									return CommandLogicRole.roleEditDisplayColorHEX(sender, role, hex);
 								}
 							)
 						)
@@ -114,7 +112,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
-									return CommandLogicRole.role_edit_display_underline(sender, role, value);
+									return CommandLogicRole.roleEditDisplayUnderline(sender, role, value);
 								}
 							)
 						)
@@ -126,7 +124,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
-									return CommandLogicRole.role_edit_display_bold(sender, role, value);
+									return CommandLogicRole.roleEditDisplayBold(sender, role, value);
 								}
 							)
 						)
@@ -138,7 +136,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
-									return CommandLogicRole.role_edit_display_italics(sender, role, value);
+									return CommandLogicRole.roleEditDisplayItalics(sender, role, value);
 								}
 							)
 						)
@@ -151,7 +149,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										String color = context.getArgument("color", String.class);
-										return CommandLogicRole.role_edit_display_border_color_COLOR(sender, role, color);
+										return CommandLogicRole.roleEditDisplayBorderColorCOLOR(sender, role, color);
 									}
 								)
 							)
@@ -161,7 +159,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
-										return CommandLogicRole.role_edit_display_border_color_HEX(sender, role, hex);
+										return CommandLogicRole.roleEditDisplayBorderColorHEX(sender, role, hex);
 									}
 								)
 							)
@@ -172,7 +170,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										return CommandLogicRole.role_edit_display_border_style_none(sender, role);
+										return CommandLogicRole.roleEditDisplayBorderStyleNone(sender, role);
 									}
 								)
 							)
@@ -181,7 +179,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										return CommandLogicRole.role_edit_display_border_style_bracket(sender, role);
+										return CommandLogicRole.roleEditDisplayBorderStyleBracket(sender, role);
 									}
 								)
 							)
@@ -190,7 +188,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										return CommandLogicRole.role_edit_display_border_style_curly(sender, role);
+										return CommandLogicRole.roleEditDisplayBorderStyleCurly(sender, role);
 									}
 								)
 							)
@@ -199,7 +197,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										return CommandLogicRole.role_edit_display_border_style_caret(sender, role);
+										return CommandLogicRole.roleEditDisplayBorderStyleCaret(sender, role);
 									}
 								)
 							)
@@ -211,7 +209,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 												PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
 												String customAffix = context.getArgument("customaffix", String.class);
-												return CommandLogicRole.role_edit_display_border_style_custom_prefix(sender, role, customAffix);
+												return CommandLogicRole.roleEditDisplayBorderStyleCustomPrefix(sender, role, customAffix);
 											}
 										)
 									)
@@ -223,7 +221,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 												PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
 												String customAffix = context.getArgument("customaffix", String.class);
-												return CommandLogicRole.role_edit_display_border_style_custom_suffix(sender, role, customAffix);
+												return CommandLogicRole.roleEditDisplayBorderStyleCustomSuffix(sender, role, customAffix);
 											}
 										)
 									)
@@ -241,7 +239,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										String color = context.getArgument("color", String.class);
-										return CommandLogicRole.role_edit_username_border_color_COLOR(sender, role, color);
+										return CommandLogicRole.roleEditUsernameBorderColorCOLOR(sender, role, color);
 									}
 								)
 							)
@@ -251,7 +249,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
 										String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
-										return CommandLogicRole.role_edit_username_border_color_HEX(sender, role, hex);
+										return CommandLogicRole.roleEditUsernameBorderColorHEX(sender, role, hex);
 									}
 								)
 							)
@@ -262,7 +260,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										return CommandLogicRole.role_edit_username_border_style_none(sender, role);
+										return CommandLogicRole.roleEditUsernameBorderStyleNone(sender, role);
 									}
 								)
 							)
@@ -271,7 +269,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										return CommandLogicRole.role_edit_username_border_style_bracket(sender, role);
+										return CommandLogicRole.roleEditUsernameBorderStyleBracket(sender, role);
 									}
 								)
 							)
@@ -280,7 +278,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										return CommandLogicRole.role_edit_username_border_style_curly(sender, role);
+										return CommandLogicRole.roleEditUsernameBorderStyleCurly(sender, role);
 									}
 								)
 							)
@@ -289,7 +287,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										return CommandLogicRole.role_edit_username_border_style_caret(sender, role);
+										return CommandLogicRole.roleEditUsernameBorderStyleCaret(sender, role);
 									}
 								)
 							)
@@ -301,7 +299,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 												PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
 												String customAffix = context.getArgument("customaffix", String.class);
-												return CommandLogicRole.role_edit_username_border_style_custom_prefix(sender, role, customAffix);
+												return CommandLogicRole.roleEditUsernameBorderStyleCustomPrefix(sender, role, customAffix);
 											}
 										)
 									)
@@ -313,7 +311,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 												PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 												Role role = context.getArgument("role", Role.class);
 												String customAffix = context.getArgument("customaffix", String.class);
-												return CommandLogicRole.role_edit_username_border_style_custom_suffix(sender, role, customAffix);
+												return CommandLogicRole.roleEditUsernameBorderStyleCustomSuffix(sender, role, customAffix);
 											}
 										)
 									)
@@ -330,7 +328,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String color = context.getArgument("color", String.class);
-									return CommandLogicRole.role_edit_text_color_COLOR(sender, role, color);
+									return CommandLogicRole.roleEditTextColorCOLOR(sender, role, color);
 								}
 							)
 						)
@@ -340,7 +338,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
-									return CommandLogicRole.role_edit_text_color_HEX(sender, role, hex);
+									return CommandLogicRole.roleEditTextColorHEX(sender, role, hex);
 								}
 							)
 						)
@@ -352,7 +350,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
-									return CommandLogicRole.role_edit_text_underline(sender, role, value);
+									return CommandLogicRole.roleEditTextUnderline(sender, role, value);
 								}
 							)
 						)
@@ -364,7 +362,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
-									return CommandLogicRole.role_edit_text_bold(sender, role, value);
+									return CommandLogicRole.roleEditTextBold(sender, role, value);
 								}
 							)
 						)
@@ -376,7 +374,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
 									boolean value = context.getArgument("value", Boolean.class);
-									return CommandLogicRole.role_edit_text_italics(sender, role, value);
+									return CommandLogicRole.roleEditTextItalics(sender, role, value);
 								}
 							)
 						)
@@ -397,7 +395,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							Role role = context.getArgument("role", Role.class);
 							Player target = (Player)context.getArgument("target", EntitySelector.class).get(context.getSource()).get(0);
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-							return CommandLogicRole.role_grant(sender, target, role);
+							return CommandLogicRole.roleGrant(sender, target, role);
 						}
 					)
 				)
@@ -415,7 +413,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							Role role = context.getArgument("role", Role.class);
 							Player target = (Player)context.getArgument("target", EntitySelector.class).get(context.getSource()).get(0);
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-							return CommandLogicRole.role_revoke(sender, target, role);
+							return CommandLogicRole.roleRevoke(sender, target, role);
 						}
 					)
 				)
@@ -432,7 +430,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 							Role role = context.getArgument("role", Role.class);
-							return CommandLogicRole.role_set_defaultrole_ROLEID(sender, role);
+							return CommandLogicRole.roleSetDefaultroleROLEID(sender, role);
 						}
 					)
 				)
@@ -440,7 +438,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 					.executes(context ->
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-							return CommandLogicRole.role_set_defaultrole_none(sender);
+							return CommandLogicRole.roleSetDefaultroleNone(sender);
 						}
 					)
 				)
@@ -450,7 +448,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 					.executes(context ->
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-							return CommandLogicRole.role_set_displaymode_single(sender);
+							return CommandLogicRole.roleSetDisplaymodeSingle(sender);
 						}
 					)
 				)
@@ -458,7 +456,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 					.executes(context ->
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-							return CommandLogicRole.role_set_displaymode_multi(sender);
+							return CommandLogicRole.roleSetDisplaymodeMulti(sender);
 						}
 					)
 				)
@@ -472,7 +470,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicRole.role_list(sender);
+					return CommandLogicRole.roleList(sender);
 				}
 			)
 		);
@@ -484,7 +482,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicRole.role_reload(sender);
+					return CommandLogicRole.roleReload(sender);
 				}
 			)
 		);
@@ -513,49 +511,5 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		roleSet(commandBuilder);
 
 		dispatcher.register(commandBuilder);
-	}
-
-	public static SyntaxBuilder syntax = new SyntaxBuilder();
-	public static void buildSyntax(){
-		syntax.clear();
-		syntax.append("title",                                                  TextFormatting.LIGHT_GRAY + "< Command Syntax > ([] = optional, <> = variable, / = or)");
-		syntax.append("create", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role create <role id> [<priority>]");
-		syntax.append("delete", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role delete <role id>");
-		syntax.append("edit", "title",                                    TextFormatting.LIGHT_GRAY + "  > /role edit <role id> <mode>");
-		syntax.append("priority", "edit",                                 TextFormatting.LIGHT_GRAY + "    > priority <priority value>");
-		/*		syntax.append("perms", "edit",                                    TextFormatting.LIGHT_GRAY + "    > perms <permission>");*/
-		syntax.append("display", "edit",                                  TextFormatting.LIGHT_GRAY + "    > display <style>");
-		syntax.append("displayName", "display",                           TextFormatting.LIGHT_GRAY + "      > name <display name>");
-		syntax.append("displayColor", "display",                          TextFormatting.LIGHT_GRAY + "      > color <color/hex>");
-		syntax.append("displayUnderline", "display",                      TextFormatting.LIGHT_GRAY + "      > underline true/false");
-		syntax.append("displayBold", "display",                           TextFormatting.LIGHT_GRAY + "      > bold true/false");
-		syntax.append("displayItalics", "display",                        TextFormatting.LIGHT_GRAY + "      > italics true/false");
-		syntax.append("displayBorder", "display",                         TextFormatting.LIGHT_GRAY + "      > border <style>");
-		syntax.append("displayBorderColor", "displayBorder",              TextFormatting.LIGHT_GRAY + "        > color <color/hex>");
-		syntax.append("displayBorderType", "displayBorder",               TextFormatting.LIGHT_GRAY + "        > none/bracket/caret/curly");
-		syntax.append("displayBorderCustom", "displayBorder",             TextFormatting.LIGHT_GRAY + "        > custom [<affix>]");
-		syntax.append("displayBorderCustomAffix", "displayBorderCustom",  TextFormatting.LIGHT_GRAY + "          > prefix/suffix <custom affix>");
-		syntax.append("username", "edit",                                 TextFormatting.LIGHT_GRAY + "    > username <style>");
-		/*syntax.append("usernameColor", "username",                      TextFormatting.LIGHT_GRAY + "      > color <color/hex>");
-		syntax.append("usernameUnderline", "username",                    TextFormatting.LIGHT_GRAY + "      > underline true/false");
-		syntax.append("usernameBold", "username",                         TextFormatting.LIGHT_GRAY + "      > bold true/false");
-		syntax.append("usernameItalics", "username",                      TextFormatting.LIGHT_GRAY + "      > italics true/false");*/
-		syntax.append("usernameBorder", "username",                       TextFormatting.LIGHT_GRAY + "      > border <style>");
-		syntax.append("usernameBorderColor", "usernameBorder",            TextFormatting.LIGHT_GRAY + "        > color <color/hex>");
-		syntax.append("usernameBorderType", "usernameBorder",             TextFormatting.LIGHT_GRAY + "        > none/bracket/caret/curly");
-		syntax.append("usernameBorderCustom", "usernameBorder",           TextFormatting.LIGHT_GRAY + "        > custom [<affix>]");
-		syntax.append("usernameBorderCustomAffix", "usernameBorderCustom",TextFormatting.LIGHT_GRAY + "          > prefix/suffix <custom affix>");
-		syntax.append("text", "edit",                                     TextFormatting.LIGHT_GRAY + "    > text <style>");
-		syntax.append("textColor", "text",                                TextFormatting.LIGHT_GRAY + "      > color <color/hex> (*bug: hex won't wrap!)");
-		syntax.append("textUnderline", "text",                            TextFormatting.LIGHT_GRAY + "      > underline true/false");
-		syntax.append("textBold", "text",                                 TextFormatting.LIGHT_GRAY + "      > bold true/false");
-		syntax.append("textItalics", "text",                              TextFormatting.LIGHT_GRAY + "      > italics true/false");
-		syntax.append("grant", "title",                                   TextFormatting.LIGHT_GRAY + "  > /role grant <role id> [<username>]");
-		syntax.append("revoke", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role revoke <role id> [<username>]");
-		syntax.append("set", "title",                                     TextFormatting.LIGHT_GRAY + "  > /role set <mode>");
-		syntax.append("setDefaultRole", "set",                            TextFormatting.LIGHT_GRAY + "    > defaultRole <role id>/none");
-		syntax.append("setDisplayMode", "set",                            TextFormatting.LIGHT_GRAY + "    > displayMode single/multi");
-		syntax.append("list", "title",                                    TextFormatting.LIGHT_GRAY + "  > /role list");
-		syntax.append("reload", "title",                                  TextFormatting.LIGHT_GRAY + "  > /role reload");
 	}
 }

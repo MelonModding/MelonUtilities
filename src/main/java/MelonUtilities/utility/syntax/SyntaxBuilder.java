@@ -4,6 +4,7 @@ import net.minecraft.core.net.command.CommandSource;
 
 import java.util.ArrayList;
 
+@Deprecated
 public class SyntaxBuilder {
 
 	ArrayList<SyntaxLine> syntaxLines = new ArrayList<>();

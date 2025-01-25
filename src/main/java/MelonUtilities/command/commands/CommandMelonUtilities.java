@@ -16,7 +16,7 @@ public class CommandMelonUtilities implements CommandManager.CommandRegistry{
 				.executes(context ->
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender();
-						return CommandLogicMelonUtilities.melonutilities_reload(sender);
+						return CommandLogicMelonUtilities.melonutilitiesReload(sender);
 					}
 				)
 			)

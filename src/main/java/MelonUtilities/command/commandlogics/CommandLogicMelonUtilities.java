@@ -11,29 +11,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 import static net.minecraft.server.player.PlayerListBox.updateList;
 
 public class CommandLogicMelonUtilities {
-
-		/*
-	 Naming Scheme for methods in this class is:
-
-	 (arg = command argument/literal)
-	 Ex: [ arg_arg_arg ]
-
-	 Naming can also include arguments in all caps:
-	 Ex: [ arg.arg.ARG ]
-
-	 !!!Only use capitalized arguments when necessary!!!
-	 Capitalized arguments should only be used for arguments that are NOT literals, and are variable.
-	 Specifically when two methods share the same base command, and need to be differentiated from each-other
-
-	 Ex: [ role_set_defaultrole_ROLEID ]
-	 	 [ role_set_defaultrole_none ]
-
-	 * Note that both methods share the same parent argument (defaultrole), and that none is a literal (so it is not capitalized)
-
-	 PS. Arguments inside the method name should match their registered name/literal in the ArgumentBuilder for their respective command
-	*/
-
-	public static int melonutilities_reload(PlayerServer sender){
+	public static int melonutilitiesReload(PlayerServer sender){
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Reloading MelonUtilities...");
 
 		FeedbackHandlerServer.sendFeedback(FeedbackType.destructive, sender, "Reloading Player Data...");

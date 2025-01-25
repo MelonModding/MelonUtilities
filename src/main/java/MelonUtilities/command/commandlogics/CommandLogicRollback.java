@@ -32,27 +32,6 @@ import java.util.Map;
 import static MelonUtilities.utility.managers.RollbackManager.*;
 
 public class CommandLogicRollback {
-	/*
-	 Naming Scheme for methods in this class is:
-
-	 (arg = command argument/literal)
-	 Ex: [ arg_arg_arg ]
-
-	 Naming can also include arguments in all caps:
-	 Ex: [ arg.arg.ARG ]
-
-	 !!!Only use capitalized arguments when necessary!!!
-	 Capitalized arguments should only be used for arguments that are NOT literals, and are variable.
-	 Specifically when two methods share the same base command, and need to be differentiated from each-other
-
-	 Ex: [ role_set_defaultrole_ROLEID ]
-	 	 [ role_set_defaultrole_none ]
-
-	 * Note that both methods share the same parent argument (defaultrole), and that none is a literal (so it is not capitalized)
-
-	 PS. Arguments inside the method name should match their registered name/literal in the ArgumentBuilder for their respective command
-	*/
-
 	public static int rollback(PlayerServer sender) {
 		int x1 = sender.chunkCoordX;
 		int z1 = sender.chunkCoordZ;
@@ -129,7 +108,7 @@ public class CommandLogicRollback {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollback_area(PlayerServer sender, int x1, int z1, int x2, int z2) {
+	public static int rollbackArea(PlayerServer sender, int x1, int z1, int x2, int z2) {
 		File chunkDir = new File("./rollbackdata/snapshots/" + sender.world.dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
 		chunkDir.mkdirs();
 
@@ -189,31 +168,31 @@ public class CommandLogicRollback {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollback_take_snapshot(PlayerServer sender) {
+	public static int rollbackTakeSnapshot(PlayerServer sender) {
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Taking a Snapshot!");
 		takeSnapshot();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollback_take_backup(PlayerServer sender) {
+	public static int rollbackTakeBackup(PlayerServer sender) {
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Taking a Backup!");
 		takeBackup();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollback_prune_snapshots(PlayerServer sender) {
+	public static int rollbackPruneSnapshots(PlayerServer sender) {
 		FeedbackHandlerServer.sendFeedback(FeedbackType.destructive, sender, "Pruning Snapshots..");
 		pruneSnapshots();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollback_prune_backups(PlayerServer sender) {
+	public static int rollbackPruneBackups(PlayerServer sender) {
 		FeedbackHandlerServer.sendFeedback(FeedbackType.destructive, sender, "Pruning Backups..");
 		pruneBackups();
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollback_auto_snapshots(PlayerServer sender) {
+	public static int rollbackAutoSnapshots(PlayerServer sender) {
 		if(Data.MainConfig.config.snapshotsEnabled){
 			Data.MainConfig.config.snapshotsEnabled = false;
 			Data.MainConfig.save();
@@ -226,7 +205,7 @@ public class CommandLogicRollback {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollback_auto_backups(PlayerServer sender) {
+	public static int rollbackAutoBackups(PlayerServer sender) {
 		if(Data.MainConfig.config.backupsEnabled){
 			Data.MainConfig.config.backupsEnabled = false;
 			Data.MainConfig.save();

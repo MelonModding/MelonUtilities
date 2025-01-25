@@ -2,37 +2,16 @@ package MelonUtilities.command.commands;
 
 import MelonUtilities.command.arguments.ArgumentTypeUsername;
 import MelonUtilities.command.commandlogics.CommandLogicLock;
-import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
-import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.server.entity.player.PlayerServer;
 
 @SuppressWarnings("UnusedReturnValue")
 public class CommandLock implements CommandManager.CommandRegistry{
-	public static SyntaxBuilder syntax = new SyntaxBuilder();
-	public static void buildSyntax(){
-		syntax.clear();
-		syntax.append("title",                                                    TextFormatting.LIGHT_GRAY + "< Command Syntax > ([] = optional, <> = variable, / = or)");
-		syntax.append("lock", "title",                                     TextFormatting.LIGHT_GRAY + "  > /lock [<mode>]");
-		syntax.append("lockOnBlockPlaced", "lock",                         TextFormatting.LIGHT_GRAY + "    > onBlockPlaced true/false");
-		syntax.append("lockOnBlockPunched", "lock",                        TextFormatting.LIGHT_GRAY + "    > onBlockPunched true/false");
-		syntax.append("lockTrust", "lock",                                 TextFormatting.LIGHT_GRAY + "    > trust <player>");
-		syntax.append("lockTrustAll", "lock",                              TextFormatting.LIGHT_GRAY + "    > trustall <player>");
-		syntax.append("lockTrustCommunity", "lock",                        TextFormatting.LIGHT_GRAY + "    > trustcommunity");
-		syntax.append("lockUntrust", "lock",                               TextFormatting.LIGHT_GRAY + "    > untrust <player>");
-		syntax.append("lockUntrustAll", "lock",                            TextFormatting.LIGHT_GRAY + "    > untrustall <player>");
-		syntax.append("lockUntrustCommunity", "lock",                      TextFormatting.LIGHT_GRAY + "    > untrustcommunity");
-		syntax.append("lockBypass", "lock", true,                      TextFormatting.LIGHT_GRAY + "    > bypass true/false");
-	}
-
-
-
-
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> lockOnBlockPlaced(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.then(LiteralArgumentBuilder.<CommandSource>literal("onblockplaced")
 			.executes(context ->

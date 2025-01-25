@@ -1,35 +1,18 @@
 package MelonUtilities.command.commands;
 
 import MelonUtilities.command.commandlogics.CommandLogicRollback;
-import MelonUtilities.utility.syntax.SyntaxBuilder;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
-import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.command.arguments.ArgumentTypeChunkCoordinates;
 import net.minecraft.core.net.command.helpers.Coordinates2D;
 import net.minecraft.server.entity.player.PlayerServer;
 
 @SuppressWarnings("UnusedReturnValue")
 public class CommandRollback implements CommandManager.CommandRegistry{
-	static SyntaxBuilder syntax = new SyntaxBuilder();
-	public static void buildSyntax(){
-		syntax.clear();
-		syntax.append("title",                                               TextFormatting.LIGHT_GRAY + "< Command Syntax > ([] = optional, <> = variable, / = or)");
-		syntax.append("rollback", "title",                             TextFormatting.LIGHT_GRAY + "  > /rollback [<mode>]");
-		syntax.append("rollbackArea", "rollback",                      TextFormatting.LIGHT_GRAY + "    > area <x1> <z1> <x2> <z2>");
-		syntax.append("rollbackTakeSnapshot", "rollback",              TextFormatting.LIGHT_GRAY + "    > takesnapshot");
-		syntax.append("rollbackTakeBackup", "rollback",                TextFormatting.LIGHT_GRAY + "    > takebackup");
-		syntax.append("rollbackPruneSnapshots", "rollback",            TextFormatting.LIGHT_GRAY + "    > prunesnapshots");
-		syntax.append("rollbackPruneBackups", "rollback",              TextFormatting.LIGHT_GRAY + "    > prunebackups");
-		syntax.append("rollbackToggleAutoBackups", "rollback",         TextFormatting.LIGHT_GRAY + "    > toggleautobackups");
-		syntax.append("rollbackToggleAutoSnapshots", "rollback",       TextFormatting.LIGHT_GRAY + "    > toggleautosnapshots");
-
-	}
-
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollback(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.executes(context ->
 			{
@@ -55,7 +38,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 							int z1 = chunk1.getZ(source);
 							int x2 = chunk2.getX(source);
 							int z2 = chunk2.getZ(source);
-							return CommandLogicRollback.rollback_area(sender, x1, z1, x2, z2);
+							return CommandLogicRollback.rollbackArea(sender, x1, z1, x2, z2);
 						}
 					)
 				)
@@ -69,7 +52,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicRollback.rollback_take_snapshot(sender);
+					return CommandLogicRollback.rollbackTakeSnapshot(sender);
 				}
 			)
 		);
@@ -81,7 +64,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicRollback.rollback_take_backup(sender);
+					return CommandLogicRollback.rollbackTakeBackup(sender);
 				}
 			)
 		);
@@ -93,7 +76,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicRollback.rollback_prune_snapshots(sender);
+					return CommandLogicRollback.rollbackPruneSnapshots(sender);
 				}
 			)
 		);
@@ -105,7 +88,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicRollback.rollback_prune_backups(sender);
+					return CommandLogicRollback.rollbackPruneBackups(sender);
 				}
 			)
 		);
@@ -117,7 +100,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicRollback.rollback_auto_snapshots(sender);
+					return CommandLogicRollback.rollbackAutoSnapshots(sender);
 				}
 			)
 		);
@@ -129,7 +112,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
-					return CommandLogicRollback.rollback_auto_backups(sender);
+					return CommandLogicRollback.rollbackAutoBackups(sender);
 				}
 			)
 		);
