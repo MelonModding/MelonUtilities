@@ -19,29 +19,19 @@ public class MelonUtilities implements ModInitializer {
 	public static final String MOD_ID = "melonutilities";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static void reloadAndBuildAll() {
+	public static void reloadAll() {
 		Data.Kits.reload();
 		Data.MainConfig.reload();
 		Data.Users.reload();
 		Data.Roles.reload();
-
-		//CommandKit.buildKitSyntax();
-		CommandRollback.buildSyntax();
-		CommandRole.buildSyntax();
-		CommandLock.buildSyntax();
 	}
 
 	public static void registerCommands(){
 		CommandManager.registerCommand(new CommandLock());
-
 		CommandManager.registerCommand(new CommandRole());
-
 		CommandManager.registerCommand(new CommandRollback());
-
 		CommandManager.registerCommand(new CommandElevator());
-
 		CommandManager.registerCommand(new CommandMelonUtilities());
-
 		CommandManager.registerCommand(new CommandTPA());
 		CommandManager.registerCommand(new CommandTPAHere());
 		CommandManager.registerCommand(new CommandTPAccept());
@@ -51,7 +41,7 @@ public class MelonUtilities implements ModInitializer {
 	public void initializeCommands(){
 		LOGGER.info("Commands initializing!");
 
-		reloadAndBuildAll();
+		reloadAll();
 
 		LOGGER.info("Commands initialized!");
 	}

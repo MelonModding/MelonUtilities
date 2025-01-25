@@ -36,11 +36,11 @@ public abstract class BlockLogicDispenserMixin extends BlockLogic {
 	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
 		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
-		if(LockManager.determineAuthStatus(lockable, player) <= LockManager.UNTRUSTED && !player.isSneaking()){
+		if(player instanceof PlayerServer && LockManager.determineAuthStatus(lockable, (PlayerServer) player) <= LockManager.UNTRUSTED && !player.isSneaking()){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Dispenser is Locked! (Use /lock info for more information)");
 			cir.setReturnValue(false);
 			return;
-		} else if(LockManager.determineAuthStatus(lockable, player) <= LockManager.UNTRUSTED && player.isSneaking()){
+		} else if(player instanceof PlayerServer && LockManager.determineAuthStatus(lockable, (PlayerServer) player) <= LockManager.UNTRUSTED && player.isSneaking()){
 			cir.setReturnValue(false);
 			return;
 		}

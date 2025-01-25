@@ -1,6 +1,5 @@
 package MelonUtilities.command.commandlogic;
 
-import MelonUtilities.command.commands.CommandRole;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.interfaces.PlayerCustomInputFunctionInterface;
@@ -95,8 +94,6 @@ public class CommandLogicRole {
 	public static int roleReload(PlayerServer sender) {
 		Data.Roles.reload();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Reloaded %s Role(s)!", new FeedbackArg(Data.Roles.roleDataHashMap.size()));
-		CommandRole.buildSyntax();
-		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Built Role Syntax!");
 		Data.MainConfig.reload();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Reloaded Config!");
 		return Command.SINGLE_SUCCESS;

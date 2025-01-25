@@ -1,6 +1,5 @@
 package MelonUtilities.command.commandlogic;
 
-import MelonUtilities.command.commands.CommandRole;
 import MelonUtilities.config.Data;
 import MelonUtilities.utility.feedback.FeedbackArg;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
@@ -33,10 +32,6 @@ public class CommandLogicMelonUtilities {
 		FeedbackHandlerServer.sendFeedback(FeedbackType.destructive, sender, "Reloading Role Data...");
 		Data.Roles.reload();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Reloaded %s Role(s)!", new FeedbackArg(Data.Roles.roleDataHashMap.size()));
-
-		FeedbackHandlerServer.sendFeedback(FeedbackType.destructive, sender, "Building Role Syntax...");
-		CommandRole.buildSyntax();
-		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Role Syntax Built!");
 
 		//TODO FeedbackHandler.sendFeedback(FeedbackType.destructive, source, "Building Rollback Syntax...");
 		//TODO RollbackCommand.buildSyntax();
