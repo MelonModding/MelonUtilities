@@ -79,7 +79,7 @@ public class TileEntityFurnaceMixin implements Lockable {
 
 	@Inject(at = @At("HEAD"), method = "canBeCarried", cancellable = true)
 	public void canBeCarriedInject(World world, Entity potentialHolder, CallbackInfoReturnable<Boolean> cir){
-		if(potentialHolder instanceof PlayerServer && LockManager.determineAuthStatus(this, (PlayerServer) potentialHolder) >= LockManager.TRUSTED){
+		if(potentialHolder instanceof PlayerServer && LockManager.determineAuthStatus(this, (PlayerServer) potentialHolder) <= LockManager.COMMUNITY){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) potentialHolder, "Failed to Pickup Container! (Not Authorized)");
 			((PlayerServer) potentialHolder).playerNetServerHandler.sendPacket(new PacketSetHeldObject(potentialHolder.id, ((PlayerServer) potentialHolder).getHeldObject()));
 			cir.setReturnValue(false);
