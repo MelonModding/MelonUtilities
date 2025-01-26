@@ -35,6 +35,7 @@ public class MelonUtilities implements ModInitializer {
 		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPAHere());
 		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPAccept());
 		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPDeny());
+		if(Data.MainConfig.config.enableSQLPlayerLogging) CommandManager.registerCommand(new CommandLogger());
 		CommandManager.registerCommand(new CommandMelonUtilities());
 	}
 

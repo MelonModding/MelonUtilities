@@ -273,15 +273,15 @@ public class RollbackManager {
 	}
 
 	public static void prune(List<File> fileList) throws IOException {
-		 if((fileList.size() - 1) % 2 == 0){
-			 for(int i = 1; i < (fileList.size() - 1); i += 2){
+		 if((fileList.size()) % 2 == 0){
+			 for(int i = 1; i < (fileList.size()); i += 2){
 				 File file = fileList.get(i);
 				 if(!file.getName().contains("archived")){
 					 deleteDirectory(file);
 				 }
 			 }
 		 } else {
-			 for(int i = 0; i < (fileList.size() - 1); i += 2){
+			 for(int i = 0; i < (fileList.size()); i += 2){
 				 File file = fileList.get(i);
 				 if(!file.getName().contains("archived")){
 					 deleteDirectory(file);
@@ -327,7 +327,7 @@ public class RollbackManager {
 					if (chunks == null) {return;}
 					for (File chunk : chunks) {
 
-						if (chunk.isDirectory()) {return;}
+						if (!chunk.isDirectory()) {return;}
 						File[] snapshots = chunk.listFiles();
 
 						if (snapshots == null) {return;}

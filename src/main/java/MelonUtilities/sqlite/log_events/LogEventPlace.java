@@ -1,6 +1,7 @@
 package MelonUtilities.sqlite.log_events;
 
 import MelonUtilities.MelonUtilities;
+import net.minecraft.server.entity.player.PlayerServer;
 
 import java.sql.*;
 
@@ -8,11 +9,11 @@ public class LogEventPlace {
 
 	public static final String tableName = "PlaceEvents";
 
-	public static void insert(Connection conn, String playerUUID, String itemKey, int x, int y, int z) throws SQLException {
+	public static void insert(Connection conn, PlayerServer player, String itemKey, int x, int y, int z) throws SQLException {
 		String insertSQL = "INSERT INTO " + tableName + "(time, playerUUID, itemKey, x, y, z) VALUES(?,?,?,?,?,?)";
 		PreparedStatement preparedStatement = conn.prepareStatement(insertSQL);
 		preparedStatement.setLong(1, System.currentTimeMillis());
-		preparedStatement.setString(2, playerUUID);
+		preparedStatement.setString(2, player.uuid.toString());
 		preparedStatement.setString(3, itemKey);
 		preparedStatement.setInt(4, x);
 		preparedStatement.setInt(5, y);

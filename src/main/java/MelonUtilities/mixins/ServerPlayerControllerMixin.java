@@ -6,6 +6,7 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
+import net.minecraft.server.entity.player.PlayerServer;
 import net.minecraft.server.world.ServerPlayerController;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -17,8 +18,8 @@ public class ServerPlayerControllerMixin {
 
 	@Inject(at = @At(ordinal = 1, shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/entity/player/Player;setHeldObject(Lnet/minecraft/core/world/ICarriable;)V"), method = "activateBlockOrUseItem")
 	private void activateBlockOrUseItemInject(Player entityplayer, World world, ItemStack itemstack, int blockX, int blockY, int blockZ, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir){
-		if (itemstack != null) {
-			DatabaseManager.connect((conn) -> LogEventPlace.insert(conn, entityplayer.uuid.toString(), itemstack.getItemKey(), blockX, blockY, blockZ));
+		if (itemstack != null && entityplayer instanceof PlayerServer) {
+			DatabaseManager.connect((conn) -> LogEventPlace.insert(conn, (PlayerServer) entityplayer, itemstack.getItemKey(), blockX, blockY, blockZ));
 		}
 	}
 }
