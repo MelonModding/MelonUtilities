@@ -17,7 +17,10 @@ public class DiscordChatRelay {
 
     public static void sendToMinecraft(String author, String message) {
         MinecraftServer server = MinecraftServer.getInstance();
-        message = "[" + TextFormatting.PURPLE + "DISCORD" + TextFormatting.RESET + "] <" + author + "> " + message;
+
+		author = Character.toUpperCase(author.charAt(0)) + author.substring(1);
+
+        message = TextFormatting.GRAY + "[" + TextFormatting.PURPLE + "♦" + TextFormatting.GRAY + "] <" + TextFormatting.LIGHT_GRAY + author + TextFormatting.GRAY + "> " + TextFormatting.RESET + message;
 		MelonUtilities.info(message);
         String[] lines = message.split("\n");
         for (String chatMessage : lines) {
