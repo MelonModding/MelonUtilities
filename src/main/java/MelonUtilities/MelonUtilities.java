@@ -1,5 +1,6 @@
 package MelonUtilities;
 
+
 import MelonUtilities.utility.discord.DiscordChatRelay;
 import MelonUtilities.utility.discord.DiscordClient;
 import MelonUtilities.command.commands.*;
@@ -68,7 +69,6 @@ public class MelonUtilities implements ModInitializer {
 	public static void afterServerStart(){
 		Data.Users.reload();
 		MUtil.timeOnInit = System.currentTimeMillis();
-
 		Config config = Data.MainConfig.config;
 		config.lastSnapshot = correctTimeIfZERO(config.lastSnapshot);
 		config.lastBackup = correctTimeIfZERO(config.lastBackup);
