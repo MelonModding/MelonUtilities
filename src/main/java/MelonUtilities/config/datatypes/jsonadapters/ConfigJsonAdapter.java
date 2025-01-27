@@ -1,6 +1,7 @@
 package MelonUtilities.config.datatypes.jsonadapters;
 
 import MelonUtilities.config.datatypes.data.Config;
+import MelonUtilities.config.datatypes.data.Warp;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
@@ -14,6 +15,8 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject rollbackConfig = obj.getAsJsonObject("Rollback Config");
 		JsonObject elevatorConfig = obj.getAsJsonObject("Elevator Config");
 		JsonObject sqlLogConfig = obj.getAsJsonObject("SQL Log Config");
+		JsonObject warpConfig = obj.getAsJsonObject("Warp Config");
+		JsonObject discordIntegrationConfig = obj.getAsJsonObject("Discord Integration Config");
 
 		Config config = new Config();
 
@@ -21,8 +24,8 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		config.enableRoles = mainConfig.get("enableRoles").getAsBoolean();
 		config.enableRollback = mainConfig.get("enableRollback").getAsBoolean();
 		config.enableTPA = mainConfig.get("enableTPA").getAsBoolean();
-		config.enableWarps = mainConfig.get("enableWarps").getAsBoolean();
 		config.enableHomes = mainConfig.get("enableHomes").getAsBoolean();
+		config.enableWarps = mainConfig.get("enableWarps").getAsBoolean();
 		config.enableElevators = mainConfig.get("enableElevators").getAsBoolean();
 		config.enableKits = mainConfig.get("enableKits").getAsBoolean();
 		config.enableRules = mainConfig.get("enableRules").getAsBoolean();
@@ -30,6 +33,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		config.enableCrews = mainConfig.get("enableCrews").getAsBoolean();
 		config.enableSQLPlayerLogging = mainConfig.get("enableSQLPlayerLogging").getAsBoolean();
 		config.enableTXTPlayerLogging = mainConfig.get("enableTXTPlayerLogging").getAsBoolean();
+		config.enableDiscordIntegration = mainConfig.get("enableDiscordIntegration").getAsBoolean();
 
 		if(roleConfig.has("defaultRole")){
 			config.defaultRole = roleConfig.get("defaultRole").getAsString();
@@ -38,6 +42,11 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 
 		config.snapshotsEnabled = rollbackConfig.get("snapshotsEnabled").getAsBoolean();
 		config.backupsEnabled = rollbackConfig.get("backupsEnabled").getAsBoolean();
+		config.snapshotsImmune = rollbackConfig.get("snapshotsImmune").getAsInt();
+		config.backupsImmune = rollbackConfig.get("backupsImmune").getAsInt();
+		config.snapshotsLimit = rollbackConfig.get("snapshotsLimit").getAsInt();
+		config.backupsLimit = rollbackConfig.get("backupsLimit").getAsInt();
+		config.sizeLimit = rollbackConfig.get("sizeLimit").getAsString();
 		config.timeBetweenSnapshots = rollbackConfig.get("timeBetweenSnapshots").getAsInt();
 		config.timeBetweenBackups = rollbackConfig.get("timeBetweenBackups").getAsInt();
 		config.timeBetweenBackupPruning = rollbackConfig.get("timeBetweenBackupPruning").getAsInt();
@@ -52,6 +61,16 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 
 		config.JDBCConnectionUrl = sqlLogConfig.get("JDBCConnectionUrl").getAsString();
 
+		config.token = discordIntegrationConfig.get("token").getAsString();
+		config.channelID = discordIntegrationConfig.get("channelID").getAsString();
+		config.serverPFPURL = discordIntegrationConfig.get("serverPFPURL").getAsString();
+		config.serverName = discordIntegrationConfig.get("serverName").getAsString();
+
+		JsonArray warps = warpConfig.getAsJsonArray("warps");
+		for(JsonElement element : warps){
+			config.warpData.add(context.deserialize(element, Warp.class));
+		}
+
 		return config;
 	}
 
@@ -63,14 +82,15 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject rollbackConfig = new JsonObject();
 		JsonObject elevatorConfig = new JsonObject();
 		JsonObject sqlLogConfig = new JsonObject();
-
+		JsonObject warpConfig = new JsonObject();
+		JsonObject discordIntegrationConfig = new JsonObject();
 
 		mainConfig.addProperty("enableContainerLocking", src.enableContainerLocking);
 		mainConfig.addProperty("enableRoles", src.enableRoles);
 		mainConfig.addProperty("enableRollback", src.enableRollback);
 		mainConfig.addProperty("enableTPA", src.enableTPA);
-		mainConfig.addProperty("enableWarps", src.enableWarps);
 		mainConfig.addProperty("enableHomes", src.enableHomes);
+		mainConfig.addProperty("enableWarps", src.enableWarps);
 		mainConfig.addProperty("enableElevators", src.enableElevators);
 		mainConfig.addProperty("enableKits", src.enableKits);
 		mainConfig.addProperty("enableRules", src.enableRules);
@@ -78,6 +98,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		mainConfig.addProperty("enableCrews", src.enableCrews);
 		mainConfig.addProperty("enableSQLPlayerLogging", src.enableSQLPlayerLogging);
 		mainConfig.addProperty("enableTXTPlayerLogging", src.enableTXTPlayerLogging);
+		mainConfig.addProperty("enableDiscordIntegration", src.enableDiscordIntegration);
 		obj.add("Main Config", mainConfig);
 
 		roleConfig.addProperty("defaultRole", src.defaultRole);
@@ -85,14 +106,19 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		obj.add("Role Config", roleConfig);
 
 		rollbackConfig.addProperty("snapshotsEnabled", src.snapshotsEnabled);
-		rollbackConfig.addProperty("timeBetweenSnapshots", src.timeBetweenSnapshots);
-		rollbackConfig.addProperty("lastSnapshot", src.lastSnapshot);
 		rollbackConfig.addProperty("backupsEnabled", src.backupsEnabled);
+		rollbackConfig.addProperty("snapshotsImmune", src.snapshotsImmune);
+		rollbackConfig.addProperty("backupsImmune", src.backupsImmune);
+		rollbackConfig.addProperty("snapshotsLimit", src.snapshotsLimit);
+		rollbackConfig.addProperty("backupsLimit", src.backupsLimit);
+		rollbackConfig.addProperty("sizeLimit", src.sizeLimit);
+		rollbackConfig.addProperty("timeBetweenSnapshots", src.timeBetweenSnapshots);
 		rollbackConfig.addProperty("timeBetweenBackups", src.timeBetweenBackups);
-		rollbackConfig.addProperty("lastBackup", src.lastBackup);
 		rollbackConfig.addProperty("timeBetweenBackupPruning", src.timeBetweenBackupPruning);
-		rollbackConfig.addProperty("lastBackupPrune", src.lastBackupPrune);
 		rollbackConfig.addProperty("timeBetweenSnapshotPruning", src.timeBetweenSnapshotPruning);
+		rollbackConfig.addProperty("lastSnapshot", src.lastSnapshot);
+		rollbackConfig.addProperty("lastBackup", src.lastBackup);
+		rollbackConfig.addProperty("lastBackupPrune", src.lastBackupPrune);
 		rollbackConfig.addProperty("lastSnapshotPrune", src.lastSnapshotPrune);
 		obj.add("Rollback Config", rollbackConfig);
 
@@ -102,6 +128,19 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 
 		sqlLogConfig.addProperty("JDBCConnectionUrl", src.JDBCConnectionUrl);
 		obj.add("SQL Log Config", sqlLogConfig);
+
+		discordIntegrationConfig.addProperty("token", src.token);
+		discordIntegrationConfig.addProperty("channelID", src.channelID);
+		discordIntegrationConfig.addProperty("serverPFPURL", src.serverPFPURL);
+		discordIntegrationConfig.addProperty("serverName", src.serverName);
+		obj.add("Discord Integration Config", discordIntegrationConfig);
+
+		JsonArray warps = new JsonArray();
+		for(Warp warp : src.warpData){
+			warps.add(context.serialize(warp));
+		}
+		warpConfig.add("warps", warps);
+		obj.add("Warp Config", warpConfig);
 
 		return obj;
 	}

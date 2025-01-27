@@ -42,8 +42,13 @@ public class UserJsonAdapter implements JsonDeserializer<User>, JsonSerializer<U
 	@Override
 	public JsonElement serialize(User src, Type typeOfSrc, JsonSerializationContext context) {
 		JsonObject obj = new JsonObject();
-
 		JsonObject homeData = new JsonObject();
+		JsonObject helperData = new JsonObject();
+		JsonObject lockData = new JsonObject();
+		JsonObject usersTrustedToAllContainers = new JsonObject();
+		JsonObject userData = new JsonObject();
+
+
 		JsonArray homes = new JsonArray();
 		for(Home home : src.homeData){
 			homes.add(context.serialize(home));
@@ -51,22 +56,19 @@ public class UserJsonAdapter implements JsonDeserializer<User>, JsonSerializer<U
 		homeData.add("homes", homes);
 		obj.add("Home Data", homeData);
 
-		JsonObject helperData = new JsonObject();
 		helperData.addProperty("isHelper", src.isHelper);
 		obj.add("Helper Data", helperData);
 
-		JsonObject lockData = new JsonObject();
 		lockData.addProperty("lockOnBlockPlaced", src.lockOnBlockPlaced);
 		lockData.addProperty("lockOnBlockPunched", src.lockOnBlockPunched);
 		lockData.addProperty("lockBypass", src.lockBypass);
-		JsonObject usersTrustedToAllContainers = new JsonObject();
+
 		for(Map.Entry<UUID, String> user : src.usersTrustedToAllContainers.entrySet()){
 			usersTrustedToAllContainers.addProperty(user.getKey().toString(), user.getValue());
 		}
 		lockData.add("usersTrustedToAllContainers", usersTrustedToAllContainers);
 		obj.add("Lock Data", lockData);
 
-		JsonObject userData = new JsonObject();
 		userData.addProperty("userUUID", String.valueOf(src.uuid));
 		obj.add("User Data", userData);
 

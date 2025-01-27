@@ -1,6 +1,8 @@
 package MelonUtilities.utility;
 
 import MelonUtilities.config.Data;
+import MelonUtilities.config.datatypes.data.Home;
+import MelonUtilities.config.datatypes.data.Warp;
 import MelonUtilities.interfaces.Lockable;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
@@ -16,6 +18,7 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.collection.Pair;
 import net.minecraft.core.util.helper.Direction;
+import net.minecraft.core.util.helper.DyeColor;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.util.phys.HitResult;
@@ -352,17 +355,43 @@ public class MUtil {
 		return false;
 	}
 
-	public static void teleport(double x, double y, double z, Player player){
-		if (player.world.isClientSide)
-			return;
-		if (player instanceof PlayerServer){
-			PlayerServer playerServer = (PlayerServer)player;
-			playerServer.playerNetServerHandler.teleport(x, y, z);
-		} else if (player instanceof PlayerLocal) {
-			PlayerLocal playerLocal = (PlayerLocal)player;
-			playerLocal.setPos(x, y + playerLocal.bbHeight, z);
+	public static void sendToHome(Player player, Home home) {
+		if (player instanceof PlayerServer) {
+			if (player.dimension != home.dimID) {
+				MinecraftServer mc = MinecraftServer.getInstance();
+				mc.playerList.sendPlayerToOtherDimension((PlayerServer) player, home.dimID, DyeColor.WHITE, false);
+			}
+		} else if (player instanceof PlayerLocal){
+			//IDK and IDC
 		}
-		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 100f);
+		teleport(home.x, home.y, home.z, player);
+	}
+
+	public static void sendToWarp(Player player, Warp warp) {
+		if (player instanceof PlayerServer) {
+			if (player.dimension != warp.dimID) {
+				MinecraftServer mc = MinecraftServer.getInstance();
+				mc.playerList.sendPlayerToOtherDimension((PlayerServer) player, warp.dimID, DyeColor.WHITE, false);
+			}
+		} else if (player instanceof PlayerLocal){
+			//IDK and IDC
+		}
+		teleport(warp.x, warp.y, warp.z, player);
+	}
+
+	public static void teleport(double x, double y, double z, Player player){
+		if (player.world.isClientSide) return;
+
+		if (player instanceof PlayerServer){
+			player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
+			//FeedbackHandlerServer.sendFeedback((PlayerServer) player, TextFormatting.ORANGE, "☁ Whoosh! ☁");
+			((PlayerServer) player).playerNetServerHandler.teleport(x, y + 0.2, z);
+		} else if (player instanceof PlayerLocal) {
+			player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
+			//player.sendMessage(TextFormatting.ORANGE + "☁ Whoosh! ☁");
+			player.setPos(x, y + player.bbHeight + 0.2, z);
+		}
+		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
 	}
 
 	public static String hmsConversion(long systemTimeMillis) {

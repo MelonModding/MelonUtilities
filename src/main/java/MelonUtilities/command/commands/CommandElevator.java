@@ -13,7 +13,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 public class CommandElevator implements CommandManager.CommandRegistry{
 
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> elevatorAllowObstructions(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("allowobstructions").requires(CommandSource::hasAdmin)
+		builder.then(LiteralArgumentBuilder.<CommandSource>literal("allowobstructions")
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -41,7 +41,7 @@ public class CommandElevator implements CommandManager.CommandRegistry{
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.<CommandSource>literal("elevator");
+		LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.<CommandSource>literal("elevator").requires(CommandSource::hasAdmin);
 
 		elevatorAllowObstructions(builder);
 		elevatorCooldown(builder);

@@ -3,14 +3,14 @@ package MelonUtilities.config.datatypes.data;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.world.Dimension;
 
-public class Home {
+public class Warp {
 	public String name;
 	public double x;
 	public double y;
 	public double z;
 	public int dimID;
 
-	public Home(String name, double x, double y, double z, int dimID) {
+	public Warp(String name, double x, double y, double z, int dimID) {
 		this.name = name;
 		this.x = x;
 		this.y = y;
@@ -37,12 +37,12 @@ public class Home {
 
 		return String.format(
 			TextFormatting.GRAY + "[" +
-			TextFormatting.LIGHT_GRAY + "%s" +
-			TextFormatting.GRAY + "] [" +
-			dimColor + "%s" +
-			TextFormatting.GRAY + "] [" +
-			TextFormatting.LIGHT_GRAY + "x: %.1f y: %.1f z: %.1f" +
-			TextFormatting.GRAY + "]",
+				TextFormatting.LIGHT_GRAY + "%s" +
+				TextFormatting.GRAY + "] [" +
+				dimColor + "%s" +
+				TextFormatting.GRAY + "] [" +
+				TextFormatting.LIGHT_GRAY + "x: %.1f y: %.1f z: %.1f" +
+				TextFormatting.GRAY + "]",
 			name, dimensionName, x, y, z);
 	}
 }

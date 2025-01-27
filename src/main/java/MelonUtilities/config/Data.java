@@ -1,14 +1,8 @@
 package MelonUtilities.config;
 
 import MelonUtilities.MelonUtilities;
-import MelonUtilities.config.datatypes.data.Config;
-import MelonUtilities.config.datatypes.data.Kit;
-import MelonUtilities.config.datatypes.data.Role;
-import MelonUtilities.config.datatypes.data.User;
-import MelonUtilities.config.datatypes.jsonadapters.KitJsonAdapter;
-import MelonUtilities.config.datatypes.jsonadapters.ConfigJsonAdapter;
-import MelonUtilities.config.datatypes.jsonadapters.RoleJsonAdapter;
-import MelonUtilities.config.datatypes.jsonadapters.UserJsonAdapter;
+import MelonUtilities.config.datatypes.data.*;
+import MelonUtilities.config.datatypes.jsonadapters.*;
 import com.b100.utils.FileUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,6 +25,8 @@ public class Data {
 		.registerTypeAdapter(Kit.class, new KitJsonAdapter())
 		.registerTypeAdapter(ItemStack.class, new ItemStackJsonAdapter())
 		.registerTypeAdapter(User.class, new UserJsonAdapter())
+		.registerTypeAdapter(Home.class, new HomeJsonAdapter())
+		.registerTypeAdapter(Warp.class, new WarpJsonAdapter())
 		.setPrettyPrinting().create();
 
 	public static class Roles {
@@ -107,6 +103,7 @@ public class Data {
 		}
 
 	}
+
 	public static class Kits {
 
 		public static final Map<String, Kit> kitDataHashMap = new HashMap<>();

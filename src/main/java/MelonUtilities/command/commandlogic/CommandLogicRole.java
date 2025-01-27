@@ -2,7 +2,6 @@ package MelonUtilities.command.commandlogic;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
-import MelonUtilities.interfaces.PlayerCustomInputFunctionInterface;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.builders.RoleBuilder;
 import MelonUtilities.utility.classes.Icon;
@@ -14,19 +13,14 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.collection.Pair;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
-import org.useless.serverlibe.api.gui.GuiHelper;
-import org.useless.serverlibe.api.gui.ServerGuiBuilder;
-import org.useless.serverlibe.api.gui.slot.ServerSlotButton;
 
-import java.util.List;
 import java.util.UUID;
 
 @SuppressWarnings("SameReturnValue")
 public class CommandLogicRole {
 	static Icon inputUsernameIcon = new Icon("[Input Username]", (byte) TextFormatting.WHITE.id, Items.LABEL.getDefaultStack());
-	public static int role(PlayerServer sender) {
+	/*public static int role(PlayerServer sender) {
 		ServerGuiBuilder roleGui = new ServerGuiBuilder();
 
 		roleGui.setSize(0);
@@ -88,9 +82,9 @@ public class CommandLogicRole {
 
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Opened Role GUI!");
 		return Command.SINGLE_SUCCESS;
-	}
+	}*/
 
-	static Icon roleReloadIcon = new Icon("[Reload]", (byte) TextFormatting.ORANGE.id, Items.REPEATER.getDefaultStack());
+	//static Icon roleReloadIcon = new Icon("[Reload]", (byte) TextFormatting.ORANGE.id, Items.REPEATER.getDefaultStack());
 	public static int roleReload(PlayerServer sender) {
 		Data.Roles.reload();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Reloaded %s Role(s)!", new FeedbackArg(Data.Roles.roleDataHashMap.size()));
@@ -99,7 +93,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	static Icon roleListIcon = new Icon("[List]", (byte) TextFormatting.LIGHT_GRAY.id, Items.PAPER.getDefaultStack());
+	//static Icon roleListIcon = new Icon("[List]", (byte) TextFormatting.LIGHT_GRAY.id, Items.PAPER.getDefaultStack());
 	public static int roleList(PlayerServer sender) {
 		if (Data.Roles.roleDataHashMap.isEmpty()) {
 			sender.sendMessage(TextFormatting.GRAY + "< " + TextFormatting.LIGHT_GRAY + "Roles: " + TextFormatting.GRAY + " >");
@@ -118,7 +112,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	static Icon roleRevokeIcon = new Icon("[Revoke]", (byte) TextFormatting.RED.id, Items.DUST_REDSTONE.getDefaultStack());
+	//static Icon roleRevokeIcon = new Icon("[Revoke]", (byte) TextFormatting.RED.id, Items.DUST_REDSTONE.getDefaultStack());
 	public static int roleRevoke(PlayerServer sender, Player target, Role role){
 
 		if (role.playersGrantedRole.contains(target.uuid)) {
@@ -133,7 +127,7 @@ public class CommandLogicRole {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	static Icon roleGrantIcon = new Icon("[Grant]", (byte) TextFormatting.LIME.id, Items.OLIVINE.getDefaultStack());
+	//static Icon roleGrantIcon = new Icon("[Grant]", (byte) TextFormatting.LIME.id, Items.OLIVINE.getDefaultStack());
 	public static void roleGrant(PlayerServer sender, String targetUsername, Role role) {
 		Pair<UUID, String> profile;
 		try {

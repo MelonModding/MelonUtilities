@@ -1,11 +1,11 @@
 package MelonUtilities;
 
+import MelonUtilities.utility.discord.DiscordChatRelay;
+import MelonUtilities.utility.discord.DiscordClient;
 import MelonUtilities.command.commands.*;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.listeners.ChatInputListener;
-import MelonUtilities.listeners.LogEventListener;
-import MelonUtilities.sqlite.DatabaseManager;
 import MelonUtilities.utility.MUtil;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.core.net.command.CommandManager;
@@ -35,7 +35,8 @@ public class MelonUtilities implements ModInitializer {
 		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPAHere());
 		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPAccept());
 		if(Data.MainConfig.config.enableTPA) CommandManager.registerCommand(new CommandTPDeny());
-		if(Data.MainConfig.config.enableSQLPlayerLogging) CommandManager.registerCommand(new CommandLogger());
+		if(Data.MainConfig.config.enableHomes) CommandManager.registerCommand(new CommandHome());
+		if(Data.MainConfig.config.enableWarps) CommandManager.registerCommand(new CommandWarp());
 		CommandManager.registerCommand(new CommandMelonUtilities());
 	}
 
@@ -48,7 +49,6 @@ public class MelonUtilities implements ModInitializer {
 	public void registerListeners(){
 		LOGGER.info("Registering ServerLibe Listeners...");
 		ServerLibe.registerListener(new ChatInputListener());
-		ServerLibe.registerListener(new LogEventListener());
 		LOGGER.info("ServerLibe Listeners Registered!");
 	}
 
@@ -56,8 +56,12 @@ public class MelonUtilities implements ModInitializer {
 	public void onInitialize() {
 		LOGGER.info("MelonUtilities initializing!");
 		loadData();
-		DatabaseManager.onInitilizeTest();
 		registerListeners();
+		new Thread(() -> {
+			if (DiscordClient.init()) {
+				DiscordChatRelay.sendServerStartMessage();
+			}
+		}).start();
 		LOGGER.info("MelonUtilities initialized!");
 	}
 
@@ -78,5 +82,9 @@ public class MelonUtilities implements ModInitializer {
 			return System.currentTimeMillis();
 		}
 		return d;
+	}
+
+	public static void info(String s) {
+		LOGGER.info(s);
 	}
 }

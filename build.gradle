@@ -24,7 +24,7 @@ version = project.mod_version
 
 loom {
 	noIntermediateMappings()
-	customMinecraftMetadata.set("https://github.com/Turnip-Labs/bta-manifest-repo/releases/download/v${project.bta_version}/${project.bta_version}.json")
+	customMinecraftMetadata.set("https://downloads.betterthanadventure.net/bta-client/${project.bta_channel}/v${project.bta_version}/manifest.json")
 }
 
 repositories {
@@ -93,6 +93,14 @@ dependencies {
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.16.0"
+
+	implementation "com.github.electronstudio:sdl2gdx:1.0.3"
+	//includeInJar "com.github.electronstudio:sdl2gdx:1.0.3"
+	implementation "net.dv8tion:JDA:5.2.2"
+	//includeInJar "net.dv8tion:JDA:5.2.2"
+	implementation "club.minnced:discord-webhooks:0.8.4"
+	//includeInJar "club.minnced:discord-webhooks:0.8.4"
+	//includeInJar "com.google.code.gson:gson:2.8.9"
 
 	implementation 'com.google.guava:guava:33.0.0-jre'
 	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'

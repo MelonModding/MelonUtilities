@@ -489,18 +489,18 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> role(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
+/*	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> role(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
 		builder.executes(
 			context -> CommandLogicRole.role((PlayerServer) context.getSource().getSender())
 		);
 		return builder;
-	}
+	}*/
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
 		LiteralArgumentBuilder<CommandSource> commandBuilder = LiteralArgumentBuilder.<CommandSource>literal("role").requires(CommandSource::hasAdmin);
 
-		role(commandBuilder);
+		//role(commandBuilder);
 		roleCreate(commandBuilder);
 		roleDelete(commandBuilder);
 		roleGrant(commandBuilder);

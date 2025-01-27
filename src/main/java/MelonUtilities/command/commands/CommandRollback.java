@@ -14,7 +14,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 @SuppressWarnings("UnusedReturnValue")
 public class CommandRollback implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> rollback(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.executes(context ->
+		builder.requires(CommandSource::hasAdmin).executes(context ->
 			{
 				PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 				return CommandLogicRollback.rollback(sender);

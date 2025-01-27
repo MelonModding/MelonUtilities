@@ -62,7 +62,7 @@ public class TpaManager {
 			MinecraftServer.getInstance().playerList.sendPlayerToOtherDimension(moved, target.dimension, DyeColor.PURPLE, false);
 		}
 		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 100f);
-		moved.playerNetServerHandler.teleportAndRotate(target.x, target.y, target.z, target.yRot, target.xRot);
+		moved.playerNetServerHandler.teleportAndRotate(target.x, target.y + 0.2, target.z, target.yRot, target.xRot);
 		messagePlayer(player, TextFormatting.ORANGE + "☁ Whoosh! ☁");
 		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 100f);
 		return true;

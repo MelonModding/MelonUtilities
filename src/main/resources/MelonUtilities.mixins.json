@@ -5,9 +5,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CommandManagerMixin",
+    "MobMixin",
     "PacketHandlerServerMixin",
     "PlayerMixinElevator",
     "PlayerMixinInputInterface",
+    "WorldMixin",
     "tile_entities.activator.BlockLogicActivatorMixin",
     "tile_entities.activator.TileEntityActivatorMixin",
     "tile_entities.basket.BlockLogicBasketMixin",
@@ -31,10 +33,12 @@
     "EntityTrackerEntryImplMixin",
     "ExplosionMixin",
     "MinecraftServerMixin",
+    "MinecraftServerMixinDiscord",
     "PacketAddPlayerMixin",
+    "PacketHandlerLoginMixinDiscord",
+    "PacketHandlerServerMixinDiscord",
     "PacketLoginHandlerMixin",
     "PlayerListMixin",
-    "ServerPlayerControllerMixin",
     "tile_entities.blast_furnace.BlockLogicFurnaceBlastMixin"
   ],
   "injectors": {

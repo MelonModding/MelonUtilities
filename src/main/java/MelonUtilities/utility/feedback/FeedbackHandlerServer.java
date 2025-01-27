@@ -25,6 +25,11 @@ public class FeedbackHandlerServer {
 		playFeedbackSound(player, feedbackType);
 	}
 
+	public static void sendFeedback(@NotNull PlayerServer player, @NotNull TextFormatting color, @NotNull String message, FeedbackArg... args) {
+		player.sendMessage(format(color, message, args));
+		MelonUtilities.LOGGER.info(String.format("Sent command feedback: [%s] to player: [username: %s, uuid: %s]", formatRaw(message, args), player.username, player.uuid));
+	}
+
     public static @NotNull String translateKeyAndFormat(@NotNull FeedbackType feedbackType, @NotNull String formatKey, FeedbackArg... args){
         ArrayList<String> argStrings = new ArrayList<>();
         for(FeedbackArg arg : args){
@@ -53,6 +58,21 @@ public class FeedbackHandlerServer {
 			argStrings.add(argString);
 		}
 		return feedbackType.getColor() + String.format(message, argStrings.toArray());
+	}
+
+	public static @NotNull String format(@NotNull TextFormatting color, @NotNull String message, FeedbackArg... args){
+		ArrayList<String> argStrings = new ArrayList<>();
+		for(FeedbackArg arg : args){
+			String argString = (
+				arg.getBorderColor() + arg.getBorderOpener() +
+					arg.getArgSpecial() +  arg.getArgColor() + arg.getAllArgs() +
+					TextFormatting.RESET +
+					arg.getBorderColor() + arg.getBorderCloser() +
+					color
+			);
+			argStrings.add(argString);
+		}
+		return color + String.format(message, argStrings.toArray());
 	}
 
     private static @NotNull String translateKeyAndFormatRaw(@NotNull String formatKey, FeedbackArg... args){
