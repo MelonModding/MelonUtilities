@@ -1,5 +1,6 @@
 package MelonUtilities.config.datatypes.data;
 
+import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 
 import java.util.ArrayList;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class Role {
+
+	public int roleVersion = MelonUtilities.roleConfigVersion;
 
 	//Display
 	public String displayColor = "white";

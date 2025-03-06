@@ -1,6 +1,8 @@
 package MelonUtilities.config.datatypes.jsonadapters;
 
+import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.datatypes.data.Role;
+import MelonUtilities.config.datatypes.legacydeserializers.RoleLDs;
 import com.google.gson.*;
 import net.minecraft.core.util.helper.UUIDHelper;
 
@@ -14,17 +16,23 @@ public class RoleJsonAdapter implements JsonDeserializer<Role>, JsonSerializer<R
 	@Override
 	public Role deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		JsonObject obj = json.getAsJsonObject();
+
 		if(obj.has("Role Display Color:")){
-			return legacyDeserialize(obj);
+			return oldLegacyDeserialize(obj);
 		}
+		JsonObject generalValues = obj.getAsJsonObject("General Values");
+		Role role = new Role(generalValues.get("roleID").getAsString());
+		role.roleVersion = obj.has("roleVersion") ? obj.get("roleVersion").getAsInt() : 0;
+		if(role.roleVersion < MelonUtilities.roleConfigVersion){
+			return legacyDeserialize(obj, role.roleVersion);
+		}
+
 		JsonObject display = obj.getAsJsonObject("Display");
 		JsonObject displayBorder = obj.getAsJsonObject("Display Border");
 		JsonObject username = obj.getAsJsonObject("Username");
 		JsonObject usernameBorder = obj.getAsJsonObject("Username Border");
 		JsonObject text = obj.getAsJsonObject("Text");
-		JsonObject generalValues = obj.getAsJsonObject("General Values");
 
-		Role role = new Role(generalValues.get("roleID").getAsString());
 
 		role.displayColor = display.get("displayColor").getAsString();
 		role.displayName = display.get("displayName").getAsString();
@@ -141,7 +149,16 @@ public class RoleJsonAdapter implements JsonDeserializer<Role>, JsonSerializer<R
 		return obj;
 	}
 
-	private Role legacyDeserialize(JsonObject obj){
+	private Role legacyDeserialize(JsonObject obj, int roleVersion){
+		switch(roleVersion){
+			case 0:
+				return RoleLDs.legacyDeserialize0(obj);
+		}
+		throw new IllegalArgumentException("(Role) legacy deserialize failed: no legacy deserializer present for current version!");
+	}
+
+
+	private Role oldLegacyDeserialize(JsonObject obj){
 
 		Role role = new Role(fileName);
 

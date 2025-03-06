@@ -23,12 +23,14 @@ public class CrewJsonAdapter implements JsonDeserializer<Crew>, JsonSerializer<C
 			executives.add(e.getAsJsonObject().getAsString());
 		}
 
-		return new Crew(
-			obj.get("name").getAsString(),
-			obj.get("owner").getAsString(),
-			executives,
-			members
-		);
+		Crew crew = new Crew(obj.get("name").getAsString(), obj.get("owner").getAsString(), executives, members);
+
+/*		crew.crewVersion = obj.has("crewVersion") ? obj.get("crewVersion").getAsInt() : 0;
+		if(crew.crewVersion < MelonUtilities.crewConfigVersion){
+			return legacyDeserialize(obj, crew.crewVersion);
+		}*/
+
+		return crew;
 	}
 
 	@Override
@@ -38,4 +40,12 @@ public class CrewJsonAdapter implements JsonDeserializer<Crew>, JsonSerializer<C
 		obj.addProperty("owner", src.owner);
 		return obj;
 	}
+
+	/*private Crew legacyDeserialize(JsonObject obj, int crewVersion){
+		switch(crewVersion){
+			case 0:
+				return CrewLDs.legacyDeserialize0(obj);
+		}
+		throw new IllegalArgumentException("(Crew) legacy deserialize failed: no legacy deserializer present for current version!");
+	}*/
 }

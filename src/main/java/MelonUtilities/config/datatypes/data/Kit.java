@@ -1,11 +1,14 @@
 package MelonUtilities.config.datatypes.data;
 
+import MelonUtilities.MelonUtilities;
 import net.minecraft.core.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Kit {
+
+	public int kitVersion = MelonUtilities.kitConfigVersion;
 
 	public long kitCooldown = 0;
 	public String kitID;

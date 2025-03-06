@@ -1,6 +1,8 @@
 package MelonUtilities.config.datatypes.jsonadapters;
 
+import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.datatypes.data.Kit;
+import MelonUtilities.config.datatypes.legacydeserializers.KitLDs;
 import com.google.gson.*;
 import net.minecraft.core.item.ItemStack;
 
@@ -11,36 +13,51 @@ public class KitJsonAdapter implements JsonDeserializer<Kit>, JsonSerializer<Kit
 	@Override
 	public Kit deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		JsonObject obj = json.getAsJsonObject();
-		JsonObject kitItems = obj.getAsJsonObject("Kit Items");
-		JsonObject kitArmors = obj.getAsJsonObject("Kit Armors");
+
 		JsonObject generalValues = obj.getAsJsonObject("General Values");
 
+		//New Kit Config
 		Kit kit = new Kit(generalValues.get("kitID").getAsString());
+		kit.kitVersion = obj.has("kitVersion") ? obj.get("kitVersion").getAsInt() : 0;
+
+		//Legacy Check
+		if(kit.kitVersion < MelonUtilities.kitConfigVersion){
+			return legacyDeserialize(context, obj, kit.kitVersion);
+		}
+
+		JsonObject kitItems = obj.getAsJsonObject("Kit Items");
+		JsonObject kitArmors = obj.getAsJsonObject("Kit Armors");
 
 		JsonArray kitItemStacks = kitItems.getAsJsonArray("kitItemStacks");
 		for(JsonElement element : kitItemStacks){
 			kit.kitItemStacks.add(context.deserialize(element, ItemStack.class));
 		}
+
 		JsonArray kitItemSlots = kitItems.getAsJsonArray("kitItemSlots");
 		for(JsonElement element : kitItemSlots){
 			kit.kitItemSlots.add(element.getAsInt());
 		}
+
 		JsonArray kitItemNames = kitItems.getAsJsonArray("kitItemNames");
 		for(JsonElement element : kitItemNames){
 			kit.kitItemNames.add(element.getAsString());
 		}
+
 		JsonArray kitArmorStacks = kitArmors.getAsJsonArray("kitArmorStacks");
 		for(JsonElement element : kitArmorStacks){
 			kit.kitArmorStacks.add(context.deserialize(element, ItemStack.class));
 		}
+
 		JsonArray kitArmorSlots = kitArmors.getAsJsonArray("kitArmorSlots");
 		for(JsonElement element : kitArmorSlots){
 			kit.kitArmorSlots.add(element.getAsInt());
 		}
+
 		JsonArray kitArmorNames = kitArmors.getAsJsonArray("kitArmorNames");
 		for(JsonElement element : kitArmorNames){
 			kit.kitArmorNames.add(element.getAsString());
 		}
+
 		kit.kitCooldown = generalValues.get("kitCooldown").getAsInt();
 
 		return kit;
@@ -99,5 +116,13 @@ public class KitJsonAdapter implements JsonDeserializer<Kit>, JsonSerializer<Kit
 		obj.add("General Values", generalValues);
 
 		return obj;
+	}
+
+	private Kit legacyDeserialize(JsonDeserializationContext context, JsonObject obj, int kitVersion){
+		switch(kitVersion){
+			case 0:
+				return KitLDs.legacyDeserialize0(context, obj);
+		}
+		throw new IllegalArgumentException("(Kit) legacy deserialize failed: no legacy deserializer present for current version!");
 	}
 }

@@ -18,12 +18,16 @@ public class MelonUtilities implements ModInitializer {
 
 	public static final String MOD_ID = "melonutilities";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final int mainConfigVersion = 0;
+	//public static final int crewConfigVersion = 0;
+	public static final int kitConfigVersion = 0;
+	public static final int roleConfigVersion = 0;
+	public static final int userConfigVersion = 0;
 
 	public static void reloadAll() {
+		Data.Users.reload();
 		if(Data.MainConfig.config.enableKits) Data.Kits.reload();
 		if(Data.MainConfig.config.enableRoles) Data.Roles.reload();
-		Data.Users.reload();
-		Data.MainConfig.reload();
 	}
 
 	public static void registerCommands(){
@@ -55,6 +59,7 @@ public class MelonUtilities implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		LOGGER.info("MelonUtilities initializing!");
+		Data.MainConfig.reload();
 		loadData();
 		registerListeners();
 		new Thread(() -> {

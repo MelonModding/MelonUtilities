@@ -1,9 +1,13 @@
 package MelonUtilities.config.datatypes.data;
 
+import MelonUtilities.MelonUtilities;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
+
+	public int configVersion = MelonUtilities.mainConfigVersion;
 
 	public boolean enableContainerLocking = true;
 	public boolean enableRoles = true;

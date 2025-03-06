@@ -1,7 +1,9 @@
 package MelonUtilities.config.datatypes.jsonadapters;
 
+import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.datatypes.data.Home;
 import MelonUtilities.config.datatypes.data.User;
+import MelonUtilities.config.datatypes.legacydeserializers.UserLDs;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
@@ -12,31 +14,45 @@ public class UserJsonAdapter implements JsonDeserializer<User>, JsonSerializer<U
 	@Override
 	public User deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		JsonObject obj = json.getAsJsonObject();
+
+		//New User
+		JsonObject userDataObj = obj.getAsJsonObject("User Data");
+		User user = new User(UUID.fromString(userDataObj.get("userUUID").getAsString()));
+
+		//Legacy Check
+		user.userVersion = obj.has("userVersion") ? obj.get("userVersion").getAsInt() : 0;
+		if(user.userVersion < MelonUtilities.userConfigVersion){
+			return legacyDeserialize(context, obj, user.userVersion);
+		}
+
+		//Extra Categories
 		JsonObject homeDataObj = obj.getAsJsonObject("Home Data");
 		JsonObject helperDataObj = obj.getAsJsonObject("Helper Data");
 		JsonObject lockDataObj = obj.getAsJsonObject("Lock Data");
-		JsonObject userDataObj = obj.getAsJsonObject("User Data");
 
-		User userData = new User(UUID.fromString(userDataObj.get("userUUID").getAsString()));
 
+		//Home Data
 		JsonArray homes = homeDataObj.getAsJsonArray("homes");
 		for(JsonElement element : homes){
-			userData.homeData.add(context.deserialize(element, Home.class));
+			user.homeData.add(context.deserialize(element, Home.class));
 		}
 
-		userData.isHelper = helperDataObj.get("isHelper").getAsBoolean();
+		//Helper Data
+		user.isHelper = helperDataObj.get("isHelper").getAsBoolean();
 
-		userData.lockOnBlockPlaced = lockDataObj.get("lockOnBlockPlaced").getAsBoolean();
-		userData.lockOnBlockPunched = lockDataObj.get("lockOnBlockPunched").getAsBoolean();
-		userData.lockBypass = lockDataObj.get("lockBypass").getAsBoolean();
+		//Lock Data
+		user.lockOnBlockPlaced = lockDataObj.get("lockOnBlockPlaced").getAsBoolean();
+		user.lockOnBlockPunched = lockDataObj.get("lockOnBlockPunched").getAsBoolean();
+		user.lockBypass = lockDataObj.get("lockBypass").getAsBoolean();
 		JsonObject usersTrustedToAllContainers = lockDataObj.getAsJsonObject("usersTrustedToAllContainers");
-		for(Map.Entry<String, JsonElement> user : usersTrustedToAllContainers.entrySet()){
-			userData.usersTrustedToAllContainers.put(UUID.fromString(user.getKey()), user.getValue().getAsString());
+		for(Map.Entry<String, JsonElement> entry : usersTrustedToAllContainers.entrySet()){
+			user.usersTrustedToAllContainers.put(UUID.fromString(entry.getKey()), entry.getValue().getAsString());
 		}
 
-		userData.uuid = UUID.fromString(userDataObj.get("userUUID").getAsString());
+		//User Data
+		user.uuid = UUID.fromString(userDataObj.get("userUUID").getAsString());
 
-		return userData;
+		return user;
 	}
 
 	@Override
@@ -46,7 +62,7 @@ public class UserJsonAdapter implements JsonDeserializer<User>, JsonSerializer<U
 		JsonObject helperData = new JsonObject();
 		JsonObject lockData = new JsonObject();
 		JsonObject usersTrustedToAllContainers = new JsonObject();
-		JsonObject userData = new JsonObject();
+		JsonObject user = new JsonObject();
 
 
 		JsonArray homes = new JsonArray();
@@ -63,15 +79,24 @@ public class UserJsonAdapter implements JsonDeserializer<User>, JsonSerializer<U
 		lockData.addProperty("lockOnBlockPunched", src.lockOnBlockPunched);
 		lockData.addProperty("lockBypass", src.lockBypass);
 
-		for(Map.Entry<UUID, String> user : src.usersTrustedToAllContainers.entrySet()){
-			usersTrustedToAllContainers.addProperty(user.getKey().toString(), user.getValue());
+		for(Map.Entry<UUID, String> entry : src.usersTrustedToAllContainers.entrySet()){
+			usersTrustedToAllContainers.addProperty(entry.getKey().toString(), entry.getValue());
 		}
 		lockData.add("usersTrustedToAllContainers", usersTrustedToAllContainers);
 		obj.add("Lock Data", lockData);
 
-		userData.addProperty("userUUID", String.valueOf(src.uuid));
-		obj.add("User Data", userData);
+		user.addProperty("userUUID", String.valueOf(src.uuid));
+		obj.add("User Data", user);
 
 		return obj;
 	}
+
+	private User legacyDeserialize(JsonDeserializationContext context, JsonObject obj, int userVersion){
+		switch(userVersion){
+			case 0:
+				return UserLDs.legacyDeserialize0(context, obj);
+		}
+		throw new IllegalArgumentException("(User) legacy deserialize failed: no legacy deserializer present for current version!");
+	}
+
 }

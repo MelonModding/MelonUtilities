@@ -1,7 +1,9 @@
 package MelonUtilities.config.datatypes.jsonadapters;
 
+import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.config.datatypes.data.Warp;
+import MelonUtilities.config.datatypes.legacydeserializers.ConfigLDs;
 import com.google.gson.*;
 
 import java.lang.reflect.Type;
@@ -10,6 +12,17 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 	@Override
 	public Config deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 		JsonObject obj = json.getAsJsonObject();
+
+		//New Config
+		Config config = new Config();
+		config.configVersion = obj.has("configVersion") ? obj.get("configVersion").getAsInt() : 0;
+
+		//Legacy Check
+		if(config.configVersion < MelonUtilities.mainConfigVersion){
+			return legacyDeserialize(context, obj, config.configVersion);
+		}
+
+		//Extra Categories
 		JsonObject mainConfig = obj.getAsJsonObject("Main Config");
 		JsonObject roleConfig = obj.getAsJsonObject("Role Config");
 		JsonObject rollbackConfig = obj.getAsJsonObject("Rollback Config");
@@ -18,8 +31,8 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject warpConfig = obj.getAsJsonObject("Warp Config");
 		JsonObject discordIntegrationConfig = obj.getAsJsonObject("Discord Integration Config");
 
-		Config config = new Config();
 
+		//Main Options
 		config.enableContainerLocking = mainConfig.get("enableContainerLocking").getAsBoolean();
 		config.enableRoles = mainConfig.get("enableRoles").getAsBoolean();
 		config.enableRollback = mainConfig.get("enableRollback").getAsBoolean();
@@ -35,11 +48,13 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		config.enableTXTPlayerLogging = mainConfig.get("enableTXTPlayerLogging").getAsBoolean();
 		config.enableDiscordIntegration = mainConfig.get("enableDiscordIntegration").getAsBoolean();
 
+		//Role Options
 		if(roleConfig.has("defaultRole")){
 			config.defaultRole = roleConfig.get("defaultRole").getAsString();
 		}
 		config.displayMode = roleConfig.get("displayMode").getAsString();
 
+		//Rollback Options
 		config.snapshotsEnabled = rollbackConfig.get("snapshotsEnabled").getAsBoolean();
 		config.backupsEnabled = rollbackConfig.get("backupsEnabled").getAsBoolean();
 		config.snapshotsImmune = rollbackConfig.get("snapshotsImmune").getAsInt();
@@ -56,16 +71,20 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		config.lastBackupPrune = rollbackConfig.get("lastBackupPrune").getAsDouble();
 		config.lastSnapshotPrune = rollbackConfig.get("lastSnapshotPrune").getAsDouble();
 
+		//Elevator Options
 		config.allowObstructions = elevatorConfig.get("allowObstructions").getAsBoolean();
 		config.elevatorCooldown = elevatorConfig.get("elevatorCooldown").getAsInt();
 
+		//SQL Options
 		config.JDBCConnectionUrl = sqlLogConfig.get("JDBCConnectionUrl").getAsString();
 
+		//Discord Options
 		config.token = discordIntegrationConfig.get("token").getAsString();
 		config.channelID = discordIntegrationConfig.get("channelID").getAsString();
 		config.serverPFPURL = discordIntegrationConfig.get("serverPFPURL").getAsString();
 		config.serverName = discordIntegrationConfig.get("serverName").getAsString();
 
+		//Warp Options
 		JsonArray warps = warpConfig.getAsJsonArray("warps");
 		for(JsonElement element : warps){
 			config.warpData.add(context.deserialize(element, Warp.class));
@@ -77,6 +96,9 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 	@Override
 	public JsonElement serialize(Config src, Type typeOfSrc, JsonSerializationContext context) {
 		JsonObject obj = new JsonObject();
+
+		obj.addProperty("configVersion", MelonUtilities.mainConfigVersion);
+
 		JsonObject mainConfig = new JsonObject();
 		JsonObject roleConfig = new JsonObject();
 		JsonObject rollbackConfig = new JsonObject();
@@ -140,8 +162,16 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 			warps.add(context.serialize(warp));
 		}
 		warpConfig.add("warps", warps);
-		obj.add("Warp Config", warpConfig);
+		obj.add("Warp Data", warpConfig);
 
 		return obj;
+	}
+
+	private Config legacyDeserialize(JsonDeserializationContext context, JsonObject obj, int configVersion){
+		switch(configVersion){
+			case 0:
+				return ConfigLDs.legacyDeserialize0(context, obj);
+		}
+		throw new IllegalArgumentException("(MainConfig) legacy deserialize failed: no legacy deserializer present for current version!");
 	}
 }

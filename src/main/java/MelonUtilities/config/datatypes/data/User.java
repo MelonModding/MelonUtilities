@@ -1,8 +1,13 @@
 package MelonUtilities.config.datatypes.data;
 
+import MelonUtilities.MelonUtilities;
+
 import java.util.*;
 
 public class User {
+
+	public int userVersion = MelonUtilities.userConfigVersion;
+
 	public List<Home> homeData = new ArrayList<>();
 	public boolean isHelper = false;
 	public boolean lockOnBlockPlaced = false;

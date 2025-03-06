@@ -188,6 +188,9 @@ public class Data {
 			File configFile = new File(configDir, "config.json");
 			try {
 				config = gson.fromJson(new JsonReader(new FileReader(configFile)), Config.class);
+				if(config.configVersion < MelonUtilities.mainConfigVersion){
+					MelonUtilities.reloadAll();
+				}
 			} catch (FileNotFoundException e) {
 				MelonUtilities.LOGGER.error("Could not reload Config!");
 			}
