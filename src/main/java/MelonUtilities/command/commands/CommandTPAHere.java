@@ -4,8 +4,8 @@ import MelonUtilities.command.arguments.ArgumentTypeUsername;
 import MelonUtilities.command.commandlogic.CommandLogicTPAHere;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.builder.ArgumentBuilderLiteral;
+import com.mojang.brigadier.builder.ArgumentBuilderRequired;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -13,8 +13,8 @@ import net.minecraft.server.entity.player.PlayerServer;
 @SuppressWarnings("UnusedReturnValue")
 public class CommandTPAHere implements CommandManager.CommandRegistry{
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> tpahere(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(RequiredArgumentBuilder.<CommandSource, String>argument("target", ArgumentTypeUsername.string())
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> tpahere(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderRequired.<CommandSource, String>argument("target", ArgumentTypeUsername.string())
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -28,7 +28,7 @@ public class CommandTPAHere implements CommandManager.CommandRegistry{
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.literal("tpahere");
+		ArgumentBuilderLiteral<CommandSource> builder = ArgumentBuilderLiteral.literal("tpahere");
 
 		tpahere(builder);
 

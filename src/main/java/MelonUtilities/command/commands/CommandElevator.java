@@ -2,18 +2,18 @@ package MelonUtilities.command.commands;
 
 import MelonUtilities.command.commandlogic.CommandLogicElevator;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.ArgumentTypeInteger;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.builder.ArgumentBuilderLiteral;
+import com.mojang.brigadier.builder.ArgumentBuilderRequired;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.server.entity.player.PlayerServer;
 
 public class CommandElevator implements CommandManager.CommandRegistry{
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> elevatorAllowObstructions(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("allowobstructions")
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> elevatorAllowObstructions(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("allowobstructions")
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -24,9 +24,9 @@ public class CommandElevator implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> elevatorCooldown(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("cooldown")
-			.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("cooldownvalue", IntegerArgumentType.integer(0, 256))
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> elevatorCooldown(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("cooldown")
+			.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("cooldownvalue", ArgumentTypeInteger.integer(0, 256))
 				.executes(context ->
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -41,7 +41,7 @@ public class CommandElevator implements CommandManager.CommandRegistry{
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.<CommandSource>literal("elevator").requires(CommandSource::hasAdmin);
+		ArgumentBuilderLiteral<CommandSource> builder = ArgumentBuilderLiteral.<CommandSource>literal("elevator").requires(CommandSource::hasAdmin);
 
 		elevatorAllowObstructions(builder);
 		elevatorCooldown(builder);

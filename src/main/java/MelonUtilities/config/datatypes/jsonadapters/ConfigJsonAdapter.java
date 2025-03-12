@@ -28,7 +28,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject rollbackConfig = obj.getAsJsonObject("Rollback Config");
 		JsonObject elevatorConfig = obj.getAsJsonObject("Elevator Config");
 		JsonObject sqlLogConfig = obj.getAsJsonObject("SQL Log Config");
-		JsonObject warpConfig = obj.getAsJsonObject("Warp Config");
+		JsonObject warpConfig = obj.getAsJsonObject("Warp Data");
 		JsonObject discordIntegrationConfig = obj.getAsJsonObject("Discord Integration Config");
 
 

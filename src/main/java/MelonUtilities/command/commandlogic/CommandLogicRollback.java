@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public class CommandLogicRollback {
 				{
 					ItemStack snapshotIcon = Items.PAPER.getDefaultStack();
 					SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
-					snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]");
+					snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]" + " (" + ZoneId.systemDefault() + ")");
 					snapshotIcon.setCustomColor((byte) TextFormatting.LIGHT_BLUE.id);
 					return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
 						for(Entity entity : sender.world.loadedEntityList){
@@ -82,7 +83,7 @@ public class CommandLogicRollback {
 				{
 					ItemStack backupIcon = Items.BOOK.getDefaultStack();
 					SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
-					backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]");
+					backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]" + " (" + ZoneId.systemDefault() + ")");
 					backupIcon.setCustomColor((byte) TextFormatting.CYAN.id);
 					return new ServerSlotButton(backupIcon, inventory, finalI, () -> {
 						for(Entity entity : sender.world.loadedEntityList){

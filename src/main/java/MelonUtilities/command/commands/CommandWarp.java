@@ -4,19 +4,19 @@ import MelonUtilities.command.arguments.ArgumentTypeWarp;
 import MelonUtilities.command.commandlogic.CommandLogicWarp;
 import MelonUtilities.config.datatypes.data.Warp;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.ArgumentTypeString;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.builder.ArgumentBuilderLiteral;
+import com.mojang.brigadier.builder.ArgumentBuilderRequired;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.server.entity.player.PlayerServer;
 
 @SuppressWarnings("UnusedReturnValue")
 public class CommandWarp implements CommandManager.CommandRegistry{
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> warpTP(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("tp")
-			.then(RequiredArgumentBuilder.<CommandSource, Warp>argument("warp", ArgumentTypeWarp.warp())
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> warpTP(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("tp")
+			.then(ArgumentBuilderRequired.<CommandSource, Warp>argument("warp", ArgumentTypeWarp.warp())
 				.executes(context ->
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -29,9 +29,9 @@ public class CommandWarp implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> warpDelete(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("delete").requires(CommandSource::hasAdmin)
-			.then(RequiredArgumentBuilder.<CommandSource, Warp>argument("warp", ArgumentTypeWarp.warp())
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> warpDelete(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("delete").requires(CommandSource::hasAdmin)
+			.then(ArgumentBuilderRequired.<CommandSource, Warp>argument("warp", ArgumentTypeWarp.warp())
 				.executes(context ->
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -44,9 +44,9 @@ public class CommandWarp implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> warpCreate(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("create").requires(CommandSource::hasAdmin)
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("name", StringArgumentType.string())
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> warpCreate(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("create").requires(CommandSource::hasAdmin)
+			.then(ArgumentBuilderRequired.<CommandSource, String>argument("name", ArgumentTypeString.string())
 				.executes(context ->
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -59,10 +59,10 @@ public class CommandWarp implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> warpRename(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("rename").requires(CommandSource::hasAdmin)
-			.then(RequiredArgumentBuilder.<CommandSource, Warp>argument("warp", ArgumentTypeWarp.warp())
-				.then(RequiredArgumentBuilder.<CommandSource, String>argument("name", StringArgumentType.string())
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> warpRename(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("rename").requires(CommandSource::hasAdmin)
+			.then(ArgumentBuilderRequired.<CommandSource, Warp>argument("warp", ArgumentTypeWarp.warp())
+				.then(ArgumentBuilderRequired.<CommandSource, String>argument("name", ArgumentTypeString.string())
 					.executes(context ->
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -77,8 +77,8 @@ public class CommandWarp implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> warpList(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("list")
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> warpList(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("list")
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -91,7 +91,7 @@ public class CommandWarp implements CommandManager.CommandRegistry{
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		LiteralArgumentBuilder<CommandSource> builder = LiteralArgumentBuilder.<CommandSource>literal("warp");
+		ArgumentBuilderLiteral<CommandSource> builder = ArgumentBuilderLiteral.<CommandSource>literal("warp");
 
 		warpTP(builder);
 		warpDelete(builder);

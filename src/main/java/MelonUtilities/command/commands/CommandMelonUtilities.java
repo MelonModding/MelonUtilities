@@ -2,7 +2,7 @@ package MelonUtilities.command.commands;
 
 import MelonUtilities.command.commandlogic.CommandLogicMelonUtilities;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.ArgumentBuilderLiteral;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -10,8 +10,8 @@ import net.minecraft.server.entity.player.PlayerServer;
 public class CommandMelonUtilities implements CommandManager.CommandRegistry{
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		dispatcher.register((LiteralArgumentBuilder.<CommandSource>literal("melonutilities").requires(CommandSource::hasAdmin))
-			.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
+		dispatcher.register((ArgumentBuilderLiteral.<CommandSource>literal("melonutilities").requires(CommandSource::hasAdmin))
+			.then(ArgumentBuilderLiteral.<CommandSource>literal("reload")
 				.executes(context ->
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender();

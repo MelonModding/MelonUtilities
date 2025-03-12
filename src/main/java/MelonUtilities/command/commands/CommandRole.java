@@ -6,12 +6,12 @@ import MelonUtilities.command.commandlogic.CommandLogicRole;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.utility.MUtil;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.ArgumentTypeBool;
+import com.mojang.brigadier.arguments.ArgumentTypeInteger;
+import com.mojang.brigadier.arguments.ArgumentTypeString;
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.builder.ArgumentBuilderLiteral;
+import com.mojang.brigadier.builder.ArgumentBuilderRequired;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.CommandManager;
 import net.minecraft.core.net.command.CommandSource;
@@ -22,10 +22,10 @@ import net.minecraft.server.entity.player.PlayerServer;
 @SuppressWarnings("UnusedReturnValue")
 public class CommandRole implements CommandManager.CommandRegistry{
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleCreate(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("create")
-			.then(RequiredArgumentBuilder.<CommandSource, String>argument("roleID", StringArgumentType.string())
-				.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityvalue", IntegerArgumentType.integer(0, 99))
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleCreate(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("create")
+			.then(ArgumentBuilderRequired.<CommandSource, String>argument("roleID", ArgumentTypeString.string())
+				.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("priorityvalue", ArgumentTypeInteger.integer(0, 99))
 					.executes(context ->
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -40,9 +40,9 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleDelete(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("delete")
-			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleDelete(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("delete")
+			.then(ArgumentBuilderRequired.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 				.executes(context ->
 					{
 						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -55,11 +55,11 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleEdit(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("edit")
-			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
-				.then(LiteralArgumentBuilder.<CommandSource>literal("priority")
-					.then(RequiredArgumentBuilder.<CommandSource, Integer>argument("priorityvalue", IntegerArgumentType.integer(0, 99))
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleEdit(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("edit")
+			.then(ArgumentBuilderRequired.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
+				.then(ArgumentBuilderLiteral.<CommandSource>literal("priority")
+					.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("priorityvalue", ArgumentTypeInteger.integer(0, 99))
 						.executes(context ->
 							{
 								PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -70,9 +70,9 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						)
 					)
 				)
-				.then(LiteralArgumentBuilder.<CommandSource>literal("display")
-					.then(LiteralArgumentBuilder.<CommandSource>literal("name")
-						.then(RequiredArgumentBuilder.<CommandSource, String>argument("displayname", StringArgumentType.greedyString())
+				.then(ArgumentBuilderLiteral.<CommandSource>literal("display")
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("name")
+						.then(ArgumentBuilderRequired.<CommandSource, String>argument("displayname", ArgumentTypeString.greedyString())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -83,8 +83,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 					)
-					.then(LiteralArgumentBuilder.<CommandSource>literal("color")
-						.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("color")
+						.then(ArgumentBuilderRequired.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -94,7 +94,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 								}
 							)
 						)
-						.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
+						.then(ArgumentBuilderRequired.<CommandSource, String>argument("hex", ArgumentTypeString.string())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -105,8 +105,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 					)
-					.then(LiteralArgumentBuilder.<CommandSource>literal("underline")
-						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("underline")
+						.then(ArgumentBuilderRequired.<CommandSource, Boolean>argument("value", ArgumentTypeBool.bool())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -117,8 +117,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 					)
-					.then(LiteralArgumentBuilder.<CommandSource>literal("bold")
-						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("bold")
+						.then(ArgumentBuilderRequired.<CommandSource, Boolean>argument("value", ArgumentTypeBool.bool())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -129,8 +129,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 					)
-					.then(LiteralArgumentBuilder.<CommandSource>literal("italics")
-						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("italics")
+						.then(ArgumentBuilderRequired.<CommandSource, Boolean>argument("value", ArgumentTypeBool.bool())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -141,9 +141,9 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 					)
-					.then(LiteralArgumentBuilder.<CommandSource>literal("border")
-						.then(LiteralArgumentBuilder.<CommandSource>literal("color")
-							.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("border")
+						.then(ArgumentBuilderLiteral.<CommandSource>literal("color")
+							.then(ArgumentBuilderRequired.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -153,7 +153,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
+							.then(ArgumentBuilderRequired.<CommandSource, String>argument("hex", ArgumentTypeString.string())
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -164,8 +164,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 								)
 							)
 						)
-						.then(LiteralArgumentBuilder.<CommandSource>literal("style")
-							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
+						.then(ArgumentBuilderLiteral.<CommandSource>literal("style")
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("none")
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -174,7 +174,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("bracket")
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -183,7 +183,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(LiteralArgumentBuilder.<CommandSource>literal("curly")
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("curly")
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -192,7 +192,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(LiteralArgumentBuilder.<CommandSource>literal("caret")
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("caret")
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -201,9 +201,9 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(LiteralArgumentBuilder.<CommandSource>literal("custom")
-								.then(LiteralArgumentBuilder.<CommandSource>literal("prefix")
-									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customaffix", StringArgumentType.greedyString())
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("custom")
+								.then(ArgumentBuilderLiteral.<CommandSource>literal("prefix")
+									.then(ArgumentBuilderRequired.<CommandSource, String>argument("customaffix", ArgumentTypeString.greedyString())
 										.executes(context ->
 											{
 												PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -214,8 +214,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 										)
 									)
 								)
-								.then(LiteralArgumentBuilder.<CommandSource>literal("suffix")
-									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customaffix", StringArgumentType.greedyString())
+								.then(ArgumentBuilderLiteral.<CommandSource>literal("suffix")
+									.then(ArgumentBuilderRequired.<CommandSource, String>argument("customaffix", ArgumentTypeString.greedyString())
 										.executes(context ->
 											{
 												PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -230,10 +230,10 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						)
 					)
 				)
-				.then(LiteralArgumentBuilder.<CommandSource>literal("username")
-					.then(LiteralArgumentBuilder.<CommandSource>literal("border")
-						.then(LiteralArgumentBuilder.<CommandSource>literal("color")
-							.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
+				.then(ArgumentBuilderLiteral.<CommandSource>literal("username")
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("border")
+						.then(ArgumentBuilderLiteral.<CommandSource>literal("color")
+							.then(ArgumentBuilderRequired.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -243,7 +243,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
+							.then(ArgumentBuilderRequired.<CommandSource, String>argument("hex", ArgumentTypeString.string())
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -254,8 +254,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 								)
 							)
 						)
-						.then(LiteralArgumentBuilder.<CommandSource>literal("style")
-							.then(LiteralArgumentBuilder.<CommandSource>literal("none")
+						.then(ArgumentBuilderLiteral.<CommandSource>literal("style")
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("none")
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -264,7 +264,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(LiteralArgumentBuilder.<CommandSource>literal("bracket")
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("bracket")
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -273,7 +273,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(LiteralArgumentBuilder.<CommandSource>literal("curly")
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("curly")
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -282,7 +282,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(LiteralArgumentBuilder.<CommandSource>literal("caret")
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("caret")
 								.executes(context ->
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -291,9 +291,9 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									}
 								)
 							)
-							.then(LiteralArgumentBuilder.<CommandSource>literal("custom")
-								.then(LiteralArgumentBuilder.<CommandSource>literal("prefix")
-									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customaffix", StringArgumentType.greedyString())
+							.then(ArgumentBuilderLiteral.<CommandSource>literal("custom")
+								.then(ArgumentBuilderLiteral.<CommandSource>literal("prefix")
+									.then(ArgumentBuilderRequired.<CommandSource, String>argument("customaffix", ArgumentTypeString.greedyString())
 										.executes(context ->
 											{
 												PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -304,8 +304,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 										)
 									)
 								)
-								.then(LiteralArgumentBuilder.<CommandSource>literal("suffix")
-									.then(RequiredArgumentBuilder.<CommandSource, String>argument("customaffix", StringArgumentType.greedyString())
+								.then(ArgumentBuilderLiteral.<CommandSource>literal("suffix")
+									.then(ArgumentBuilderRequired.<CommandSource, String>argument("customaffix", ArgumentTypeString.greedyString())
 										.executes(context ->
 											{
 												PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -320,9 +320,9 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						)
 					)
 				)
-				.then(LiteralArgumentBuilder.<CommandSource>literal("text")
-					.then(LiteralArgumentBuilder.<CommandSource>literal("color")
-						.then(RequiredArgumentBuilder.<CommandSource, String>argument("color", ArgumentTypeColor.color())
+				.then(ArgumentBuilderLiteral.<CommandSource>literal("text")
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("color")
+						.then(ArgumentBuilderRequired.<CommandSource, String>argument("color", ArgumentTypeColor.color())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -332,7 +332,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 								}
 							)
 						)
-						.then(RequiredArgumentBuilder.<CommandSource, String>argument("hex", StringArgumentType.string())
+						.then(ArgumentBuilderRequired.<CommandSource, String>argument("hex", ArgumentTypeString.string())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -343,8 +343,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 					)
-					.then(LiteralArgumentBuilder.<CommandSource>literal("underline")
-						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("underline")
+						.then(ArgumentBuilderRequired.<CommandSource, Boolean>argument("value", ArgumentTypeBool.bool())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -355,8 +355,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 					)
-					.then(LiteralArgumentBuilder.<CommandSource>literal("bold")
-						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("bold")
+						.then(ArgumentBuilderRequired.<CommandSource, Boolean>argument("value", ArgumentTypeBool.bool())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -367,8 +367,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 							)
 						)
 					)
-					.then(LiteralArgumentBuilder.<CommandSource>literal("italics")
-						.then(RequiredArgumentBuilder.<CommandSource, Boolean>argument("value", BoolArgumentType.bool())
+					.then(ArgumentBuilderLiteral.<CommandSource>literal("italics")
+						.then(ArgumentBuilderRequired.<CommandSource, Boolean>argument("value", ArgumentTypeBool.bool())
 							.executes(context ->
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -385,10 +385,10 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleGrant(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("grant")
-			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
-				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleGrant(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("grant")
+			.then(ArgumentBuilderRequired.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
+				.then(ArgumentBuilderRequired.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.username())
 					.executes(
 						context ->
 						{
@@ -404,10 +404,10 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleRevoke(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("revoke")
-			.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
-				.then(RequiredArgumentBuilder.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.player())
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleRevoke(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("revoke")
+			.then(ArgumentBuilderRequired.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
+				.then(ArgumentBuilderRequired.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.username())
 					.executes(context ->
 						{
 							Role role = context.getArgument("role", Role.class);
@@ -422,10 +422,10 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleSet(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("set")
-			.then(LiteralArgumentBuilder.<CommandSource>literal("defaultrole")
-				.then(RequiredArgumentBuilder.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleSet(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("set")
+			.then(ArgumentBuilderLiteral.<CommandSource>literal("defaultrole")
+				.then(ArgumentBuilderRequired.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
 					.executes(context ->
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -434,7 +434,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						}
 					)
 				)
-				.then(LiteralArgumentBuilder.<CommandSource>literal("none")
+				.then(ArgumentBuilderLiteral.<CommandSource>literal("none")
 					.executes(context ->
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -443,8 +443,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 					)
 				)
 			)
-			.then(LiteralArgumentBuilder.<CommandSource>literal("displaymode")
-				.then(LiteralArgumentBuilder.<CommandSource>literal("single")
+			.then(ArgumentBuilderLiteral.<CommandSource>literal("displaymode")
+				.then(ArgumentBuilderLiteral.<CommandSource>literal("single")
 					.executes(context ->
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -452,7 +452,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 						}
 					)
 				)
-				.then(LiteralArgumentBuilder.<CommandSource>literal("multi")
+				.then(ArgumentBuilderLiteral.<CommandSource>literal("multi")
 					.executes(context ->
 						{
 							PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -465,8 +465,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleList(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("list")
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleList(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("list")
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -477,8 +477,8 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> roleReload(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
-		builder.then(LiteralArgumentBuilder.<CommandSource>literal("reload")
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleReload(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("reload")
 			.executes(context ->
 				{
 					PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
@@ -489,7 +489,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 		return builder;
 	}
 
-/*	public static ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> role(ArgumentBuilder<CommandSource, LiteralArgumentBuilder<CommandSource>> builder) {
+/*	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> role(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
 		builder.executes(
 			context -> CommandLogicRole.role((PlayerServer) context.getSource().getSender())
 		);
@@ -498,7 +498,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 
 	@Override
 	public void register(CommandDispatcher<CommandSource> dispatcher) {
-		LiteralArgumentBuilder<CommandSource> commandBuilder = LiteralArgumentBuilder.<CommandSource>literal("role").requires(CommandSource::hasAdmin);
+		ArgumentBuilderLiteral<CommandSource> commandBuilder = ArgumentBuilderLiteral.<CommandSource>literal("role").requires(CommandSource::hasAdmin);
 
 		//role(commandBuilder);
 		roleCreate(commandBuilder);
