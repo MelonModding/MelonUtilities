@@ -202,8 +202,31 @@ public abstract class PacketHandlerServerMixin {
 				&& !Data.Users.getOrCreate(player.uuid).lockBypass){
 				ci.cancel();
 				sendPacket(new PacketBlockUpdate(packet.xPosition, packet.yPosition, packet.zPosition, world));
+				return;
 			}
-			if(packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED && Data.Users.getOrCreate(player.uuid).lockOnBlockPunched && !lockable.getIsLocked()){
+
+			if (packet.action == PacketPlayerAction.ACTION_DIG_START
+				&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
+				&& lockable.getIsLocked()
+				&& !lockable.getLockOwner().equals(player.uuid))
+			{
+				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, "Failed to Lock Container! (Not Owned By You)");
+				ci.cancel();
+				return;
+			}
+
+			if (packet.action == PacketPlayerAction.ACTION_DIG_START
+				&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
+				&& lockable.getIsLocked()
+				&& lockable.getLockOwner().equals(player.uuid))
+			{
+				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, "Failed to Lock Container! (Already Locked)");
+				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, packet.toString());
+				ci.cancel();
+				return;
+			}
+
+			if(packet.action == PacketPlayerAction.ACTION_DIG_START && Data.Users.getOrCreate(player.uuid).lockOnBlockPunched && !lockable.getIsLocked()){
 				if (container instanceof TileEntityChest) {
 					Lockable iOtherContainer = (Lockable) MUtil.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
@@ -213,6 +236,7 @@ public abstract class PacketHandlerServerMixin {
 						iOtherContainer.setLockOwner(player.uuid);
 						FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Double Chest!");
 						ci.cancel();
+						return;
 					} else {
 						FeedbackHandlerServer.sendFeedback(FeedbackType.success, player, "Locked Chest!");
 					}
@@ -235,24 +259,7 @@ public abstract class PacketHandlerServerMixin {
 				lockable.setIsLocked(true);
 				lockable.setLockOwner(player.uuid);
 				ci.cancel();
-			}
-
-			else if (packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED
-			&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
-			&& lockable.getIsLocked()
-			&& !lockable.getLockOwner().equals(player.uuid))
-			{
-				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, "Failed to Lock Container! (Not Owned By You)");
-				ci.cancel();
-			}
-
-			else if (packet.action == PacketPlayerAction.ACTION_DIG_CONTINUED
-			&& Data.Users.getOrCreate(player.uuid).lockOnBlockPunched
-			&& lockable.getIsLocked()
-			&& lockable.getLockOwner().equals(player.uuid))
-			{
-				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, "Failed to Lock Container! (Already Locked)");
-				ci.cancel();
+				return;
 			}
 		}
 	}

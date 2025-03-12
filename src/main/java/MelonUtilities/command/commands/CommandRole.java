@@ -388,7 +388,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleGrant(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
 		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("grant")
 			.then(ArgumentBuilderRequired.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
-				.then(ArgumentBuilderRequired.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.nickname())
+				.then(ArgumentBuilderRequired.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.username())
 					.executes(
 						context ->
 						{
@@ -407,7 +407,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> roleRevoke(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
 		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("revoke")
 			.then(ArgumentBuilderRequired.<CommandSource, Role>argument("role", ArgumentTypeRole.role())
-				.then(ArgumentBuilderRequired.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.nickname())
+				.then(ArgumentBuilderRequired.<CommandSource, EntitySelector>argument("target", ArgumentTypeEntity.username())
 					.executes(context ->
 						{
 							Role role = context.getArgument("role", Role.class);
