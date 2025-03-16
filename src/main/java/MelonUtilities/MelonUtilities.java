@@ -4,7 +4,7 @@ import MelonUtilities.command.commands.*;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.listeners.ChatInputListener;
-import MelonUtilities.utility.MUtilServer;
+import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.discord.DiscordChatRelay;
 import MelonUtilities.utility.discord.DiscordClient;
 import net.fabricmc.api.EnvType;
@@ -94,7 +94,7 @@ public class MelonUtilities implements ModInitializer, RecipeEntrypoint, GameSta
 	public static void afterServerStart(){
 		if(isServer){
 			Data.Users.reload();
-			MUtilServer.timeOnInit = System.currentTimeMillis();
+			MUtil.timeOnInit = System.currentTimeMillis();
 
 			Config config = Data.MainConfig.config;
 			config.lastSnapshot = correctTimeIfZERO(config.lastSnapshot);

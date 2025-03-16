@@ -1,7 +1,7 @@
 package MelonUtilities.mixins;
 
 import MelonUtilities.config.Data;
-import MelonUtilities.utility.MUtilCore;
+import MelonUtilities.utility.MUtil;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityItem;
 import net.minecraft.core.entity.player.Player;
@@ -25,7 +25,7 @@ public abstract class EntityItemMixin extends Entity {
 	void tick(CallbackInfo ci){
 		if (Data.MainConfig.config.enableMagnets) {
 			if((Entity) this instanceof EntityItem){
-				Player closestPlayer = MUtilCore.closestPlayerWithMagnetToItem(this.world, this);
+				Player closestPlayer = MUtil.closestPlayerWithMagnetToItem(this.world, this);
 				if(closestPlayer != null && closestPlayer.distanceTo(this) < 15){
 					//magnet stuff
 					Vec3 item = Vec3.getTempVec3(this.x, this.y, this.z);

@@ -1,7 +1,7 @@
 package MelonUtilities.command.commandlogic;
 
 import MelonUtilities.config.Data;
-import MelonUtilities.utility.MUtilServer;
+import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.feedback.FeedbackArg;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
@@ -145,7 +145,7 @@ public class CommandLogicRollback {
 					snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]");
 					snapshotIcon.setCustomColor((byte) TextFormatting.LIME.id);
 					return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
-						RollbackManager.rollbackChunkArea(sender, MUtilServer.getChunkGridFromCorners(sender.world, x1, z1, x2, z2), capture);
+						RollbackManager.rollbackChunkArea(sender, MUtil.getChunkGridFromCorners(sender.world, x1, z1, x2, z2), capture);
 						FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "%s "+ TextFormatting.ORANGE + "- %s Rolled Back to " + TextFormatting.ORANGE + "~%s", new FeedbackArg(x1,z1), new FeedbackArg(x2,z2), new FeedbackArg(sdf.format(capture.getKey())));
 					});
 				}));
@@ -157,7 +157,7 @@ public class CommandLogicRollback {
 					backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]");
 					backupIcon.setCustomColor((byte) TextFormatting.GREEN.id);
 					return new ServerSlotButton(backupIcon, inventory, finalI, () -> {
-						RollbackManager.rollbackChunkArea(sender, MUtilServer.getChunkGridFromCorners(sender.world, x1, z1, x2, z2), capture);
+						RollbackManager.rollbackChunkArea(sender, MUtil.getChunkGridFromCorners(sender.world, x1, z1, x2, z2), capture);
 						FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "%s "+ TextFormatting.ORANGE + "- %s Rolled Back to " + TextFormatting.ORANGE + "~%s", new FeedbackArg(x1,z1), new FeedbackArg(x2,z2), new FeedbackArg(sdf.format(capture.getKey())));
 					});
 				}));

@@ -2,7 +2,7 @@ package MelonUtilities.command.commandlogic;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
-import MelonUtilities.utility.MUtilServer;
+import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.builders.RoleBuilder;
 import MelonUtilities.utility.classes.Icon;
 import MelonUtilities.utility.feedback.FeedbackArg;
@@ -131,7 +131,7 @@ public class CommandLogicRole {
 	public static void roleGrant(PlayerServer sender, String targetUsername, Role role) {
 		Pair<UUID, String> profile;
 		try {
-			profile = MUtilServer.getProfileFromUsername(targetUsername);
+			profile = MUtil.getProfileFromUsername(targetUsername);
 		} catch (NullPointerException e) {
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, sender, "Failed to Grant Role %s to Player %s (Player Does not Exist)", new FeedbackArg(role.roleID), new FeedbackArg(targetUsername));
 			return;
