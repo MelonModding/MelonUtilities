@@ -221,7 +221,6 @@ public abstract class PacketHandlerServerMixin {
 				&& lockable.getLockOwner().equals(player.uuid))
 			{
 				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, "Failed to Lock Container! (Already Locked)");
-				FeedbackHandlerServer.sendFeedback(FeedbackType.error, player, packet.toString());
 				ci.cancel();
 				return;
 			}
