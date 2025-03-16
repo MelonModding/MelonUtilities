@@ -1,5 +1,6 @@
 package MelonUtilities.mixins;
 
+import MelonUtilities.config.Data;
 import MelonUtilities.utility.MUtilCore;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityItem;
@@ -22,19 +23,21 @@ public abstract class EntityItemMixin extends Entity {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	void tick(CallbackInfo ci){
-		if((Entity) this instanceof EntityItem){
-			Player closestPlayer = MUtilCore.closestPlayerWithMagnetToItem(this.world, this);
-			if(closestPlayer != null && closestPlayer.distanceTo(this) < 15){
-				//magnet stuff
-				Vec3 item = Vec3.getTempVec3(this.x, this.y, this.z);
-				Vec3 target = Vec3.getTempVec3(closestPlayer.x, closestPlayer.y + closestPlayer.getHeadHeight() - 1.05, closestPlayer.z);
-				double strength = 0.06;
+		if (Data.MainConfig.config.enableMagnets) {
+			if((Entity) this instanceof EntityItem){
+				Player closestPlayer = MUtilCore.closestPlayerWithMagnetToItem(this.world, this);
+				if(closestPlayer != null && closestPlayer.distanceTo(this) < 15){
+					//magnet stuff
+					Vec3 item = Vec3.getTempVec3(this.x, this.y, this.z);
+					Vec3 target = Vec3.getTempVec3(closestPlayer.x, closestPlayer.y + closestPlayer.getHeadHeight() - 1.05, closestPlayer.z);
+					double strength = 0.06;
 
-				Vec3 normal = item.vectorTo(target).normalize().scale(strength).add(0,0.032,0);
-				this.xd += normal.x;
-				this.yd += normal.y;
-				this.zd += normal.z;
+					Vec3 normal = item.vectorTo(target).normalize().scale(strength).add(0,0.032,0);
+					this.xd += normal.x;
+					this.yd += normal.y;
+					this.zd += normal.z;
 
+				}
 			}
 		}
 	}

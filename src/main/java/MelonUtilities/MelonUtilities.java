@@ -10,16 +10,10 @@ import MelonUtilities.utility.discord.DiscordClient;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.options.components.BooleanOptionComponent;
-import net.minecraft.client.gui.options.components.IntegerOptionComponent;
-import net.minecraft.client.gui.options.components.OptionsCategory;
 import net.minecraft.client.gui.options.data.OptionsPage;
-import net.minecraft.client.gui.options.data.OptionsPages;
 import net.minecraft.client.option.GameSettings;
 import net.minecraft.client.option.OptionBoolean;
 import net.minecraft.client.option.OptionInteger;
-import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.item.Items;
 import net.minecraft.core.net.command.CommandManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +28,7 @@ public class MelonUtilities implements ModInitializer, RecipeEntrypoint, GameSta
 	public static final String MOD_ID = "melonutilities";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static final int mainConfigVersion = 0;
-	//public static final int crewConfigVersion = 0;
+	public static final int mainConfigVersion = 1;
 	public static final int kitConfigVersion = 0;
 	public static final int roleConfigVersion = 0;
 	public static final int userConfigVersion = 0;
@@ -130,13 +123,13 @@ public class MelonUtilities implements ModInitializer, RecipeEntrypoint, GameSta
 
 	@Override
 	public void afterGameStart() {
-		MelonUtilitiesOptions =
+/*		MelonUtilitiesOptions =
 			new OptionsPage("options.melonutilities.title", new ItemStack(Items.OLIVINE))
 				.withComponent(new OptionsCategory("options.melonutilities.category.elevators")
-				.withComponent(new BooleanOptionComponent(elevatorAllowObstructions))
-				.withComponent(new IntegerOptionComponent(elevatorCooldown)));
+					.withComponent(new BooleanOptionComponent(elevatorAllowObstructions))
+					.withComponent(new IntegerOptionComponent(elevatorCooldown)));
 
-		OptionsPages.register(MelonUtilitiesOptions);
+		OptionsPages.register(MelonUtilitiesOptions);*/
 	}
 
 	@Override

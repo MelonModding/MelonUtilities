@@ -1,5 +1,6 @@
 package MelonUtilities.mixins;
 
+import MelonUtilities.config.Data;
 import MelonUtilities.interfaces.PlayerMagnetInterface;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.item.IArmorItem;
@@ -27,14 +28,16 @@ public abstract class PlayerMixinMagnet implements PlayerMagnetInterface {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	void tick(CallbackInfo ci){
-		ItemStack headItem = this.inventory.armorInventory[IArmorItem.PIECE_HEAD];
-		ItemStack heldItem = this.getHeldItem();
+		if (Data.MainConfig.config.enableMagnets) {
+			ItemStack headItem = this.inventory.armorInventory[IArmorItem.PIECE_HEAD];
+			ItemStack heldItem = this.getHeldItem();
 
-		if(headItem != null && headItem.getItem().equals(Items.AMMO_FIREBALL) && headItem.getMetadata() == 1
-		|| heldItem != null && heldItem.getItem().equals(Items.AMMO_FIREBALL) && heldItem.getMetadata() == 1) {
-			hasMagnet = true;
-		} else {
-			hasMagnet = false;
+			if(headItem != null && headItem.getItem().equals(Items.AMMO_FIREBALL) && headItem.getMetadata() == 1
+			|| heldItem != null && heldItem.getItem().equals(Items.AMMO_FIREBALL) && heldItem.getMetadata() == 1) {
+				hasMagnet = true;
+			} else {
+				hasMagnet = false;
+			}
 		}
 	}
 

@@ -5,15 +5,15 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CommandManagerMixin",
-    "EntityItemMixin",
-    "PlayerMixinElevator",
-    "PlayerMixinMagnet"
+    "PlayerMixinElevator"
   ],
   "client": [
     "GameSettingsMixin"
   ],
   "server": [
     "ChunkMixin",
+    "PlayerMixinMagnet",
+    "EntityItemMixin",
     "ChunkProviderServerMixin",
     "EntityTrackerEntryImplMixin",
     "ExplosionMixin",

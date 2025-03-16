@@ -23,6 +23,7 @@ public class Config {
 	public boolean enableSQLPlayerLogging = true;
 	public boolean enableTXTPlayerLogging = true;
 	public boolean enableDiscordIntegration = false;
+	public boolean enableMagnets = true;
 
 	public String defaultRole = null;
 	public String displayMode = "multi";
