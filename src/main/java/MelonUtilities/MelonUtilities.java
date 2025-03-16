@@ -10,14 +10,14 @@ import MelonUtilities.utility.discord.DiscordClient;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.options.data.OptionsPage;
-import net.minecraft.client.option.GameSettings;
-import net.minecraft.client.option.OptionBoolean;
-import net.minecraft.client.option.OptionInteger;
+import net.minecraft.core.item.ItemStack;
+import net.minecraft.core.item.Items;
 import net.minecraft.core.net.command.CommandManager;
+import net.minecraft.core.util.helper.DyeColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.useless.serverlibe.ServerLibe;
+import turniplabs.halplibe.helper.RecipeBuilder;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 
@@ -32,10 +32,6 @@ public class MelonUtilities implements ModInitializer, RecipeEntrypoint, GameSta
 	public static final int kitConfigVersion = 0;
 	public static final int roleConfigVersion = 0;
 	public static final int userConfigVersion = 0;
-
-	public static OptionsPage MelonUtilitiesOptions;
-	public static OptionBoolean elevatorAllowObstructions;
-	public static OptionInteger elevatorCooldown;
 
 	public static void reloadAll() {
 		Data.Users.reload();
@@ -86,11 +82,6 @@ public class MelonUtilities implements ModInitializer, RecipeEntrypoint, GameSta
 		LOGGER.info("MelonUtilities initialized!");
 	}
 
-	public static void initOptions(GameSettings settings){
-		elevatorAllowObstructions = new OptionBoolean(settings, "melonutilities.category.elevators.allowObstructions", true);
-		elevatorCooldown = new OptionInteger(settings, "melonutilities.category.elevators.cooldown", 8);
-	}
-
 	public static void afterServerStart(){
 		if(isServer){
 			Data.Users.reload();
@@ -123,22 +114,51 @@ public class MelonUtilities implements ModInitializer, RecipeEntrypoint, GameSta
 
 	@Override
 	public void afterGameStart() {
-/*		MelonUtilitiesOptions =
-			new OptionsPage("options.melonutilities.title", new ItemStack(Items.OLIVINE))
-				.withComponent(new OptionsCategory("options.melonutilities.category.elevators")
-					.withComponent(new BooleanOptionComponent(elevatorAllowObstructions))
-					.withComponent(new IntegerOptionComponent(elevatorCooldown)));
 
-		OptionsPages.register(MelonUtilitiesOptions);*/
 	}
 
 	@Override
 	public void onRecipesReady() {
+		if(Data.MainConfig.config.enableMagnets){
+			ItemStack magnet = new ItemStack(Items.AMMO_FIREBALL, 1, 1);
 
+			RecipeBuilder.Shaped(MOD_ID)
+				.setShape(
+					"ISR",
+					"S  ",
+					"ISL")
+				.addInput('R', Items.DUST_REDSTONE)
+				.addInput('L', Items.DYE, DyeColor.BLUE.itemMeta)
+				.addInput('S', Items.INGOT_STEEL)
+				.addInput('I', Items.INGOT_IRON)
+				.create("magnet", magnet);
+			RecipeBuilder.Shaped(MOD_ID)
+				.setShape(
+					"ISL",
+					"S  ",
+					"ISR")
+				.addInput('R', Items.DUST_REDSTONE)
+				.addInput('L', Items.DYE, DyeColor.BLUE.itemMeta)
+				.addInput('S', Items.INGOT_STEEL)
+				.addInput('I', Items.INGOT_IRON)
+				.create("magnet", magnet);
+			RecipeBuilder.Shaped(MOD_ID)
+				.setShape(
+					"R L",
+					"S S",
+					"ISI")
+				.addInput('R', Items.DUST_REDSTONE)
+				.addInput('L', Items.DYE, DyeColor.BLUE.itemMeta)
+				.addInput('S', Items.INGOT_STEEL)
+				.addInput('I', Items.INGOT_IRON)
+				.create("magnet", magnet);
+		}
 	}
 
 	@Override
 	public void initNamespaces() {
-
+		if(Data.MainConfig.config.enableMagnets) {
+			RecipeBuilder.initNameSpace(MOD_ID);
+		}
 	}
 }

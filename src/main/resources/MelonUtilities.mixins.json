@@ -8,7 +8,6 @@
     "PlayerMixinElevator"
   ],
   "client": [
-    "GameSettingsMixin"
   ],
   "server": [
     "ChunkMixin",
