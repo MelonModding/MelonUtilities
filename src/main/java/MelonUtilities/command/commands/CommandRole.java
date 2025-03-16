@@ -4,7 +4,7 @@ import MelonUtilities.command.arguments.ArgumentTypeColor;
 import MelonUtilities.command.arguments.ArgumentTypeRole;
 import MelonUtilities.command.commandlogic.CommandLogicRole;
 import MelonUtilities.config.datatypes.data.Role;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MUtilServer;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentTypeBool;
 import com.mojang.brigadier.arguments.ArgumentTypeInteger;
@@ -99,7 +99,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
-									String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
+									String hex = MUtilServer.breakDownHex(context.getArgument("hex", String.class));
 									return CommandLogicRole.roleEditDisplayColorHEX(sender, role, hex);
 								}
 							)
@@ -158,7 +158,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
+										String hex = MUtilServer.breakDownHex(context.getArgument("hex", String.class));
 										return CommandLogicRole.roleEditDisplayBorderColorHEX(sender, role, hex);
 									}
 								)
@@ -248,7 +248,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 									{
 										PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 										Role role = context.getArgument("role", Role.class);
-										String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
+										String hex = MUtilServer.breakDownHex(context.getArgument("hex", String.class));
 										return CommandLogicRole.roleEditUsernameBorderColorHEX(sender, role, hex);
 									}
 								)
@@ -337,7 +337,7 @@ public class CommandRole implements CommandManager.CommandRegistry{
 								{
 									PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
 									Role role = context.getArgument("role", Role.class);
-									String hex = MUtil.breakDownHex(context.getArgument("hex", String.class));
+									String hex = MUtilServer.breakDownHex(context.getArgument("hex", String.class));
 									return CommandLogicRole.roleEditTextColorHEX(sender, role, hex);
 								}
 							)

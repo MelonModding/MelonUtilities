@@ -1,7 +1,7 @@
 package MelonUtilities.mixins.tile_entities.chest;
 
 import MelonUtilities.interfaces.Lockable;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MUtilServer;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
 import MelonUtilities.utility.managers.LockManager;
@@ -53,7 +53,7 @@ public abstract class BlockLogicChestMixin extends BlockLogic {
 
 	@Inject(at = @At("TAIL"), method = "onBlockPlacedByMob", cancellable = true)
 	public void onBlockPlacedInject(World world, int x, int y, int z, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") BlockLogicChest.Type type) {
-		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getTileEntity(x, y, z));
+		TileEntityChest existingChest = MUtilServer.getOtherChest(world, (TileEntityChest) world.getTileEntity(x, y, z));
 		TileEntityChest placedChest = (TileEntityChest) world.getTileEntity(x, y, z);
 
 		Lockable existingLockable = (Lockable) existingChest;

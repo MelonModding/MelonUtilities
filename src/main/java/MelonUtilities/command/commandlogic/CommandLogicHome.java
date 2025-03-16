@@ -2,7 +2,7 @@ package MelonUtilities.command.commandlogic;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Home;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MUtilServer;
 import MelonUtilities.utility.feedback.FeedbackArg;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
@@ -13,7 +13,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 public class CommandLogicHome {
 	public static int homeTP(PlayerServer sender, Home targetHome){
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Teleporting to Home %s", new FeedbackArg(targetHome));
-		MUtil.sendToHome(sender, targetHome);
+		MUtilServer.sendToHome(sender, targetHome);
 		return Command.SINGLE_SUCCESS;
 	}
 

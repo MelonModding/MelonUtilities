@@ -2,7 +2,7 @@ package MelonUtilities.command.commandlogic;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Warp;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MUtilServer;
 import MelonUtilities.utility.feedback.FeedbackArg;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
@@ -13,7 +13,7 @@ import net.minecraft.server.entity.player.PlayerServer;
 public class CommandLogicWarp {
 	public static int warpTP(PlayerServer sender, Warp targetWarp){
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Teleporting to Warp %s", new FeedbackArg(targetWarp));
-		MUtil.sendToWarp(sender, targetWarp);
+		MUtilServer.sendToWarp(sender, targetWarp);
 		return Command.SINGLE_SUCCESS;
 	}
 

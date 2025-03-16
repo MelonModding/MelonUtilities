@@ -1,6 +1,5 @@
 package MelonUtilities.utility;
 
-import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Home;
 import MelonUtilities.config.datatypes.data.Warp;
 import MelonUtilities.interfaces.Lockable;
@@ -10,29 +9,26 @@ import MelonUtilities.utility.managers.RollbackManager;
 import com.b100.json.JsonParser;
 import com.b100.json.element.JsonObject;
 import com.b100.utils.StringUtils;
-import net.minecraft.client.entity.player.PlayerLocal;
 import net.minecraft.core.block.BlockLogicChest;
-import net.minecraft.core.block.Blocks;
 import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.collection.Pair;
 import net.minecraft.core.util.helper.Direction;
-import net.minecraft.core.util.helper.DyeColor;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.util.phys.HitResult;
 import net.minecraft.core.util.phys.Vec3;
+import net.minecraft.core.world.Dimension;
 import net.minecraft.core.world.World;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.time.Duration;
 import java.util.*;
 
-public class MUtil {
+public class MUtilServer {
 
 	public static float timeOnInit = 0;
 
@@ -327,97 +323,12 @@ public class MUtil {
 		return  null;
 	}
 
-	// returns true if we teleported
-	public static boolean jumpOnElevator(World world, int x, int y, int z, Player player){
-		for(int y2 = y+1; y2 < 255; y2++){
-			if(world.getBlock(x, y2, z) == Blocks.BLOCK_STEEL && !Blocks.solid[world.getBlockId(x, y2+1, z)] && !Blocks.solid[world.getBlockId(x, y2+2, z)]){
-				teleport(x+0.5, y2+1, z+0.5, player);
-				return true;
-			}
-			else if (world.getBlockId(x, y2, z) != 0 && !Data.MainConfig.config.allowObstructions) {
-				break;
-			}
-		}
-		return false;
-	}
-
-	// returns true if we teleported
-	public static boolean sneakOnElevator(World world, int x, int y, int z, Player player){
-		for(int y2 = y-1; y2 > 0; y2--){
-			if(world.getBlock(x, y2, z) == Blocks.BLOCK_STEEL && !Blocks.solid[world.getBlockId(x, y2+1, z)] && !Blocks.solid[world.getBlockId(x, y2+2, z)]){
-				teleport(x+0.5, y2+1, z+0.5, player);
-				return true;
-			}
-			else if (world.getBlockId(x, y2, z) != 0 && !Data.MainConfig.config.allowObstructions) {
-				break;
-			}
-		}
-		return false;
-	}
-
 	public static void sendToHome(Player player, Home home) {
-		if (player instanceof PlayerServer) {
-			if (player.dimension != home.dimID) {
-				MinecraftServer mc = MinecraftServer.getInstance();
-				mc.playerList.sendPlayerToOtherDimension((PlayerServer) player, home.dimID, DyeColor.WHITE, false);
-			}
-		} else if (player instanceof PlayerLocal){
-			//IDK and IDC
-		}
-		teleport(home.x, home.y, home.z, player);
+		MUtilCore.teleport(home.x, home.y, home.z, player, Dimension.getDimensionList().get(home.dimID));
 	}
 
 	public static void sendToWarp(Player player, Warp warp) {
-		if (player instanceof PlayerServer) {
-			if (player.dimension != warp.dimID) {
-				MinecraftServer mc = MinecraftServer.getInstance();
-				mc.playerList.sendPlayerToOtherDimension((PlayerServer) player, warp.dimID, DyeColor.WHITE, false);
-			}
-		} else if (player instanceof PlayerLocal){
-			//IDK and IDC
-		}
-		teleport(warp.x, warp.y, warp.z, player);
+		MUtilCore.teleport(warp.x, warp.y, warp.z, player, Dimension.getDimensionList().get(warp.dimID));
 	}
 
-	public static void teleport(double x, double y, double z, Player player){
-		if (player.world.isClientSide) return;
-
-		if (player instanceof PlayerServer){
-			player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
-			//FeedbackHandlerServer.sendFeedback((PlayerServer) player, TextFormatting.ORANGE, "☁ Whoosh! ☁");
-			((PlayerServer) player).playerNetServerHandler.teleport(x, y + 0.2, z);
-		} else if (player instanceof PlayerLocal) {
-			player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
-			//player.sendMessage(TextFormatting.ORANGE + "☁ Whoosh! ☁");
-			player.setPos(x, y + player.bbHeight + 0.2, z);
-		}
-		player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
-	}
-
-	public static String hmsConversion(long systemTimeMillis) {
-
-		Duration duration = Duration.ofMillis(systemTimeMillis);
-
-		long h = duration.toHours();
-		long m = duration.toMinutes() % 60;
-		long s = duration.getSeconds() % 60;
-
-		return String.format("%02d:%02d:%02d [h:m:s]", h, m, s);
-	}
-
-	public static String formatHexString(String dirtyHex){
-		StringBuilder output = new StringBuilder();
-		output.append("§<");
-		char[] charArray = dirtyHex.toCharArray();
-		for (int i = 0; i < charArray.length; i++) {
-			char c = charArray[i];
-			if (i < 6 && Character.isDigit(c)) {
-				output.append(c);
-			} else {
-				break;
-			}
-		}
-		output.append(">");
-		return output.toString();
-	}
 }

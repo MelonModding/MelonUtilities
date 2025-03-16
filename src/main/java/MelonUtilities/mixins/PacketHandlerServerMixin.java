@@ -4,7 +4,7 @@ import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.interfaces.Lockable;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MUtilServer;
 import MelonUtilities.utility.builders.RoleBuilder;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
 import MelonUtilities.utility.feedback.FeedbackType;
@@ -228,7 +228,7 @@ public abstract class PacketHandlerServerMixin {
 
 			if(packet.action == PacketPlayerAction.ACTION_DIG_START && Data.Users.getOrCreate(player.uuid).lockOnBlockPunched && !lockable.getIsLocked()){
 				if (container instanceof TileEntityChest) {
-					Lockable iOtherContainer = (Lockable) MUtil.getOtherChest(world, (TileEntityChest) container);
+					Lockable iOtherContainer = (Lockable) MUtilServer.getOtherChest(world, (TileEntityChest) container);
 					if (iOtherContainer != null) {
 						lockable.setIsLocked(true);
 						iOtherContainer.setIsLocked(true);

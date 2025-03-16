@@ -3,7 +3,7 @@ package MelonUtilities.utility.managers;
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MUtilServer;
 import com.mojang.nbt.NbtIo;
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
@@ -446,7 +446,7 @@ public class RollbackManager {
 		}
 
 		//Return Sorted Hashmap of all Captures (Both Backups and Snapshots)
-		return MUtil.sortByKey(capturesHashmap);
+		return MUtilServer.sortByKey(capturesHashmap);
 	}
 
 	public HashMap<Long, File> getSortedBackups(World world, File chunkDir){
@@ -464,7 +464,7 @@ public class RollbackManager {
 			}
 		}
 
-		return MUtil.sortByKey(backupsHashmap);
+		return MUtilServer.sortByKey(backupsHashmap);
 	}
 
 	public HashMap<Long, File> getSortedSnapshots(File chunkDir){
@@ -480,7 +480,7 @@ public class RollbackManager {
 			}
 		}
 
-		return MUtil.sortByKey(snapshotsHashmap);
+		return MUtilServer.sortByKey(snapshotsHashmap);
 	}
 
 	public static void rollbackChunkArea(PlayerServer sender, List<File> chunkGrid, Map.Entry<Long, File> primaryCapture){

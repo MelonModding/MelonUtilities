@@ -5,15 +5,35 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CommandManagerMixin",
-    "MobMixin",
-    "PacketHandlerServerMixin",
+    "EntityItemMixin",
     "PlayerMixinElevator",
+    "PlayerMixinMagnet"
+  ],
+  "client": [
+    "GameSettingsMixin"
+  ],
+  "server": [
+    "ChunkMixin",
+    "ChunkProviderServerMixin",
+    "EntityTrackerEntryImplMixin",
+    "ExplosionMixin",
+    "MinecraftServerMixin",
+    "MinecraftServerMixinDiscord",
+    "MobMixin",
+    "NetEntryItemMixin",
+    "PacketAddPlayerMixin",
+    "PacketHandlerLoginMixinDiscord",
+    "PacketHandlerServerMixin",
+    "PacketHandlerServerMixinDiscord",
+    "PacketLoginHandlerMixin",
+    "PlayerListMixin",
     "PlayerMixinInputInterface",
     "WorldMixin",
     "tile_entities.activator.BlockLogicActivatorMixin",
     "tile_entities.activator.TileEntityActivatorMixin",
     "tile_entities.basket.BlockLogicBasketMixin",
     "tile_entities.basket.TileEntityBasketMixin",
+    "tile_entities.blast_furnace.BlockLogicFurnaceBlastMixin",
     "tile_entities.chest.BlockLogicChestMixin",
     "tile_entities.chest.TileEntityChestMixin",
     "tile_entities.dispenser.BlockLogicDispenserMixin",
@@ -24,22 +44,6 @@
     "tile_entities.golden_mesh.TileEntityMeshGoldMixin",
     "tile_entities.trommel.BlockLogicTrommelMixin",
     "tile_entities.trommel.TileEntityTrommelMixin"
-  ],
-  "client": [
-  ],
-  "server": [
-    "ChunkMixin",
-    "ChunkProviderServerMixin",
-    "EntityTrackerEntryImplMixin",
-    "ExplosionMixin",
-    "MinecraftServerMixin",
-    "MinecraftServerMixinDiscord",
-    "PacketAddPlayerMixin",
-    "PacketHandlerLoginMixinDiscord",
-    "PacketHandlerServerMixinDiscord",
-    "PacketLoginHandlerMixin",
-    "PlayerListMixin",
-    "tile_entities.blast_furnace.BlockLogicFurnaceBlastMixin"
   ],
   "injectors": {
     "defaultRequire": 1

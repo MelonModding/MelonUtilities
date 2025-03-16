@@ -1,6 +1,6 @@
 package MelonUtilities.utility.feedback;
 
-import MelonUtilities.utility.MUtil;
+import MelonUtilities.utility.MUtilCore;
 import net.minecraft.core.net.command.TextFormatting;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -97,7 +97,7 @@ public class FeedbackArg {
 		}
 
 		public FeedbackArg borderColor(String hex){
-			this.borderColor = MUtil.formatHexString(hex);
+			this.borderColor = MUtilCore.formatHexString(hex);
 			return this;
 		}
 
@@ -109,7 +109,7 @@ public class FeedbackArg {
 		}
 
 		public FeedbackArg argColor(String hex){
-			this.argColor = MUtil.formatHexString(hex);
+			this.argColor = MUtilCore.formatHexString(hex);
 			return this;
 		}
 
