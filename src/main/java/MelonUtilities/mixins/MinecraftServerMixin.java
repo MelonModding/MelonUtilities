@@ -22,5 +22,4 @@ public abstract class MinecraftServerMixin {
 	private void startServerInject(CallbackInfoReturnable<Boolean> cir){
 		MelonUtilities.afterServerStart();
 	}
-
 }
