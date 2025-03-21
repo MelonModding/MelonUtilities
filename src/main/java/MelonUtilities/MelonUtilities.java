@@ -13,6 +13,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.net.command.CommandManager;
+import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.DyeColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,44 +122,22 @@ public class MelonUtilities implements ModInitializer, RecipeEntrypoint, GameSta
 	public void onRecipesReady() {
 		if(Data.MainConfig.config.enableMagnets){
 			ItemStack magnet = new ItemStack(Items.AMMO_FIREBALL, 1, 1);
+			magnet.setCustomName(TextFormatting.RESET + "Magnet");
 
-			RecipeBuilder.Shaped(MOD_ID)
-				.setShape(
-					"ISR",
-					"S  ",
-					"ISL")
-				.addInput('R', Items.DUST_REDSTONE)
-				.addInput('L', Items.DYE, DyeColor.BLUE.itemMeta)
-				.addInput('S', Items.INGOT_STEEL)
-				.addInput('I', Items.INGOT_IRON)
-				.create("magnet", magnet);
-			RecipeBuilder.Shaped(MOD_ID)
-				.setShape(
-					"ISL",
-					"S  ",
-					"ISR")
-				.addInput('R', Items.DUST_REDSTONE)
-				.addInput('L', Items.DYE, DyeColor.BLUE.itemMeta)
-				.addInput('S', Items.INGOT_STEEL)
-				.addInput('I', Items.INGOT_IRON)
-				.create("magnet", magnet);
-			RecipeBuilder.Shaped(MOD_ID)
+			RecipeBuilder.Shaped("minecraft")
 				.setShape(
 					"R L",
 					"S S",
-					"ISI")
+					"SSS")
 				.addInput('R', Items.DUST_REDSTONE)
 				.addInput('L', Items.DYE, DyeColor.BLUE.itemMeta)
 				.addInput('S', Items.INGOT_STEEL)
-				.addInput('I', Items.INGOT_IRON)
 				.create("magnet", magnet);
 		}
 	}
 
 	@Override
 	public void initNamespaces() {
-		if(Data.MainConfig.config.enableMagnets) {
-			RecipeBuilder.initNameSpace(MOD_ID);
-		}
+
 	}
 }

@@ -23,7 +23,7 @@ public abstract class EntityItemMixin extends Entity {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	void tick(CallbackInfo ci){
-		if (Data.MainConfig.config.enableMagnets) {
+		if(Data.MainConfig.config.enableMagnets){
 			if((Entity) this instanceof EntityItem){
 				Player closestPlayer = MUtil.closestPlayerWithMagnetToItem(this.world, this);
 				if(closestPlayer != null && closestPlayer.distanceTo(this) < 15){
@@ -36,7 +36,6 @@ public abstract class EntityItemMixin extends Entity {
 					this.xd += normal.x;
 					this.yd += normal.y;
 					this.zd += normal.z;
-
 				}
 			}
 		}
