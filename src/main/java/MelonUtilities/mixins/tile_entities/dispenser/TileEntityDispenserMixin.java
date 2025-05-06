@@ -71,7 +71,7 @@ public class TileEntityDispenserMixin implements Lockable {
 
 	@Inject(at = @At("HEAD"), method = "stillValid", cancellable = true)
 	public void canInteractWithInject(Player entityplayer, CallbackInfoReturnable<Boolean> cir) {
-		if(entityplayer instanceof PlayerServer && LockManager.determineAuthStatus(this, (PlayerServer) entityplayer) <= LockManager.UNTRUSTED){
+		if(entityplayer instanceof Player && LockManager.determineAuthStatus(this, (PlayerServer) entityplayer) <= LockManager.UNTRUSTED){
 			cir.setReturnValue(false);
 			return;
 		}

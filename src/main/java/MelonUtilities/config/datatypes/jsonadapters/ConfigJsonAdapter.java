@@ -47,6 +47,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		config.enableSQLPlayerLogging = mainConfig.get("enableSQLPlayerLogging").getAsBoolean();
 		config.enableTXTPlayerLogging = mainConfig.get("enableTXTPlayerLogging").getAsBoolean();
 		config.enableDiscordIntegration = mainConfig.get("enableDiscordIntegration").getAsBoolean();
+		config.enableMagnets = mainConfig.get("enableMagnets").getAsBoolean();
 
 		//Role Options
 		if(roleConfig.has("defaultRole")){
@@ -85,9 +86,11 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		config.serverName = discordIntegrationConfig.get("serverName").getAsString();
 
 		//Warp Options
-		JsonArray warps = warpConfig.getAsJsonArray("warps");
-		for(JsonElement element : warps){
-			config.warpData.add(context.deserialize(element, Warp.class));
+		if(warpConfig != null){
+			JsonArray warps = warpConfig.getAsJsonArray("warps");
+			for(JsonElement element : warps){
+				config.warpData.add(context.deserialize(element, Warp.class));
+			}
 		}
 
 		return config;
@@ -121,6 +124,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		mainConfig.addProperty("enableSQLPlayerLogging", src.enableSQLPlayerLogging);
 		mainConfig.addProperty("enableTXTPlayerLogging", src.enableTXTPlayerLogging);
 		mainConfig.addProperty("enableDiscordIntegration", src.enableDiscordIntegration);
+		mainConfig.addProperty("enableMagnets", src.enableMagnets);
 		obj.add("Main Config", mainConfig);
 
 		roleConfig.addProperty("defaultRole", src.defaultRole);

@@ -33,14 +33,14 @@ public class CommandLogicWarp {
 
 	public static int warpDelete(PlayerServer sender, Warp targetWarp){
 		Data.MainConfig.config.warpData.remove(targetWarp);
-		Data.Users.save(sender.uuid);
+		Data.MainConfig.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.destructive, sender, "Deleted Warp %s", new FeedbackArg(targetWarp));
 		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int warpCreate(PlayerServer sender, String name){
 		Data.MainConfig.config.warpData.add(new Warp(name, sender.x, sender.y, sender.z, sender.dimension));
-		Data.Users.save(sender.uuid);
+		Data.MainConfig.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Created Warp %s", new FeedbackArg(name));
 		return Command.SINGLE_SUCCESS;
 	}
@@ -49,7 +49,7 @@ public class CommandLogicWarp {
 		Data.MainConfig.config.warpData.remove(targetWarp);
 		targetWarp.name = name;
 		Data.MainConfig.config.warpData.add(targetWarp);
-		Data.Users.save(sender.uuid);
+		Data.MainConfig.save();
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Renamed Warp %s to %s", new FeedbackArg(targetWarp), new FeedbackArg(name));
 		return Command.SINGLE_SUCCESS;
 	}

@@ -20,7 +20,10 @@
   "entrypoints": {
     "main": [
 			"MelonUtilities.MelonUtilities"
-    ]
+    ],
+		"recipesReady": [
+			"MelonUtilities.MelonUtilities"
+		]
 	},
   "mixins": [
 		"MelonUtilities.mixins.json"

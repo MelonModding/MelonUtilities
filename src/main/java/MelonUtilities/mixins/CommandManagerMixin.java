@@ -14,7 +14,9 @@ public class CommandManagerMixin {
 	@Inject(at = @At("HEAD"), method = "init")
 	public void initInject(CallbackInfo ci) {
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER){
-			MelonUtilities.registerCommands();
+			MelonUtilities.registerServerCommands();
+		} else {
+			MelonUtilities.registerClientCommands();
 		}
 	}
 }
