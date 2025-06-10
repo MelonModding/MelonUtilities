@@ -5,15 +5,15 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CommandManagerMixin",
-    "PlayerMixinElevator"
+    "PlayerMixinElevator",
+    "SpawnCommandMixin"
   ],
   "client": [
   ],
   "server": [
     "ChunkMixin",
-    "PlayerMixinMagnet",
-    "EntityItemMixin",
     "ChunkProviderServerMixin",
+    "EntityItemMixin",
     "EntityTrackerEntryImplMixin",
     "ExplosionMixin",
     "MinecraftServerMixin",
@@ -27,6 +27,8 @@
     "PacketLoginHandlerMixin",
     "PlayerListMixin",
     "PlayerMixinInputInterface",
+    "PlayerMixinMagnet",
+    "PlayerServerMixin",
     "WorldMixin",
     "tile_entities.activator.BlockLogicActivatorMixin",
     "tile_entities.activator.TileEntityActivatorMixin",

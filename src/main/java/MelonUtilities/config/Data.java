@@ -27,6 +27,7 @@ public class Data {
 		.registerTypeAdapter(User.class, new UserJsonAdapter())
 		.registerTypeAdapter(Home.class, new HomeJsonAdapter())
 		.registerTypeAdapter(Warp.class, new WarpJsonAdapter())
+		.registerTypeAdapter(Spawn.class, new SpawnJsonAdapter())
 		.setPrettyPrinting().create();
 
 	public static class Roles {

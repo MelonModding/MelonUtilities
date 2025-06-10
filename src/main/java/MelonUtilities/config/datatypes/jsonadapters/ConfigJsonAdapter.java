@@ -2,6 +2,7 @@ package MelonUtilities.config.datatypes.jsonadapters;
 
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.datatypes.data.Config;
+import MelonUtilities.config.datatypes.data.Spawn;
 import MelonUtilities.config.datatypes.data.Warp;
 import MelonUtilities.config.datatypes.legacydeserializers.ConfigLDs;
 import com.google.gson.*;
@@ -29,6 +30,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject elevatorConfig = obj.getAsJsonObject("Elevator Config");
 		JsonObject sqlLogConfig = obj.getAsJsonObject("SQL Log Config");
 		JsonObject warpConfig = obj.getAsJsonObject("Warp Data");
+		JsonObject spawnConfig = obj.getAsJsonObject("Spawn Data");
 		JsonObject discordIntegrationConfig = obj.getAsJsonObject("Discord Integration Config");
 
 
@@ -39,6 +41,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		config.enableTPA = mainConfig.get("enableTPA").getAsBoolean();
 		config.enableHomes = mainConfig.get("enableHomes").getAsBoolean();
 		config.enableWarps = mainConfig.get("enableWarps").getAsBoolean();
+		config.enableSpawn = mainConfig.get("enableSpawn").getAsBoolean();
 		config.enableElevators = mainConfig.get("enableElevators").getAsBoolean();
 		config.enableKits = mainConfig.get("enableKits").getAsBoolean();
 		config.enableRules = mainConfig.get("enableRules").getAsBoolean();
@@ -93,6 +96,11 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 			}
 		}
 
+		//Spawn Options
+		if(spawnConfig != null){
+			config.spawnData = context.deserialize(spawnConfig.getAsJsonObject("spawn"), Spawn.class);
+		}
+
 		return config;
 	}
 
@@ -108,6 +116,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		JsonObject elevatorConfig = new JsonObject();
 		JsonObject sqlLogConfig = new JsonObject();
 		JsonObject warpConfig = new JsonObject();
+		JsonObject spawnConfig = new JsonObject();
 		JsonObject discordIntegrationConfig = new JsonObject();
 
 		mainConfig.addProperty("enableContainerLocking", src.enableContainerLocking);
@@ -116,6 +125,7 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		mainConfig.addProperty("enableTPA", src.enableTPA);
 		mainConfig.addProperty("enableHomes", src.enableHomes);
 		mainConfig.addProperty("enableWarps", src.enableWarps);
+		mainConfig.addProperty("enableSpawn", src.enableSpawn);
 		mainConfig.addProperty("enableElevators", src.enableElevators);
 		mainConfig.addProperty("enableKits", src.enableKits);
 		mainConfig.addProperty("enableRules", src.enableRules);
@@ -167,6 +177,9 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		}
 		warpConfig.add("warps", warps);
 		obj.add("Warp Data", warpConfig);
+
+		spawnConfig.add("spawn", context.serialize(src.spawnData));
+		obj.add("Spawn Data", spawnConfig);
 
 		return obj;
 	}
