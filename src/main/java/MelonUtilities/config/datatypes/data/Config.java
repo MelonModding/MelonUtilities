@@ -15,6 +15,7 @@ public class Config {
 	public boolean enableTPA = true;
 	public boolean enableWarps = true;
 	public boolean enableHomes = true;
+	public boolean enableSpawn = true;
 	public boolean enableElevators = true;
 	public boolean enableKits = true;
 	public boolean enableRules = true;
@@ -54,5 +55,6 @@ public class Config {
 	public String serverPFPURL = "https://i.imgur.com/dJUId0O.png";
 	public String serverName = "BTA! Server";
 
+	public Spawn spawnData;
 	public List<Warp> warpData = new ArrayList<>();
 }

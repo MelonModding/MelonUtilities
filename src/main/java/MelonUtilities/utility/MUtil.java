@@ -3,6 +3,7 @@ package MelonUtilities.utility;
 import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Home;
+import MelonUtilities.config.datatypes.data.Spawn;
 import MelonUtilities.config.datatypes.data.Warp;
 import MelonUtilities.interfaces.Lockable;
 import MelonUtilities.interfaces.PlayerMagnetInterface;
@@ -445,6 +446,14 @@ public class MUtil {
 		}
 		//return's null if chest is a single chest
 		return  null;
+	}
+
+	public static void sendToSpawn(Player player) {
+		Spawn spawn = Data.MainConfig.config.spawnData;
+
+		if(spawn == null) return;
+
+		teleport(spawn.x, spawn.y, spawn.z, player, Dimension.getDimensionList().get(spawn.dimID));
 	}
 
 	public static void sendToHome(Player player, Home home) {
