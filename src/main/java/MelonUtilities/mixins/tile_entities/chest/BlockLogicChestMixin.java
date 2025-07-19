@@ -13,14 +13,18 @@ import net.minecraft.core.block.entity.TileEntityChest;
 import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.util.helper.Direction;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import net.minecraft.server.entity.player.PlayerServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import static net.minecraft.core.block.BlockLogicChest.*;
 
 @Mixin(value = BlockLogicChest.class, remap = false)
 public abstract class BlockLogicChestMixin extends BlockLogic {
@@ -51,13 +55,46 @@ public abstract class BlockLogicChestMixin extends BlockLogic {
 		}
 	}
 
-	@Inject(at = @At("TAIL"), method = "onBlockPlacedByMob", cancellable = true)
+	/**
+	 * @author ipiepiepie
+	 * @reason prevent making double chests from two locked chests if player can't access them both.
+	 */
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/core/block/BlockLogicChest;isSingleChestWithDirection(Lnet/minecraft/core/world/World;IIILnet/minecraft/core/util/helper/Direction;)Z"), method = "onBlockPlacedByMob")
+	public boolean onBlockPlacedRedirectDirectional(World world, int x, int y, int z, Direction direction, @Local(name = "mob") Mob mob) {
+		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
+
+		if (!(mob instanceof PlayerServer)) return isSingleChestWithDirection(world, x, y, z, direction);
+
+		return isSingleChestWithDirection(world, x, y, z, direction) && LockManager.determineAuthStatus(lockable, (PlayerServer) mob) > LockManager.UNTRUSTED;
+	}
+
+	/**
+	 * @author ipiepiepie
+	 * @reason prevent making double chests from two locked chests if player can't access them both.
+	 */
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/core/block/BlockLogicChest;isSingleChest(Lnet/minecraft/core/world/World;III)Z"), method = "onBlockPlacedByMob")
+	public boolean onBlockPlacedRedirect(World world, int x, int y, int z, @Local(name = "mob") Mob mob) {
+		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
+
+		if (!(mob instanceof PlayerServer)) return isSingleChest(world, x, y, z);
+
+		return isSingleChest(world, x, y, z) && LockManager.determineAuthStatus(lockable, (PlayerServer) mob) > LockManager.UNTRUSTED;
+	}
+
+
+
+	@Inject(at = @At("TAIL"), method = "onBlockPlacedByMob")
 	public void onBlockPlacedInject(World world, int x, int y, int z, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") BlockLogicChest.Type type) {
 		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getTileEntity(x, y, z));
 		TileEntityChest placedChest = (TileEntityChest) world.getTileEntity(x, y, z);
 
 		Lockable existingLockable = (Lockable) existingChest;
 		Lockable placedLockable = (Lockable) placedChest;
+
+		if (mob instanceof PlayerServer) {
+			PlayerServer player = (PlayerServer) mob;
+			if(LockManager.determineAuthStatus(placedLockable, player) <= LockManager.UNTRUSTED) return;
+		}
 
 		if(existingLockable != null) {
 			placedLockable.setLockOwner(existingLockable.getLockOwner());
