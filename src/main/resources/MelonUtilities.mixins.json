@@ -5,8 +5,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CommandManagerMixin",
-    "PlayerMixinElevator",
     "SpawnCommandMixin"
+    "PaintBrushMixin",
+    "PlayerMixinElevator"
   ],
   "client": [
   ],
@@ -29,6 +30,7 @@
     "PlayerMixinInputInterface",
     "PlayerMixinMagnet",
     "PlayerServerMixin",
+    "ServerPlayerControllerMixin",
     "WorldMixin",
     "tile_entities.activator.BlockLogicActivatorMixin",
     "tile_entities.activator.TileEntityActivatorMixin",
