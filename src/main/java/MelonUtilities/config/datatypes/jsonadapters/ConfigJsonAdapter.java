@@ -24,69 +24,81 @@ public class ConfigJsonAdapter implements JsonDeserializer<Config>, JsonSerializ
 		}
 
 		//Extra Categories
-		JsonObject mainConfig = obj.getAsJsonObject("Main Config");
-		JsonObject roleConfig = obj.getAsJsonObject("Role Config");
-		JsonObject rollbackConfig = obj.getAsJsonObject("Rollback Config");
-		JsonObject elevatorConfig = obj.getAsJsonObject("Elevator Config");
-		JsonObject sqlLogConfig = obj.getAsJsonObject("SQL Log Config");
-		JsonObject warpConfig = obj.getAsJsonObject("Warp Data");
-		JsonObject spawnConfig = obj.getAsJsonObject("Spawn Data");
-		JsonObject discordIntegrationConfig = obj.getAsJsonObject("Discord Integration Config");
+		JsonObject mainConfig = obj.has("Main Config") ? obj.getAsJsonObject("Main Config") : null;
+		JsonObject roleConfig = obj.has("Role Config") ? obj.getAsJsonObject("Role Config") : null;
+		JsonObject rollbackConfig = obj.has("Rollback Config") ? obj.getAsJsonObject("Rollback Config") : null;
+		JsonObject elevatorConfig = obj.has("Elevator Config") ? obj.getAsJsonObject("Elevator Config") : null;
+		JsonObject sqlLogConfig = obj.has("SQL Log Config") ? obj.getAsJsonObject("SQL Log Config") : null;
+		JsonObject warpConfig = obj.has("Warp Data") ? obj.getAsJsonObject("Warp Data") : null;
+		JsonObject spawnConfig = obj.has("Spawn Data") ? obj.getAsJsonObject("Spawn Data") : null;
+		JsonObject discordIntegrationConfig = obj.has("Discord Integration Config") ? obj.getAsJsonObject("Discord Integration Config") : null;
 
 
 		//Main Options
-		config.enableContainerLocking = mainConfig.get("enableContainerLocking").getAsBoolean();
-		config.enableRoles = mainConfig.get("enableRoles").getAsBoolean();
-		config.enableRollback = mainConfig.get("enableRollback").getAsBoolean();
-		config.enableTPA = mainConfig.get("enableTPA").getAsBoolean();
-		config.enableHomes = mainConfig.get("enableHomes").getAsBoolean();
-		config.enableWarps = mainConfig.get("enableWarps").getAsBoolean();
-		config.enableSpawn = mainConfig.get("enableSpawn").getAsBoolean();
-		config.enableElevators = mainConfig.get("enableElevators").getAsBoolean();
-		config.enableKits = mainConfig.get("enableKits").getAsBoolean();
-		config.enableRules = mainConfig.get("enableRules").getAsBoolean();
-		config.enableSmite = mainConfig.get("enableSmite").getAsBoolean();
-		config.enableCrews = mainConfig.get("enableCrews").getAsBoolean();
-		config.enableSQLPlayerLogging = mainConfig.get("enableSQLPlayerLogging").getAsBoolean();
-		config.enableTXTPlayerLogging = mainConfig.get("enableTXTPlayerLogging").getAsBoolean();
-		config.enableDiscordIntegration = mainConfig.get("enableDiscordIntegration").getAsBoolean();
-		config.enableMagnets = mainConfig.get("enableMagnets").getAsBoolean();
+		if(mainConfig != null){
+			config.enableContainerLocking = mainConfig.has("enableContainerLocking") ? mainConfig.get("enableContainerLocking").getAsBoolean() : config.enableContainerLocking;
+			config.enableRoles = mainConfig.has("enableRoles") ? mainConfig.get("enableRoles").getAsBoolean() : config.enableRoles;
+			config.enableRollback = mainConfig.has("enableRollback") ? mainConfig.get("enableRollback").getAsBoolean() : config.enableRollback;
+			config.enableTPA = mainConfig.has("enableTPA") ? mainConfig.get("enableTPA").getAsBoolean() : config.enableTPA;
+			config.enableHomes = mainConfig.has("enableHomes") ? mainConfig.get("enableHomes").getAsBoolean() : config.enableHomes;
+			config.enableWarps = mainConfig.has("enableWarps") ? mainConfig.get("enableWarps").getAsBoolean() : config.enableWarps;
+			config.enableSpawn = mainConfig.has("enableSpawn") ? mainConfig.get("enableSpawn").getAsBoolean() : config.enableSpawn;
+			config.enableElevators = mainConfig.has("enableElevators") ? mainConfig.get("enableElevators").getAsBoolean() : config.enableElevators;
+			config.enableKits = mainConfig.has("enableKits") ? mainConfig.get("enableKits").getAsBoolean() : config.enableKits;
+			config.enableRules = mainConfig.has("enableRules") ? mainConfig.get("enableRules").getAsBoolean() : config.enableRules;
+			config.enableSmite = mainConfig.has("enableSmite") ? mainConfig.get("enableSmite").getAsBoolean() : config.enableSmite;
+			config.enableCrews = mainConfig.has("enableCrews") ? mainConfig.get("enableCrews").getAsBoolean() : config.enableCrews;
+			config.enableSQLPlayerLogging = mainConfig.has("enableSQLPlayerLogging") ? mainConfig.get("enableSQLPlayerLogging").getAsBoolean() : config.enableSQLPlayerLogging;
+			config.enableTXTPlayerLogging = mainConfig.has("enableTXTPlayerLogging") ? mainConfig.get("enableTXTPlayerLogging").getAsBoolean() : config.enableTXTPlayerLogging;
+			config.enableDiscordIntegration = mainConfig.has("enableDiscordIntegration") ? mainConfig.get("enableDiscordIntegration").getAsBoolean() : config.enableDiscordIntegration;
+			config.enableMagnets = mainConfig.has("enableMagnets") ? mainConfig.get("enableMagnets").getAsBoolean() : config.enableMagnets;
+		}
 
 		//Role Options
-		if(roleConfig.has("defaultRole")){
-			config.defaultRole = roleConfig.get("defaultRole").getAsString();
+		if(roleConfig != null){
+			if(roleConfig.has("defaultRole")){
+				config.defaultRole = roleConfig.get("defaultRole").getAsString();
+			}
+			config.displayMode = roleConfig.has("displayMode") ? roleConfig.get("displayMode").getAsString() : config.displayMode;
 		}
-		config.displayMode = roleConfig.get("displayMode").getAsString();
 
 		//Rollback Options
-		config.snapshotsEnabled = rollbackConfig.get("snapshotsEnabled").getAsBoolean();
-		config.backupsEnabled = rollbackConfig.get("backupsEnabled").getAsBoolean();
-		config.snapshotsImmune = rollbackConfig.get("snapshotsImmune").getAsInt();
-		config.backupsImmune = rollbackConfig.get("backupsImmune").getAsInt();
-		config.snapshotsLimit = rollbackConfig.get("snapshotsLimit").getAsInt();
-		config.backupsLimit = rollbackConfig.get("backupsLimit").getAsInt();
-		config.sizeLimit = rollbackConfig.get("sizeLimit").getAsString();
-		config.timeBetweenSnapshots = rollbackConfig.get("timeBetweenSnapshots").getAsInt();
-		config.timeBetweenBackups = rollbackConfig.get("timeBetweenBackups").getAsInt();
-		config.timeBetweenBackupPruning = rollbackConfig.get("timeBetweenBackupPruning").getAsInt();
-		config.timeBetweenSnapshotPruning = rollbackConfig.get("timeBetweenSnapshotPruning").getAsInt();
-		config.lastSnapshot = rollbackConfig.get("lastSnapshot").getAsDouble();
-		config.lastBackup = rollbackConfig.get("lastBackup").getAsDouble();
-		config.lastBackupPrune = rollbackConfig.get("lastBackupPrune").getAsDouble();
-		config.lastSnapshotPrune = rollbackConfig.get("lastSnapshotPrune").getAsDouble();
+		if(rollbackConfig != null){
+			config.snapshotsEnabled = rollbackConfig.has("snapshotsEnabled") ? rollbackConfig.get("snapshotsEnabled").getAsBoolean() : config.snapshotsEnabled;
+			config.backupsEnabled = rollbackConfig.has("backupsEnabled") ? rollbackConfig.get("backupsEnabled").getAsBoolean() : config.backupsEnabled;
+			config.snapshotsImmune = rollbackConfig.has("snapshotsImmune") ? rollbackConfig.get("snapshotsImmune").getAsInt() : config.snapshotsImmune;
+			config.backupsImmune = rollbackConfig.has("backupsImmune") ? rollbackConfig.get("backupsImmune").getAsInt() : config.backupsImmune;
+			config.snapshotsLimit = rollbackConfig.has("snapshotsLimit") ? rollbackConfig.get("snapshotsLimit").getAsInt() : config.snapshotsLimit;
+			config.backupsLimit = rollbackConfig.has("backupsLimit") ? rollbackConfig.get("backupsLimit").getAsInt() : config.backupsLimit;
+			config.sizeLimit = rollbackConfig.has("sizeLimit") ? rollbackConfig.get("sizeLimit").getAsString() : config.sizeLimit;
+			config.timeBetweenSnapshots = rollbackConfig.has("timeBetweenSnapshots") ? rollbackConfig.get("timeBetweenSnapshots").getAsInt() : config.timeBetweenSnapshots;
+			config.timeBetweenBackups = rollbackConfig.has("timeBetweenBackups") ? rollbackConfig.get("timeBetweenBackups").getAsInt() : config.timeBetweenBackups;
+			config.timeBetweenBackupPruning = rollbackConfig.has("timeBetweenBackupPruning") ? rollbackConfig.get("timeBetweenBackupPruning").getAsInt() : config.timeBetweenBackupPruning;
+			config.timeBetweenSnapshotPruning = rollbackConfig.has("timeBetweenSnapshotPruning") ? rollbackConfig.get("timeBetweenSnapshotPruning").getAsInt() : config.timeBetweenSnapshotPruning;
+			config.lastSnapshot = rollbackConfig.has("lastSnapshot") ? rollbackConfig.get("lastSnapshot").getAsDouble() : config.lastSnapshot;
+			config.lastBackup = rollbackConfig.has("lastBackup") ? rollbackConfig.get("lastBackup").getAsDouble() : config.lastBackup;
+			config.lastBackupPrune = rollbackConfig.has("lastBackupPrune") ? rollbackConfig.get("lastBackupPrune").getAsDouble() : config.lastBackupPrune;
+			config.lastSnapshotPrune = rollbackConfig.has("lastSnapshotPrune") ? rollbackConfig.get("lastSnapshotPrune").getAsDouble() : config.lastSnapshotPrune;
+		}
 
 		//Elevator Options
-		config.allowObstructions = elevatorConfig.get("allowObstructions").getAsBoolean();
-		config.elevatorCooldown = elevatorConfig.get("elevatorCooldown").getAsInt();
+		if(elevatorConfig != null){
+			config.allowObstructions = elevatorConfig.has("allowObstructions") ? elevatorConfig.get("allowObstructions").getAsBoolean() : config.allowObstructions;
+			config.elevatorCooldown = elevatorConfig.has("elevatorCooldown") ? elevatorConfig.get("elevatorCooldown").getAsInt() : config.elevatorCooldown;
+		}
 
 		//SQL Options
-		config.JDBCConnectionUrl = sqlLogConfig.get("JDBCConnectionUrl").getAsString();
+		if(sqlLogConfig != null){
+			config.JDBCConnectionUrl = sqlLogConfig.has("JDBCConnectionUrl") ? sqlLogConfig.get("JDBCConnectionUrl").getAsString() : config.JDBCConnectionUrl;
+		}
 
 		//Discord Options
-		config.token = discordIntegrationConfig.get("token").getAsString();
-		config.channelID = discordIntegrationConfig.get("channelID").getAsString();
-		config.serverPFPURL = discordIntegrationConfig.get("serverPFPURL").getAsString();
-		config.serverName = discordIntegrationConfig.get("serverName").getAsString();
+		if(discordIntegrationConfig != null){
+			config.token = discordIntegrationConfig.has("token") ? discordIntegrationConfig.get("token").getAsString() : config.token;
+			config.channelID = discordIntegrationConfig.has("channelID") ? discordIntegrationConfig.get("channelID").getAsString() : config.channelID;
+			config.serverPFPURL = discordIntegrationConfig.has("serverPFPURL") ? discordIntegrationConfig.get("serverPFPURL").getAsString() : config.serverPFPURL;
+			config.serverName = discordIntegrationConfig.has("serverName") ? discordIntegrationConfig.get("serverName").getAsString() : config.serverName;
+		}
 
 		//Warp Options
 		if(warpConfig != null){

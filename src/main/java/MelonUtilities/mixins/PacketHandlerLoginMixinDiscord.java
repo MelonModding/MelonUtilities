@@ -1,5 +1,6 @@
 package MelonUtilities.mixins;
 
+import MelonUtilities.config.Data;
 import MelonUtilities.utility.discord.DiscordChatRelay;
 import net.minecraft.core.net.packet.PacketLogin;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -20,10 +21,24 @@ public class PacketHandlerLoginMixinDiscord {
                     shift = At.Shift.BEFORE,
                     ordinal = 0
             ),
-            locals = LocalCapture.CAPTURE_FAILHARD
+            locals = LocalCapture.CAPTURE_FAILHARD,
+            require = 0
     )
-    void sendJoinMessage(PacketLogin packet1login, CallbackInfo ci, PlayerServer player) {
+    private void sendJoinMessage(PacketLogin packet1login, CallbackInfo ci, PlayerServer player) {
+        // Only process if Discord integration is enabled
+        if (!Data.MainConfig.config.enableDiscordIntegration) {
+            return;
+        }
+
+        if (player == null) {
+            return;
+        }
+
         String username = player.username;
+        if (username == null || username.isEmpty()) {
+            return;
+        }
+
         DiscordChatRelay.sendJoinLeaveMessage(username, true);
     }
 }
