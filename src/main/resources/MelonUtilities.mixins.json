@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CommandManagerMixin",
-    "SpawnCommandMixin"
+    "SpawnCommandMixin",
     "PaintBrushMixin",
     "PlayerMixinElevator"
   ],
