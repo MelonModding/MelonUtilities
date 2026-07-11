@@ -2,6 +2,7 @@ package MelonUtilities.command.commands;
 
 import MelonUtilities.command.commandlogic.CommandLogicRollback;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.ArgumentTypeInteger;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.ArgumentBuilderLiteral;
 import com.mojang.brigadier.builder.ArgumentBuilderRequired;
@@ -41,6 +42,21 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 							return CommandLogicRollback.rollbackArea(sender, x1, z1, x2, z2);
 						}
 					)
+				)
+			)
+		);
+		return builder;
+	}
+
+	public static ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> rollbackApply(ArgumentBuilder<CommandSource, ArgumentBuilderLiteral<CommandSource>> builder) {
+		builder.then(ArgumentBuilderLiteral.<CommandSource>literal("apply")
+			.then(ArgumentBuilderRequired.<CommandSource, Integer>argument("capture", ArgumentTypeInteger.integer(1))
+				.executes(context ->
+					{
+						PlayerServer sender = (PlayerServer) context.getSource().getSender(); if(sender == null){return 0;}
+						int captureNumber = ArgumentTypeInteger.getInteger(context, "capture");
+						return CommandLogicRollback.rollbackApply(sender, captureNumber);
+					}
 				)
 			)
 		);
@@ -126,6 +142,7 @@ public class CommandRollback implements CommandManager.CommandRegistry{
 
 		rollback(builder);
 		rollbackArea(builder);
+		rollbackApply(builder);
 		rollbackTakeSnapshot(builder);
 		rollbackTakeBackup(builder);
 		rollbackPruneSnapshots(builder);

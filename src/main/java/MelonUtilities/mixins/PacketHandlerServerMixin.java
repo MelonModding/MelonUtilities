@@ -4,6 +4,7 @@ import MelonUtilities.MelonUtilities;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
 import MelonUtilities.interfaces.Lockable;
+import MelonUtilities.interfaces.PlayerCustomInputFunctionInterface;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.builders.RoleBuilder;
 import MelonUtilities.utility.feedback.FeedbackHandlerServer;
@@ -49,6 +50,16 @@ public abstract class PacketHandlerServerMixin {
 
 	@Inject(at = @At(shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleMessage", cancellable = true)
 	public void handleMessage(PacketMessage packet, CallbackInfo ci, @Local String message) {
+
+		// consume the message as pending custom input (e.g. /role editing) instead of chatting it
+		PlayerCustomInputFunctionInterface inputPlayer = (PlayerCustomInputFunctionInterface) this.playerEntity;
+		if (inputPlayer.melonutilities$getCustomInputFunction() != null) {
+			PlayerCustomInputFunctionInterface.CustomInput customInput = inputPlayer.melonutilities$getCustomInputFunction();
+			inputPlayer.melonutilities$setCustomInputFunction(null);
+			customInput.apply(message);
+			ci.cancel();
+			return;
+		}
 
 		String defaultRoleDisplay;
 		String defaultRoleUsername;

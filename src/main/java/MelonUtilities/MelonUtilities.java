@@ -3,7 +3,6 @@ package MelonUtilities;
 import MelonUtilities.command.commands.*;
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
-import MelonUtilities.listeners.ChatInputListener;
 import MelonUtilities.utility.MUtil;
 import MelonUtilities.utility.discord.DiscordChatRelay;
 import MelonUtilities.utility.discord.DiscordClient;
@@ -17,7 +16,6 @@ import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.util.helper.DyeColor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.useless.serverlibe.ServerLibe;
 import turniplabs.halplibe.helper.RecipeBuilder;
 import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
@@ -63,18 +61,11 @@ public class MelonUtilities implements ModInitializer, RecipeEntrypoint, GameSta
 		LOGGER.info("Utility Data Loaded!");
 	}
 
-	public void registerListeners(){
-		LOGGER.info("Registering ServerLibe Listeners...");
-		ServerLibe.registerListener(new ChatInputListener());
-		LOGGER.info("ServerLibe Listeners Registered!");
-	}
-
 	@Override
 	public void onInitialize() {
 		LOGGER.info("MelonUtilities initializing!");
 		Data.MainConfig.reload();
 		loadData();
-		registerListeners();
 		new Thread(() -> {
 			if (DiscordClient.init()) {
 				DiscordChatRelay.sendServerStartMessage();
