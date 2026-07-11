@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = NetEntryItem.class, remap = false)
 public class NetEntryItemMixin {
-	@Inject(method = "getPacketDelay", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "getMovementPacketDelay", at = @At("HEAD"), cancellable = true)
 	void getPacketDelay(CallbackInfoReturnable<Integer> cir){
 		if (Data.MainConfig.config.enableMagnets) {
 			cir.setReturnValue(6);

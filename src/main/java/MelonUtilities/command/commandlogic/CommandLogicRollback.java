@@ -60,7 +60,7 @@ public class CommandLogicRollback {
 					snapshotIcon.setCustomName("Snapshot: [" + sdf.format(capture.getKey()) + "]" + " (" + ZoneId.systemDefault() + ")");
 					snapshotIcon.setCustomColor((byte) TextFormatting.LIGHT_BLUE.id);
 					return new ServerSlotButton(snapshotIcon, inventory, finalI, () -> {
-						for(Entity entity : sender.world.loadedEntityList){
+						for(Entity entity : sender.world.getLoadedEntityList()){
 							if(entity.chunkCoordX == x1 && entity.chunkCoordZ == z1){
 								if(!(entity instanceof Player)){
 									entity.remove();
@@ -86,7 +86,7 @@ public class CommandLogicRollback {
 					backupIcon.setCustomName("Backup: [" + sdf.format(capture.getKey()) + "]" + " (" + ZoneId.systemDefault() + ")");
 					backupIcon.setCustomColor((byte) TextFormatting.CYAN.id);
 					return new ServerSlotButton(backupIcon, inventory, finalI, () -> {
-						for(Entity entity : sender.world.loadedEntityList){
+						for(Entity entity : sender.world.getLoadedEntityList()){
 							if(entity.chunkCoordX == x1 && entity.chunkCoordZ == z1){
 								if(!(entity instanceof Player)){
 									entity.remove();
@@ -96,7 +96,7 @@ public class CommandLogicRollback {
 						File backupDir = capture.getValue().getParentFile().getParentFile().getParentFile();
 						Chunk chunk1 = sender.world.getChunkFromChunkCoords(x1, z1);
 						rollbackChunkFromBackup(chunk1, backupDir);
-						MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunk1.xPosition * 16, 0, chunk1.zPosition * 16, 16, 256, 16, sender.world), sender.world.dimension.id);
+						MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(new PacketBlockRegionUpdate(chunk1.pos.x * 16, 0, chunk1.pos.z * 16, 16, 256, 16, sender.world), sender.world.dimension.id);
 						FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "%s Rolled Back to %s", new FeedbackArg(x1, z1), new FeedbackArg(sdf.format(capture.getKey())));
 						sender.usePersonalCraftingInventory();
 					});

@@ -3,7 +3,7 @@ package MelonUtilities.listeners;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
-import net.minecraft.core.player.gamemode.Gamemode;
+import net.minecraft.core.player.gamemode.Gamemodes;
 import net.minecraft.server.entity.player.PlayerServer;
 import org.useless.serverlibe.api.Listener;
 import org.useless.serverlibe.api.annotations.EventListener;
@@ -24,12 +24,12 @@ public class GuiTestListener implements Listener {
 					.setContainerSlot(0, (inventory -> {
 						ItemStack survivalIcon = Items.TOOL_AXE_STONE.getDefaultStack();
 						survivalIcon.setCustomName("Survival Mode");
-						return new ServerSlotButton(survivalIcon, inventory, 0, () -> useEvent.player.setGamemode(Gamemode.survival));
+						return new ServerSlotButton(survivalIcon, inventory, 0, () -> useEvent.player.setGamemode(Gamemodes.SURVIVAL));
 					}))
 					.setContainerSlot(1, (inventory -> {
 						ItemStack creativeIcon = Blocks.BEDROCK.getDefaultStack();
 						creativeIcon.setCustomName("Creative Mode");
-						return new ServerSlotButton(creativeIcon, inventory, 1, () -> useEvent.player.setGamemode(Gamemode.creative));
+						return new ServerSlotButton(creativeIcon, inventory, 1, () -> useEvent.player.setGamemode(Gamemodes.CREATIVE));
 					}))
 					.setContainerSlot(8, (i) -> {
 						ItemStack nextMenuIcon = Items.BOOK.getDefaultStack();

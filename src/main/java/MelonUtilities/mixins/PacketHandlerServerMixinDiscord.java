@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PacketHandlerServerMixinDiscord {
     @Shadow private PlayerServer playerEntity;
 
-    @Redirect(method = "handleChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"))
+    @Redirect(method = "handleMessage", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"))
     String redirectChatHandle(String s) {
         String message = ChatEmotes.process(s);
 

@@ -5,6 +5,7 @@ import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Config;
 import MelonUtilities.utility.MUtil;
 import com.mojang.nbt.NbtIo;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import com.mojang.nbt.tags.CompoundTag;
 import com.mojang.nbt.tags.ListTag;
 import com.mojang.nbt.tags.Tag;
@@ -61,7 +62,7 @@ public class RollbackManager {
 	}
 
 	public static void rollbackChunkFromBackup(Chunk chunk, File backupDir) {
-		DataInputStream regionStream = RegionFileCache.getChunkInputStream(new File(backupDir, String.valueOf(chunk.world.dimension.id)), chunk.xPosition, chunk.zPosition);
+		DataInputStream regionStream = RegionFileCache.getChunkInputStream(new File(backupDir, String.valueOf(chunk.world.dimension.id)), chunk.pos.x, chunk.pos.z);
 
 		if (regionStream == null) {return;}
 
@@ -80,7 +81,7 @@ public class RollbackManager {
 	public static void saveChunk(World world, Chunk chunk) throws IOException {
 		world.checkSessionLock();
 
-		File chunkDir = new File(snapshotsDir, chunk.world.dimension.id + "/c[x." + chunk.xPosition + "-z." + chunk.zPosition + "]");
+		File chunkDir = new File(snapshotsDir, chunk.world.dimension.id + "/c[x." + chunk.pos.x + "-z." + chunk.pos.z + "]");
 		chunkDir.mkdirs();
 		Date resultdate = new Date(System.currentTimeMillis());
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM-dd-yyyy_HH.mm.ss");
@@ -112,13 +113,13 @@ public class RollbackManager {
 	public static ChunkReader getChunkReaderByVersion(World world, CompoundTag tag, int version) {
 		switch (version) {
 			case 1: {
-				return new ChunkReaderVersion1(world, tag);
+				return new ChunkReaderVersion1(tag);
 			}
 			case 2: {
-				return new ChunkReaderVersion2(world, tag);
+				return new ChunkReaderVersion2(tag);
 			}
 		}
-		return new ChunkReaderLegacy(world, tag);
+		return new ChunkReaderLegacy(tag);
 	}
 
 	public static void rollbackChunk(Chunk chunk, CompoundTag tag){
@@ -131,13 +132,13 @@ public class RollbackManager {
 		chunk.isTerrainPopulated = reader.getIsTerrainPopulated();
 		chunk.temperature = reader.getTemperatureMap();
 		chunk.humidity = reader.getHumidityMap();
-		Map<Integer, String> biomeRegistry = reader.getBiomeRegistry();
+		Int2ObjectMap<String> biomeRegistry = reader.getBiomeRegistry();
 		for (int i = 0; i < 16; ++i) {
 			ChunkLoaderLegacy.loadChunkSectionFromCompound(chunk.getSection(i), reader, biomeRegistry);
 		}
 		if (chunk.heightMap == null) {
 			chunk.heightMap = new short[256];
-			chunk.recalcHeightmap();
+			chunk.recalcHeightmapAndLightmap();
 		}
 		if (chunk.temperature == null || chunk.temperature.length == 0) {
 			chunk.temperature = new double[256];
@@ -151,7 +152,7 @@ public class RollbackManager {
 			for (Tag<?> entityTagBase : entityListTag) {
 				if (!(entityTagBase instanceof CompoundTag)) continue;
 				CompoundTag entityTag = (CompoundTag)entityTagBase;
-				Entity entity = EntityDispatcher.createEntityFromNBT(entityTag, chunk.world);
+				Entity entity = EntityDispatcher.getInstance().createEntityFromNBT(entityTag, chunk.world);
 				chunk.hasEntities = true;
 				if (entity == null) continue;
 				chunk.addEntity(entity);
@@ -255,7 +256,7 @@ public class RollbackManager {
 						try {
 							saveChunk(chunk.world, chunk);
 						} catch (IOException e) {
-							MelonUtilities.LOGGER.error("Chunk [x:{}, z:{}] Failed to Save During Snapshot!", chunk.xPosition, chunk.zPosition);
+							MelonUtilities.LOGGER.error("Chunk [x:{}, z:{}] Failed to Save During Snapshot!", chunk.pos.x, chunk.pos.z);
 						}
 
 						completedFiles++;
@@ -491,7 +492,7 @@ public class RollbackManager {
 			Map.Entry<Long, File> closestCapture = getClosestCapture(primaryCapture, captures);
 
 			if (closestCapture.getValue().getName().contains(".dat")) {
-				for (Entity entity : sender.world.loadedEntityList) {
+				for (Entity entity : sender.world.getLoadedEntityList()) {
 					if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
 						if (!(entity instanceof Player)) {
 							entity.remove();
@@ -509,7 +510,7 @@ public class RollbackManager {
 			}
 
 			if (closestCapture.getValue().getName().contains(".mcr")) {
-				for (Entity entity : sender.world.loadedEntityList) {
+				for (Entity entity : sender.world.getLoadedEntityList()) {
 					if (entity.chunkCoordX == chunkCoords[0] && entity.chunkCoordZ == chunkCoords[1]) {
 						if (!(entity instanceof Player)) {
 							entity.remove();

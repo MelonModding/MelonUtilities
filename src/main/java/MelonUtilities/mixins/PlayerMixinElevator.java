@@ -6,8 +6,9 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.util.phys.AABB;
 import net.minecraft.core.world.World;
+import org.joml.primitives.AABBd;
+import org.joml.primitives.AABBdc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,14 +47,16 @@ public abstract class PlayerMixinElevator extends Mob {
 		double dy = this.y-py;
 		py = this.y;
 
-		List<AABB> cubes = this.world.getCubes(this, this.bb.getInsetBoundingBox(this.xd, -1.0, 0.0));
+		List<AABBdc> cubes = this.world.getCubes(this, new AABBd(
+			this.bb.minX + this.xd, this.bb.minY - 1.0, this.bb.minZ,
+			this.bb.maxX - this.xd, this.bb.maxY + 1.0, this.bb.maxZ));
 		if (!cubes.isEmpty()){
-			AABB cube = cubes.get(0);
+			AABBdc cube = cubes.get(0);
 			if (cube != null){
 
-				int blockX = (int) cube.minX;
-				int blockY = (int) cube.minY;
-				int blockZ = (int) cube.minZ;
+				int blockX = (int) cube.minX();
+				int blockY = (int) cube.minY();
+				int blockZ = (int) cube.minZ();
 				Block<?> blockUnderFeet = world.getBlock(blockX, blockY, blockZ);
 
 				if(blockUnderFeet == Blocks.BLOCK_STEEL) {

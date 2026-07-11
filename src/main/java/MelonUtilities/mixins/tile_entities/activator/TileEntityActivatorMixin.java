@@ -14,6 +14,8 @@ import net.minecraft.core.net.packet.PacketSetHeldObject;
 import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.world.World;
 import net.minecraft.server.entity.player.PlayerServer;
+import net.minecraft.core.world.ICarriable;
+import net.minecraft.core.world.pos.TilePosc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -37,7 +39,7 @@ public class TileEntityActivatorMixin implements Lockable {
 	@Unique
 	private final List<UUID> trustedPlayers = new ArrayList<>();
 
-	@Inject(at = @At("TAIL"), method = "writeToNBT")
+	@Inject(at = @At("TAIL"), method = "writeAdditionalData")
 	public void writeToNBTInject(CompoundTag nbttagcompound, CallbackInfo ci){
 		nbttagcompound.putBoolean("isLocked", isLocked);
 		UUIDHelper.writeToTag(nbttagcompound, lockOwner, "lockOwner");
@@ -52,7 +54,7 @@ public class TileEntityActivatorMixin implements Lockable {
 		nbttagcompound.putList("trustedPlayers", trustedPlayers);
 	}
 
-	@Inject(at = @At("TAIL"), method = "readFromNBT")
+	@Inject(at = @At("TAIL"), method = "readAdditionalData")
 	public void readFromNBTInject(CompoundTag nbttagcompound, CallbackInfo ci){
 		isLocked = nbttagcompound.getBooleanOrDefault("isLocked", false);
 		lockOwner = UUIDHelper.readFromTag(nbttagcompound, "lockOwner");
@@ -68,12 +70,12 @@ public class TileEntityActivatorMixin implements Lockable {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "canBeCarried", cancellable = true)
-	public void canBeCarriedInject(World world, Entity potentialHolder, CallbackInfoReturnable<Boolean> cir){
+	@Inject(at = @At("HEAD"), method = "pickup", cancellable = true)
+	public void canBeCarriedInject(World world, Entity potentialHolder, TilePosc pos, CallbackInfoReturnable<ICarriable> cir){
 		if(potentialHolder instanceof PlayerServer && LockManager.determineAuthStatus(this, (PlayerServer) potentialHolder) <= LockManager.COMMUNITY){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) potentialHolder, "Failed to Pickup Container! (Not Authorized)");
 			((PlayerServer) potentialHolder).playerNetServerHandler.sendPacket(new PacketSetHeldObject(potentialHolder.id, ((PlayerServer) potentialHolder).getHeldObject()));
-			cir.setReturnValue(false);
+			cir.setReturnValue(null);
 			return;
 		}
 	}

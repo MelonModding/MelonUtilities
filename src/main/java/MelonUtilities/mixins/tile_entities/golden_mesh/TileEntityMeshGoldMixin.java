@@ -34,7 +34,7 @@ public class TileEntityMeshGoldMixin implements Lockable {
 	@Unique
 	private final List<UUID> trustedPlayers = new ArrayList<>();
 
-@Inject(at = @At("TAIL"), method = "writeToNBT")
+@Inject(at = @At("TAIL"), method = "writeAdditionalData")
 	public void writeToNBTInject(CompoundTag nbttagcompound, CallbackInfo ci){
 		nbttagcompound.putBoolean("isLocked", isLocked);
 		UUIDHelper.writeToTag(nbttagcompound, lockOwner, "lockOwner");
@@ -49,7 +49,7 @@ public class TileEntityMeshGoldMixin implements Lockable {
 		nbttagcompound.putList("trustedPlayers", trustedPlayers);
 	}
 
-	@Inject(at = @At("TAIL"), method = "readFromNBT")
+	@Inject(at = @At("TAIL"), method = "readAdditionalData")
 	public void readFromNBTInject(CompoundTag nbttagcompound, CallbackInfo ci){
 		isLocked = nbttagcompound.getBooleanOrDefault("isLocked", false);
 		lockOwner = UUIDHelper.readFromTag(nbttagcompound, "lockOwner");

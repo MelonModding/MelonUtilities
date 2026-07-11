@@ -3,7 +3,7 @@ package MelonUtilities.mixins;
 import MelonUtilities.config.Data;
 import MelonUtilities.interfaces.PlayerMagnetInterface;
 import net.minecraft.core.entity.player.Player;
-import net.minecraft.core.item.IArmorItem;
+import net.minecraft.core.enums.HumanArmorShape;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.item.Items;
 import net.minecraft.core.player.inventory.container.ContainerInventory;
@@ -29,7 +29,7 @@ public abstract class PlayerMixinMagnet implements PlayerMagnetInterface {
 	@Inject(method = "tick", at = @At("TAIL"))
 	void tick(CallbackInfo ci){
 		if (Data.MainConfig.config.enableMagnets) {
-			ItemStack headItem = this.inventory.armorInventory[IArmorItem.PIECE_HEAD];
+			ItemStack headItem = this.inventory.armorItemInSlot(HumanArmorShape.HEAD);
 			ItemStack heldItem = this.getHeldItem();
 
 			hasMagnet =

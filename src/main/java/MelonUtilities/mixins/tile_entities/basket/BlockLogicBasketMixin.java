@@ -12,6 +12,7 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import net.minecraft.server.entity.player.PlayerServer;
+import net.minecraft.core.world.pos.TilePosc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,10 +33,10 @@ public abstract class BlockLogicBasketMixin extends BlockLogic {
 		return super.getPistonPushReaction(world, x, y, z);
 	}
 
-	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
-	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
+	@Inject(at = @At("HEAD"), method = "onInteracted", cancellable = true)
+	public void onBlockRightClickedInject(World world, TilePosc pos, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
+		Lockable lockable = (Lockable) world.getTileEntity(pos);
 		if(player instanceof PlayerServer && LockManager.determineAuthStatus(lockable, (PlayerServer) player) <= LockManager.UNTRUSTED && !player.isSneaking()){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Basket is Locked! (Use /lock info for more information)");
 			cir.setReturnValue(false);

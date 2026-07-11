@@ -239,7 +239,6 @@ public class MUtil {
     }
 
     public static void teleport(double x, double y, double z, @NotNull Player player){
-        assert player.world != null;
         player.world.playSoundAtEntity(null, player, "mob.ghast.fireball", 1f, 2f);
         if (MelonUtilities.isServer){
             ((PlayerServer) player).playerNetServerHandler.teleport(x, y + 0.2, z);
@@ -293,7 +292,7 @@ public class MUtil {
 		float f1 = sender.xRotO + (sender.xRot - sender.xRotO) * f;
 		float f2 = sender.yRotO + (sender.yRot - sender.yRotO) * f;
 		double posX = sender.xo + (sender.x - sender.xo) * (double) f;
-		float yOff = sender instanceof PlayerServer ? sender.getHeightOffset() : 0.0f;
+		float yOff = sender instanceof PlayerServer ? sender.heightOffset : 0.0f;
 		double posY = sender.yo + (sender.y - sender.yo) + (double) yOff;
 		double posZ = sender.zo + (sender.z - sender.zo) * (double) f;
 		Vec3 vec3 = Vec3.getTempVec3(posX, posY, posZ);
@@ -306,7 +305,7 @@ public class MUtil {
 		float f9 = f3 * f5;
 		double reachDistance = sender.getGamemode().getBlockReachDistance();
 		Vec3 vec3_1 = vec3.add((double) f7 * reachDistance, (double) f8 * reachDistance, (double) f9 * reachDistance);
-		return sender.world.checkBlockCollisionBetweenPoints(vec3, vec3_1, false);
+		return sender.world.checkBlockCollisionBetweenPoints(vec3.asJomlVec(), vec3_1.asJomlVec(), false);
 	}
 
 	public static File getChunkFileFromCoords(World world, int x, int z){
@@ -403,12 +402,12 @@ public class MUtil {
 
 
 	public static TileEntityChest getOtherChest(World world, TileEntityChest chest){
-		int meta = world.getBlockMetadata(chest.x, chest.y, chest.z);
+		int meta = world.getBlockMetadata(chest.tilePos.x, chest.tilePos.y, chest.tilePos.z);
 		BlockLogicChest.Type type = BlockLogicChest.getTypeFromMeta(meta);
 		if (type != BlockLogicChest.Type.SINGLE) {
 			Direction direction = BlockLogicChest.getDirectionFromMeta(meta);
-			int otherChestX = chest.x;
-			int otherChestZ = chest.z;
+			int otherChestX = chest.tilePos.x;
+			int otherChestZ = chest.tilePos.z;
 			if (direction == Direction.NORTH) {
 				if (type == BlockLogicChest.Type.LEFT) {
 					--otherChestX;
@@ -441,7 +440,7 @@ public class MUtil {
 					--otherChestZ;
 				}
 			}
-			return (TileEntityChest) world.getTileEntity(otherChestX, chest.y, otherChestZ);
+			return (TileEntityChest) world.getTileEntity(otherChestX, chest.tilePos.y, otherChestZ);
 		}
 		//return's null if chest is a single chest
 		return  null;

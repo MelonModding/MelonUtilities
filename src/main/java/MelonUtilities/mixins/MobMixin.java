@@ -7,7 +7,6 @@ import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.util.helper.MathHelper;
-import net.minecraft.core.util.phys.AABB;
 import net.minecraft.core.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = Mob.class, remap = false)
-public abstract class MobMixin {
+public abstract class MobMixin extends Entity {
     @Shadow public abstract boolean sendsDeathMessage(Entity entity);
 
     @Shadow public abstract String getDeathMessageKey(Entity entity);
@@ -30,13 +29,9 @@ public abstract class MobMixin {
 
     @Shadow public abstract int getMaxHealth();
 
-	@Shadow public World world;
-
-	@Shadow public double x;
-
-	@Shadow public final AABB bb = AABB.getPermanentBB(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
-
-	@Shadow public double z;
+    public MobMixin(World world) {
+        super(world);
+    }
 
 
 

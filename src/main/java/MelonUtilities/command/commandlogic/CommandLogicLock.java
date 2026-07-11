@@ -20,12 +20,12 @@ public class CommandLogicLock {
 
 	public static int lock(PlayerServer sender){
 		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
-		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
+		if (!(rayCastResult instanceof HitResult.Tile)) {
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, sender, "Failed to Lock Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(((HitResult.Tile) rayCastResult).tilePos);
 		if(container != null){
 			if (container instanceof Lockable) {
 				Lockable lockable = ((Lockable) container);
@@ -116,12 +116,12 @@ public class CommandLogicLock {
 		UUID targetUUID = profile.getLeft();
 
 		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
-		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
+		if (!(rayCastResult instanceof HitResult.Tile)) {
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, sender, "Failed to Trust %s to Container! (Not Looking at Container)", new FeedbackArg(targetUsernameOrDisplayName));
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(((HitResult.Tile) rayCastResult).tilePos);
 
 		if(container != null) {
 			if (container instanceof Lockable) {
@@ -209,12 +209,12 @@ public class CommandLogicLock {
 
 	public static int lockTrustCommunity(PlayerServer sender) {
 		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
-		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
+		if (!(rayCastResult instanceof HitResult.Tile)) {
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, sender, "Failed to Trust Community to Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(((HitResult.Tile) rayCastResult).tilePos);
 
 		if(container != null) {
 			if (container instanceof Lockable) {
@@ -284,12 +284,12 @@ public class CommandLogicLock {
 		}
 
 		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
-		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
+		if (!(rayCastResult instanceof HitResult.Tile)) {
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, sender, "Failed to Untrust %s from Container! (Not Looking at Container)", new FeedbackArg(targetDisplayName));
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(((HitResult.Tile) rayCastResult).tilePos);
 
 		if(container != null) {
 			if (container instanceof Lockable) {
@@ -373,12 +373,12 @@ public class CommandLogicLock {
 
 	public static int lockUntrustCommunity(PlayerServer sender){
 		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
-		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
+		if (!(rayCastResult instanceof HitResult.Tile)) {
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, sender, "Failed to Untrust Community from Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(((HitResult.Tile) rayCastResult).tilePos);
 
 		if(container != null) {
 			if (container instanceof Lockable) {
@@ -449,12 +449,12 @@ public class CommandLogicLock {
 
 	public static int lockInfo(PlayerServer sender){
 		HitResult rayCastResult = MUtil.rayCastFromPlayer(sender);
-		if (rayCastResult == null || rayCastResult.hitType != HitResult.HitType.TILE) {
+		if (!(rayCastResult instanceof HitResult.Tile)) {
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, sender, "Failed to get info from Container! (Not Looking at Container)");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		TileEntity container = sender.world.getTileEntity(rayCastResult.x, rayCastResult.y, rayCastResult.z);
+		TileEntity container = sender.world.getTileEntity(((HitResult.Tile) rayCastResult).tilePos);
 
 		if(container != null) {
 			if (container instanceof Lockable) {

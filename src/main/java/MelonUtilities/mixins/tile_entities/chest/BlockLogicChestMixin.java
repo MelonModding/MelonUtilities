@@ -16,6 +16,7 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import net.minecraft.server.entity.player.PlayerServer;
+import net.minecraft.core.world.pos.TilePosc;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,10 +38,10 @@ public abstract class BlockLogicChestMixin extends BlockLogic {
 		return super.getPistonPushReaction(world, x, y, z);
 	}
 
-	@Inject(at = @At("HEAD"), method = "onBlockRightClicked", cancellable = true)
-	public void onBlockRightClickedInject(World world, int x, int y, int z, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
+	@Inject(at = @At("HEAD"), method = "onInteracted", cancellable = true)
+	public void onBlockRightClickedInject(World world, TilePosc pos, Player player, Side side, double xPlaced, double yPlaced, CallbackInfoReturnable<Boolean> cir) {
 
-		Lockable lockable = (Lockable) world.getTileEntity(x, y, z);
+		Lockable lockable = (Lockable) world.getTileEntity(pos);
 		if(player instanceof PlayerServer && LockManager.determineAuthStatus(lockable, (PlayerServer) player) <= LockManager.UNTRUSTED && !player.isSneaking()){
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, (PlayerServer) player, "Chest is Locked! (Use /lock info for more information)");
 			cir.setReturnValue(false);
@@ -51,10 +52,10 @@ public abstract class BlockLogicChestMixin extends BlockLogic {
 		}
 	}
 
-	@Inject(at = @At("TAIL"), method = "onBlockPlacedByMob", cancellable = true)
-	public void onBlockPlacedInject(World world, int x, int y, int z, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") BlockLogicChest.Type type) {
-		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getTileEntity(x, y, z));
-		TileEntityChest placedChest = (TileEntityChest) world.getTileEntity(x, y, z);
+	@Inject(at = @At("TAIL"), method = "onPlacedByMob", cancellable = true)
+	public void onBlockPlacedInject(World world, TilePosc pos, Side placeSide, Mob mob, double xPlaced, double yPlaced, CallbackInfo ci, @Local(name = "type") BlockLogicChest.Type type) {
+		TileEntityChest existingChest = MUtil.getOtherChest(world, (TileEntityChest) world.getTileEntity(pos));
+		TileEntityChest placedChest = (TileEntityChest) world.getTileEntity(pos);
 
 		Lockable existingLockable = (Lockable) existingChest;
 		Lockable placedLockable = (Lockable) placedChest;
