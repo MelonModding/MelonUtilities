@@ -9,6 +9,7 @@ import MelonUtilities.utility.feedback.FeedbackType;
 import com.mojang.brigadier.Command;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.server.entity.player.PlayerServer;
+import org.jetbrains.annotations.NotNull;
 
 public class CommandLogicHome {
 	public static int homeTP(PlayerServer sender, Home targetHome){
@@ -17,7 +18,7 @@ public class CommandLogicHome {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int homeList(PlayerServer sender){
+	public static int homeList(@NotNull PlayerServer sender){
 		if (Data.Users.userDataHashMap.get(sender.uuid).homeData.isEmpty()) {
 			sender.sendMessage(TextFormatting.GRAY + "< " + TextFormatting.LIGHT_GRAY + "Homes: " + TextFormatting.GRAY + " >");
 			sender.sendMessage(TextFormatting.GRAY + "  -No Homes Created-");
@@ -31,21 +32,21 @@ public class CommandLogicHome {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int homeDelete(PlayerServer sender, Home targetHome){
+	public static int homeDelete(@NotNull PlayerServer sender, Home targetHome){
 		Data.Users.getOrCreate(sender.uuid).homeData.remove(targetHome);
 		Data.Users.save(sender.uuid);
 		FeedbackHandlerServer.sendFeedback(FeedbackType.destructive, sender, "Deleted Home %s", new FeedbackArg(targetHome));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int homeCreate(PlayerServer sender, String name){
+	public static int homeCreate(@NotNull PlayerServer sender, String name){
 		Data.Users.getOrCreate(sender.uuid).homeData.add(new Home(name, sender.x, sender.y, sender.z, sender.dimension));
 		Data.Users.save(sender.uuid);
 		FeedbackHandlerServer.sendFeedback(FeedbackType.success, sender, "Created Home %s", new FeedbackArg(name));
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int homeRename(PlayerServer sender, Home targetHome, String name){
+	public static int homeRename(@NotNull PlayerServer sender, Home targetHome, String name){
 		Data.Users.getOrCreate(sender.uuid).homeData.remove(targetHome);
 		targetHome.name = name;
 		Data.Users.getOrCreate(sender.uuid).homeData.add(targetHome);

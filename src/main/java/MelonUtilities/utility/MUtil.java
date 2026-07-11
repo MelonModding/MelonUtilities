@@ -292,7 +292,7 @@ public class MUtil {
 		float f1 = sender.xRotO + (sender.xRot - sender.xRotO) * f;
 		float f2 = sender.yRotO + (sender.yRot - sender.yRotO) * f;
 		double posX = sender.xo + (sender.x - sender.xo) * (double) f;
-		float yOff = sender instanceof PlayerServer ? sender.heightOffset : 0.0f;
+		float yOff = sender instanceof PlayerServer ? sender.getHeadHeight() : 0.0f;
 		double posY = sender.yo + (sender.y - sender.yo) + (double) yOff;
 		double posZ = sender.zo + (sender.z - sender.zo) * (double) f;
 		Vec3 vec3 = Vec3.getTempVec3(posX, posY, posZ);

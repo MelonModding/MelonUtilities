@@ -13,6 +13,7 @@ import net.minecraft.core.util.helper.UUIDHelper;
 import net.minecraft.core.util.phys.HitResult;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -73,7 +74,7 @@ public class CommandLogicLock {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lockOnBlockPlaced(PlayerServer sender){
+	public static int lockOnBlockPlaced(@NotNull PlayerServer sender){
 		UUID senderUUID = sender.uuid;
 
 		if(Data.Users.getOrCreate(senderUUID).lockOnBlockPlaced){
@@ -88,7 +89,7 @@ public class CommandLogicLock {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int lockOnBlockPunched(PlayerServer sender){
+	public static int lockOnBlockPunched(@NotNull PlayerServer sender){
 		UUID senderUUID = sender.uuid;
 
 		if(Data.Users.getOrCreate(senderUUID).lockOnBlockPunched){

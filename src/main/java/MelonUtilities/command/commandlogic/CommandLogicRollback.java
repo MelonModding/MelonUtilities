@@ -16,6 +16,7 @@ import net.minecraft.core.net.packet.PacketBlockRegionUpdate;
 import net.minecraft.core.world.chunk.Chunk;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,11 +52,11 @@ public class CommandLogicRollback {
 
 	private static final Map<UUID, PendingRollback> pendingRollbacks = new HashMap<>();
 
-	private static SimpleDateFormat captureDateFormat() {
+	private static @NotNull SimpleDateFormat captureDateFormat() {
 		return new SimpleDateFormat("MMM/dd/yyyy HH:mm:ss");
 	}
 
-	private static void listCaptures(PlayerServer sender, PendingRollback pending) {
+	private static void listCaptures(@NotNull PlayerServer sender, PendingRollback pending) {
 		pendingRollbacks.put(sender.uuid, pending);
 		SimpleDateFormat sdf = captureDateFormat();
 
@@ -76,7 +77,7 @@ public class CommandLogicRollback {
 		sender.sendMessage(TextFormatting.GRAY + "Use " + TextFormatting.ORANGE + "/rollback apply <number>" + TextFormatting.GRAY + " to roll back");
 	}
 
-	public static int rollback(PlayerServer sender) {
+	public static int rollback(@NotNull PlayerServer sender) {
 		int x1 = sender.chunkCoordX;
 		int z1 = sender.chunkCoordZ;
 
@@ -98,7 +99,7 @@ public class CommandLogicRollback {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackArea(PlayerServer sender, int x1, int z1, int x2, int z2) {
+	public static int rollbackArea(@NotNull PlayerServer sender, int x1, int z1, int x2, int z2) {
 		File chunkDir = new File("./rollbackdata/snapshots/" + sender.world.dimension.id + "/c[x." + x1 + "-z." + z1 + "]");
 		chunkDir.mkdirs();
 
@@ -129,7 +130,7 @@ public class CommandLogicRollback {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	public static int rollbackApply(PlayerServer sender, int captureNumber) {
+	public static int rollbackApply(@NotNull PlayerServer sender, int captureNumber) {
 		PendingRollback pending = pendingRollbacks.get(sender.uuid);
 		if (pending == null) {
 			FeedbackHandlerServer.sendFeedback(FeedbackType.error, sender, "No Capture List! (Use /rollback or /rollback area first)");
