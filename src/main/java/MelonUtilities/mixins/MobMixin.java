@@ -1,18 +1,28 @@
 package MelonUtilities.mixins;
 
 import MelonUtilities.utility.discord.DiscordChatRelay;
+import net.minecraft.core.block.Blocks;
 import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.Mob;
 import net.minecraft.core.entity.player.Player;
+import net.minecraft.core.lang.I18n;
+import net.minecraft.core.util.helper.MathHelper;
+import net.minecraft.core.util.phys.AABB;
+import net.minecraft.core.world.World;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = Mob.class, remap = false)
 public abstract class MobMixin {
-    @Shadow public abstract String getDeathMessage(Entity entity);
+    @Shadow public abstract boolean sendsDeathMessage(Entity entity);
+
+    @Shadow public abstract String getDeathMessageKey(Entity entity);
 
     @Shadow public boolean isMultiplayerEntity;
 
@@ -20,14 +30,44 @@ public abstract class MobMixin {
 
     @Shadow public abstract int getMaxHealth();
 
+	@Shadow public World world;
+
+	@Shadow public double x;
+
+	@Shadow public final AABB bb = AABB.getPermanentBB(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D);
+
+	@Shadow public double z;
+
+
+
     @Inject(
             method = "onDeath",
             at = @At("RETURN")
     )
     void processDeathMessage(Entity entity, CallbackInfo ci) {
-        if((Mob)((Object)this) instanceof Player) {
-            String message = getDeathMessage(entity).replaceAll("§.", "");
+        if((Mob)((Object)this) instanceof Player && !world.isClientSide && sendsDeathMessage(entity)) {
+            String victimName = Entity.getNameFromEntity((Mob)(Object)this, true);
+            String[] args = entity == null
+                ? new String[]{victimName}
+                : new String[]{victimName, Entity.getNameFromEntity(entity, true)};
+            String message = I18n.getInstance()
+                .translateKeyAndFormat(getDeathMessageKey(entity), (Object[]) args)
+                .replaceAll("§.", "");
             DiscordChatRelay.sendDeathMessage(message);
         }
     }
+
+	@Inject(
+		method = "canSpawnHere",
+		at = @At("RETURN")
+	)
+	void preventBedrockSpawning(CallbackInfoReturnable<Boolean> cir){
+		int blockX = MathHelper.floor(x);
+		int blockY = MathHelper.floor(bb.minY);
+		int blockZ = MathHelper.floor(z);
+		if(world.getBlock(blockX, blockY, blockZ).id() == Blocks.BEDROCK.id()){
+			cir.setReturnValue(false);
+			return;
+		}
+	}
 }

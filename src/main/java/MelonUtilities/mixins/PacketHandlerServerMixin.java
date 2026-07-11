@@ -13,7 +13,7 @@ import net.minecraft.core.block.entity.*;
 import net.minecraft.core.net.command.TextFormatting;
 import net.minecraft.core.net.packet.Packet;
 import net.minecraft.core.net.packet.PacketBlockUpdate;
-import net.minecraft.core.net.packet.PacketChat;
+import net.minecraft.core.net.packet.PacketMessage;
 import net.minecraft.core.net.packet.PacketPlayerAction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -47,8 +47,8 @@ public abstract class PacketHandlerServerMixin {
 	@Shadow
 	public static Logger LOGGER;
 
-	@Inject(at = @At(shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleChat", cancellable = true)
-	public void handleChat(PacketChat packet, CallbackInfo ci, @Local String message) {
+	@Inject(at = @At(shift = At.Shift.AFTER, value = "INVOKE", target = "Lnet/minecraft/core/net/ChatEmotes;process(Ljava/lang/String;)Ljava/lang/String;"), method = "handleMessage", cancellable = true)
+	public void handleMessage(PacketMessage packet, CallbackInfo ci, @Local String message) {
 
 		String defaultRoleDisplay;
 		String defaultRoleUsername;
@@ -187,7 +187,7 @@ public abstract class PacketHandlerServerMixin {
 
 	@Inject(
 		at = @At("HEAD"),
-		method = "handleBlockDig",
+		method = "handlePlayerAction",
 		cancellable = true)
 	private void handleBlockDigInject(PacketPlayerAction packet, CallbackInfo ci){
 		PlayerServer player = this.playerEntity;

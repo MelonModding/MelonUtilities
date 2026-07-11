@@ -31,7 +31,7 @@ public class Home {
 			dimColor = TextFormatting.LIME;
 		} else if(dimID == Dimension.NETHER.id){
 			dimColor = TextFormatting.RED;
-		} else if(dimID == Dimension.PARADISE.id){
+		} else if(dimID == Dimension.DRIFT.id){
 			dimColor = TextFormatting.LIGHT_BLUE;
 		}
 

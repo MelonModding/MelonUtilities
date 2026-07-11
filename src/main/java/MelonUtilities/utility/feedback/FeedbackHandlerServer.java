@@ -3,7 +3,7 @@ package MelonUtilities.utility.feedback;
 import MelonUtilities.MelonUtilities;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.net.command.TextFormatting;
-import net.minecraft.core.net.packet.PacketPlaySoundEffectDirect;
+import net.minecraft.core.net.packet.PacketPlaySoundDirect;
 import net.minecraft.core.sound.SoundCategory;
 import net.minecraft.core.sound.SoundTypes;
 import net.minecraft.server.entity.player.PlayerServer;
@@ -104,7 +104,7 @@ public class FeedbackHandlerServer {
     public static void playFeedbackSound(@NotNull PlayerServer player, @NotNull FeedbackType feedbackType){
         if(feedbackType.getSoundPath().equals("NO_SOUND_PATH")){return;}
         player.playerNetServerHandler.sendPacket(
-            new PacketPlaySoundEffectDirect(
+            new PacketPlaySoundDirect(
                 SoundTypes.getSoundId(feedbackType.getSoundPath()),
                 SoundCategory.GUI_SOUNDS,
                 player.x,
