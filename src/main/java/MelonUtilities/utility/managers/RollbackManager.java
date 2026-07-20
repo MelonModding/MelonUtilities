@@ -15,6 +15,7 @@ import net.minecraft.core.entity.Entity;
 import net.minecraft.core.entity.EntityDispatcher;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.TextFormatting;
+import net.minecraft.core.net.packet.Packet;
 import net.minecraft.core.net.packet.PacketBlockRegionUpdate;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.chunk.Chunk;
@@ -131,6 +132,11 @@ public class RollbackManager {
 		ListTag entityListTag;
 		int version = tag.getIntegerOrDefault("Version", -1);
 		ChunkReader reader = getChunkReaderByVersion(chunk.world, tag, version);
+
+		for (TileEntity existing : new ArrayList<>(chunk.tileEntityMap.values())) {
+			chunk.removeTileEntity(existing);
+		}
+
 		chunk.heightMap = reader.getHeightMap();
 		chunk.averageBlockHeight = reader.getAverageBlockHeight();
 		chunk.isTerrainPopulated = reader.getIsTerrainPopulated();
@@ -168,6 +174,13 @@ public class RollbackManager {
 				TileEntity tileEntity;
 				if (!(tileEntityTagBase instanceof CompoundTag) || (tileEntity = TileEntityDispatcher.createAndLoadEntity((CompoundTag)tileEntityTagBase)) == null) continue;
 				chunk.addTileEntity(tileEntity);
+			}
+		}
+
+		for (TileEntity tileEntity : chunk.tileEntityMap.values()) {
+			Packet descriptionPacket = tileEntity.getDescriptionPacket();
+			if (descriptionPacket != null) {
+				MinecraftServer.getInstance().playerList.sendPacketToAllPlayersInDimension(descriptionPacket, chunk.world.dimension.id);
 			}
 		}
 	}
