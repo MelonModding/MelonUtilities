@@ -2,6 +2,7 @@ package MelonUtilities.utility.builders;
 
 import MelonUtilities.config.Data;
 import MelonUtilities.config.datatypes.data.Role;
+import MelonUtilities.utility.MUtil;
 import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.net.command.TextFormatting;
 
@@ -11,8 +12,8 @@ public class RoleBuilder {
 
 	public static String getCodeOrHex(String string){
 		string = string.toLowerCase();
-		if (TextFormatting.getColorFormatting(string) != null){
-			string = TextFormatting.getColorFormatting(string).toString();
+		if (MUtil.colorSectionMap.containsKey(string)){
+			string = MUtil.colorSectionMap.get(string);
 		} else{
 			string = "§<" + string + ">";
 		}
