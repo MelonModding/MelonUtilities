@@ -1,5 +1,6 @@
 package MelonUtilities.mixins;
 
+import MelonUtilities.MelonUtilities;
 import MelonUtilities.utility.discord.DiscordChatRelay;
 import net.minecraft.core.block.Blocks;
 import net.minecraft.core.entity.Entity;
@@ -8,8 +9,6 @@ import net.minecraft.core.entity.player.Player;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.util.helper.MathHelper;
 import net.minecraft.core.world.World;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,16 +38,20 @@ public abstract class MobMixin extends Entity {
             method = "onDeath",
             at = @At("RETURN")
     )
-    void processDeathMessage(Entity entity, CallbackInfo ci) {
-        if((Mob)((Object)this) instanceof Player && !world.isClientSide && sendsDeathMessage(entity)) {
-            String victimName = Entity.getNameFromEntity((Mob)(Object)this, true);
-            String[] args = entity == null
-                ? new String[]{victimName}
-                : new String[]{victimName, Entity.getNameFromEntity(entity, true)};
-            String message = I18n.getInstance()
-                .translateKeyAndFormat(getDeathMessageKey(entity), (Object[]) args)
-                .replaceAll("§.", "");
-            DiscordChatRelay.sendDeathMessage(message);
+    void processDeathMessage(Entity entityKilledBy, CallbackInfo ci) {
+        if((Mob)((Object)this) instanceof Player && !world.isClientSide && sendsDeathMessage(entityKilledBy)) {
+            try {
+                String victimName = Entity.getNameFromEntity((Mob)(Object)this, true);
+                String[] args = entityKilledBy == null
+                    ? new String[]{victimName}
+                    : new String[]{victimName, Entity.getNameFromEntity(entityKilledBy, true)};
+                String message = I18n.getInstance()
+                    .translateKeyAndFormat(getDeathMessageKey(entityKilledBy), (Object[]) args)
+                    .replaceAll("§.", "");
+                DiscordChatRelay.sendDeathMessage(message);
+            } catch (Exception e) {
+                MelonUtilities.LOGGER.error("Failed to build/relay death message for Discord", e);
+            }
         }
     }
 
