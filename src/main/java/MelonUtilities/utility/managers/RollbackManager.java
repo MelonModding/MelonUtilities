@@ -23,6 +23,7 @@ import net.minecraft.core.world.chunk.reader.ChunkReader;
 import net.minecraft.core.world.chunk.reader.ChunkReaderLegacy;
 import net.minecraft.core.world.chunk.reader.ChunkReaderVersion1;
 import net.minecraft.core.world.chunk.reader.ChunkReaderVersion2;
+import net.minecraft.core.world.chunk.reader.ChunkReaderVersion3;
 import net.minecraft.core.world.save.LevelData;
 import net.minecraft.core.world.save.mcregion.RegionFileCache;
 import net.minecraft.server.MinecraftServer;
@@ -117,6 +118,9 @@ public class RollbackManager {
 			}
 			case 2: {
 				return new ChunkReaderVersion2(tag);
+			}
+			case 3: {
+				return new ChunkReaderVersion3(tag);
 			}
 		}
 		return new ChunkReaderLegacy(tag);
